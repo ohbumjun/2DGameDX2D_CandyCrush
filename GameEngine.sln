@@ -8,6 +8,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01. Client", "01. Client", "{A3DBC3FD-80AB-4BEE-9488-40F04A90D1D0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02. Engine", "02. Engine", "{9EBEA2C4-D046-4959-943E-F7B4BEFE4491}"
+	ProjectSection(SolutionItems) = preProject
+		Copy.bat = Copy.bat
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03. Editor", "03. Editor", "{FFE508DC-0F60-40B7-A098-33D3A40999E6}"
 EndProject
