@@ -165,11 +165,13 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Device.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="GameInfo.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Device.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>

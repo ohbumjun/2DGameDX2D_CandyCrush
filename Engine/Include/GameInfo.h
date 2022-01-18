@@ -6,6 +6,16 @@
 #include <vector>
 #include <unordered_map>
 
+#include <d3d11.h>
+#include <d3dcompiler.h>
+#include <dinput.h>
+
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "dxguid.lib")
+#pragma comment(lib, "d3dcompiler.lib")
+#pragma comment(lib, "dinput8.lib")
+
+
 #define SAFE_DELETE(p)
 
 // template 처럼 Type에 Class가 들어올 수 도 있다

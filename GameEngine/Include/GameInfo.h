@@ -6,7 +6,18 @@
 #include <vector>
 #include <unordered_map>
 
-#define SAFE_DELETE(p)
+#include <d3d11.h>
+#include <d3dcompiler.h>
+#include <dinput.h>
+
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "dxguid.lib")
+#pragma comment(lib, "d3dcompiler.lib")
+#pragma comment(lib, "dinput8.lib")
+
+
+#define SAFE_DELETE(p) {if (p) delete p; p = nullptr;}
+#define SAFE_RELEASE(p) {if (p) p->Release(); p = nullptr;}
 
 // template 처럼 Type에 Class가 들어올 수 도 있다
 #define DECLARE_SINGLE(Type) \
