@@ -16,6 +16,9 @@
     <Filter Include="01. Engine">
       <UniqueIdentifier>{0a40030d-96ad-4f94-9698-88bf531bf628}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Engine\01. Timer">
+      <UniqueIdentifier>{fa60ed2d-00a3-45e1-a5c1-db2b9ebe1857}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -24,10 +27,16 @@
     <ClInclude Include="GameInfo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>01. Engine\01. Timer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
       <Filter>01. Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>01. Engine\01. Timer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

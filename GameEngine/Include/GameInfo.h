@@ -33,3 +33,8 @@ struct Resolution {
 	unsigned int Width;
 	unsigned int Height;
 };
+
+enum class Engine_Space {
+	Space2D,
+	Space3D
+};
