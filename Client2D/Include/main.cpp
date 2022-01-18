@@ -20,12 +20,23 @@
 // 우리는 빌드 후 이벤트를 이용해야 한다.
 // 명령줄에다가 명령을 써서, 내가 원하는 파일을 실행해라 ! 라고 얘기해줄 수 있다. // 
 
-#include "Engine.h"
+#include <Windows.h>
 #include "resource.h" // 리소스 파일 -> 아이콘으로 만들면
 // resource.h 에 icon id가 저장되어 있게 된다. 그것을 사용할 것 
 
 // Debug 일때는 _Debug.lib에 링크를 걸고
 // Release 이면, .lib에 링크를 걸고
+#ifdef _DEBUG
+
+#pragma comment(lib, "GameEngine_Debug.lib")
+
+#else
+
+#pragma comment(lib, "GameEngine.lib")
+
+#endif // _DEBUG
+
+#include "Engine.h"
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
