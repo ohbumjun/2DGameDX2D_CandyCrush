@@ -3,6 +3,7 @@
 // DirectX 전용 Math 를 include 해야
 // XMVector 등의 자료형을 사용할 수 있다.
 
+#include <assert.h>
 #include <DirectXMath.h>
 
 using namespace DirectX;

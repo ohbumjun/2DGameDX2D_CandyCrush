@@ -43,7 +43,7 @@
       <Filter>01. Engine\03. Math</Filter>
     </ClInclude>
     <ClInclude Include="EngineMath.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>01. Engine\03. Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -60,7 +60,7 @@
       <Filter>01. Engine\03. Math</Filter>
     </ClCompile>
     <ClCompile Include="EngineMath.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>01. Engine\03. Math</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
