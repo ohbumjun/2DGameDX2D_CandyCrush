@@ -167,13 +167,17 @@
   <ItemGroup>
     <ClInclude Include="Device.h" />
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="EngineMath.h" />
     <ClInclude Include="GameInfo.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="Vector2.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="EngineMath.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="Vector2.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -31,7 +31,7 @@ float CTimer::Update()
 	// Time.QuadPart - m_Time.QuadPart 가 300만 --> 1 frame이 흐를 때 200만 개의 클록 발생
 	// 200만 / 1000만 == 1 frame이 흐르는데 걸린 시간 == 0.2초 ==> 1초에 5 frame 을 처리
 	// 1 / 5가 DeltaTime으로 세팅될 것이다. 
-	m_DeltaTime = (Time.QuadPart - m_Time.QuadPart) / m_Second.QuadPart;
+	m_DeltaTime = (Time.QuadPart - m_Time.QuadPart) / (float)m_Second.QuadPart;
 
 	m_Time = Time;
 

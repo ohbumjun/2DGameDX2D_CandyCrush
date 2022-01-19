@@ -16,7 +16,8 @@
 #pragma comment(lib, "dinput8.lib")
 
 
-#define SAFE_DELETE(p)
+#define SAFE_DELETE(p) {if (p) delete p; p = nullptr;}
+#define SAFE_RELEASE(p) {if (p) p->Release(); p = nullptr;}
 
 // template 처럼 Type에 Class가 들어올 수 도 있다
 #define DECLARE_SINGLE(Type) \

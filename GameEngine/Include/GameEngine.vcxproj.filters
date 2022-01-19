@@ -22,6 +22,9 @@
     <Filter Include="01. Engine\02. Device">
       <UniqueIdentifier>{6f2f71bc-3b90-4e4b-bd27-18961e642285}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Engine\03. Math">
+      <UniqueIdentifier>{3023d93f-bd61-4200-b91d-0c839aa89ecc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -36,6 +39,12 @@
     <ClInclude Include="Device.h">
       <Filter>01. Engine\02. Device</Filter>
     </ClInclude>
+    <ClInclude Include="Vector2.h">
+      <Filter>01. Engine\03. Math</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineMath.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -46,6 +55,12 @@
     </ClCompile>
     <ClCompile Include="Device.cpp">
       <Filter>01. Engine\02. Device</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector2.cpp">
+      <Filter>01. Engine\03. Math</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineMath.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
