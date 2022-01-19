@@ -5,6 +5,8 @@
 
 #include <assert.h>
 #include <DirectXMath.h>
+#include <DirectXPackedVector.h>
+#include <string.h>
 
 using namespace DirectX;
 

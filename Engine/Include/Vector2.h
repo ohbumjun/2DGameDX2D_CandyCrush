@@ -2,7 +2,7 @@
 
 #include "EngineMath.h"
 
-class Vector2
+struct Vector2
 {
 	float x, y;
 

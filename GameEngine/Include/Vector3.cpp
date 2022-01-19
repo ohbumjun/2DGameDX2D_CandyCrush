@@ -204,18 +204,18 @@ void Vector3::operator/=(float v)
 	z /= v;
 }
 
-int Vector3::Length() const 
+float Vector3::Length() const
 {
 	return XMVectorGetX(XMVector3Length(Convert()));
 }
 
-int Vector3::Dist(const Vector3& v) const 
+float Vector3::Dist(const Vector3& v) const
 {
 	Vector3 D = v - *this;
 	return D.Length();
 }
 
-int Vector3::Dot(const Vector3& v) const 
+float Vector3::Dot(const Vector3& v) const
 {
 	return XMVectorGetX(XMVector3Dot(Convert(), v.Convert()));
 }
@@ -246,11 +246,13 @@ Vector3 Vector3::Cross(const Vector3& v) const
 }
 
 Vector3 Vector3::ConvertAngle() const
-{}
+{
+	return Vector3(DegreeToRadian(x), DegreeToRadian(y), DegreeToRadian(z));
+}
 
 XMVECTOR Vector3::Convert() const 
 {
-	XMLoadFloat3((XMFLOAT3*)this);
+	return XMLoadFloat3((XMFLOAT3*)this);
 }
 
 void Vector3::Convert(const XMVECTOR& v)
