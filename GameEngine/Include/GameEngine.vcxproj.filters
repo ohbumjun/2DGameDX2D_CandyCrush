@@ -45,6 +45,12 @@
     <ClInclude Include="EngineMath.h">
       <Filter>01. Engine\03. Math</Filter>
     </ClInclude>
+    <ClInclude Include="Vector3.h">
+      <Filter>01. Engine\03. Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector4.h">
+      <Filter>01. Engine\03. Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -60,6 +66,12 @@
       <Filter>01. Engine\03. Math</Filter>
     </ClCompile>
     <ClCompile Include="EngineMath.cpp">
+      <Filter>01. Engine\03. Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector4.cpp">
+      <Filter>01. Engine\03. Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
       <Filter>01. Engine\03. Math</Filter>
     </ClCompile>
   </ItemGroup>
