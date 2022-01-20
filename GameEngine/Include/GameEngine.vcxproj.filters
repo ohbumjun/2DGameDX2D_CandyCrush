@@ -21,6 +21,9 @@
     <Filter Include="01. Engine\03. Math">
       <UniqueIdentifier>{3023d93f-bd61-4200-b91d-0c839aa89ecc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Engine\04. Input">
+      <UniqueIdentifier>{78d7cd8d-0e3c-488e-9625-fa056b7a386a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -50,6 +53,12 @@
     <ClInclude Include="Matrix.h">
       <Filter>01. Engine\03. Math</Filter>
     </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>01. Engine\04. Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Flag.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -75,6 +84,9 @@
     </ClCompile>
     <ClCompile Include="Matrix.cpp">
       <Filter>01. Engine\03. Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>01. Engine\04. Input</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
