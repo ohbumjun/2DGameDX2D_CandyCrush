@@ -6,6 +6,8 @@
 #include <vector>
 #include <unordered_map>
 #include <cstring>
+#include <functional>
+
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <dinput.h>
@@ -15,6 +17,10 @@
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "dinput8.lib")
 
+#include "Flag.h"
+#include "Vector2.h"
+#include "Vector3.h"
+#include "Vector4.h"
 
 #define SAFE_DELETE(p) {if (p) delete p; p = nullptr;}
 #define SAFE_RELEASE(p) {if (p) p->Release(); p = nullptr;}

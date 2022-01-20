@@ -18,7 +18,19 @@ CDevice::~CDevice()
 	SAFE_RELEASE(m_DepthStencilView);
 }
 
-bool CDevice::Init(HWND hWnd, unsigned Width, unsigned Height, bool WindowMode)
+Vector2 CDevice::GetViewPortRatio()
+{
+	RECT Rect;
+
+	GetClientRect(m_hWnd, &Rect);
+
+	float Width  = (float)(Rect.right - Rect.left);
+	float Height = (float)(Rect.bottom - Rect.top);
+
+	return Vector2(m_RS.Width / Width, m_RS.Height / Height);
+}
+
+bool  CDevice::Init(HWND hWnd, unsigned Width, unsigned Height, bool WindowMode)
 {
 	m_hWnd = hWnd;
 	m_RS.Width = Width;

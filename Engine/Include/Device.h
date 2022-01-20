@@ -12,6 +12,13 @@ private :
 	ID3D11RenderTargetView* m_TargetView;
 	ID3D11DepthStencilView* m_DepthStencilView;
 	IDXGISwapChain* m_SwapChain;
+public:
+	Resolution GetResolution() const
+	{
+		return m_RS;
+	}
+public :
+	Vector2 GetViewPortRatio();
 public :
 	bool Init(HWND hWnd, unsigned int Width, unsigned int Height, 
 		bool WindowMode = true);
