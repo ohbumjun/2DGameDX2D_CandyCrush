@@ -1,6 +1,7 @@
 #include "Engine.h"
-
+#include "Device.h"
 #include "Timer.h"
+#include "Input.h"
 
 CEngine::CEngine() :
 	m_Timer(nullptr),
@@ -36,6 +37,12 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd, unsigned Width, unsigned Height, 
 
 	m_RS.Width = Width;
 	m_RS.Height = Height;
+
+	if (!CDevice::GetInst()->Init(hWnd, Width, Height, WindowMode))
+		return false;
+
+	if (!CInput::GetInst()->Init(hInst, hWnd))
+		return false;
 
 	return true;
 }
@@ -78,6 +85,9 @@ void CEngine::Logic()
 
 bool CEngine::Update(float DeltaTime)
 {
+
+	CInput::GetInst()->Update(DeltaTime);
+
 	return true;
 }
 
