@@ -68,14 +68,14 @@
     <ClInclude Include="Flag.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SharedPtr.h">
-      <Filter>01. Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Ref.h">
       <Filter>01. Engine\06. Ref</Filter>
     </ClInclude>
     <ClInclude Include="PathManager.h">
       <Filter>01. Engine\05. Path</Filter>
+    </ClInclude>
+    <ClInclude Include="SharedPtr.h">
+      <Filter>01. Engine\07. SharedPtr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
