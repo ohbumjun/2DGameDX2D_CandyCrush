@@ -14,6 +14,8 @@ m_ClearColor { }
 CEngine::~CEngine()
 {
 	SAFE_DELETE(m_Timer);
+	CDevice::GetInst()->DestroyInst();
+	CInput::GetInst()->DestroyInst();
 }
 
 bool CEngine::Init(HINSTANCE hInst, const TCHAR* Name, 

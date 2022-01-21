@@ -22,6 +22,12 @@
 #include "Vector3.h"
 #include "Vector4.h"
 
+#define ROOT_PATH     "Root"
+#define SHADER_PATH  "Shader"
+#define TEXTURE_PATH "Texture"
+#define SOUND_PATH    "Sound"
+#define FONT_PATH       "Font"
+
 #define SAFE_DELETE(p) {if (p) delete p; p = nullptr;}
 #define SAFE_RELEASE(p) {if (p) p->Release(); p = nullptr;}
 
