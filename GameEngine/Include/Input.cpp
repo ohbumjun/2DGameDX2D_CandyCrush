@@ -311,6 +311,8 @@ KeyInfo* CInput::CreateKeyInfo(const std::string& Name, unsigned char Key)
 	{
 		m_vecAddKey.push_back(Key);
 	}
+
+	return Info;
 }
 
 void CInput::SetCtrlKey(const std::string& Name, bool State)

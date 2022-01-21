@@ -1,5 +1,7 @@
 #pragma once
 
+#define	DIRECTINPUT_VERSION	0x0800
+
 // Engine에서 쓸 수 있게 세팅해두기 
 #include <Windows.h>
 #include <list>
@@ -29,6 +31,7 @@
 #define FONT_PATH       "Font"
 
 #define SAFE_DELETE(p) {if (p) delete p; p = nullptr;}
+#define SAFE_DELETE_ARRAY(p) {if (p) delete [] p; p = nullptr;}
 #define SAFE_RELEASE(p) {if (p) p->Release(); p = nullptr;}
 
 // template 처럼 Type에 Class가 들어올 수 도 있다

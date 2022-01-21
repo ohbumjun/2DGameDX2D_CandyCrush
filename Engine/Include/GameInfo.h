@@ -1,5 +1,7 @@
 #pragma once
 
+#define	DIRECTINPUT_VERSION	0x0800
+
 // Engine에서 쓸 수 있게 세팅해두기 
 #include <Windows.h>
 #include <list>
@@ -22,13 +24,14 @@
 #include "Vector3.h"
 #include "Vector4.h"
 
-#define ROOT_PATH "Root"
-#define SHADER_PATH "Shader"
+#define ROOT_PATH     "Root"
+#define SHADER_PATH  "Shader"
 #define TEXTURE_PATH "Texture"
-#define SOUND_PATH "Sound"
-#define FONT_PATH "Font"
+#define SOUND_PATH    "Sound"
+#define FONT_PATH       "Font"
 
 #define SAFE_DELETE(p) {if (p) delete p; p = nullptr;}
+#define SAFE_DELETE_ARRAY(p) {if (p) delete [] p; p = nullptr;}
 #define SAFE_RELEASE(p) {if (p) p->Release(); p = nullptr;}
 
 // template 처럼 Type에 Class가 들어올 수 도 있다

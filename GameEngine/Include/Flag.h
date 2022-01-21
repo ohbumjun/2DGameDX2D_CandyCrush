@@ -11,3 +11,9 @@ enum class Input_Type {
 	Window,
 	Direct
 };
+
+enum class Image_Type {
+	Atlas,
+	Frame,
+	Array
+};

@@ -13,6 +13,14 @@ private :
 	ID3D11DepthStencilView* m_DepthStencilView;
 	IDXGISwapChain* m_SwapChain;
 public:
+	ID3D11Device* GetDevice() const
+	{
+		return m_Device;
+	}
+	ID3D11DeviceContext* GetDeviceContext() const
+	{
+		return m_DeviceContext;
+	}
 	Resolution GetResolution() const
 	{
 		return m_RS;

@@ -33,6 +33,45 @@
     <Filter Include="01. Engine\07. SharedPtr">
       <UniqueIdentifier>{6d03d313-b842-49bc-86bf-27738dcfb0f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource">
+      <UniqueIdentifier>{178ef234-2699-4d0c-b993-747c3d111d0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Scene">
+      <UniqueIdentifier>{0f9cee4f-a8c0-4f96-80fc-bcf2ad993261}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. GameObject">
+      <UniqueIdentifier>{585c6871-de1f-4b86-8df3-f3d62effa89e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component">
+      <UniqueIdentifier>{b29c9d75-e1a7-44c3-912d-1c06044d1dfb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06. Render">
+      <UniqueIdentifier>{0e3976e5-913d-4337-8f12-a14ad0a41fdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07. Animation">
+      <UniqueIdentifier>{b6e29f87-55d8-4024-93c5-5c96bea86515}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\01. Mesh">
+      <UniqueIdentifier>{b5d7f9e5-3369-41e3-b606-b17c80f550ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader">
+      <UniqueIdentifier>{ea2e2be9-c3a7-48a4-bdb1-655cbf18d9fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\03. Material">
+      <UniqueIdentifier>{79bf6568-6da4-49eb-b65a-3c08d5f59a4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\04. Texture">
+      <UniqueIdentifier>{bb64f39d-4e24-4d99-bf35-2e2d9d20a702}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\05. Animation">
+      <UniqueIdentifier>{10772e8a-ddc6-44d5-b755-66836ddbb0d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\06. Sound">
+      <UniqueIdentifier>{565ce722-1212-47e3-ab4b-9a02d55d24ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\07. Font">
+      <UniqueIdentifier>{a715b817-4938-4fd9-b8a6-2b0dbf094aca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -77,6 +116,15 @@
     <ClInclude Include="SharedPtr.h">
       <Filter>01. Engine\07. SharedPtr</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Font\FontManager.h">
+      <Filter>02. Resource\07. Font</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Texture\Texture.h">
+      <Filter>02. Resource\04. Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Texture\TextureManager.h">
+      <Filter>02. Resource\04. Texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -111,6 +159,15 @@
     </ClCompile>
     <ClCompile Include="PathManager.cpp">
       <Filter>01. Engine\05. Path</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Font\FontManager.cpp">
+      <Filter>02. Resource\07. Font</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Texture\Texture.cpp">
+      <Filter>02. Resource\04. Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Texture\TextureManager.cpp">
+      <Filter>02. Resource\04. Texture</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

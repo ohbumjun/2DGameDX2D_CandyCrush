@@ -19,7 +19,11 @@ private :
 private :
 	std::unordered_map<std::string, PathInfo*> m_mapPathInfo;
 public :
+	bool Init();
+	bool AddPath(const std::string& Name, const TCHAR* Path,
+		const std::string& BaseName = ROOT_PATH);
 	PathInfo* FindPath(const std::string& Name);
+
 private :
 	static CPathManager* m_Inst;
 public :
@@ -34,4 +38,5 @@ public :
 		SAFE_DELETE(m_Inst);
 }
 };
+
 
