@@ -99,6 +99,9 @@
     <Filter Include="02. Resource\02. Shader\03. ConstantBuffer">
       <UniqueIdentifier>{36f8b77c-96b3-4389-a1c9-3cdc7a967d63}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\01. Transform">
+      <UniqueIdentifier>{0b666814-6574-4b84-844a-a8269d4b0fbb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -191,6 +194,9 @@
     <ClInclude Include="Resource\Shader\ConstantBufferBase.h">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Shader\TransformConstantBuffer.h">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\01. Transform</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -270,6 +276,9 @@
     </ClCompile>
     <ClCompile Include="Resource\Shader\ConstantBufferBase.cpp">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\TransformConstantBuffer.cpp">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\01. Transform</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -182,6 +182,7 @@
     <ClInclude Include="Resource\Font\FontManager.h" />
     <ClInclude Include="Resource\Shader\ConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\ConstantBufferBase.h" />
+    <ClInclude Include="Resource\Shader\TransformConstantBuffer.h" />
     <ClInclude Include="Resource\Texture\Texture.h" />
     <ClInclude Include="Resource\Texture\TextureManager.h" />
     <ClInclude Include="Scene\Scene.h" />
@@ -211,6 +212,7 @@
     <ClCompile Include="Resource\Font\FontManager.cpp" />
     <ClCompile Include="Resource\Shader\ConstantBuffer.cpp" />
     <ClCompile Include="Resource\Shader\ConstantBufferBase.cpp" />
+    <ClCompile Include="Resource\Shader\TransformConstantBuffer.cpp" />
     <ClCompile Include="Resource\Texture\Texture.cpp" />
     <ClCompile Include="Resource\Texture\TextureManager.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />

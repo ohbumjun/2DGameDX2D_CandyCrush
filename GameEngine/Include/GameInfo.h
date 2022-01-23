@@ -75,3 +75,17 @@ enum class Engine_Space {
 	Space2D,
 	Space3D
 };
+
+// 상수 버퍼
+struct TransformCBuffer {
+	Matrix matWorld;
+	Matrix matView;
+	Matrix matProj;
+	Matrix matWV;
+	Matrix matWVP;
+	Matrix matVP;
+	Vector3 Pivot;
+	float Empty;
+	Vector3 MeshSize;
+	float Empty1;
+};
