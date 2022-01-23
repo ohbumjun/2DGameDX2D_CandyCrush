@@ -188,6 +188,9 @@
     <ClInclude Include="Resource\Shader\ConstantBuffer.h">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Shader\ConstantBufferBase.h">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -263,6 +266,9 @@
       <Filter>05. Component\01. SceneComponent</Filter>
     </ClCompile>
     <ClCompile Include="Resource\Shader\ConstantBuffer.cpp">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\ConstantBufferBase.cpp">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer</Filter>
     </ClCompile>
   </ItemGroup>
