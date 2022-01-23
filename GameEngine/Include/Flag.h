@@ -29,3 +29,19 @@ enum class Component_Type {
 	SceneComponent,
 	ObjectComponent
 };
+
+enum class Shader_Type {
+	Graphic,
+	Compute
+};
+
+enum class ConstantBuffer_Shader_Type {
+	Vertex = 0x1,			//    0001 : ÀÌÁø¼ö
+	Pixel = 0x2,			//    0010 
+	Domain = 0x4,		//    0100
+	Hull      = 0x8,		//    1000
+	Geometry = 0x10,  //  10000
+	Compute = 0x20,		// 100000
+	Graphic = Vertex | Pixel | Domain | Hull | Geometry,
+	All = Vertex | Pixel | Domain | Hull | Geometry | Compute
+};

@@ -90,6 +90,15 @@
     <Filter Include="05. Component\02. ObjectComponent">
       <UniqueIdentifier>{aa3e019b-f01b-483f-be42-987e777a2d1d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\02. Shader\01. HLSL">
+      <UniqueIdentifier>{7135b3f8-df88-4e13-8809-da661fc7691e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader\02. ShaderClass">
+      <UniqueIdentifier>{e964ee8c-96b6-4a22-8443-875cb5d9600e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader\03. ConstantBuffer">
+      <UniqueIdentifier>{36f8b77c-96b3-4389-a1c9-3cdc7a967d63}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -176,6 +185,9 @@
     <ClInclude Include="Component\Transform.h">
       <Filter>05. Component\01. SceneComponent</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Shader\ConstantBuffer.h">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -249,6 +261,9 @@
     </ClCompile>
     <ClCompile Include="Component\Transform.cpp">
       <Filter>05. Component\01. SceneComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\ConstantBuffer.cpp">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
