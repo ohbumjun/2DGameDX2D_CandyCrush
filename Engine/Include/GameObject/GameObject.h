@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../GameInfo.h"
 #include "../Ref.h"
 
 class CGameObject : public CRef

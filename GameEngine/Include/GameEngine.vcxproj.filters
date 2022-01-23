@@ -84,6 +84,12 @@
     <Filter Include="03. Scene\04. SceneUI">
       <UniqueIdentifier>{1fbb6398-5a05-4f90-bd70-e2341db41d4d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Component\01. SceneComponent">
+      <UniqueIdentifier>{23c83b86-2866-48d9-8e5b-1ea0cc3bed46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05. Component\02. ObjectComponent">
+      <UniqueIdentifier>{aa3e019b-f01b-483f-be42-987e777a2d1d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -161,6 +167,15 @@
     <ClInclude Include="GameObject\GameObject.h">
       <Filter>04. GameObject</Filter>
     </ClInclude>
+    <ClInclude Include="Component\Component.h">
+      <Filter>05. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\SceneComponent.h">
+      <Filter>05. Component\01. SceneComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Transform.h">
+      <Filter>05. Component\01. SceneComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -225,6 +240,15 @@
     </ClCompile>
     <ClCompile Include="GameObject\GameObject.cpp">
       <Filter>04. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Component.cpp">
+      <Filter>05. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\SceneComponent.cpp">
+      <Filter>05. Component\01. SceneComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Transform.cpp">
+      <Filter>05. Component\01. SceneComponent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

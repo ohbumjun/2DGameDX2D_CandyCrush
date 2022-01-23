@@ -82,7 +82,8 @@ private :
 {
 		m_SceneMode = new T;
 		m_SceneMode->m_Scene = this;
-		return (T*)m_SceneMode;
+		return m_SceneMode;
 }
+
 };
 

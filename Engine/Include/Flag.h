@@ -17,3 +17,8 @@ enum class Image_Type {
 	Frame,
 	Array
 };
+
+enum class Component_Type {
+	SceneComponent,
+	ObjectComponent
+};
