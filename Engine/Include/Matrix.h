@@ -73,7 +73,7 @@ public :
 	void RotationY(float y);
 	void RotationZ(float z);
 	void RotationAxis(const struct Vector3& Axis, float Angle);
-	void RotationQuarternion(const Vector4& qut);
+	void RotationQuaternion(const Vector4& qut);
 public :
 	void Translation(float x, float y, float z);
 	void Translation(const struct Vector3& _v);

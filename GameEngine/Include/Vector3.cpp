@@ -1,5 +1,14 @@
 #include "Vector3.h"
 
+Vector3 Vector3::Zero = { 0.f, 0.f, 0.f };
+Vector3 Vector3::One  = { 1.f, 1.f, 1.f };
+Vector3 Vector3::Axis[AXIS_MAX] = {
+	Vector3(1.f, 0.f, 0.f),
+	Vector3(0.f, 1.f, 0.f),
+	Vector3(0.f, 0.f, 1.f)
+};
+
+
 Vector3::Vector3() :
 x(0.f),
 y(0.f),
@@ -248,6 +257,16 @@ Vector3 Vector3::Cross(const Vector3& v) const
 Vector3 Vector3::ConvertAngle() const
 {
 	return Vector3(DegreeToRadian(x), DegreeToRadian(y), DegreeToRadian(z));
+}
+
+Vector3 Vector3::TransformCoord(const Matrix& m)
+{
+	return Vector3(XMVector3TransformCoord(Convert(), m.m));
+}
+
+Vector3 Vector3::TransformNormal(const Matrix& m)
+{
+	return Vector3(XMVector3TransformNormal(Convert(), m.m));
 }
 
 XMVECTOR Vector3::Convert() const 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "EngineMath.h"
+#include "Matrix.h"
 
 struct Vector3
 {
@@ -74,7 +75,17 @@ struct Vector3
 	Vector3 Cross(const Vector3& v) const ;
 	Vector3 ConvertAngle() const;
 
+	// 벡터 및 위치 변환
+	Vector3 TransformCoord(const Matrix& m);
+	Vector3 TransformNormal(const Matrix& m);
+
 	XMVECTOR Convert() const ; 
-	void Convert(const XMVECTOR& v); // 사실상 대입 연산자와 같은 개념 
+	void Convert(const XMVECTOR& v); // 사실상 대입 연산자와 같은 개념
+
+	static Vector3 Normalize(const Vector3& v);
+
+	static Vector3 Zero;
+	static Vector3 One;
+	static Vector3 Axis[AXIS_MAX];
 };
 

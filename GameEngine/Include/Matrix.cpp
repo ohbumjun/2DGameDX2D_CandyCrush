@@ -119,7 +119,7 @@ void Matrix::Rotation(const Vector3& _v)
 	// 벡터에 곱해줄 쿼터니언 값이 나왔다.
 	XMVECTOR Qut = XMQuaternionRotationRollPitchYaw(ConvertRot.x, ConvertRot.y, ConvertRot.z);
 
-	RotationQuarternion(Qut);
+	RotationQuaternion(Qut);
 }
 
 void Matrix::Rotation(float x, float y, float z)
@@ -129,7 +129,7 @@ void Matrix::Rotation(float x, float y, float z)
 
 	XMVECTOR Qut = XMQuaternionRotationRollPitchYaw(ConvertRot.x, ConvertRot.y, ConvertRot.z);
 
-	RotationQuarternion(Qut);
+	RotationQuaternion(Qut);
 }
 
 void Matrix::RotationX(float x)
@@ -152,7 +152,7 @@ void Matrix::RotationAxis(const Vector3& Axis, float Angle)
 	m = XMMatrixRotationAxis(Axis.Convert(), DegreeToRadian(Angle));
 }
 
-void Matrix::RotationQuarternion(const Vector4& qut)
+void Matrix::RotationQuaternion(const Vector4& qut)
 {
 	m = XMMatrixRotationQuaternion(qut.Convert());
 }
