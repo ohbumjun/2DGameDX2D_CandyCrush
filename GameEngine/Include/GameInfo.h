@@ -14,10 +14,19 @@
 #include <d3dcompiler.h>
 #include <dinput.h>
 
+// DWrite
+#include <dwrite.h>
+#include <dwrite_3.h>
+#include <d2d1.h>
+
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "dinput8.lib")
+
+// DWrite
+#pragma comment(lib, "dwrite.lib")
+#pragma comment(lib, "d2d1.lib")
 
 #include "Flag.h"
 #include "Vector2.h"

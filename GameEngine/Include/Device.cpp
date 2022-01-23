@@ -142,6 +142,25 @@ bool  CDevice::Init(HWND hWnd, unsigned Width, unsigned Height, bool WindowMode)
 
 	m_DeviceContext->RSSetViewports(1, &VP);
 
+	// 2DFactory
+	if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_MULTI_THREADED, &m_2dFactory)))
+		return false;
+
+	// Surface ¸¸µé°í
+	IDXGISurface* Surface = nullptr;
+	m_SwapChain->GetBuffer(0, IID_PPV_ARGS(&Surface));
+
+	D2D1_RENDER_TARGET_PROPERTIES props = D2D1::RenderTargetProperties(
+		D2D1_RENDER_TARGET_TYPE_HARDWARE,
+		D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED)
+		);
+
+	// DXGiSurface REnderTarget
+	if (FAILED(m_2dFactory->CreateDxgiSurfaceRenderTarget(Surface, props, &m_2DTarget)))
+		return false;
+
+	SAFE_RELEASE(Surface);
+
 	return true;
 }
 

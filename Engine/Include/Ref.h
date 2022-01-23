@@ -6,12 +6,12 @@ class CRef {
 public :
 	CRef();
 	virtual ~CRef();
-protected:
-	int   m_RefCount;
+private :
 	bool m_Active;
 	bool m_Enable;
-	size_t m_TypeID;
+	int m_RefCount;
 	std::string m_Name;
+	size_t m_TypeID;
 public :
 	bool IsActive() const
 {
@@ -33,21 +33,17 @@ public :
 {
 		return m_TypeID;
 }
-public:
+public :
 	void SetName(const std::string& Name)
-	{
+{
 		m_Name = Name;
-	}
-	void Destroy()
-	{
-		m_Active = false;
-	}
+}
 	void AddRef()
-	{
+{
 		m_RefCount += 1;
-	}
+}
 	int Release()
-	{
+{
 		m_RefCount -= 1;
 		if (m_RefCount < 0)
 		{
@@ -55,16 +51,24 @@ public:
 			return 0;
 		}
 		return m_RefCount;
-	}
-public :
+}
+	void SetEnable(bool Enable)
+{
+		m_Enable = Enable;
+}
+	void Destroy()
+{
+		m_Active = false;
+}
 	template<typename T>
 	void SetTypeID()
 {
 		m_TypeID = typeid(T).hash_code();
 }
 	template<typename T>
-	bool CheckType()
+	bool CheckTypeID() const
 {
 		return m_TypeID == typeid(T).hash_code();
 }
+
 };

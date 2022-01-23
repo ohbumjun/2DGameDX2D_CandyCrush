@@ -12,7 +12,23 @@ private :
 	ID3D11RenderTargetView* m_TargetView;
 	ID3D11DepthStencilView* m_DepthStencilView;
 	IDXGISwapChain* m_SwapChain;
+private : // DWrite
+	ID2D1RenderTarget* m_2DTarget;
+	ID2D1RenderTarget* m_2DTargetWorld;
+	ID2D1Factory* m_2dFactory;
 public:
+	ID2D1Factory* Get2DFactory()
+	{
+		return m_2dFactory;
+	}
+	ID2D1RenderTarget* Get2DRenderTarget() const
+	{
+		return m_2DTarget;
+	}
+	ID2D1RenderTarget* Get2DWorldRenderTarget() const
+	{
+		return m_2DTargetWorld;
+	}
 	ID3D11Device* GetDevice() const
 	{
 		return m_Device;

@@ -22,6 +22,7 @@ public :
 		bool WindowMode = true);
 	int Run();
 	void Logic();
+public :
 
 private :
 	bool Update(float DeltaTime);
