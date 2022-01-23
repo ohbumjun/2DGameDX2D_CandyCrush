@@ -125,6 +125,12 @@
     <ClInclude Include="Resource\Texture\TextureManager.h">
       <Filter>02. Resource\04. Texture</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\Scene.h">
+      <Filter>03. Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneManager.h">
+      <Filter>03. Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -168,6 +174,12 @@
     </ClCompile>
     <ClCompile Include="Resource\Texture\TextureManager.cpp">
       <Filter>02. Resource\04. Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Scene.cpp">
+      <Filter>03. Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneManager.cpp">
+      <Filter>03. Scene</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
