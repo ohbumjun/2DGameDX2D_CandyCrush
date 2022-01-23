@@ -72,6 +72,18 @@
     <Filter Include="02. Resource\07. Font">
       <UniqueIdentifier>{a715b817-4938-4fd9-b8a6-2b0dbf094aca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03. Scene\01. SceneMode">
+      <UniqueIdentifier>{4727a935-01b9-4d4d-8048-558669193bb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Scene\02. SceneCollision">
+      <UniqueIdentifier>{1b0ed532-38cf-4a5f-8681-3b738a0d94c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Scene\03. SceneResource">
+      <UniqueIdentifier>{20a66ad7-f3fb-4ea2-a793-28b911f9546a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03. Scene\04. SceneUI">
+      <UniqueIdentifier>{1fbb6398-5a05-4f90-bd70-e2341db41d4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -131,6 +143,24 @@
     <ClInclude Include="Scene\SceneManager.h">
       <Filter>03. Scene</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneMode.h">
+      <Filter>03. Scene\01. SceneMode</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneCollision.h">
+      <Filter>03. Scene\02. SceneCollision</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\SceneResource.h">
+      <Filter>03. Scene\03. SceneResource</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\ViewPort.h">
+      <Filter>03. Scene\04. SceneUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\GameObject.h">
+      <Filter>04. GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -181,5 +211,25 @@
     <ClCompile Include="Scene\SceneManager.cpp">
       <Filter>03. Scene</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\SceneMode.cpp">
+      <Filter>03. Scene\01. SceneMode</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneCollision.cpp">
+      <Filter>03. Scene\02. SceneCollision</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\SceneResource.cpp">
+      <Filter>03. Scene\03. SceneResource</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\ViewPort.cpp">
+      <Filter>03. Scene\04. SceneUI</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\GameObject.cpp">
+      <Filter>04. GameObject</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="GameEngine.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
