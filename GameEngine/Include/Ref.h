@@ -6,7 +6,7 @@ class CRef {
 public :
 	CRef();
 	virtual ~CRef();
-private :
+protected :
 	bool m_Active;
 	bool m_Enable;
 	int m_RefCount;
@@ -56,7 +56,7 @@ public :
 {
 		m_Enable = Enable;
 }
-	void Destroy()
+	virtual void Destroy()
 {
 		m_Active = false;
 }

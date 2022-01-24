@@ -1,27 +1,25 @@
 #include "ConstantBuffer.h"
 #include "../../Device.h"
 
-CConstantBuffer::CConstantBuffer() :
-	m_Buffer(nullptr),
-	m_Size(0),
-	m_Register(0),
-	m_ConstantBufferShaderType(0)
+CConstantBuffer::CConstantBuffer()
+{}
+
+CConstantBuffer::CConstantBuffer(const CConstantBuffer& Buffer)
 {}
 
 CConstantBuffer::~CConstantBuffer()
-{
-	SAFE_RELEASE(m_Buffer);
-}
+{}
 
-bool CConstantBuffer::Init(int Size, int Register, int ConstantBufferShaderType)
+bool CConstantBuffer::Init(int Register, int Size, int ConstantShaderType)
 {
 	m_Size = Size;
 	m_Register = Register;
-	m_ConstantBufferShaderType = ConstantBufferShaderType;
+	m_ConstantShaderType = ConstantShaderType;
 
+	// 실제 버퍼 생성
 	D3D11_BUFFER_DESC Desc = {};
-	Desc.Usage = D3D11_USAGE_DYNAMIC;
 	Desc.ByteWidth = m_Size;
+	Desc.Usage = D3D11_USAGE_DYNAMIC;
 	Desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	Desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
@@ -33,29 +31,26 @@ bool CConstantBuffer::Init(int Size, int Register, int ConstantBufferShaderType)
 
 void CConstantBuffer::UpdateCBuffer(void* Data)
 {
-	D3D11_MAPPED_SUBRESOURCE Mapped = {};
-	CDevice::GetInst()->GetDeviceContext()->Map(m_Buffer, 0, 
-		D3D11_MAP_WRITE_DISCARD,NULL, &Mapped);
-	memcpy(Mapped.pData, Data, m_Size);
+	D3D11_MAPPED_SUBRESOURCE Maps = {};
+
+	// Mapping ( cpu로 cpu 자원 조작 )
+	CDevice::GetInst()->GetDeviceContext()->Map(m_Buffer, 0, D3D11_MAP_WRITE,
+		0, &Maps);
+	memcpy(&Maps.pData, Data, m_Size);
 	CDevice::GetInst()->GetDeviceContext()->Unmap(m_Buffer, 0);
 
-	// 상수 버퍼 넘겨주기
-	if (m_ConstantBufferShaderType & static_cast<int>(ConstantBuffer_Shader_Type::Vertex))
+	// 상수 버퍼 셰이더 단계에 넘겨주기
+	if (m_ConstantShaderType & (int)ConstantBuffer_Shader_Type::Vertex)
 		CDevice::GetInst()->GetDeviceContext()->VSSetConstantBuffers(m_Register, 1, &m_Buffer);
-
-	if (m_ConstantBufferShaderType & static_cast<int>(ConstantBuffer_Shader_Type::Pixel))
+	if (m_ConstantShaderType & (int)ConstantBuffer_Shader_Type::Pixel)
 		CDevice::GetInst()->GetDeviceContext()->PSSetConstantBuffers(m_Register, 1, &m_Buffer);
-
-	if (m_ConstantBufferShaderType & static_cast<int>(ConstantBuffer_Shader_Type::Domain))
-		CDevice::GetInst()->GetDeviceContext()->DSSetConstantBuffers(m_Register, 1, &m_Buffer);
-
-	if (m_ConstantBufferShaderType & static_cast<int>(ConstantBuffer_Shader_Type::Hull))
+	if (m_ConstantShaderType & (int)ConstantBuffer_Shader_Type::Hull)
 		CDevice::GetInst()->GetDeviceContext()->HSSetConstantBuffers(m_Register, 1, &m_Buffer);
-
-	if (m_ConstantBufferShaderType & static_cast<int>(ConstantBuffer_Shader_Type::Geometry))
+	if (m_ConstantShaderType & (int)ConstantBuffer_Shader_Type::Domain)
+		CDevice::GetInst()->GetDeviceContext()->DSSetConstantBuffers(m_Register, 1, &m_Buffer);
+	if (m_ConstantShaderType & (int)ConstantBuffer_Shader_Type::Geometry)
 		CDevice::GetInst()->GetDeviceContext()->GSSetConstantBuffers(m_Register, 1, &m_Buffer);
-
-	if (m_ConstantBufferShaderType & static_cast<int>(ConstantBuffer_Shader_Type::Compute))
+	if (m_ConstantShaderType & (int)ConstantBuffer_Shader_Type::Compute)
 		CDevice::GetInst()->GetDeviceContext()->CSSetConstantBuffers(m_Register, 1, &m_Buffer);
 
 }

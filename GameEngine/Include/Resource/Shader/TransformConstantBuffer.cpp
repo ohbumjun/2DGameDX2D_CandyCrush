@@ -1,14 +1,13 @@
 #include "TransformConstantBuffer.h"
-#include "ConstantBuffer.h"
 
-CTransformConstantBuffer::CTransformConstantBuffer() :
-	m_TransformBufferData{}
+CTransformConstantBuffer::CTransformConstantBuffer()
 {}
- CTransformConstantBuffer::CTransformConstantBuffer(const CTransformConstantBuffer& Buffer) :
-	 CConstantBufferBase(Buffer)
+
+CTransformConstantBuffer::CTransformConstantBuffer(const CTransformConstantBuffer& Buffer) :
+	CConstantBufferBase(Buffer)
 {
-	 m_TransformBufferData = Buffer.m_TransformBufferData;
- }
+	m_TFBufferData = Buffer.m_TFBufferData;
+}
 
 CTransformConstantBuffer::~CTransformConstantBuffer()
 {}
@@ -22,19 +21,19 @@ bool CTransformConstantBuffer::Init()
 
 void CTransformConstantBuffer::UpdateCBuffer()
 {
-	m_TransformBufferData.matWV = m_TransformBufferData.matWorld * m_TransformBufferData.matView;
-	m_TransformBufferData.matWVP = m_TransformBufferData.matWV * m_TransformBufferData.matProj;
-	m_TransformBufferData.matVP = m_TransformBufferData.matView * m_TransformBufferData.matProj;
+	m_TFBufferData.matWV = m_TFBufferData.matWorld * m_TFBufferData.matView;
+	m_TFBufferData.matWVP = m_TFBufferData.matWV * m_TFBufferData.matProj;
+	m_TFBufferData.matVP = m_TFBufferData.matView * m_TFBufferData.matProj;
 
-	// Shader 에서 사용할 수 있게 해주려면 Transpose 시켜서 넘겨줘야 한다.
-	m_TransformBufferData.matWorld.Transpose();
-	m_TransformBufferData.matView.Transpose();
-	m_TransformBufferData.matProj.Transpose();
-	m_TransformBufferData.matWV.Transpose();
-	m_TransformBufferData.matWVP.Transpose();
-	m_TransformBufferData.matVP.Transpose();
+	// Shader 에 넘겨주기 전에 Transpose 시켜주기 
+	m_TFBufferData.matWorld.Transpose();
+	m_TFBufferData.matView.Transpose();
+	m_TFBufferData.matProj.Transpose();
+	m_TFBufferData.matWV.Transpose();
+	m_TFBufferData.matWVP.Transpose();
+	m_TFBufferData.matVP.Transpose();
 
-	m_Buffer->UpdateCBuffer(&m_TransformBufferData);
+	m_Buffer->UpdateCBuffer(&m_TFBufferData);
 
 }
 

@@ -1,20 +1,20 @@
 #pragma once
 
+#include "../../GameInfo.h"
 #include "../../Ref.h"
 
-class CConstantBuffer : public CRef
-{
+class CConstantBuffer : public CRef {
 	friend class CShaderManager;
 private :
 	CConstantBuffer();
-	virtual ~CConstantBuffer() override;
+	CConstantBuffer(const CConstantBuffer& Buffer);
+	virtual ~CConstantBuffer();
 private :
-	ID3D11Buffer* m_Buffer;
 	int m_Size;
 	int m_Register;
-	int m_ConstantBufferShaderType;
+	int m_ConstantShaderType;
+	ID3D11Buffer* m_Buffer;
 public :
-	bool Init(int Size, int Register, int ConstantBufferShaderType);
+	bool Init(int Register, int Size, int ConstantShaderType);
 	void UpdateCBuffer(void* Data);
 };
-

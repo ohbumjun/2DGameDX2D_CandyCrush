@@ -10,3 +10,13 @@ CComponent::CComponent(const CComponent& Component)
 
 CComponent::~CComponent()
 {}
+
+void CComponent::SetScene(CScene* Scene)
+{
+	m_Scene = Scene;
+}
+
+void CComponent::SetGameObject(CGameObject* Object)
+{
+	m_GameObject = Object;
+}

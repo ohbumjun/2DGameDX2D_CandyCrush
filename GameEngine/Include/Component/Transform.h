@@ -13,6 +13,7 @@ private :
 	class CGameObject* m_OwnerGameObject;
 	class CSceneComponent* m_OwnerComponent;
 	// 상수 버퍼
+	class CTransformConstantBuffer* m_TransformBuffer;
 private :
 	class CTransform* m_Parent;
 	std::vector<CSharedPtr<CTransform>> m_vecChild;
@@ -33,6 +34,35 @@ public :
 	void InheritWorldScale(bool Current);
 	void InheritWorldRotation(bool Current);
 	void InheritWorldParentRotationPos(bool Current);
+public :
+	void SetInheritScale(bool Inherit)
+	{
+		m_InheritScale = Inherit;
+	}
+	void SetInheritRotX(bool Inherit)
+	{
+		m_InheritRotX = Inherit;
+	}
+	void SetInheritRotY(bool Inherit)
+	{
+		m_InheritRotY = Inherit;
+	}
+	void SetInheritRotZ(bool Inherit)
+	{
+		m_InheritRotZ = Inherit;
+	}
+	void SetUpdateScale(bool Update)
+	{
+		m_UpdateScale = Update;
+	}
+	void SetUpdateRot(bool Update)
+	{
+		m_UpdateRot = Update;
+	}
+	void SetUpdatePos(bool Update)
+	{
+		m_UpdatePos = Update;
+	}
 private :
 	Vector3 m_RelativeScale;
 	Vector3 m_RelativeRot;
@@ -110,7 +140,9 @@ public :
 	void Start();
 	void Update(float DeltaTime);
 	void PostUpdate(float DeltaTime);
+	void SetTransform();
 	CTransform* Clone();
+
 };
 
 

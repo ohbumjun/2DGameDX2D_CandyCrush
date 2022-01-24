@@ -26,6 +26,9 @@ public :
 		return m_ComponentType;
 }
 public :
+	virtual void SetScene(class CScene* Scene) ;
+	virtual void SetGameObject(class CGameObject* Object) ;
+public :
 	virtual bool Init() = 0;
 	virtual void Start() = 0;
 	virtual void Update(float DeltaTime) = 0;

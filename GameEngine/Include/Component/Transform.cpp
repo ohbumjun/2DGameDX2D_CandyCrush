@@ -1,4 +1,5 @@
 #include "Transform.h"
+#include "../Resource/Shader/TransformConstantBuffer.h"
 
 CTransform::CTransform()
 {}
@@ -452,3 +453,45 @@ void CTransform::AddWorldRotationZ(float z)
 {
 	AddWorldRotation(Vector3(0.f, 0.f, z));
 }
+
+bool CTransform::Init()
+{
+	m_TransformBuffer = new CTransformConstantBuffer;
+	return true;
+}
+
+void CTransform::Start()
+{}
+
+void CTransform::Update(float DeltaTime)
+{
+}
+
+void  CTransform::PostUpdate(float DeltaTime)
+{
+	if (m_UpdateScale)
+		m_matScale.Scaling(m_WorldScale);
+	if (m_UpdateRot)
+		m_matRot.Scaling(m_WorldRot);
+	if (m_UpdatePos)
+		m_matPos.Scaling(m_WorldPos);
+	if (m_UpdateScale || m_UpdateRot || m_UpdatePos)
+		m_matWorld = m_matScale * m_matRot * m_matPos;
+
+}
+
+void CTransform::SetTransform()
+{
+	// m_TransformBuffer->SetMatProj();
+	// m_TransformBuffer->SetMatView();
+	m_TransformBuffer->SetMatWorld(m_matWorld);
+	m_TransformBuffer->SetMeshSize(m_MeshSize);
+	m_TransformBuffer->SetPivot(m_Pivot);
+	m_TransformBuffer->UpdateCBuffer();
+}
+
+CTransform* CTransform::Clone()
+{
+	return new CTransform(*this);
+}
+
