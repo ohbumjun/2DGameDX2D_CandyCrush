@@ -1,42 +1,61 @@
 #include "BlendState.h"
 #include "../Device.h"
 
-void CBlendState::AddBlendInfo(bool BlendEnable, D3D11_BLEND ScrBlend,
+CBlendState::CBlendState() :
+	m_PrevSampleMask(0),
+	m_SampleMask(0xffffffff)
+{}
+
+CBlendState::~CBlendState()
+{}
+
+void CBlendState::AddBlendDesc(bool BlendEnable, D3D11_BLEND SrcBlend, 
 	D3D11_BLEND DestBlend,
-	D3D11_BLEND_OP BlendOp, D3D11_BLEND ScrBlendAlpha,
-	D3D11_BLEND DestBlendAlpha, D3D11_BLEND_OP BlendOpAlpha,
-	UINT8 RenderTargetWriteMask)
+	D3D11_BLEND_OP BlendOp, D3D11_BLEND SrcBlendAlpha, 
+	D3D11_BLEND DestBlendAlpha,
+	D3D11_BLEND_OP BlendOpAlpha, UINT8 RenderTargetWriteMask)
 {
 	D3D11_RENDER_TARGET_BLEND_DESC Desc = {};
-
 	Desc.BlendEnable = BlendEnable;
-	Desc.SrcBlend = ScrBlend;
+	Desc.SrcBlend = SrcBlend;
 	Desc.DestBlend = DestBlend;
 	Desc.BlendOp = BlendOp;
-	Desc.SrcBlendAlpha = ScrBlendAlpha;
+	Desc.SrcBlendAlpha = SrcBlendAlpha;
 	Desc.DestBlendAlpha = DestBlendAlpha;
+	Desc.BlendEnable = BlendEnable;
 	Desc.BlendOpAlpha = BlendOpAlpha;
-
-	// RenderTarget에 어떤 값을 쓸 것인가
 	Desc.RenderTargetWriteMask = RenderTargetWriteMask;
 
 	m_vecDesc.push_back(Desc);
 }
 
-bool CBlendState::CreateState(bool AlphaToCoverage, bool IndependentBlendEnable)
+bool CBlendState::CreateBlendState(bool AlphaToCoverageEnable, bool IndependentBlendEnable)
 {
-	if (!m_vecDesc.empty())
-		return false;
-
 	D3D11_BLEND_DESC Desc = {};
-
-	Desc.AlphaToCoverageEnable = AlphaToCoverage;
+	Desc.AlphaToCoverageEnable = AlphaToCoverageEnable;
 	Desc.IndependentBlendEnable = IndependentBlendEnable;
 
-	memcpy(Desc.RenderTarget, &m_vecDesc[0], sizeof(D3D11_RENDER_TARGET_BLEND_DESC) * m_vecDesc.size());
+	memcpy(&Desc.RenderTarget[0], &m_vecDesc, sizeof(D3D11_RENDER_TARGET_BLEND_DESC) * m_vecDesc.size());
 
 	if (FAILED(CDevice::GetInst()->GetDevice()->CreateBlendState(&Desc, (ID3D11BlendState**)&m_State)))
 		return false;
 
 	return true;
+}
+
+void CBlendState::SetState()
+{
+	CDevice::GetInst()->GetDeviceContext()->OMGetBlendState((ID3D11BlendState**)&m_PrevState,
+		m_PrevBlendFactor, &m_PrevSampleMask);
+
+	CDevice::GetInst()->GetDeviceContext()->OMSetBlendState((ID3D11BlendState*)m_State,
+		m_BlendFactor, m_SampleMask);
+}
+
+void CBlendState::ResetState()
+{
+
+	CDevice::GetInst()->GetDeviceContext()->OMSetBlendState((ID3D11BlendState*)m_PrevState,
+		m_PrevBlendFactor, m_PrevSampleMask);
+	SAFE_RELEASE(m_PrevState);
 }

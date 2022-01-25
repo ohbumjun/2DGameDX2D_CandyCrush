@@ -203,6 +203,9 @@
     <ClInclude Include="Render\BlendState.h">
       <Filter>06. Render</Filter>
     </ClInclude>
+    <ClInclude Include="Render\DepthStencilState.h">
+      <Filter>06. Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -290,6 +293,9 @@
       <Filter>06. Render</Filter>
     </ClCompile>
     <ClCompile Include="Render\BlendState.cpp">
+      <Filter>06. Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\DepthStencilState.cpp">
       <Filter>06. Render</Filter>
     </ClCompile>
   </ItemGroup>
