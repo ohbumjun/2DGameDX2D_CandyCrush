@@ -16,7 +16,7 @@ private :
 	class CTransformConstantBuffer* m_TransformBuffer;
 private :
 	class CTransform* m_Parent;
-	std::vector<CSharedPtr<CTransform>> m_vecChild;
+	std::vector<CTransform*> m_vecChild;
 private :
 	bool m_InheritScale;
 	bool m_InheritRotX;

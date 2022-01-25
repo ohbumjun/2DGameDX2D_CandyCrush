@@ -40,6 +40,6 @@ public :
 	virtual bool PrevRender();
 	virtual bool Render();
 	virtual bool PostRender();
-	virtual CComponent* Clone();
+	virtual CSceneComponent* Clone();
 
 };

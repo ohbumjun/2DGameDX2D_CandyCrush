@@ -3,31 +3,21 @@
 #include "Component.h"
 #include "Transform.h"
 
-class CSceneComponent : public CComponent
-{
+class CSceneComponent : public CComponent {
 	friend class CGameObject;
-protected :
+private :
 	CSceneComponent();
-	CSceneComponent(const CSceneComponent& Com);
+	CSceneComponent(const  CSceneComponent& Component);
 	virtual ~CSceneComponent() override;
-protected :
+private :
 	std::string m_LayerName;
 	CTransform* m_Transform;
 	CSceneComponent* m_Parent;
 	std::vector<CSharedPtr<CSceneComponent>> m_vecChild;
-	bool m_Render;
 public :
 	std::string GetLayerName() const
 {
 		return m_LayerName;
-}
-	CTransform* GetTransform() const
-{
-		return m_Transform;
-}
-	bool IsRender() const
-{
-		return m_Render;
 }
 public :
 	void SetLayerName(const std::string& LayerName)
@@ -35,7 +25,21 @@ public :
 		m_LayerName = LayerName;
 }
 public :
-	virtual void SetScene(class CScene* Scene) override;
-	virtual void SetGameObject(class CGameObjecT* Object) override;
-};
+	virtual void SetScene(class CScene* Scene);
+	virtual void SetGameObject(class CGameObject* Object);
+public :
+	void AddChild(CSceneComponent* Component);
+	bool DeleteChild(CSceneComponent* Component);
+	bool DeleteChild(const std::string& Name);
+	CSceneComponent* FindSceneComponent(const std::string& Name);
+public :
+	virtual bool Init();
+	virtual void Start();
+	virtual void Update(float DeltaTime);
+	virtual void PostUpdate(float DeltaTime);
+	virtual bool PrevRender();
+	virtual bool Render();
+	virtual bool PostRender();
+	virtual CSceneComponent* Clone();
 
+};

@@ -7,6 +7,13 @@ enum AXIS {
 	AXIS_MAX
 };
 
+enum class RenderState_Type {
+	Blend,
+	Rasterizer,
+	DepthStencil,
+	Max
+};
+
 enum Key_State {
 	Key_Down,
 	Key_Push,
