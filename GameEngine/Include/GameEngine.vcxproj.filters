@@ -200,6 +200,9 @@
     <ClInclude Include="Render\RenderState.h">
       <Filter>06. Render</Filter>
     </ClInclude>
+    <ClInclude Include="Render\BlendState.h">
+      <Filter>06. Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -284,6 +287,9 @@
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\01. Transform</Filter>
     </ClCompile>
     <ClCompile Include="Render\RenderState.cpp">
+      <Filter>06. Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\BlendState.cpp">
       <Filter>06. Render</Filter>
     </ClCompile>
   </ItemGroup>

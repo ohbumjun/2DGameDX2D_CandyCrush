@@ -178,6 +178,7 @@
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="PathManager.h" />
     <ClInclude Include="Ref.h" />
+    <ClInclude Include="Render\BlendState.h" />
     <ClInclude Include="Render\RenderState.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Resource\Font\FontManager.h" />
@@ -210,6 +211,7 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="PathManager.cpp" />
+    <ClCompile Include="Render\BlendState.cpp" />
     <ClCompile Include="Render\RenderState.cpp" />
     <ClCompile Include="Resource\Font\FontManager.cpp" />
     <ClCompile Include="Resource\Shader\ConstantBuffer.cpp" />
