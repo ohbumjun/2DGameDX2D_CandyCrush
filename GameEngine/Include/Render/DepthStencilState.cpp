@@ -7,7 +7,7 @@ CDepthStencilState::CDepthStencilState()
 CDepthStencilState::~CDepthStencilState()
 {}
 
-bool CDepthStencilState::CreateState(bool DepthEnable, 
+bool CDepthStencilState::CreateDepthStencilState(bool DepthEnable,
 	D3D11_DEPTH_WRITE_MASK DepthWriteMask,
 	D3D11_COMPARISON_FUNC DepthFunc, bool StencilEnable, 
 	UINT8 StencilReadMask, UINT8 StencilWriteMask,

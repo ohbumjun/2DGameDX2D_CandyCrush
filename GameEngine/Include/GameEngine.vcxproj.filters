@@ -206,6 +206,9 @@
     <ClInclude Include="Render\DepthStencilState.h">
       <Filter>06. Render</Filter>
     </ClInclude>
+    <ClInclude Include="Render\RenderStateManager.h">
+      <Filter>06. Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -296,6 +299,9 @@
       <Filter>06. Render</Filter>
     </ClCompile>
     <ClCompile Include="Render\DepthStencilState.cpp">
+      <Filter>06. Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\RenderStateManager.cpp">
       <Filter>06. Render</Filter>
     </ClCompile>
   </ItemGroup>
