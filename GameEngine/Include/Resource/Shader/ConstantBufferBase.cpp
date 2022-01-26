@@ -12,4 +12,6 @@ CConstantBufferBase::~CConstantBufferBase()
 {}
 
 void CConstantBufferBase::SetConstantBuffer(const std::string& Name)
-{}
+{
+	// m_Buffer = CResourceManager::GetInst()->FindConstantBuffer(Name);
+}

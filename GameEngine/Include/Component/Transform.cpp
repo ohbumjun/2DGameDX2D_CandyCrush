@@ -457,6 +457,8 @@ void CTransform::AddWorldRotationZ(float z)
 bool CTransform::Init()
 {
 	m_TransformBuffer = new CTransformConstantBuffer;
+	m_TransformBuffer->Init();
+
 	return true;
 }
 
@@ -482,11 +484,11 @@ void  CTransform::PostUpdate(float DeltaTime)
 
 void CTransform::SetTransform()
 {
-	// m_TransformBuffer->SetMatProj();
-	// m_TransformBuffer->SetMatView();
 	m_TransformBuffer->SetMatWorld(m_matWorld);
+
 	m_TransformBuffer->SetMeshSize(m_MeshSize);
 	m_TransformBuffer->SetPivot(m_Pivot);
+
 	m_TransformBuffer->UpdateCBuffer();
 }
 

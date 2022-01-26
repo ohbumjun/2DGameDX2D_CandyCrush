@@ -9,12 +9,12 @@ private:
 	CConstantBuffer();
 	CConstantBuffer(const CConstantBuffer& Buffer);
 	virtual ~CConstantBuffer();
-private :
+private:
 	ID3D11Buffer* m_Buffer;
 	int m_Register;
 	int m_Size;
 	int m_ConstantBufferShaderType;
-public :
+public:
 	bool Init(int Size, int Register, int ConstantBufferShaderType);
 	void UpdateBuffer(void* Data);
-}
+};

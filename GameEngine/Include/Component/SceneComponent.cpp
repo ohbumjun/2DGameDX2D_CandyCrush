@@ -1,40 +1,28 @@
 #include "SceneComponent.h"
+#include "../Render/RenderManager.h"
+#include "../Render/RenderStateManager.h"
+#include "../Resource/Shader/Standard2DCBuffer.h"
 
-CSceneComponent::CSceneComponent()
-{}
 
-CSceneComponent::CSceneComponent(const CSceneComponent& Component)
-{}
-
-CSceneComponent::~CSceneComponent()
-{}
-
-void CSceneComponent::SetScene(CScene* Scene)
+CSceneComponent::CSceneComponent() :
+	m_Transform(nullptr),
+	m_Parent(nullptr)
 {
-	CComponent::SetScene(Scene);
-
-	m_Transform->m_Scene = Scene;
-
-	size_t Size = m_vecChild.size();
-
-	for (size_t i = 0; i < Size; i++)
-	{
-		m_vecChild[i]->SetScene(Scene);
-	}
+	SetTypeID<CSceneComponent>();
+	m_Render = false;
 }
 
-void CSceneComponent::SetGameObject(CGameObject* Object)
+
+CSceneComponent::CSceneComponent(const CSceneComponent& Component)
 {
-	CComponent::SetGameObject(Object);
+	m_Parent = nullptr;
+	m_Transform = Component.m_Transform->Clone();
+	m_LayerName = Component.m_LayerName;
+}
 
-	m_Transform->m_OwnerGameObject = Object;
-
-	size_t Size = m_vecChild.size();
-
-	for (size_t i = 0; i < Size; i++)
-	{
-		m_vecChild[i]->SetGameObject(Object);
-	}
+CSceneComponent::~CSceneComponent()
+{
+	SAFE_DELETE(m_Transform);
 }
 
 void CSceneComponent::AddChild(CSceneComponent* Component)
@@ -60,8 +48,6 @@ bool CSceneComponent::DeleteChild(CSceneComponent* Component)
 
 			return true;
 		}
-		if (m_vecChild[i]->DeleteChild(Component))
-			return true;
 	}
 
 	return false;
@@ -73,7 +59,7 @@ bool CSceneComponent::DeleteChild(const std::string& Name)
 
 	for (size_t i = 0; i < Size; i++)
 	{
-		if (m_vecChild[i]->GetName() == Name)
+		if (m_vecChild[i]->m_Name == Name)
 		{
 			m_vecChild.erase(m_vecChild.begin() + i);
 
@@ -81,8 +67,6 @@ bool CSceneComponent::DeleteChild(const std::string& Name)
 
 			return true;
 		}
-		if (m_vecChild[i]->DeleteChild(Name))
-			return true;
 	}
 
 	return false;
@@ -97,31 +81,51 @@ CSceneComponent* CSceneComponent::FindSceneComponent(const std::string& Name)
 
 	for (size_t i = 0; i < Size; i++)
 	{
-		if (m_vecChild[i]->GetName() == Name)
-		{
+		if (m_vecChild[i]->m_Name == Name)
 			return m_vecChild[i];
-		}
-
-		CSceneComponent* Find = m_vecChild[i]->FindSceneComponent(Name);
-
-		if (Find)
-			return Find;
+		CSceneComponent* Component = m_vecChild[i]->FindSceneComponent(Name);
+		if (Component)
+			return Component;
 	}
 
 	return nullptr;
 }
 
+void CSceneComponent::Destroy()
+{
+	CComponent::Destroy();
+
+	size_t Size = m_vecChild.size();
+
+	for (size_t i = 0; i < Size; i++)
+	{
+		m_vecChild[i]->Destroy();
+	}
+}
+
 bool CSceneComponent::Init()
 {
+	m_Transform = new CTransform;
+	m_Transform->Init();
+
+	m_LayerName = "Default";
+
 	return true;
 }
 
 void CSceneComponent::Start()
-{}
+{
+	size_t Size = m_vecChild.size();
+
+	for (size_t i = 0; i < Size; i++)
+	{
+		m_vecChild[i]->Start();
+	}
+}
 
 void CSceneComponent::Update(float DeltaTime)
 {
-	CComponent::Update(DeltaTime);
+	m_Transform->Update(DeltaTime);
 
 	size_t Size = m_vecChild.size();
 
@@ -133,7 +137,7 @@ void CSceneComponent::Update(float DeltaTime)
 
 void CSceneComponent::PostUpdate(float DeltaTime)
 {
-	CComponent::PostUpdate(DeltaTime);
+	m_Transform->PostUpdate(DeltaTime);
 
 	size_t Size = m_vecChild.size();
 
@@ -145,17 +149,46 @@ void CSceneComponent::PostUpdate(float DeltaTime)
 
 bool CSceneComponent::PrevRender()
 {
-	return true;
+	if (m_Render)
+		CRenderManager::GetInst()->AddRenderList(this);
+
+	size_t Size = m_vecChild.size();
+
+	for (size_t i = 0; i < Size; i++)
+	{
+		m_vecChild[i]->PrevRender();
+	}
 }
 
 bool CSceneComponent::Render()
 {
+
+	m_Transform->SetTransform();
+
+	CRenderManager::GetInst()->GetStandard2DConstantBuffer()->SetAnimEnable(false);
+	CRenderManager::GetInst()->GetStandard2DConstantBuffer()->UpdateCBuffer();
+
+	/*
+	( 아래의 코드가 없어도 괜찮은 건가 ?)
+	size_t Size = m_vecChild.size();
+
+	for (size_t i = 0; i < Size; i++)
+	{
+		m_vecChild[i]->Render();
+	}
+	*/
+
 	return true;
 }
 
 bool CSceneComponent::PostRender()
 {
-	return true;
+	size_t Size = m_vecChild.size();
+
+	for (size_t i = 0; i < Size; i++)
+	{
+		m_vecChild[i]->PostRender();
+	}
 }
 
 CSceneComponent* CSceneComponent::Clone()

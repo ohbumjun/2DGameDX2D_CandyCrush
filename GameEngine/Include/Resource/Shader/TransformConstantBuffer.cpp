@@ -33,7 +33,7 @@ void CTransformConstantBuffer::UpdateCBuffer()
 	m_TFBufferData.matWVP.Transpose();
 	m_TFBufferData.matVP.Transpose();
 
-	m_Buffer->UpdateCBuffer(&m_TFBufferData);
+	m_Buffer->UpdateBuffer(&m_TFBufferData);
 
 }
 
