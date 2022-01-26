@@ -5,16 +5,16 @@
 
 class CConstantBuffer : public CRef {
 	friend class CShaderManager;
-private :
+private:
 	CConstantBuffer();
 	CConstantBuffer(const CConstantBuffer& Buffer);
 	virtual ~CConstantBuffer();
 private :
-	int m_Size;
-	int m_Register;
-	int m_ConstantShaderType;
 	ID3D11Buffer* m_Buffer;
+	int m_Register;
+	int m_Size;
+	int m_ConstantBufferShaderType;
 public :
-	bool Init(int Register, int Size, int ConstantShaderType);
-	void UpdateCBuffer(void* Data);
-};
+	bool Init(int Size, int Register, int ConstantBufferShaderType);
+	void UpdateBuffer(void* Data);
+}

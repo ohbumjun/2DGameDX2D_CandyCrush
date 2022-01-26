@@ -12,7 +12,7 @@ protected :
 	UINT m_StencilRef;
 	UINT m_PrevStencilRef;
 public :
-	bool CreateState(
+	bool CreateDepthStencilState(
 		// 깊이 판정 활성화 여부 
 		bool DepthEnable = true,
 		// 깊이판정에 실패하면, 단편은 폐기되고, 성공하면,단편은, 혼합연산으로 넘어간다.

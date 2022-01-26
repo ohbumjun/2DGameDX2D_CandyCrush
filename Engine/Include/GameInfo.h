@@ -76,6 +76,11 @@ enum class Engine_Space {
 	Space3D
 };
 
+struct Standard2DCBuffer {
+	int AnimationEnable;
+	Vector3 Empty;
+};
+
 // 상수 버퍼
 struct TransformCBuffer {
 	Matrix matWorld;

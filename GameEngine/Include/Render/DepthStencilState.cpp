@@ -1,7 +1,9 @@
 #include "DepthStencilState.h"
 #include "../Device.h"
 
-CDepthStencilState::CDepthStencilState()
+CDepthStencilState::CDepthStencilState() :
+	m_StencilRef(0xffffffff),
+	m_PrevStencilRef(0xffffffff)
 {}
 
 CDepthStencilState::~CDepthStencilState()

@@ -102,6 +102,12 @@
     <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\01. Transform">
       <UniqueIdentifier>{0b666814-6574-4b84-844a-a8269d4b0fbb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. Render\01. RenderState">
+      <UniqueIdentifier>{febea93b-8d53-4438-b838-a2bf73b44302}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\02. Standard">
+      <UniqueIdentifier>{2f507331-f2fc-40f2-b2f5-c7f3cdc43230}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -197,17 +203,23 @@
     <ClInclude Include="Resource\Shader\TransformConstantBuffer.h">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\01. Transform</Filter>
     </ClInclude>
-    <ClInclude Include="Render\RenderState.h">
+    <ClInclude Include="Render\RenderManager.h">
       <Filter>06. Render</Filter>
     </ClInclude>
     <ClInclude Include="Render\BlendState.h">
-      <Filter>06. Render</Filter>
+      <Filter>06. Render\01. RenderState</Filter>
     </ClInclude>
     <ClInclude Include="Render\DepthStencilState.h">
-      <Filter>06. Render</Filter>
+      <Filter>06. Render\01. RenderState</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\RenderState.h">
+      <Filter>06. Render\01. RenderState</Filter>
     </ClInclude>
     <ClInclude Include="Render\RenderStateManager.h">
-      <Filter>06. Render</Filter>
+      <Filter>06. Render\01. RenderState</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\Standard2DCBuffer.h">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\02. Standard</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -292,17 +304,23 @@
     <ClCompile Include="Resource\Shader\TransformConstantBuffer.cpp">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\01. Transform</Filter>
     </ClCompile>
-    <ClCompile Include="Render\RenderState.cpp">
+    <ClCompile Include="Render\RenderManager.cpp">
       <Filter>06. Render</Filter>
     </ClCompile>
     <ClCompile Include="Render\BlendState.cpp">
-      <Filter>06. Render</Filter>
+      <Filter>06. Render\01. RenderState</Filter>
     </ClCompile>
     <ClCompile Include="Render\DepthStencilState.cpp">
-      <Filter>06. Render</Filter>
+      <Filter>06. Render\01. RenderState</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\RenderState.cpp">
+      <Filter>06. Render\01. RenderState</Filter>
     </ClCompile>
     <ClCompile Include="Render\RenderStateManager.cpp">
-      <Filter>06. Render</Filter>
+      <Filter>06. Render\01. RenderState</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\Standard2DCBuffer.cpp">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\02. Standard</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
