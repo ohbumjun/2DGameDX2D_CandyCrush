@@ -230,6 +230,9 @@
     <ClInclude Include="Resource\Mesh\SpriteMesh.h">
       <Filter>02. Resource\01. Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Mesh\StaticMesh.h">
+      <Filter>02. Resource\01. Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -338,6 +341,9 @@
       <Filter>02. Resource\01. Mesh</Filter>
     </ClCompile>
     <ClCompile Include="Resource\Mesh\SpriteMesh.cpp">
+      <Filter>02. Resource\01. Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Mesh\StaticMesh.cpp">
       <Filter>02. Resource\01. Mesh</Filter>
     </ClCompile>
   </ItemGroup>

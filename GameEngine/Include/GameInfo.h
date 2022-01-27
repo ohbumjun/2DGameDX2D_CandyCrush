@@ -150,4 +150,4 @@ struct VertexUV
 	VertexUV(const Vector3& pVertex, const Vector2& pUV) :
 		Vertex(pVertex),
 		UV(pUV) {}
-}
+};

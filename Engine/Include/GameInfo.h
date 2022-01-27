@@ -137,3 +137,17 @@ struct MeshContainer {
 	std::vector<IndexBuffer> vecIB;
 	D3D11_PRIMITIVE_TOPOLOGY Primitive;
 };
+
+struct VertexUV
+{
+	Vector3 Vertex;
+	Vector2 UV;
+
+	VertexUV() :
+		Vertex{},
+		UV{}{}
+
+	VertexUV(const Vector3& pVertex, const Vector2& pUV) :
+		Vertex(pVertex),
+		UV(pUV) {}
+};
