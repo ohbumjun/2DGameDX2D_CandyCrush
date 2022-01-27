@@ -1,6 +1,5 @@
 #include "TextureManager.h"
 #include "../../Device.h"
-#include "Texture.h"
 
 CTextureManager::CTextureManager()
 {}
@@ -12,15 +11,8 @@ CTextureManager::~CTextureManager()
 
 	for (; iter != iterEnd; ++iter)
 	{
-		SAFE_RELEASE(iter->second);
+		SAFE_DELETE(iter->second);
 	}
-}
-
-bool CTextureManager::Init()
-{
-	// Default Texture를 세팅할 것이다. 
-
-	return true;
 }
 
 bool CTextureManager::LoadTexture(const std::string& Name, const TCHAR* FileName, const std::string& PathName)
@@ -29,10 +21,8 @@ bool CTextureManager::LoadTexture(const std::string& Name, const TCHAR* FileName
 
 	if (Texture)
 		return true;
-
-	Texture = new CTexture;
-
-	if (Texture->LoadTexture(Name, FileName, PathName))
+	
+	if (!Texture->LoadTexture(Name, FileName, PathName))
 	{
 		SAFE_DELETE(Texture);
 		return false;
@@ -43,16 +33,14 @@ bool CTextureManager::LoadTexture(const std::string& Name, const TCHAR* FileName
 	return true;
 }
 
-bool CTextureManager::LoadTextureFullPath(const std::string& Name, const TCHAR* FullPath)
+bool CTextureManager::LoadTextureFulPath(const std::string& Name, const TCHAR* FullPath)
 {
 	CTexture* Texture = FindTexture(Name);
 
 	if (Texture)
 		return true;
 
-	Texture = new CTexture;
-
-	if (Texture->LoadTextureFullPath(Name, FullPath))
+	if (!Texture->LoadTextureFullPath(Name, FullPath))
 	{
 		SAFE_DELETE(Texture);
 		return false;
@@ -63,7 +51,7 @@ bool CTextureManager::LoadTextureFullPath(const std::string& Name, const TCHAR* 
 	return true;
 }
 
-bool CTextureManager::LoadTexture(const std::string& Name, const std::vector<TCHAR*>& vecFileName,
+bool CTextureManager::LoadTexture(const std::string& Name, const std::vector<TCHAR*> vecFileName,
 	const std::string& PathName)
 {
 	CTexture* Texture = FindTexture(Name);
@@ -73,7 +61,7 @@ bool CTextureManager::LoadTexture(const std::string& Name, const std::vector<TCH
 
 	Texture = new CTexture;
 
-	if (Texture->LoadTexture(Name, vecFileName, PathName))
+	if (!Texture->LoadTexture(Name, vecFileName, PathName))
 	{
 		SAFE_DELETE(Texture);
 		return false;
@@ -98,17 +86,29 @@ void CTextureManager::ReleaseTexture(const std::string& Name)
 {
 	auto iter = m_mapTexture.find(Name);
 
-	if (iter->second->GetRefCount() == 1)
-		m_mapTexture.erase(iter);
+	if (iter != m_mapTexture.end())
+	{
+		if (iter->second->GetRefCount() == 1)
+			m_mapTexture.erase(iter);
+	}
 }
 
-bool CTextureManager::CreateSampler(const std::string& Name, D3D11_FILTER Filter, 
-	D3D11_TEXTURE_ADDRESS_MODE AddressU,
-	D3D11_TEXTURE_ADDRESS_MODE AddressV, 
-	D3D11_TEXTURE_ADDRESS_MODE AddressW, float BorderColor[4])
+ID3D11SamplerState* CTextureManager::FindSamplerState(const std::string& SamplerName)
 {
-	ID3D11SamplerState* SamplerState = FindSampler(Name);
-	if (SamplerState)
+	auto iter = m_mapSampler.find(SamplerName);
+
+	if (iter == m_mapSampler.end())
+		return nullptr;
+
+	return iter->second;
+}
+
+bool CTextureManager::CreateSamplerState(const std::string& Name, D3D11_FILTER Filter, D3D11_TEXTURE_ADDRESS_MODE AddressU,
+	D3D11_TEXTURE_ADDRESS_MODE AddressV, D3D11_TEXTURE_ADDRESS_MODE AddressW, float BorderColor[4])
+{
+	ID3D11SamplerState* Sampler = FindSamplerState(Name);
+
+	if (Sampler)
 		return true;
 
 	D3D11_SAMPLER_DESC Desc = {};
@@ -123,20 +123,73 @@ bool CTextureManager::CreateSampler(const std::string& Name, D3D11_FILTER Filter
 	Desc.MaxLOD = FLT_MAX;
 	memcpy(Desc.BorderColor, BorderColor, sizeof(float) * 4);
 
-	if (FAILED(CDevice::GetInst()->GetDevice()->CreateSamplerState(&Desc, &SamplerState)))
+	if (FAILED(CDevice::GetInst()->GetDevice()->CreateSamplerState(&Desc, &Sampler)))
+	{
+		SAFE_DELETE(Sampler);
 		return false;
+	}
 
-	m_mapSampler.insert(std::make_pair(Name, SamplerState));
+	m_mapSampler.insert(std::make_pair(Name, Sampler));
 
 	return true;
 }
 
-ID3D11SamplerState* CTextureManager::FindSampler(const std::string& Name)
+void CTextureManager::SetSampler(const std::string& Name, int Register, int ShaderType)
 {
-	auto iter = m_mapSampler.find(Name);
+	ID3D11SamplerState* Sampler = FindSamplerState(Name);
 
-	if (iter == m_mapSampler.end())
-		return nullptr;
+	if (!Sampler)
+		return;
 
-	return iter->second;
+	if (ShaderType & static_cast<int>(Buffer_Shader_Type::Vertex))
+		CDevice::GetInst()->GetDeviceContext()->VSSetSamplers(Register, 1, &Sampler);
+
+	if (ShaderType & static_cast<int>(Buffer_Shader_Type::Pixel))
+		CDevice::GetInst()->GetDeviceContext()->PSSetSamplers(Register, 1, &Sampler);
+
+	if (ShaderType & static_cast<int>(Buffer_Shader_Type::Domain))
+		CDevice::GetInst()->GetDeviceContext()->DSSetSamplers(Register, 1, &Sampler);
+
+	if (ShaderType & static_cast<int>(Buffer_Shader_Type::Hull))
+		CDevice::GetInst()->GetDeviceContext()->HSSetSamplers(Register, 1, &Sampler);
+
+	if (ShaderType & static_cast<int>(Buffer_Shader_Type::Geometry))
+		CDevice::GetInst()->GetDeviceContext()->GSSetSamplers(Register, 1, &Sampler);
+
+	if (ShaderType & static_cast<int>(Buffer_Shader_Type::Compute))
+		CDevice::GetInst()->GetDeviceContext()->CSSetSamplers(Register, 1, &Sampler);
+}
+
+bool CTextureManager::Init()
+{
+	// 기본 Default Texture Load 하기
+	LoadTexture("EngineTexture", TEXT("teemo.png"));
+
+	float BorderColor[4] = {};
+
+	BorderColor[0] = 1.f;
+	BorderColor[1] = 1.f;
+	BorderColor[2] = 1.f;
+	BorderColor[3] = 1.f;
+
+	if (!CreateSamplerState("Point", D3D11_FILTER_MINIMUM_MIN_MAG_MIP_POINT,
+		D3D11_TEXTURE_ADDRESS_WRAP, D3D11_TEXTURE_ADDRESS_WRAP, D3D11_TEXTURE_ADDRESS_WRAP,
+		BorderColor))
+		return false;
+
+	if (!CreateSamplerState("Linear", D3D11_FILTER_MINIMUM_MIN_MAG_MIP_POINT,
+		D3D11_TEXTURE_ADDRESS_WRAP, D3D11_TEXTURE_ADDRESS_WRAP, D3D11_TEXTURE_ADDRESS_WRAP,
+		BorderColor))
+		return false;
+
+	if (!CreateSamplerState("Anisotropic", D3D11_FILTER_ANISOTROPIC,
+		D3D11_TEXTURE_ADDRESS_WRAP, D3D11_TEXTURE_ADDRESS_WRAP, D3D11_TEXTURE_ADDRESS_WRAP,
+		BorderColor))
+		return false;
+
+	SetSampler("Point", 0);
+	SetSampler("Linear", 1);
+	SetSampler("Anisotropic", 2);
+
+	return true;
 }

@@ -94,3 +94,46 @@ struct TransformCBuffer {
 	Vector3 MeshSize;
 	float Empty1;
 };
+
+// 정점 버퍼
+struct VertexBuffer {
+	ID3D11Buffer* Buffer;
+	int Size;
+	int Count;
+
+	VertexBuffer() :
+	Buffer(nullptr),
+	Size(0),
+	Count(0){}
+
+	~VertexBuffer()
+	{
+		SAFE_RELEASE(Buffer);
+	}
+};
+
+// 색인 버퍼
+struct IndexBuffer {
+	ID3D11Buffer* Buffer;
+	int Size;
+	int Count;
+	DXGI_FORMAT Fmt;
+
+	IndexBuffer() :
+	Buffer(nullptr),
+	Size(0),
+	Count(0),
+	Fmt(DXGI_FORMAT_UNKNOWN)
+	{}
+
+	~IndexBuffer()
+	{
+		SAFE_RELEASE(Buffer);
+	}
+};
+
+struct MeshContainer {
+	VertexBuffer VB;
+	std::vector<IndexBuffer> vecIB;
+	D3D11_PRIMITIVE_TOPOLOGY Primitive;
+};

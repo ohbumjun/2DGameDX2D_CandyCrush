@@ -2,6 +2,7 @@
 
 #include "../GameInfo.h"
 #include "../Resource/Shader/Standard2DCBuffer.h"
+#include "RenderStateManager.h"
 
 struct RenderLayer {
 	std::string Name;
@@ -21,10 +22,21 @@ class CRenderManager {
 	friend class CResourceManager;
 
 private :
+	CRenderStateManager* m_RenderStateManager;
 	std::vector<RenderLayer*> m_RenderLayerList;
-	Standard2DCBuffer* m_Standard2DBuffer;
+	CStandard2DConstantBuffer* m_Standard2DBuffer;
 	class CBlendState* m_BlendState;
 	class CDepthStencilState* m_DepthStencilState;
+	const std::list<CSharedPtr<class CGameObject>>* m_ObjList;
+public :
+	CStandard2DConstantBuffer* GetStandard2DConstantBuffer() const
+{
+		return m_Standard2DBuffer;
+}
+	void SetObjectList(const std::list<CSharedPtr<class CGameObject>>* ObjList)
+{
+		m_ObjList = ObjList;
+}
 public :
 	bool CreateRenderLayer(const std::string& Name, int Priority);
 	void SetRenderLayerPriority(const std::string& Name, int Priority);

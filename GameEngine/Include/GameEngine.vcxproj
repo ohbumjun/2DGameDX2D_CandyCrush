@@ -185,6 +185,7 @@
     <ClInclude Include="Render\RenderStateManager.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Resource\Font\FontManager.h" />
+    <ClInclude Include="Resource\Mesh\Mesh.h" />
     <ClInclude Include="Resource\Shader\ConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\ConstantBufferBase.h" />
     <ClInclude Include="Resource\Shader\Standard2DCBuffer.h" />
@@ -221,6 +222,7 @@
     <ClCompile Include="Render\RenderState.cpp" />
     <ClCompile Include="Render\RenderStateManager.cpp" />
     <ClCompile Include="Resource\Font\FontManager.cpp" />
+    <ClCompile Include="Resource\Mesh\Mesh.cpp" />
     <ClCompile Include="Resource\Shader\ConstantBuffer.cpp" />
     <ClCompile Include="Resource\Shader\ConstantBufferBase.cpp" />
     <ClCompile Include="Resource\Shader\Standard2DCBuffer.cpp" />

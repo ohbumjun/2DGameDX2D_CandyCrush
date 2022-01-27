@@ -150,7 +150,7 @@ void CSceneComponent::PostUpdate(float DeltaTime)
 bool CSceneComponent::PrevRender()
 {
 	if (m_Render)
-		CRenderManager::GetInst()->AddRenderList(this);
+		CRenderManager::GetInst()->AddComponentToRenderLayer(this);
 
 	size_t Size = m_vecChild.size();
 
@@ -158,6 +158,8 @@ bool CSceneComponent::PrevRender()
 	{
 		m_vecChild[i]->PrevRender();
 	}
+
+	return true;
 }
 
 bool CSceneComponent::Render()
@@ -189,6 +191,8 @@ bool CSceneComponent::PostRender()
 	{
 		m_vecChild[i]->PostRender();
 	}
+
+	return true;
 }
 
 CSceneComponent* CSceneComponent::Clone()

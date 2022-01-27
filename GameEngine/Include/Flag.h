@@ -52,3 +52,8 @@ enum class Buffer_Shader_Type {
 	Graphic = Vertex | Pixel | Domain | Hull | Geometry,
 	All = Vertex | Pixel | Domain | Hull | Geometry | Compute
 };
+
+enum class Buffer_Type {
+	Vertex,
+	Index
+};

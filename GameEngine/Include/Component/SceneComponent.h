@@ -5,6 +5,7 @@
 
 class CSceneComponent : public CComponent {
 	friend class CGameObject;
+	friend class CRenderManager;
 private :
 	CSceneComponent();
 	CSceneComponent(const  CSceneComponent& Component);

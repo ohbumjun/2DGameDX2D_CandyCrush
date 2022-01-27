@@ -221,6 +221,9 @@
     <ClInclude Include="Resource\Shader\Standard2DCBuffer.h">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\02. Standard</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Mesh\Mesh.h">
+      <Filter>02. Resource\01. Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -321,6 +324,9 @@
     </ClCompile>
     <ClCompile Include="Resource\Shader\Standard2DCBuffer.cpp">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\02. Standard</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Mesh\Mesh.cpp">
+      <Filter>02. Resource\01. Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

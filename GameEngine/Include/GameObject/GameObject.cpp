@@ -30,3 +30,6 @@ void CGameObject::Update(float DeltaTime)
 
 void CGameObject::PostUpdate(float DeltaTime)
 {}
+
+void CGameObject::PrevRender()
+{}
