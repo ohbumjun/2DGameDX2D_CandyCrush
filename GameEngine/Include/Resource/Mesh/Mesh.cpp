@@ -82,15 +82,17 @@ bool CMesh::CreateBuffer(Buffer_Type Type, int Size, int Count, D3D11_USAGE Usag
 	return true;
 }
 
-bool CMesh::CreateMesh(void* VtxData, int Size, int Count, D3D11_PRIMITIVE_TOPOLOGY Primitive, 
-	void* IdxData, int IdxSize, int IdxCount, DXGI_FORMAT Fmt)
+bool CMesh::CreateMesh(void* VtxData, int Size, int Count, 
+	D3D11_USAGE Usage, D3D11_PRIMITIVE_TOPOLOGY Primitive,
+	void* IdxData, int IdxSize, int IdxCount, 
+	D3D11_USAGE IdxUsage , DXGI_FORMAT Fmt)
 {
 	MeshContainer* Container = new MeshContainer;
 
 	Container->VB.Count = Count;
 	Container->VB.Size = Size;
 
-	if (!CreateBuffer(Buffer_Type::Vertex, Size, Count, D3D11_USAGE_IMMUTABLE, VtxData, &Container->VB.Buffer))
+	if (!CreateBuffer(Buffer_Type::Vertex, Size, Count, Usage, VtxData, &Container->VB.Buffer))
 		return false;
 
 	if (IdxData != nullptr)
@@ -100,7 +102,7 @@ bool CMesh::CreateMesh(void* VtxData, int Size, int Count, D3D11_PRIMITIVE_TOPOL
 		Container->vecIB[0].Fmt = Fmt;
 
 		if (!CreateBuffer(Buffer_Type::Index, IdxSize, IdxCount, 
-			D3D11_USAGE_IMMUTABLE, IdxData, &Container->vecIB[0].Buffer))
+			IdxUsage, IdxData, &Container->vecIB[0].Buffer))
 			return false;
 	}
 
