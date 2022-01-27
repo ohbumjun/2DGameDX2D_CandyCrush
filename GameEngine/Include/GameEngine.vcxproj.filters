@@ -224,6 +224,9 @@
     <ClInclude Include="Resource\Mesh\Mesh.h">
       <Filter>02. Resource\01. Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Mesh\MeshManager.h">
+      <Filter>02. Resource\01. Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -326,6 +329,9 @@
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\02. Standard</Filter>
     </ClCompile>
     <ClCompile Include="Resource\Mesh\Mesh.cpp">
+      <Filter>02. Resource\01. Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Mesh\MeshManager.cpp">
       <Filter>02. Resource\01. Mesh</Filter>
     </ClCompile>
   </ItemGroup>
