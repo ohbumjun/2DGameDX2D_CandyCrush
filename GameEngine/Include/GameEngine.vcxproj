@@ -197,6 +197,7 @@
     <ClInclude Include="Resource\Shader\GraphicShader.h" />
     <ClInclude Include="Resource\Shader\MaterialConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\Shader.h" />
+    <ClInclude Include="Resource\Shader\ShaderManager.h" />
     <ClInclude Include="Resource\Shader\Standard2DConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\TransformConstantBuffer.h" />
     <ClInclude Include="Resource\Texture\Texture.h" />
@@ -243,6 +244,7 @@
     <ClCompile Include="Resource\Shader\ConstantBufferBase.cpp" />
     <ClCompile Include="Resource\Shader\GraphicShader.cpp" />
     <ClCompile Include="Resource\Shader\Shader.cpp" />
+    <ClCompile Include="Resource\Shader\ShaderManager.cpp" />
     <ClCompile Include="Resource\Shader\Standard2DConstantBuffer.cpp" />
     <ClCompile Include="Resource\Shader\TransformConstantBuffer.cpp" />
     <ClCompile Include="Resource\Texture\Texture.cpp" />
@@ -260,6 +262,14 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Bin\Shader\ShaderInfo.fx">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

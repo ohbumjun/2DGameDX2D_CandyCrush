@@ -167,9 +167,6 @@
     <ClInclude Include="Scene\SceneManager.h">
       <Filter>03. Scene</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\SceneMode.h">
       <Filter>03. Scene\01. SceneMode</Filter>
     </ClInclude>
@@ -253,6 +250,10 @@
     </ClInclude>
     <ClInclude Include="Resource\Material\MaterialManager.h">
       <Filter>02. Resource\03. Material</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Resource\Shader\ShaderManager.h">
+      <Filter>02. Resource\02. Shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -385,10 +386,18 @@
     <ClCompile Include="Resource\Material\MaterialManager.cpp">
       <Filter>02. Resource\03. Material</Filter>
     </ClCompile>
+    <ClCompile Include="Resource\Shader\ShaderManager.cpp">
+      <Filter>02. Resource\02. Shader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">
       <Filter>리소스 파일</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Bin\Shader\ShaderInfo.fx">
+      <Filter>02. Resource\02. Shader\01. HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

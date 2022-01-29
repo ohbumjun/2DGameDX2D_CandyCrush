@@ -215,5 +215,4 @@ void CTexture::ResetShader(int Register, int ShaderType, int TextureIndex)
 		CDevice::GetInst()->GetDeviceContext()->PSSetShaderResources(Register, 1, &SRV);
 	if (ShaderType & (int)Buffer_Shader_Type::Compute)
 		CDevice::GetInst()->GetDeviceContext()->CSSetShaderResources(Register, 1, &SRV);
-
 }
