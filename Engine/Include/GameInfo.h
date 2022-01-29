@@ -151,3 +151,9 @@ struct VertexUV
 		Vertex(pVertex),
 		UV(pUV) {}
 };
+
+struct MaterialCBuffer {
+	Vector4 BaseColor;
+	float Opacity;
+	Vector3 Empty;
+};

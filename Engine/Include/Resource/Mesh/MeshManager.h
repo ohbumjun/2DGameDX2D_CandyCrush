@@ -3,7 +3,7 @@
 #include "../../GameInfo.h"
 #include "Mesh.h"
 
-class MeshManager {
+class CMeshManager {
 	friend class CResourceManager;
 
 private :
@@ -14,5 +14,5 @@ public :
 	CMesh* FindMesh(const std::string& Name);
 	void ReleaseMesh(const std::string& Name);
 
-	DECLARE_SINGLE(MeshManager);
+	DECLARE_SINGLE(CMeshManager);
 };
