@@ -186,6 +186,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Resource\Font\FontManager.h" />
     <ClInclude Include="Resource\Material\Material.h" />
+    <ClInclude Include="Resource\Material\MaterialManager.h" />
     <ClInclude Include="Resource\Mesh\Mesh.h" />
     <ClInclude Include="Resource\Mesh\MeshManager.h" />
     <ClInclude Include="Resource\Mesh\SpriteMesh.h" />
@@ -231,6 +232,7 @@
     <ClCompile Include="Render\RenderStateManager.cpp" />
     <ClCompile Include="Resource\Font\FontManager.cpp" />
     <ClCompile Include="Resource\Material\Material.cpp" />
+    <ClCompile Include="Resource\Material\MaterialManager.cpp" />
     <ClCompile Include="Resource\Mesh\Mesh.cpp" />
     <ClCompile Include="Resource\Mesh\MeshManager.cpp" />
     <ClCompile Include="Resource\Mesh\SpriteMesh.cpp" />

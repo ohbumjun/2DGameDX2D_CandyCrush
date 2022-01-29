@@ -55,22 +55,26 @@ public :
 	void SetBaseColor(const Vector4& Color);
 	void SetBaseColor(float r, float g, float b, float a);
 public :
-	void AddTexture(int Register, int ShaderType, const std::string& Name, class CTexture* Texture);
-	void AddTexture(int Register, int ShaderType, const std::string& Name, 
+	bool AddTexture(int Register, int ShaderType, const std::string& Name, class CTexture* Texture);
+	bool AddTexture(int Register, int ShaderType, const std::string& Name, 
 		const TCHAR* FileName, const std::string& PathName = TEXTURE_PATH);
-	void AddTexture(int Register, int ShaderType, const std::string& Name, 
+	bool AddTexture(int Register, int ShaderType, const std::string& Name, 
 		const std::vector<TCHAR*>& vecFileName, const std::string& PathName = TEXTURE_PATH);
-	void AddTextureFullPath(int Register, int ShaderType, const std::string& Name, 
+	bool AddTextureFullPath(int Register, int ShaderType, const std::string& Name, 
 		const TCHAR* FullPath);
 public :
-	void SetTexture(int Index, int Register, int ShaderType, const std::string& Name, class CTexture* Texture);
-	void SetTexture(int Index, int Register, int ShaderType, const std::string& Name,
+	bool SetTexture(int Index, int Register, int ShaderType, const std::string& Name, class CTexture* Texture);
+	bool SetTexture(int Index, int Register, int ShaderType, const std::string& Name,
 		const TCHAR* FileName, const std::string& PathName = TEXTURE_PATH);
-	void SetTexture(int Index, int Register, int ShaderType, const std::string& Name,
+	bool SetTexture(int Index, int Register, int ShaderType, const std::string& Name,
 		const std::vector<TCHAR*>& vecFileName, const std::string& PathName = TEXTURE_PATH);
-	void SetTextureFullPath(int Index, int Register, int ShaderType, const std::string& Name,
+	bool SetTextureFullPath(int Index, int Register, int ShaderType, const std::string& Name,
 		const TCHAR* FullPath);
-	
+public :
+	void SetShader(const std::string& Name);
+	void Render();
+	void Reset();
+	CMaterial* Clone();
 };
 
 

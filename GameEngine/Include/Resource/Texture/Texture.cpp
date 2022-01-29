@@ -175,3 +175,45 @@ bool CTexture::CreateResource(int Index)
 
 	return true;
 }
+
+void CTexture::SetShader(int Register, int ShaderType, int TextureIndex)
+{
+	if (ShaderType & (int)Buffer_Shader_Type::Vertex)
+		CDevice::GetInst()->GetDeviceContext()->VSSetShaderResources(Register, 1,
+			&m_vecTextureResourceInfo[TextureIndex]->SRV);
+	if (ShaderType & (int)Buffer_Shader_Type::Hull)
+		CDevice::GetInst()->GetDeviceContext()->HSSetShaderResources(Register, 1,
+			&m_vecTextureResourceInfo[TextureIndex]->SRV);
+	if (ShaderType & (int)Buffer_Shader_Type::Domain)
+		CDevice::GetInst()->GetDeviceContext()->DSSetShaderResources(Register, 1,
+			&m_vecTextureResourceInfo[TextureIndex]->SRV);
+	if (ShaderType & (int)Buffer_Shader_Type::Geometry)
+		CDevice::GetInst()->GetDeviceContext()->GSSetShaderResources(Register, 1,
+			&m_vecTextureResourceInfo[TextureIndex]->SRV);
+	if (ShaderType & (int)Buffer_Shader_Type::Pixel)
+		CDevice::GetInst()->GetDeviceContext()->PSSetShaderResources(Register, 1,
+			&m_vecTextureResourceInfo[TextureIndex]->SRV);
+	if (ShaderType & (int)Buffer_Shader_Type::Compute)
+		CDevice::GetInst()->GetDeviceContext()->CSSetShaderResources(Register, 1,
+			&m_vecTextureResourceInfo[TextureIndex]->SRV);
+
+}
+
+void CTexture::ResetShader(int Register, int ShaderType, int TextureIndex)
+{
+	ID3D11ShaderResourceView* SRV = nullptr;
+
+	if (ShaderType & (int)Buffer_Shader_Type::Vertex)
+		CDevice::GetInst()->GetDeviceContext()->VSSetShaderResources(Register, 1, &SRV);
+	if (ShaderType & (int)Buffer_Shader_Type::Hull)
+		CDevice::GetInst()->GetDeviceContext()->HSSetShaderResources(Register, 1, &SRV);
+	if (ShaderType & (int)Buffer_Shader_Type::Domain)
+		CDevice::GetInst()->GetDeviceContext()->DSSetShaderResources(Register, 1, &SRV);
+	if (ShaderType & (int)Buffer_Shader_Type::Geometry)
+		CDevice::GetInst()->GetDeviceContext()->GSSetShaderResources(Register, 1, &SRV);
+	if (ShaderType & (int)Buffer_Shader_Type::Pixel)
+		CDevice::GetInst()->GetDeviceContext()->PSSetShaderResources(Register, 1, &SRV);
+	if (ShaderType & (int)Buffer_Shader_Type::Compute)
+		CDevice::GetInst()->GetDeviceContext()->CSSetShaderResources(Register, 1, &SRV);
+
+}

@@ -64,4 +64,7 @@ public :
 		const std::string& PathName = TEXTURE_PATH);
 	bool LoadTextureFullPath(const std::string& Name, const TCHAR* FullPath);
 	bool CreateResource(int Index = 0);
+public :
+	void SetShader(int Register, int ShaderType, int TextureIndex);
+	void ResetShader(int Register, int ShaderType, int TextureIndex);
 };

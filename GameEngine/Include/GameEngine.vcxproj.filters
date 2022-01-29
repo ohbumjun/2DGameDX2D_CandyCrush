@@ -251,6 +251,9 @@
     <ClInclude Include="Resource\ResourceManager.h">
       <Filter>02. Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Material\MaterialManager.h">
+      <Filter>02. Resource\03. Material</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -378,6 +381,9 @@
     </ClCompile>
     <ClCompile Include="Resource\ResourceManager.cpp">
       <Filter>02. Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Material\MaterialManager.cpp">
+      <Filter>02. Resource\03. Material</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

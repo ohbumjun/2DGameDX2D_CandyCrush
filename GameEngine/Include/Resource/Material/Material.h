@@ -2,7 +2,7 @@
 
 #include "../Shader/GraphicShader.h"
 #include "../Texture/Texture.h"
-#include "../../Render/"
+#include "../../Render/RenderState.h"
 
 struct MaterialTextureInfo {
 
@@ -70,7 +70,11 @@ public :
 		const std::vector<TCHAR*>& vecFileName, const std::string& PathName = TEXTURE_PATH);
 	bool SetTextureFullPath(int Index, int Register, int ShaderType, const std::string& Name,
 		const TCHAR* FullPath);
-	
+public :
+	void SetShader(const std::string& Name);
+	void Render();
+	void Reset();
+	CMaterial* Clone();
 };
 
 

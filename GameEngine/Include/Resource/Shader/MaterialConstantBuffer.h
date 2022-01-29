@@ -10,6 +10,7 @@ public :
     virtual ~CMaterialConstantBuffer() override;
 protected:
     MaterialCBuffer m_BufferData;
+public:
     virtual bool Init();
     virtual void UpdateCBuffer();
     virtual CMaterialConstantBuffer* Clone();
