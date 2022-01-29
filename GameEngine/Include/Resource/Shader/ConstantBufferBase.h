@@ -18,7 +18,6 @@ public :
 	virtual bool Init() = 0;
 	virtual void UpdateCBuffer() = 0;
 	virtual CConstantBufferBase* Clone() = 0;
-	
 };
 
 
