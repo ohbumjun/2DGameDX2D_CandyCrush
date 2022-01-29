@@ -22,7 +22,6 @@ public : // ============= Texture ==============
 	ID3D11SamplerState* FindSamplerState(const std::string& Name);
 	bool SetSampler(const std::string& Name, int Register,
 		int ShaderType = (int)Buffer_Shader_Type::All);
-public:
 	CTexture* FindTexture(const std::string& Name);
 	void ReleaseTexture(const std::string& Name);
 	bool LoadTexture(const std::string& Name, const TCHAR* FileName,
