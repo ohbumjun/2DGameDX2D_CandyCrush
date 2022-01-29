@@ -1,6 +1,8 @@
 #include "TextureManager.h"
 #include "../../Device.h"
 
+DEFINITION_SINGLE(CTextureManager);
+
 CTextureManager::CTextureManager()
 {}
 

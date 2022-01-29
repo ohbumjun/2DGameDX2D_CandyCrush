@@ -1,17 +1,51 @@
 #include "MeshManager.h"
+#include "SpriteMesh.h"
+#include "StaticMesh.h"
 
-MeshManager::MeshManager()
+DEFINITION_SINGLE(CMeshManager);
+
+CMeshManager::CMeshManager()
 {}
 
-MeshManager::~MeshManager()
+CMeshManager::~CMeshManager()
 {}
 
-bool MeshManager::Init()
+bool CMeshManager::Init()
 {
+	// Sprite Mesh 하나 만들기
+	CSpriteMesh* SpriteMesh = new CSpriteMesh;
+
+	if (!SpriteMesh->Init())
+	{
+		SAFE_DELETE(SpriteMesh);
+		return false;
+	}
+
+	SpriteMesh->SetName("SpriteMesh");
+
+	m_mapMesh.insert(std::make_pair("SpriteMesh", SpriteMesh));
+
+	// FrameRect 하나 만들기
+	CStaticMesh* FrameRect = new CStaticMesh;
+
+	Vector3 FrameRectPos[5] = {
+		Vector3(0.f, 1.f, 0.f),
+		Vector3(1.f, 1.f, 0.f),
+		Vector3(1.f, 0.f, 0.f),
+		Vector3(0.f, 0.f, 0.f),
+		Vector3(0.f, 1.f, 0.f)
+	};
+
+	FrameRect->SetName("FrameRect");
+	FrameRect->CreateMesh(FrameRect, sizeof(Vector3), 5, D3D11_USAGE_IMMUTABLE,
+		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	m_mapMesh.insert(std::make_pair("FrameRectMesh", FrameRect));
+
 	return true;
 }
 
-CMesh* MeshManager::FindMesh(const std::string& Name)
+CMesh* CMeshManager::FindMesh(const std::string& Name)
 {
 	auto iter = m_mapMesh.find(Name);
 
@@ -21,7 +55,7 @@ CMesh* MeshManager::FindMesh(const std::string& Name)
 	return iter->second;
 }
 
-void MeshManager::ReleaseMesh(const std::string& Name)
+void CMeshManager::ReleaseMesh(const std::string& Name)
 {
 	auto iter = m_mapMesh.find(Name);
 
@@ -31,4 +65,3 @@ void MeshManager::ReleaseMesh(const std::string& Name)
 	if (iter->second->GetRefCount() == 1)
 		m_mapMesh.erase(iter);
 }
-

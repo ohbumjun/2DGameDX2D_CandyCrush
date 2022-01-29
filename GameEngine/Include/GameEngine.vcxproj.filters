@@ -248,6 +248,9 @@
     <ClInclude Include="Resource\Shader\MaterialConstantBuffer.h">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\03. Material</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\ResourceManager.h">
+      <Filter>02. Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -372,6 +375,9 @@
     </ClCompile>
     <ClCompile Include="Resource\Shader\MaterialConstantBuffer.cpp">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\03. Material</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\ResourceManager.cpp">
+      <Filter>02. Resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

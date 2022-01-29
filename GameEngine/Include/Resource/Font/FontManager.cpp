@@ -2,6 +2,8 @@
 #include "../../Device.h"
 #include "../../PathManager.h"
 
+DEFINITION_SINGLE(CFontManager);
+
 CFontManager::CFontManager() :
 	m_WriteFactory(nullptr),
 	m_FontFamilyName{},
