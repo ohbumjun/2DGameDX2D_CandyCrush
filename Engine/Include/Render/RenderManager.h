@@ -1,8 +1,7 @@
 #pragma once
 
-#include "../GameInfo.h"
-#include "../Resource/Shader/Standard2DCBuffer.h"
-#include "RenderStateManager.h"
+#include "../../GameInfo.h"
+#include "../Resource/Shader/Standard2DConstantBuffer.h"
 
 struct RenderLayer {
 	std::string Name;
@@ -10,8 +9,9 @@ struct RenderLayer {
 	int RenderCount;
 	std::vector<class CComponent*> vecComponent;
 	RenderLayer() :
-	LayerPriority(0),
-	RenderCount(0)
+		Name{},
+		LayerPriority(0),
+		RenderCount(0)
 	{
 		vecComponent.resize(100);
 	}
@@ -21,33 +21,34 @@ class CRenderManager {
 
 	friend class CResourceManager;
 
-private :
-	CRenderStateManager* m_RenderStateManager;
-	std::vector<RenderLayer*> m_RenderLayerList;
-	CStandard2DConstantBuffer* m_Standard2DBuffer;
+private:
+	class CRenderStateManager* m_RenderStateManager;
+	std::vector<RenderLayer*> m_vecRenderLayer;
+	class CDepthStencilState* m_DepthState;
 	class CBlendState* m_BlendState;
-	class CDepthStencilState* m_DepthStencilState;
 	const std::list<CSharedPtr<class CGameObject>>* m_ObjList;
+	CStandard2DConstantBuffer* m_Standard2DConstantBuffer;
 public :
 	CStandard2DConstantBuffer* GetStandard2DConstantBuffer() const
 {
-		return m_Standard2DBuffer;
+		return m_Standard2DConstantBuffer;
 }
+private:
+	RenderLayer* FindRenderLayer(const std::string& Name);
+	bool CreateRenderLayer(const std::string& Name, int Priority);
+public :
+	void AddRenderLayer(class CComponent* Component);
+	void SetRenderLayerPriority(const std::string& Name, int Priority);
+public :
 	void SetObjectList(const std::list<CSharedPtr<class CGameObject>>* ObjList)
 {
 		m_ObjList = ObjList;
 }
 public :
-	bool CreateRenderLayer(const std::string& Name, int Priority);
-	void SetRenderLayerPriority(const std::string& Name, int Priority);
-	RenderLayer* FindLayer(const std::string& Name);
-	void AddComponentToRenderLayer(class CComponent* Component);
-public :
 	bool Init();
 	void Render();
-private :
+private:
 	static bool SortLayer(RenderLayer* Src, RenderLayer* Dest);
-
 
 	DECLARE_SINGLE(CRenderManager);
 };

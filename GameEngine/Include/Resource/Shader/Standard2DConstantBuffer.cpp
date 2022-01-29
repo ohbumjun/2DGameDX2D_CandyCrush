@@ -1,4 +1,4 @@
-#include "Standard2DCBuffer.h"
+#include "Standard2DConstantBuffer.h"
 
 CStandard2DConstantBuffer::CStandard2DConstantBuffer()
 {}

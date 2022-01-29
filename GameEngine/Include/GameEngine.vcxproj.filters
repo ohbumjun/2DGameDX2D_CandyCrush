@@ -113,9 +113,6 @@
     <ClInclude Include="Engine.h">
       <Filter>01. Engine</Filter>
     </ClInclude>
-    <ClInclude Include="GameInfo.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>01. Engine\01. Timer</Filter>
     </ClInclude>
@@ -218,7 +215,7 @@
     <ClInclude Include="Render\RenderStateManager.h">
       <Filter>06. Render\01. RenderState</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\Shader\Standard2DCBuffer.h">
+    <ClInclude Include="Resource\Shader\Standard2DConstantBuffer.h">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\02. Standard</Filter>
     </ClInclude>
     <ClInclude Include="Resource\Mesh\Mesh.h">
@@ -232,6 +229,18 @@
     </ClInclude>
     <ClInclude Include="Resource\Mesh\StaticMesh.h">
       <Filter>02. Resource\01. Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Material\Material.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\GraphicShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass</Filter>
+    </ClInclude>
+    <ClInclude Include="GameInfo.h">
+      <Filter>02. Resource\03. Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\Shader.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -331,7 +340,7 @@
     <ClCompile Include="Render\RenderStateManager.cpp">
       <Filter>06. Render\01. RenderState</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\Shader\Standard2DCBuffer.cpp">
+    <ClCompile Include="Resource\Shader\Standard2DConstantBuffer.cpp">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\02. Standard</Filter>
     </ClCompile>
     <ClCompile Include="Resource\Mesh\Mesh.cpp">
@@ -346,6 +355,11 @@
     <ClCompile Include="Resource\Mesh\StaticMesh.cpp">
       <Filter>02. Resource\01. Mesh</Filter>
     </ClCompile>
+    <ClCompile Include="Resource\Material\Material.cpp" />
+    <ClCompile Include="Resource\Shader\GraphicShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">

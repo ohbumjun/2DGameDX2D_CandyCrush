@@ -11,6 +11,8 @@ CTexture::~CTexture()
 bool CTexture::LoadTexture(const std::string& Name, const TCHAR* FileName, 
 	const std::string& PathName, int Index)
 {
+	SetName(Name);
+
 	TextureResourceInfo* Info = new TextureResourceInfo;
 
 	TCHAR* FullPath = new TCHAR[MAX_PATH];
@@ -94,6 +96,8 @@ bool CTexture::LoadTexture(const std::string& Name,
 
 bool CTexture::LoadTextureFullPath(const std::string& Name, const TCHAR* FullPath)
 {
+	SetName(Name);
+
 	TextureResourceInfo* Info = new TextureResourceInfo;
 
 	lstrcpy(Info->FullPath, FullPath);

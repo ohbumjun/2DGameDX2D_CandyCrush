@@ -1,7 +1,7 @@
 #include "SceneComponent.h"
 #include "../Render/RenderManager.h"
 #include "../Render/RenderStateManager.h"
-#include "../Resource/Shader/Standard2DCBuffer.h"
+#include "../Resource/Shader/Standard2DConstantBuffer.h"
 
 
 CSceneComponent::CSceneComponent() :
@@ -150,7 +150,7 @@ void CSceneComponent::PostUpdate(float DeltaTime)
 bool CSceneComponent::PrevRender()
 {
 	if (m_Render)
-		CRenderManager::GetInst()->AddComponentToRenderLayer(this);
+		CRenderManager::GetInst()->AddRenderLayer(this);
 
 	size_t Size = m_vecChild.size();
 
