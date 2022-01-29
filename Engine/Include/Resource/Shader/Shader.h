@@ -6,10 +6,10 @@ class CShader :
     public CRef
 {
     friend class CShaderManager;
-protected :
+private :
     CShader();
     virtual ~CShader();
-protected :
+private :
     Shader_Type m_ShaderType;
 public :
     virtual bool Init();

@@ -108,6 +108,9 @@
     <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\02. Standard">
       <UniqueIdentifier>{2f507331-f2fc-40f2-b2f5-c7f3cdc43230}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\03. Material">
+      <UniqueIdentifier>{0e6d02a8-4dc2-4cdd-8cc2-9e9c80624555}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -230,16 +233,19 @@
     <ClInclude Include="Resource\Mesh\StaticMesh.h">
       <Filter>02. Resource\01. Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\Material\Material.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Resource\Shader\GraphicShader.h">
       <Filter>02. Resource\02. Shader\02. ShaderClass</Filter>
     </ClInclude>
     <ClInclude Include="GameInfo.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Material\Material.h">
       <Filter>02. Resource\03. Material</Filter>
     </ClInclude>
     <ClInclude Include="Resource\Shader\Shader.h">
+      <Filter>02. Resource\02. Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\MaterialConstantBuffer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -355,11 +361,16 @@
     <ClCompile Include="Resource\Mesh\StaticMesh.cpp">
       <Filter>02. Resource\01. Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\Material\Material.cpp" />
     <ClCompile Include="Resource\Shader\GraphicShader.cpp">
       <Filter>02. Resource\02. Shader\02. ShaderClass</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\Shader\Shader.cpp" />
+    <ClCompile Include="Resource\Material\Material.cpp">
+      <Filter>02. Resource\03. Material</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\Shader.cpp">
+      <Filter>02. Resource\02. Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\CMaterialConstantBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">

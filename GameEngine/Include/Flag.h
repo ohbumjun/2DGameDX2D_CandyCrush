@@ -42,6 +42,12 @@ enum class Shader_Type {
 	Compute
 };
 
+enum class Sampler_Type {
+	Point,
+	Linear,
+	Anisotropic
+};
+
 enum class Buffer_Shader_Type {
 	Vertex = 0x1,			//    0001 : ÀÌÁø¼ö
 	Pixel = 0x2,			//    0010 

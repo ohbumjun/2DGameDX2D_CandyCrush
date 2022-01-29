@@ -7,12 +7,12 @@ class CMesh : public CRef {
 protected :
 	CMesh();
 	virtual ~CMesh() override;
-private :
+protected:
 	std::vector<MeshContainer*> m_vecContainer;
 public :
-	bool Init();
+	virtual bool Init();
 	void Render();
-private :
+protected :
 	bool CreateBuffer(Buffer_Type Type, void* Data, int Size, int Count, 
 		D3D11_USAGE Usage, ID3D11Buffer** Buffer);
 	bool CreateMesh(void* VtxData, int Size, int Count, D3D11_USAGE Usage,
