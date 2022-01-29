@@ -111,6 +111,9 @@
     <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\03. Material">
       <UniqueIdentifier>{0e6d02a8-4dc2-4cdd-8cc2-9e9c80624555}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\02. Shader\02. ShaderClass\01. ColorMesh">
+      <UniqueIdentifier>{54a32437-720e-4994-8da2-ac0a7d58c22a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -239,9 +242,6 @@
     <ClInclude Include="Resource\Material\Material.h">
       <Filter>02. Resource\03. Material</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\Shader\Shader.h">
-      <Filter>02. Resource\02. Shader</Filter>
-    </ClInclude>
     <ClInclude Include="Resource\Shader\MaterialConstantBuffer.h">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\03. Material</Filter>
     </ClInclude>
@@ -254,6 +254,12 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Resource\Shader\ShaderManager.h">
       <Filter>02. Resource\02. Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\Shader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\ColorMeshShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\01. ColorMesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -374,9 +380,6 @@
     <ClCompile Include="Resource\Material\Material.cpp">
       <Filter>02. Resource\03. Material</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\Shader\Shader.cpp">
-      <Filter>02. Resource\02. Shader</Filter>
-    </ClCompile>
     <ClCompile Include="Resource\Shader\MaterialConstantBuffer.cpp">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\03. Material</Filter>
     </ClCompile>
@@ -388,6 +391,12 @@
     </ClCompile>
     <ClCompile Include="Resource\Shader\ShaderManager.cpp">
       <Filter>02. Resource\02. Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\Shader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\ColorMeshShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\01. ColorMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
