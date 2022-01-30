@@ -16,6 +16,10 @@ private :
     CSharedPtr<CTexture> m_Texture;
     std::vector<AnimationFrameData> m_vecFrameData;
 public :
+    size_t GetFrameSize() const
+    {
+        return m_vecFrameData.size();
+    }
     CScene* GetScene() const
 {
         return m_Scene;
