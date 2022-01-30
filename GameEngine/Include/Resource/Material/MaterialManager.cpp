@@ -28,7 +28,7 @@ CMaterialManager::~CMaterialManager()
 	 if (!CreateMaterial<CMaterial>("BaseTexture"))
 		 return false;
 
-	 CSharedPtr<CMaterial> Material = FindMaterial("BaseTexture");
+	 Material = FindMaterial("BaseTexture");
 
 	 Material->SetShader("Mesh2DShader");
 

@@ -261,6 +261,9 @@
     <ClInclude Include="Resource\Shader\ColorMeshShader.h">
       <Filter>02. Resource\02. Shader\02. ShaderClass\01. ColorMesh</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Animation\AnimationSequence2D.h">
+      <Filter>02. Resource\05. Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -398,6 +401,9 @@
     <ClCompile Include="Resource\Shader\ColorMeshShader.cpp">
       <Filter>02. Resource\02. Shader\02. ShaderClass\01. ColorMesh</Filter>
     </ClCompile>
+    <ClCompile Include="Resource\Animation\AnimationSequence2D.cpp">
+      <Filter>02. Resource\05. Animation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">
@@ -409,9 +415,6 @@
       <Filter>02. Resource\02. Shader\01. HLSL</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\Shader\ColorMesh.fx">
-      <Filter>02. Resource\02. Shader\01. HLSL</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\Shader\Mesh2D.fx">
       <Filter>02. Resource\02. Shader\01. HLSL</Filter>
     </FxCompile>
   </ItemGroup>

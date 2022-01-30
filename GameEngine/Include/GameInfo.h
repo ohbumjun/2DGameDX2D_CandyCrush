@@ -157,3 +157,8 @@ struct MaterialCBuffer {
 	float Opacity;
 	Vector3 Empty;
 };
+
+struct AnimationFrameData {
+	Vector2 StartPos;
+	Vector2 Size;
+};
