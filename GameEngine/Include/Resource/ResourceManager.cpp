@@ -1,5 +1,7 @@
 #include "ResourceManager.h"
 
+#include "Animation/AnimationManager.h"
+
 CResourceManager::CResourceManager()
 {}
 
@@ -62,6 +64,17 @@ bool CResourceManager::LoadTexture(const std::string& Name, const std::vector<TC
 bool CResourceManager::LoadTextureFullPath(const std::string& Name, const TCHAR* FullPath)
 {
 	return m_TextureManager->LoadTextureFullPath(Name, FullPath);
+}
+
+CAnimationSequence2D* CResourceManager::FindAnimationSequence2D(const std::string& Name)
+{
+	return m_AnimationManager->FindAnimationSequence2D(Name);
+}
+
+bool CResourceManager::LoadAnimationSequence2D(const std::string& Name, const TCHAR* FileName,
+	const std::string& PathName)
+{
+	return m_AnimationManager->LoadAnimationSequence2D(Name, FileName, PathName);
 }
 
 bool CResourceManager::Init()

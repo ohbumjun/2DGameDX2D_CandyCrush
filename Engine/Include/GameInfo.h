@@ -76,10 +76,25 @@ enum class Engine_Space {
 	Space3D
 };
 
-struct Standard2DCBuffer {
-	int AnimationEnable;
-	Vector3 Empty;
+struct VertexUV
+{
+	Vector3 Vertex;
+	Vector2 UV;
+
+	VertexUV() :
+		Vertex{},
+		UV{}{}
+
+	VertexUV(const Vector3& pVertex, const Vector2& pUV) :
+		Vertex(pVertex),
+		UV(pUV) {}
 };
+
+struct AnimationFrameData {
+	Vector2 StartPos;
+	Vector2 Size;
+};
+
 
 // 상수 버퍼
 struct TransformCBuffer {
@@ -93,6 +108,25 @@ struct TransformCBuffer {
 	float Empty;
 	Vector3 MeshSize;
 	float Empty1;
+};
+
+
+struct Standard2DCBuffer {
+	int AnimationEnable;
+	Vector3 Empty;
+};
+
+struct AnimationCBuffer {
+	Vector2 AnimationStartUV;
+	Vector2 AnimationEndUV;
+	int AnimationType;
+	Vector3 Empty;
+};
+
+struct MaterialCBuffer {
+	Vector4 BaseColor;
+	float Opacity;
+	Vector3 Empty;
 };
 
 // 정점 버퍼
@@ -138,27 +172,3 @@ struct MeshContainer {
 	D3D11_PRIMITIVE_TOPOLOGY Primitive;
 };
 
-struct VertexUV
-{
-	Vector3 Vertex;
-	Vector2 UV;
-
-	VertexUV() :
-		Vertex{},
-		UV{}{}
-
-	VertexUV(const Vector3& pVertex, const Vector2& pUV) :
-		Vertex(pVertex),
-		UV(pUV) {}
-};
-
-struct MaterialCBuffer {
-	Vector4 BaseColor;
-	float Opacity;
-	Vector3 Empty;
-};
-
-struct AnimationFrameData {
-	Vector2 StartPos;
-	Vector2 Size;
-};

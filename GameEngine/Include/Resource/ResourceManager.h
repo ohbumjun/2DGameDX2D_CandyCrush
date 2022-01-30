@@ -4,6 +4,7 @@
 #include "Texture/TextureManager.h"
 #include "Mesh/MeshManager.h"
 #include "Texture/Texture.h"
+#include "Animation/AnimationSequence2D.h"
 
 class CResourceManager
 {
@@ -11,9 +12,12 @@ class CResourceManager
 private :
 	CMeshManager* m_MeshManager;
 	CTextureManager* m_TextureManager;
-public : // ============= Mesh ==============
+	CAnimationManager* m_AnimationManager;
+
+public : // ============= Mesh ===============
 	CMesh* FindMesh(const std::string& Name); 
 	void ReleaseMesh(const std::string& Name);
+
 public : // ============= Texture ==============
 	bool CreateSamplerState(const std::string& Name, D3D11_FILTER  Filter,
 		D3D11_TEXTURE_ADDRESS_MODE AddressU,
@@ -29,6 +33,11 @@ public : // ============= Texture ==============
 	bool LoadTexture(const std::string& Name, const std::vector<TCHAR*>& vecFileName,
 		const std::string& PathName = TEXTURE_PATH);
 	bool LoadTextureFullPath(const std::string& Name, const TCHAR* FullPath);
+
+public: // ============= Animation ============
+	CAnimationSequence2D* FindAnimationSequence2D(const std::string& Name);
+	bool LoadAnimationSequence2D(const std::string& Name, const TCHAR* FileName,
+		const std::string& PathName = TEXTURE_PATH);
 public :
 	bool Init();
 

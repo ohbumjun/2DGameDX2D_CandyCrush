@@ -114,6 +114,9 @@
     <Filter Include="02. Resource\02. Shader\02. ShaderClass\01. ColorMesh">
       <UniqueIdentifier>{54a32437-720e-4994-8da2-ac0a7d58c22a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\04. Animation">
+      <UniqueIdentifier>{f427a670-106c-40a4-bfb8-11e9128c9f0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -267,6 +270,9 @@
     <ClInclude Include="Resource\Animation\AnimationManager.h">
       <Filter>02. Resource\05. Animation</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Shader\AnimationConstantBuffer.h">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\04. Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -409,6 +415,9 @@
     </ClCompile>
     <ClCompile Include="Resource\Animation\AnimationManager.cpp">
       <Filter>02. Resource\05. Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\AnimationConstantBuffer.cpp">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\04. Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
