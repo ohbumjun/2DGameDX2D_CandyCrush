@@ -166,6 +166,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animation\AnimationSequence2DData.h" />
+    <ClInclude Include="Animation\AnimationSequence2DInstance.h" />
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="Component\SceneComponent.h" />
     <ClInclude Include="Component\Transform.h" />
@@ -221,6 +222,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation\AnimationSequence2DData.cpp" />
+    <ClCompile Include="Animation\AnimationSequence2DInstance.cpp" />
     <ClCompile Include="Component\Component.cpp" />
     <ClCompile Include="Component\SceneComponent.cpp" />
     <ClCompile Include="Component\Transform.cpp" />

@@ -274,7 +274,10 @@
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\04. Animation</Filter>
     </ClInclude>
     <ClInclude Include="Animation\AnimationSequence2DData.h">
-      <Filter>02. Resource\05. Animation</Filter>
+      <Filter>07. Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation\AnimationSequence2DInstance.h">
+      <Filter>07. Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -423,7 +426,10 @@
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\04. Animation</Filter>
     </ClCompile>
     <ClCompile Include="Animation\AnimationSequence2DData.cpp">
-      <Filter>02. Resource\05. Animation</Filter>
+      <Filter>07. Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation\AnimationSequence2DInstance.cpp">
+      <Filter>07. Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
