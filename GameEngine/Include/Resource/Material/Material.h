@@ -40,7 +40,6 @@ public :
 {
 		m_Scene = Scene;
 }
-private :
 	void SetConstantBuffer(class CMaterialConstantBuffer* Buffer)
 {
 		m_CBuffer = Buffer;
@@ -71,6 +70,7 @@ public :
 	bool SetTextureFullPath(int Index, int Register, int ShaderType, const std::string& Name,
 		const TCHAR* FullPath);
 public :
+	bool Init();
 	void SetShader(const std::string& Name);
 	void Render();
 	void Reset();

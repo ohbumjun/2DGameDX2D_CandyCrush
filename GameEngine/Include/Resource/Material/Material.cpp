@@ -223,7 +223,24 @@
 	   return true;
    }
 
-   void CMaterial::SetShader(const std::string& Name)
+bool CMaterial::Init()
+ {
+	if (m_Scene)
+	{
+		// m_Shader = CResourceManager::GetInst()->FindShader("Mesh2DShader");
+	}
+	else
+	{
+		// m_Shader = CResourceManager::GetInst()->FindShader("Mesh2DShader");
+	}
+
+	m_CBuffer = new CMaterialConstantBuffer;
+	m_CBuffer->Init();
+
+	return true;
+ }
+
+void CMaterial::SetShader(const std::string& Name)
    {
 	   // m_Shader = CResourceManager::GetInst()->FindShader();
    }

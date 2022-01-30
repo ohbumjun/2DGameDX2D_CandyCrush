@@ -1,5 +1,6 @@
 #pragma once
 #include "ConstantBufferBase.h"
+
 class CStandard2DConstantBuffer :
     public CConstantBufferBase
 {

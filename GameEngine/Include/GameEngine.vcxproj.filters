@@ -264,6 +264,9 @@
     <ClInclude Include="Resource\Animation\AnimationSequence2D.h">
       <Filter>02. Resource\05. Animation</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Animation\AnimationManager.h">
+      <Filter>02. Resource\05. Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -402,6 +405,9 @@
       <Filter>02. Resource\02. Shader\02. ShaderClass\01. ColorMesh</Filter>
     </ClCompile>
     <ClCompile Include="Resource\Animation\AnimationSequence2D.cpp">
+      <Filter>02. Resource\05. Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Animation\AnimationManager.cpp">
       <Filter>02. Resource\05. Animation</Filter>
     </ClCompile>
   </ItemGroup>
