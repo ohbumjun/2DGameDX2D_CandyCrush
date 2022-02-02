@@ -1,142 +1,70 @@
 #include "Input.h"
 #include "Device.h"
+#include "Scene/SceneManager.h"
+#include "Scene/Scene.h"
+#include "Scene/SceneCollision.h"
+#include "Engine.h"
+
+DEFINITION_SINGLE(CInput)
 
 CInput::CInput() :
-	m_LMouseDown(false),
-	m_RMouseDown(false),
-	m_CollisionWidget(false),
-	m_keyState{}
+	m_hInst(0),
+	m_hWnd(0),
+	m_Input(nullptr),
+	m_Keyboard(nullptr),
+	m_Mouse(nullptr),
+	m_KeyArray{},
+	m_LButtonClick(false),
+	m_RButtonClick(false),
+	m_CollisionWidget(false)
 {
 	m_vecKeyState.resize(256);
-	for (int i = 0; i < 256; i++)
+
+	for (int i = 0; i < 256; ++i)
 	{
-		m_vecKeyState[i].Key = i;
+		m_vecKeyState[i].Key = (unsigned char)i;
 	}
 }
 
 CInput::~CInput()
-{}
-
-bool CInput::Init(HINSTANCE hInst, HWND hWnd)
 {
-	m_HInst = hInst;
-	m_Hwnd = hWnd;
-	m_RS = CDevice::GetInst()->GetResolution();
+	auto	iter = m_mapKeyInfo.begin();
+	auto	iterEnd = m_mapKeyInfo.end();
 
-
-	if (m_InputType == Input_Type::Window)
+	for (; iter != iterEnd; ++iter)
 	{
-		if (!InitWindow())
-			return false;
-	}
-	else
-	{
-		if (!InitDirectX())
-			return false;
+		SAFE_DELETE(iter->second);
 	}
 
-	return true;
+	SAFE_RELEASE(m_Keyboard);
+	SAFE_RELEASE(m_Mouse);
+	SAFE_RELEASE(m_Input);
 }
 
-bool CInput::InitWindow()
-{
-	return true;
-}
-
-bool CInput::InitDirectX()
-{
-	HRESULT result;
-
-	result = DirectInput8Create(m_HInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_DirectInput, NULL);
-
-	if (FAILED(result))
-		return false;
-
-	result = m_DirectInput->CreateDevice(GUID_SysKeyboard, &m_Keyboard, NULL);
-	if (FAILED(result))
-		return false;
-
-	result = m_Keyboard->SetDataFormat(&c_dfDIKeyboard); if (FAILED(result)) { return false; }
-	if (FAILED(result))
-		return false;
-
-	result = m_DirectInput->CreateDevice(GUID_SysMouse, &m_Mouse, NULL);
-	if (FAILED(result)) 
-		return false; 
-
-	result = m_Mouse->SetDataFormat(&c_dfDIMouse);
-	if(FAILED(result)) 
-		return false; 
-
-	return true;
-}
-
-void CInput::ReadDirectKeyBoard()
-{
-	HRESULT result;
-
-	result = m_Keyboard->GetDeviceState(sizeof(m_Keyboard), (LPVOID)&m_Keyboard);
-
-	if (FAILED(result))
-	{
-		if (result == DIERR_INPUTLOST || result == DIERR_NOTACQUIRED)
-		{
-			m_Keyboard->Acquire();
-		}
-	}
-}
-
-void CInput::ReadDirectMouse()
-{
-	HRESULT result;
-
-	result = m_Mouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&m_MouseState);
-
-	if (FAILED(result))
-	{
-		if (result == DIERR_INPUTLOST || result == DIERR_NOTACQUIRED)
-		{
-			m_Mouse->Acquire();
-		}
-	}
-}
-
-void CInput::Update(float DeltaTime)
-{
-	if (m_InputType == Input_Type::Direct)
-	{
-		ReadDirectKeyBoard();
-		ReadDirectMouse();
-	}
-
-	UpdateMouse(DeltaTime);
-
-	// Widget Collision 확인
-	// m_CollisionWidget
-
-	UpdateKeyState(DeltaTime);
-
-	UpdateKeyInfo(DeltaTime);
-
-}
-
-void CInput::CreateInputKey(const std::string& Name, unsigned Key)
+bool CInput::CreateKey(const std::string& Name, unsigned char Key)
 {
 	KeyInfo* Info = FindKeyInfo(Name);
+
 	if (Info)
-		return;
+		return false;
 
 	Info = new KeyInfo;
-	Info->m_State.Key = Key;
+
+	Info->Name = Name;
+
+	unsigned char	ConvertkeyValue = ConvertKey(Key);
+
+	Info->State.Key = ConvertkeyValue;
 
 	m_mapKeyInfo.insert(std::make_pair(Name, Info));
 
-	bool Add = false;
-	size_t Size = m_vecAddKey.size();
+	bool	Add = false;
 
-	for (size_t i = 0; i < Size; i++)
+	size_t	Size = m_vecAddKey.size();
+
+	for (size_t i = 0; i < Size; ++i)
 	{
-		if (m_vecAddKey[i] == Key)
+		if (m_vecAddKey[i] == ConvertkeyValue)
 		{
 			Add = true;
 			break;
@@ -144,200 +72,376 @@ void CInput::CreateInputKey(const std::string& Name, unsigned Key)
 	}
 
 	if (!Add)
-		m_vecAddKey.push_back(Key);
-		
+		m_vecAddKey.push_back(ConvertkeyValue);
+
+	return true;
+}
+
+bool CInput::SetCtrlKey(const std::string& Name, bool State)
+{
+	KeyInfo* Info = FindKeyInfo(Name);
+
+	if (!Info)
+		return false;
+
+	Info->Ctrl = State;
+
+	return true;
+}
+
+bool CInput::SetAltKey(const std::string& Name, bool State)
+{
+	KeyInfo* Info = FindKeyInfo(Name);
+
+	if (!Info)
+		return false;
+
+	Info->Alt = State;
+
+	return true;
+}
+
+bool CInput::SetShiftKey(const std::string& Name, bool State)
+{
+	KeyInfo* Info = FindKeyInfo(Name);
+
+	if (!Info)
+		return false;
+
+	Info->Shift = State;
+
+	return true;
+}
+
+KeyInfo* CInput::FindKeyInfo(const std::string& Name)
+{
+	auto	iter = m_mapKeyInfo.find(Name);
+
+	if (iter == m_mapKeyInfo.end())
+		return nullptr;
+
+	return iter->second;
+}
+
+bool CInput::InitWindow()
+{
+	return true;
+}
+
+bool CInput::InitDirectInput()
+{
+	if (FAILED(m_Input->CreateDevice(GUID_SysKeyboard, &m_Keyboard, nullptr)))
+		return false;
+
+	if (FAILED(m_Keyboard->SetDataFormat(&c_dfDIKeyboard)))
+		return false;
+
+	if (FAILED(m_Input->CreateDevice(GUID_SysMouse, &m_Mouse, nullptr)))
+		return false;
+
+	if (FAILED(m_Mouse->SetDataFormat(&c_dfDIMouse)))
+		return false;
+
+	return true;
+}
+
+bool CInput::Init(HINSTANCE hInst, HWND hWnd)
+{
+	m_hInst = hInst;
+	m_hWnd = hWnd;
+
+	m_InputType = Input_Type::Direct;
+
+
+
+	HRESULT	result = DirectInput8Create(m_hInst, DIRECTINPUT_VERSION,
+		IID_IDirectInput8,
+		(void**)&m_Input, nullptr);
+
+	if (FAILED(result))
+		m_InputType = Input_Type::Window;
+
+	switch (m_InputType)
+	{
+	case Input_Type::Direct:
+		if (!InitDirectInput())
+			return false;
+		break;
+	case Input_Type::Window:
+		if (!InitWindow())
+			return false;
+		break;
+	}
+
+
+	return true;
+}
+
+void CInput::Update(float DeltaTime)
+{
+	if (m_InputType == Input_Type::Direct)
+	{
+		ReadDirectInputKeyboard();
+		ReadDirectInputMouse();
+	}
+
+	// 마우스 입력처리를 한다.
+	UpdateMouse(DeltaTime);
+
+	// UI : 마우스 충돌
+	// m_CollisionWidget = CSceneManager::GetInst()->GetScene()->GetCollision()->CollisionWidget();
+
+	// 키 상태를 업데이트 해준다.
+	UpdateKeyState();
+
+	// 키보드 키 입력처리를 한다.
+	UpdateKeyInfo(DeltaTime);
+}
+
+void CInput::ReadDirectInputKeyboard()
+{
+	HRESULT	result = m_Keyboard->GetDeviceState(256, m_KeyArray);
+
+	if (FAILED(result))
+	{
+		if (result == DIERR_INPUTLOST || result == DIERR_NOTACQUIRED)
+			m_Keyboard->Acquire();
+	}
+}
+
+void CInput::ReadDirectInputMouse()
+{
+	HRESULT	result = m_Mouse->GetDeviceState(sizeof(m_MouseState), &m_MouseState);
+
+	if (FAILED(result))
+	{
+		if (result == DIERR_INPUTLOST || result == DIERR_NOTACQUIRED)
+			m_Mouse->Acquire();
+	}
 }
 
 void CInput::UpdateMouse(float DeltaTime)
 {
-	POINT Point;
-	GetCursorPos(&Point);
-	ScreenToClient(m_Hwnd, &Point);
+	POINT	MouseWindowPos;
 
-	Vector2 MousePos = {};
-	MousePos = Vector2((float)Point.x, (float)Point.y);
-	MousePos.y = (float)m_RS.Height - MousePos.y;
+	GetCursorPos(&MouseWindowPos);
+	ScreenToClient(m_hWnd, &MouseWindowPos);
+
+	Vector2	Ratio = CDevice::GetInst()->GetViewPortRatio();
+
+	Vector2	MousePos = Vector2(MouseWindowPos.x * Ratio.x, MouseWindowPos.y * Ratio.y);
+
+	MousePos.y = CDevice::GetInst()->GetResolution().Height - MousePos.y;
 
 	m_MouseMove = MousePos - m_MousePos;
+
 	m_MousePos = MousePos;
-	
+	m_MouseWorldPos = m_MousePos;
+
+	// 2D일때는 월드공간에서의 마우스 좌표를 구한다.
+	// 카메라를 얻어온다
+	/*
+	if (CEngine::GetInst()->GetEngineSpace() == Engine_Space::Space2D)
+	{
+		CCameraComponent* Camera = CSceneManager::GetInst()->GetScene()->GetCameraManager()->GetCurrentCamera();
+
+		m_MouseWorldPos += Camera->GetLeftBottom();
+	}
+	*/
 }
 
-void CInput::UpdateKeyState(float DeltaTime)
+void CInput::UpdateKeyState()
 {
-	if (m_InputType == Input_Type::Direct)
+	switch (m_InputType)
 	{
-		if (m_keyState[DIK_LCONTROL] & 0x80)
+	case Input_Type::Direct:
+		if (m_KeyArray[DIK_LCONTROL] & 0x80)
 			m_Ctrl = true;
+
 		else
 			m_Ctrl = false;
 
-		if (m_keyState[DIK_LSHIFT] & 0x80)
-			m_Shift = true;
-		else
-			m_Shift = false;
-
-		if (m_keyState[DIK_LALT] & 0x80)
+		if (m_KeyArray[DIK_LALT] & 0x80)
 			m_Alt = true;
+
 		else
 			m_Alt = false;
+
+		if (m_KeyArray[DIK_LSHIFT] & 0x80)
+			m_Shift = true;
+
+		else
+			m_Shift = false;
 
 		if (m_MouseState.rgbButtons[0] & 0x80)
-			m_LMouseDown = true;
+			m_LButtonClick = true;
+
 		else
-			m_LMouseDown = false;
+			m_LButtonClick = false;
 
 		if (m_MouseState.rgbButtons[1] & 0x80)
-			m_RMouseDown = true;
+			m_RButtonClick = true;
+
 		else
-			m_RMouseDown = false;
-	}
-	else
-	{
-		if (GetAsyncKeyState(VK_LCONTROL) & 0x8000)
+			m_RButtonClick = false;
+		break;
+	case Input_Type::Window:
+		if (GetAsyncKeyState(VK_CONTROL) & 0x8000)
 			m_Ctrl = true;
+
 		else
 			m_Ctrl = false;
 
-		if (GetAsyncKeyState(VK_LSHIFT) & 0x8000)
-			m_Shift = true;
-		else
-			m_Shift = false;
-
-		if (GetAsyncKeyState(VK_LMENU) & 0x8000)
+		if (GetAsyncKeyState(VK_MENU) & 0x8000)
 			m_Alt = true;
+
 		else
 			m_Alt = false;
 
-		if (GetAsyncKeyState(WM_LBUTTONDOWN) & 0x8000)
-			m_LMouseDown = true;
-		else
-			m_LMouseDown = false;
+		if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
+			m_Shift = true;
 
-		if (GetAsyncKeyState(WM_RBUTTONDOWN) & 0x8000)
-			m_RMouseDown = true;
 		else
-			m_RMouseDown = false;
+			m_Shift = false;
+		break;
 	}
 
-	// vec Add Key
-	size_t Size = m_vecAddKey.size();
+	// 등록된 키를 반복하며 해당 키가 눌러졌는지를 판단한다.
+	size_t	Size = m_vecAddKey.size();
 
-	for (size_t i = 0; i < Size; i++)
+	for (size_t i = 0; i < Size; ++i)
 	{
-		unsigned int Key = m_vecAddKey[i];
+		unsigned char Key = m_vecAddKey[i];
 
-		bool KeyPush = false;
+		bool	KeyPush = false;
 
-		// 눌러졌는지 확인하기
-		if (m_InputType == Input_Type::Direct)
+		switch (m_InputType)
 		{
+		case Input_Type::Direct:
 			switch (Key)
 			{
 			case DIK_MOUSELBUTTON:
-			{
-				if ((m_MouseState.rgbButtons[0] & 0x80) && !m_CollisionWidget)
+				if (m_MouseState.rgbButtons[0] & 0x80 && !m_CollisionWidget)
+				{
+					m_LButtonClick = true;
 					KeyPush = true;
-			}
-			break;
+				}
+				break;
 			case DIK_MOUSERBUTTON:
-			{
-				if ((m_MouseState.rgbButtons[1] & 0x80) && !m_CollisionWidget)
+				if (m_MouseState.rgbButtons[1] & 0x80 && !m_CollisionWidget)
+				{
+					m_RButtonClick = true;
 					KeyPush = true;
-			}
-			break;
-			default:
-				if (m_keyState[Key] & 0x80)
+				}
+				break;
+			case DIK_MOUSEWHEEL:
+				break;
+			default:	// 키보드 키를 알아볼 경우
+				if (m_KeyArray[Key] & 0x80)
 				{
 					KeyPush = true;
 				}
 				break;
 			}
-		}
-		else
-		{
+			break;
+		case Input_Type::Window:
 			if (GetAsyncKeyState(Key) & 0x8000)
 			{
 				KeyPush = true;
 			}
+			break;
 		}
 
 		if (KeyPush)
 		{
-			if (!m_vecKeyState[Key].State[Key_State::Key_Down] && 
-				!m_vecKeyState[Key].State[Key_State::Key_Push])
+			if (!m_vecKeyState[Key].State[Key_Down] &&
+				!m_vecKeyState[Key].State[Key_Push])
 			{
-				m_vecKeyState[Key].State[Key_State::Key_Down] = true;
-				m_vecKeyState[Key].State[Key_State::Key_Push] = true;
-				m_vecKeyState[Key].State[Key_State::Key_Up]    = false;
+				m_vecKeyState[Key].State[Key_Down] = true;
+				m_vecKeyState[Key].State[Key_Push] = true;
 			}
-			else if (m_vecKeyState[Key].State[Key_State::Key_Push])
-			{
-				m_vecKeyState[Key].State[Key_State::Key_Down] = false;
-			}
-		}
-		else
-		{
-			if (m_vecKeyState[Key].State[Key_State::Key_Push])
-			{
-				m_vecKeyState[Key].State[Key_State::Key_Down] = false;
-				m_vecKeyState[Key].State[Key_State::Key_Push] = false;
-				m_vecKeyState[Key].State[Key_State::Key_Up] = true;
-			}
+
 			else
-			{
-				m_vecKeyState[Key].State[Key_State::Key_Up] = false;
-			}
+				m_vecKeyState[Key].State[Key_Down] = false;
+		}
+
+		else if (m_vecKeyState[Key].State[Key_Push])
+		{
+			m_vecKeyState[Key].State[Key_Up] = true;
+			m_vecKeyState[Key].State[Key_Down] = false;
+			m_vecKeyState[Key].State[Key_Push] = false;
+		}
+
+		else if (m_vecKeyState[Key].State[Key_Up])
+		{
+			m_vecKeyState[Key].State[Key_Up] = false;
 		}
 	}
 }
 
 void CInput::UpdateKeyInfo(float DeltaTime)
 {
-	auto iter = m_mapKeyInfo.begin();
-	auto iterEnd = m_mapKeyInfo.end();
+	auto	iter = m_mapKeyInfo.begin();
+	auto	iterEnd = m_mapKeyInfo.end();
 
 	for (; iter != iterEnd; ++iter)
 	{
-		unsigned int Key = iter->second->m_State.Key;
+		unsigned char Key = iter->second->State.Key;
 
-		if (m_vecKeyState[Key].State[Key_State::Key_Down] && 
-			m_Ctrl == iter->second->Ctrl && 
-			m_Alt == iter->second->Alt &&
-			m_Shift == iter->second->Shift)
+		// bool b = ImGui::GetIO().WantCaptureMouse;
+
+		if (m_vecKeyState[Key].State[Key_Down] &&
+			iter->second->Ctrl == m_Ctrl &&
+			iter->second->Alt == m_Alt &&
+			iter->second->Shift == m_Shift)
 		{
-			if (iter->second->m_Callback[(int)Key_State::Key_Down])
-				iter->second->m_Callback[(int)Key_State::Key_Down]();
+			if (iter->second->Callback[Key_Down])
+			{
+				// if (!ImGui::GetIO().WantCaptureMouse)
+					iter->second->Callback[Key_Down](DeltaTime);
+			}
 		}
 
-		if (m_vecKeyState[Key].State[Key_State::Key_Push] &&
-			m_Ctrl == iter->second->Ctrl &&
-			m_Alt == iter->second->Alt &&
-			m_Shift == iter->second->Shift)
+
+		if (m_vecKeyState[Key].State[Key_Push] &&
+			iter->second->Ctrl == m_Ctrl &&
+			iter->second->Alt == m_Alt &&
+			iter->second->Shift == m_Shift)
 		{
-			if (iter->second->m_Callback[(int)Key_State::Key_Push])
-				iter->second->m_Callback[(int)Key_State::Key_Push]();
+			if (iter->second->Callback[Key_Push])
+			{
+				// if (!ImGui::GetIO().WantCaptureMouse)
+					iter->second->Callback[Key_Push](DeltaTime);
+			}
 		}
 
-		if (m_vecKeyState[Key].State[Key_State::Key_Up] &&
-			m_Ctrl == iter->second->Ctrl &&
-			m_Alt == iter->second->Alt &&
-			m_Shift == iter->second->Shift)
+
+		if (m_vecKeyState[Key].State[Key_Up] &&
+			iter->second->Ctrl == m_Ctrl &&
+			iter->second->Alt == m_Alt &&
+			iter->second->Shift == m_Shift)
 		{
-			if (iter->second->m_Callback[(int)Key_State::Key_Up])
-				iter->second->m_Callback[(int)Key_State::Key_Up]();
+			if (iter->second->Callback[Key_Up])
+			{
+				// if (!ImGui::GetIO().WantCaptureMouse)
+					iter->second->Callback[Key_Up](DeltaTime);
+			}
 		}
 	}
 }
 
-KeyInfo* CInput::FindKeyInfo(const std::string& Name)
+void CInput::ClearCallback()
 {
-	auto iter = m_mapKeyInfo.find(Name);
+	auto	iter = m_mapKeyInfo.begin();
+	auto	iterEnd = m_mapKeyInfo.end();
 
-	if (iter == m_mapKeyInfo.end())
-		return nullptr;
-
-	return iter->second;
+	for (; iter != iterEnd; ++iter)
+	{
+		for (int i = 0; i < Key_Max; ++i)
+		{
+			iter->second->Callback[i] = nullptr;
+		}
+	}
 }
 
 unsigned char CInput::ConvertKey(unsigned char Key)
