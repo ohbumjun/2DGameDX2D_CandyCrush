@@ -38,6 +38,7 @@ public: // ============= Animation ============
 	CAnimationSequence2D* FindAnimationSequence2D(const std::string& Name);
 	bool LoadAnimationSequence2D(const std::string& Name, const TCHAR* FileName,
 		const std::string& PathName = TEXTURE_PATH);
+	class CAnimationConstantBuffer* GetAnimationCBuffer() const;
 public :
 	bool Init();
 

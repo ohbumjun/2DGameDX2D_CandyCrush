@@ -7,16 +7,15 @@ class CAnimationSequence2D :
 {
     friend class CAnimationManager;
     friend class CAnimationSequence2DData;
-private :
+public :
     CAnimationSequence2D();
-    CAnimationSequence2D(const CAnimationSequence2D& Sequence);
     virtual ~CAnimationSequence2D() override;
 private :
     class CScene* m_Scene;
     CSharedPtr<CTexture> m_Texture;
     std::vector<AnimationFrameData> m_vecFrameData;
 public :
-    size_t GetFrameSize() const
+    size_t GetFrameCount() const
     {
         return m_vecFrameData.size();
     }

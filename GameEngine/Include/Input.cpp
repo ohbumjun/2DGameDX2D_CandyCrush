@@ -2,38 +2,40 @@
 #include "Device.h"
 
 CInput::CInput() :
+	m_LMouseDown(false),
+	m_RMouseDown(false),
 	m_CollisionWidget(false),
-	m_LMouseClick(false),
-	m_RMouseClick(false),
-	m_Ctrl(false),
-	m_Alt(false),
-	m_Shift(false),
-	m_DirectInput(nullptr),
-	m_Keyboard(nullptr),
-	m_Mouse(nullptr),
-	m_mapKeyInfo{},
-	m_vecAddKey{}
+	m_keyState{}
 {
 	m_vecKeyState.resize(256);
 	for (int i = 0; i < 256; i++)
 	{
-		m_vecKeyState[i].Key = (unsigned char)i;
+		m_vecKeyState[i].Key = i;
 	}
 }
 
 CInput::~CInput()
+{}
+
+bool CInput::Init(HINSTANCE hInst, HWND hWnd)
 {
-	SAFE_RELEASE(m_DirectInput);
-	SAFE_RELEASE(m_Keyboard);
-	SAFE_RELEASE(m_Mouse);
+	m_HInst = hInst;
+	m_Hwnd = hWnd;
+	m_RS = CDevice::GetInst()->GetResolution();
 
-	auto iter = m_mapKeyInfo.begin();
-	auto iterEnd = m_mapKeyInfo.end();
 
-	for (; iter != iterEnd; ++iter)
+	if (m_InputType == Input_Type::Window)
 	{
-		SAFE_DELETE(iter->second);
+		if (!InitWindow())
+			return false;
 	}
+	else
+	{
+		if (!InitDirectX())
+			return false;
+	}
+
+	return true;
 }
 
 bool CInput::InitWindow()
@@ -41,200 +43,250 @@ bool CInput::InitWindow()
 	return true;
 }
 
-bool CInput::InitDirect()
+bool CInput::InitDirectX()
 {
-	// Key Board 
-	if (FAILED(m_DirectInput->CreateDevice(GUID_SysKeyboard, &m_Keyboard, NULL)))
+	HRESULT result;
+
+	result = DirectInput8Create(m_HInst, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_DirectInput, NULL);
+
+	if (FAILED(result))
 		return false;
 
-	if (FAILED(m_Keyboard->SetDataFormat(&c_dfDIKeyboard)))
+	result = m_DirectInput->CreateDevice(GUID_SysKeyboard, &m_Keyboard, NULL);
+	if (FAILED(result))
 		return false;
 
-	// Mouse
-	if (FAILED(m_DirectInput->CreateDevice(GUID_SysMouse, &m_Mouse, NULL)))
+	result = m_Keyboard->SetDataFormat(&c_dfDIKeyboard); if (FAILED(result)) { return false; }
+	if (FAILED(result))
 		return false;
 
-	if (FAILED(m_Mouse->SetDataFormat(&c_dfDIMouse)))
-		return false;
+	result = m_DirectInput->CreateDevice(GUID_SysMouse, &m_Mouse, NULL);
+	if (FAILED(result)) 
+		return false; 
+
+	result = m_Mouse->SetDataFormat(&c_dfDIMouse);
+	if(FAILED(result)) 
+		return false; 
 
 	return true;
 }
 
-bool CInput::ReadKeyBoardState()
+void CInput::ReadDirectKeyBoard()
 {
-	HRESULT result = m_Keyboard->GetDeviceState(sizeof(m_KeyState), m_KeyState);
+	HRESULT result;
+
+	result = m_Keyboard->GetDeviceState(sizeof(m_Keyboard), (LPVOID)&m_Keyboard);
 
 	if (FAILED(result))
 	{
 		if (result == DIERR_INPUTLOST || result == DIERR_NOTACQUIRED)
+		{
 			m_Keyboard->Acquire();
+		}
 	}
-
-	return true;
 }
 
-bool CInput::ReadMouseState()
+void CInput::ReadDirectMouse()
 {
-	HRESULT result = m_Mouse->GetDeviceState(sizeof(DIMOUSESTATE),
-		(LPVOID)&m_MouseState);
+	HRESULT result;
+
+	result = m_Mouse->GetDeviceState(sizeof(DIMOUSESTATE), (LPVOID)&m_MouseState);
 
 	if (FAILED(result))
 	{
 		if (result == DIERR_INPUTLOST || result == DIERR_NOTACQUIRED)
+		{
 			m_Mouse->Acquire();
+		}
 	}
-
-	return true;
 }
 
-void CInput::UpdateMouse(float DeltaTime)
+void CInput::Update(float DeltaTime)
 {
-	POINT MouseWindowPos;
+	if (m_InputType == Input_Type::Direct)
+	{
+		ReadDirectKeyBoard();
+		ReadDirectMouse();
+	}
 
-	GetCursorPos(&MouseWindowPos);
-	ScreenToClient(m_hWnd, &MouseWindowPos);
+	UpdateMouse(DeltaTime);
 
-	Vector2 Ratio = CDevice::GetInst()->GetViewPortRatio();
+	// Widget Collision 확인
+	// m_CollisionWidget
 
-	Vector2 MousePos = Vector2(MouseWindowPos.x * Ratio.x, MouseWindowPos.y * Ratio.y);
+	UpdateKeyState(DeltaTime);
 
-	MousePos.y = (float)CDevice::GetInst()->GetResolution().Height - MousePos.y;
+	UpdateKeyInfo(DeltaTime);
 
-	m_MouseMove = MousePos - m_MousePos;
-	m_MousePos = MousePos;
 }
 
-void CInput::UpdateKeyState(float DeltaTime)
+void CInput::CreateInputKey(const std::string& Name, unsigned Key)
 {
-	// Alt, Shift, Ctrl
-	switch (m_InputType)
-	{
-	case Input_Type::Direct:
-	{
-		if (m_KeyState[DIK_LSHIFT] & 0x80)
-			m_Shift = true;
-		else
-			m_Shift = false;
+	KeyInfo* Info = FindKeyInfo(Name);
+	if (Info)
+		return;
 
-		if (m_KeyState[DIK_LMENU] & 0x80)
-			m_Alt = true;
-		else
-			m_Alt = false;
+	Info = new KeyInfo;
+	Info->m_State.Key = Key;
 
-		if (m_KeyState[DIK_LCONTROL] & 0x80)
-			m_Ctrl = true;
-		else
-			m_Ctrl = false;
+	m_mapKeyInfo.insert(std::make_pair(Name, Info));
 
-		if (m_MouseState.rgbButtons[0] & 0x80)
-			m_LMouseClick = true;
-		else
-			m_LMouseClick = false;
-
-		if (m_MouseState.rgbButtons[1] & 0x80)
-			m_RMouseClick = true;
-		else
-			m_RMouseClick = false;
-	}
-	break;
-	case Input_Type::Window:
-	{
-		if (GetAsyncKeyState(MK_CONTROL) & 0x8000)
-			m_Ctrl = true;
-		else
-			m_Ctrl = false;
-
-		if (GetAsyncKeyState(MK_SHIFT) & 0x8000)
-			m_Shift = true;
-		else
-			m_Shift = false;
-
-		if (GetAsyncKeyState(VK_MENU) & 0x8000)
-			m_Alt = true;
-		else
-			m_Alt = false;
-
-		if (GetAsyncKeyState(MK_LBUTTON) & 0x8000)
-			m_LMouseClick = true;
-		else
-			m_LMouseClick = false;
-
-		if (GetAsyncKeyState(MK_RBUTTON) & 0x8000)
-			m_RMouseClick = true;
-		else
-			m_RMouseClick = false;
-	}
-	break;
-	}
-
-	// 등록된 키들 비교
+	bool Add = false;
 	size_t Size = m_vecAddKey.size();
 
 	for (size_t i = 0; i < Size; i++)
 	{
-		unsigned char Key = m_vecAddKey[i];
+		if (m_vecAddKey[i] == Key)
+		{
+			Add = true;
+			break;
+		}
+	}
+
+	if (!Add)
+		m_vecAddKey.push_back(Key);
+		
+}
+
+void CInput::UpdateMouse(float DeltaTime)
+{
+	POINT Point;
+	GetCursorPos(&Point);
+	ScreenToClient(m_Hwnd, &Point);
+
+	Vector2 MousePos = {};
+	MousePos = Vector2((float)Point.x, (float)Point.y);
+	MousePos.y = (float)m_RS.Height - MousePos.y;
+
+	m_MouseMove = MousePos - m_MousePos;
+	m_MousePos = MousePos;
+	
+}
+
+void CInput::UpdateKeyState(float DeltaTime)
+{
+	if (m_InputType == Input_Type::Direct)
+	{
+		if (m_keyState[DIK_LCONTROL] & 0x80)
+			m_Ctrl = true;
+		else
+			m_Ctrl = false;
+
+		if (m_keyState[DIK_LSHIFT] & 0x80)
+			m_Shift = true;
+		else
+			m_Shift = false;
+
+		if (m_keyState[DIK_LALT] & 0x80)
+			m_Alt = true;
+		else
+			m_Alt = false;
+
+		if (m_MouseState.rgbButtons[0] & 0x80)
+			m_LMouseDown = true;
+		else
+			m_LMouseDown = false;
+
+		if (m_MouseState.rgbButtons[1] & 0x80)
+			m_RMouseDown = true;
+		else
+			m_RMouseDown = false;
+	}
+	else
+	{
+		if (GetAsyncKeyState(VK_LCONTROL) & 0x8000)
+			m_Ctrl = true;
+		else
+			m_Ctrl = false;
+
+		if (GetAsyncKeyState(VK_LSHIFT) & 0x8000)
+			m_Shift = true;
+		else
+			m_Shift = false;
+
+		if (GetAsyncKeyState(VK_LMENU) & 0x8000)
+			m_Alt = true;
+		else
+			m_Alt = false;
+
+		if (GetAsyncKeyState(WM_LBUTTONDOWN) & 0x8000)
+			m_LMouseDown = true;
+		else
+			m_LMouseDown = false;
+
+		if (GetAsyncKeyState(WM_RBUTTONDOWN) & 0x8000)
+			m_RMouseDown = true;
+		else
+			m_RMouseDown = false;
+	}
+
+	// vec Add Key
+	size_t Size = m_vecAddKey.size();
+
+	for (size_t i = 0; i < Size; i++)
+	{
+		unsigned int Key = m_vecAddKey[i];
 
 		bool KeyPush = false;
 
-		switch (m_InputType)
-		{
-		case Input_Type::Direct :
+		// 눌러졌는지 확인하기
+		if (m_InputType == Input_Type::Direct)
 		{
 			switch (Key)
 			{
-			case DIK_MOUSELBUTTON :
+			case DIK_MOUSELBUTTON:
+			{
+				if ((m_MouseState.rgbButtons[0] & 0x80) && !m_CollisionWidget)
+					KeyPush = true;
+			}
+			break;
+			case DIK_MOUSERBUTTON:
+			{
+				if ((m_MouseState.rgbButtons[1] & 0x80) && !m_CollisionWidget)
+					KeyPush = true;
+			}
+			break;
+			default:
+				if (m_keyState[Key] & 0x80)
 				{
-				if (m_MouseState.rgbButtons[0] & 0x80 && !m_CollisionWidget)
 					KeyPush = true;
 				}
 				break;
-
-			case DIK_MOUSERBUTTON :
-			{
-				if (m_MouseState.rgbButtons[1] & 0x80 && !m_CollisionWidget)
-					KeyPush = true;
-			}
-				break;
-
-			default:
-				if (m_KeyState[Key] & 0x80)
-					KeyPush = true;
-				break;
-			}
-		}
-			break;
-		case Input_Type::Window:
-			if (GetAsyncKeyState(Key) & 0x8000)
-				KeyPush = true;
-			break;
-		}
-
-		// KeyState 정보를 바꿔줄 것이다. 
-		if (KeyPush)
-		{
-			if (!m_vecKeyState[Key].KeyState[Key_Down] &&
-				!m_vecKeyState[Key].KeyState[Key_Push])
-			{
-				m_vecKeyState[Key].KeyState[Key_Down] = true;
-				m_vecKeyState[Key].KeyState[Key_Push] = true;
-				m_vecKeyState[Key].KeyState[Key_Up] = false;
-			}
-			else if (m_vecKeyState[Key].KeyState[Key_Push])
-			{
-				m_vecKeyState[Key].KeyState[Key_Down] = false;
 			}
 		}
 		else
 		{
-			if (m_vecKeyState[Key].KeyState[Key_Push])
+			if (GetAsyncKeyState(Key) & 0x8000)
 			{
-				m_vecKeyState[Key].KeyState[Key_Down] = false;
-				m_vecKeyState[Key].KeyState[Key_Push] = false;
-				m_vecKeyState[Key].KeyState[Key_Up] = true;
+				KeyPush = true;
 			}
-			else if (m_vecKeyState[Key].KeyState[Key_Up])
+		}
+
+		if (KeyPush)
+		{
+			if (!m_vecKeyState[Key].State[Key_State::Key_Down] && 
+				!m_vecKeyState[Key].State[Key_State::Key_Push])
 			{
-				m_vecKeyState[Key].KeyState[Key_Up] = false;
+				m_vecKeyState[Key].State[Key_State::Key_Down] = true;
+				m_vecKeyState[Key].State[Key_State::Key_Push] = true;
+				m_vecKeyState[Key].State[Key_State::Key_Up]    = false;
+			}
+			else if (m_vecKeyState[Key].State[Key_State::Key_Push])
+			{
+				m_vecKeyState[Key].State[Key_State::Key_Down] = false;
+			}
+		}
+		else
+		{
+			if (m_vecKeyState[Key].State[Key_State::Key_Push])
+			{
+				m_vecKeyState[Key].State[Key_State::Key_Down] = false;
+				m_vecKeyState[Key].State[Key_State::Key_Push] = false;
+				m_vecKeyState[Key].State[Key_State::Key_Up] = true;
+			}
+			else
+			{
+				m_vecKeyState[Key].State[Key_State::Key_Up] = false;
 			}
 		}
 	}
@@ -247,155 +299,45 @@ void CInput::UpdateKeyInfo(float DeltaTime)
 
 	for (; iter != iterEnd; ++iter)
 	{
-		if (iter->second->State.KeyState[Key_Down] &&
-			iter->second->Ctrl == m_Ctrl && 
-			iter->second->Alt == m_Alt && 
-			iter->second->Shift == m_Shift)
+		unsigned int Key = iter->second->m_State.Key;
+
+		if (m_vecKeyState[Key].State[Key_State::Key_Down] && 
+			m_Ctrl == iter->second->Ctrl && 
+			m_Alt == iter->second->Alt &&
+			m_Shift == iter->second->Shift)
 		{
-			if (iter->second->Callback[Key_Down])
-				iter->second->Callback[Key_Down](DeltaTime);
+			if (iter->second->m_Callback[(int)Key_State::Key_Down])
+				iter->second->m_Callback[(int)Key_State::Key_Down]();
 		}
 
-		if (iter->second->State.KeyState[Key_Push] &&
-			iter->second->Ctrl == m_Ctrl &&
-			iter->second->Alt == m_Alt &&
-			iter->second->Shift == m_Shift)
+		if (m_vecKeyState[Key].State[Key_State::Key_Push] &&
+			m_Ctrl == iter->second->Ctrl &&
+			m_Alt == iter->second->Alt &&
+			m_Shift == iter->second->Shift)
 		{
-			if (iter->second->Callback[Key_Push])
-				iter->second->Callback[Key_Push](DeltaTime);
+			if (iter->second->m_Callback[(int)Key_State::Key_Push])
+				iter->second->m_Callback[(int)Key_State::Key_Push]();
 		}
 
-		if (iter->second->State.KeyState[Key_Up] &&
-			iter->second->Ctrl == m_Ctrl &&
-			iter->second->Alt == m_Alt &&
-			iter->second->Shift == m_Shift)
+		if (m_vecKeyState[Key].State[Key_State::Key_Up] &&
+			m_Ctrl == iter->second->Ctrl &&
+			m_Alt == iter->second->Alt &&
+			m_Shift == iter->second->Shift)
 		{
-			if (iter->second->Callback[Key_Up])
-				iter->second->Callback[Key_Up](DeltaTime);
+			if (iter->second->m_Callback[(int)Key_State::Key_Up])
+				iter->second->m_Callback[(int)Key_State::Key_Up]();
 		}
 	}
 }
-
-
 
 KeyInfo* CInput::FindKeyInfo(const std::string& Name)
 {
 	auto iter = m_mapKeyInfo.find(Name);
+
 	if (iter == m_mapKeyInfo.end())
 		return nullptr;
+
 	return iter->second;
-}
-
-KeyInfo* CInput::CreateKeyInfo(const std::string& Name, unsigned char Key)
-{
-	KeyInfo* Info = FindKeyInfo(Name);
-	if (Info)
-		return Info;
-
-	Info = new KeyInfo;
-	Info->State.Key = Key;
-
-	m_mapKeyInfo.insert(std::make_pair(Name, Info));
-
-	bool Add = false;
-	for (size_t i = 0; i < m_vecAddKey.size(); i++)
-	{
-		if (m_vecAddKey[i] == Key)
-		{
-			Add = true;
-			break;
-		}
-	}
-
-	if (!Add)
-	{
-		m_vecAddKey.push_back(Key);
-	}
-
-	return Info;
-}
-
-void CInput::SetCtrlKey(const std::string& Name, bool State)
-{
-	KeyInfo* Info = FindKeyInfo(Name);
-	if (!Info)
-		return;
-	Info->Ctrl = State;
-}
-
-void CInput::SetAltKey(const std::string& Name, bool State)
-{
-	KeyInfo* Info = FindKeyInfo(Name);
-	if (!Info)
-		return;
-	Info->Alt = State;
-}
-
-void CInput::SetShiftKey(const std::string& Name, bool State)
-{
-	KeyInfo* Info = FindKeyInfo(Name);
-	if (!Info)
-		return;
-	Info->Shift = State;
-}
-
-void CInput::ClearCallback(const std::string& Name)
-{
-	auto iter = m_mapKeyInfo.begin();
-	auto iterEnd = m_mapKeyInfo.end();
-
-	for (; iter != iterEnd; ++iter)
-	{
-		for (int i = 0; i < Key_Max; i++)
-		{
-			iter->second->Callback[i] = nullptr;
-		}
-	}
-}
-
-bool CInput::Init(HINSTANCE hInst, HWND hWnd)
-{
-	m_hInst = hInst;
-	m_hWnd = hWnd;
-
-	m_InputType = Input_Type::Direct;
-
-	HRESULT result = DirectInput8Create(m_hInst, DIRECTINPUT_VERSION,
-		IID_IDirectInput8, (void**)&m_DirectInput, NULL);
-
-	if (FAILED(result))
-		m_InputType = Input_Type::Window;
-
-	switch (m_InputType)
-	{
-		case Input_Type::Window :
-			return InitWindow();
-		case Input_Type::Direct:
-			return InitDirect();
-	}
-
-	return true;
-}
-
-void CInput::Update(float DeltaTime)
-{
-	if (m_InputType == Input_Type::Direct)
-	{
-		ReadKeyBoardState();
-		ReadMouseState();
-	}
-
-	// Mouse Update
-	UpdateMouse(DeltaTime);
-
-	// CollisionWidget
-	m_CollisionWidget = false;
-
-	// KeyState
-	UpdateKeyState(DeltaTime);
-
-	// KeyInfo
-	UpdateKeyInfo(DeltaTime);
 }
 
 unsigned char CInput::ConvertKey(unsigned char Key)

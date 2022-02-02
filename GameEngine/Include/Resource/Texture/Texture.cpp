@@ -2,7 +2,8 @@
 #include "../../PathManager.h"
 #include "../../Device.h"
 
-CTexture::CTexture()
+CTexture::CTexture() :
+m_ImageType(Image_Type::Atlas)
 {}
 
 CTexture::~CTexture()
@@ -77,12 +78,17 @@ bool CTexture::LoadTexture(const std::string& Name, const TCHAR* FileName,
 
 	m_vecTextureResourceInfo.push_back(Info);
 
+	if (m_vecTextureResourceInfo.size() > 1)
+		m_ImageType = Image_Type::Frame;
+
 	return CreateResource(Index);
 }
 
 bool CTexture::LoadTexture(const std::string& Name, 
 	const std::vector<TCHAR*>& vecFileName, const std::string& PathName)
 {
+	m_ImageType = Image_Type::Frame;
+
 	int Size = (int)vecFileName.size();
 
 	for (int i = 0; i < Size; i++)
@@ -157,6 +163,9 @@ bool CTexture::LoadTextureFullPath(const std::string& Name, const TCHAR* FullPat
 	Info->Image = Image;
 
 	m_vecTextureResourceInfo.push_back(Info);
+
+	if (m_vecTextureResourceInfo.size() > 1)
+		m_ImageType = Image_Type::Frame;
 
 	return CreateResource(0);
 }

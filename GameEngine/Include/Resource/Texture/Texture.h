@@ -44,7 +44,12 @@ public :
 	virtual ~CTexture() override;
 private :
 	std::vector<TextureResourceInfo*> m_vecTextureResourceInfo;
+	Image_Type m_ImageType;
 public :
+	Image_Type GetImageType() const
+{
+		return m_ImageType;
+}
 	unsigned int GetWidth (int Index = 0)
 {
 		return m_vecTextureResourceInfo[Index]->Width;

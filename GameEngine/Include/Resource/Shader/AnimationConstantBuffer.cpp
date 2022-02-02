@@ -17,6 +17,16 @@ bool CAnimationConstantBuffer::Init()
 	return true;
 }
 
+void CAnimationConstantBuffer::UpdateCBuffer()
+{
+	m_Buffer->UpdateBuffer(&m_BufferData);
+}
+
+CAnimationConstantBuffer* CAnimationConstantBuffer::Clone()
+{
+	return new CAnimationConstantBuffer(*this);
+}
+
 void CAnimationConstantBuffer::SetStartUV(const Vector2& StartUV)
 {
 	m_BufferData.AnimationStartUV = StartUV;
@@ -37,7 +47,8 @@ void CAnimationConstantBuffer::SetEndUV(float x, float y)
 	m_BufferData.AnimationEndUV = Vector2(x, y);
 }
 
-void CAnimationConstantBuffer::SetAnimEnable(bool Enable)
+void CAnimationConstantBuffer::SetImageType(Image_Type Type)
 {
-	m_BufferData.AnimationType = Enable ? 1 : 0;
+	m_BufferData.AnimationType = (int)Type;
 }
+

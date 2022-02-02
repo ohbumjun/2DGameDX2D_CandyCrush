@@ -40,5 +40,7 @@ bool CAnimationManager::LoadAnimationSequence2D(const std::string& Name, const T
 
 bool CAnimationManager::Init()
 {
+	m_AnimationCBuffer = new CAnimationConstantBuffer;
+	m_AnimationCBuffer->Init();
 	return true;
 }

@@ -77,6 +77,11 @@ bool CResourceManager::LoadAnimationSequence2D(const std::string& Name, const TC
 	return m_AnimationManager->LoadAnimationSequence2D(Name, FileName, PathName);
 }
 
+CAnimationConstantBuffer* CResourceManager::GetAnimationCBuffer() const
+{
+	return m_AnimationManager->GetAnimationCBuffer();
+}
+
 bool CResourceManager::Init()
 {
 	// Mesh

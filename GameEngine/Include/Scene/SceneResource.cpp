@@ -5,7 +5,9 @@ CSceneResource::CSceneResource()
 {}
 
 CSceneResource::~CSceneResource()
-{}
+{
+	
+}
 
 CMesh* CSceneResource::FindMesh(const std::string& Name)
 {
@@ -105,6 +107,44 @@ bool CSceneResource::LoadTextureFullPath(const std::string& Name, const TCHAR* F
 	Texture = CResourceManager::GetInst()->FindTexture(Name);
 
 	m_mapTexture.insert(std::make_pair(Name, Texture));
+
+	return true;
+}
+
+CAnimationSequence2D* CSceneResource::FindAnimationSequence2D(const std::string& Name)
+{
+	auto iter = m_mapSequence2D.find(Name);
+
+	if (iter == m_mapSequence2D.end())
+		return nullptr;
+
+	return iter->second;
+}
+
+bool CSceneResource::LoadAnimationSequence2D(const std::string& Name, const TCHAR* FileName,
+	const std::string& PathName)
+{
+	CAnimationSequence2D* Sequence = FindAnimationSequence2D(Name);
+
+	if (Sequence)
+		return true;
+
+	Sequence = new CAnimationSequence2D;
+
+	LoadTexture(Name, FileName, PathName);
+
+	CTexture* Texture = FindTexture(Name);
+
+	if (!Texture)
+		return false;
+
+	if (!Sequence->Init(Texture))
+	{
+		SAFE_DELETE(Sequence);
+		return false;
+	}
+
+	m_mapSequence2D.insert(std::make_pair(Name, Sequence));
 
 	return true;
 }
