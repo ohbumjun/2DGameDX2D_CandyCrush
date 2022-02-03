@@ -18,5 +18,5 @@ void CComponent::SetScene(CScene* Scene)
 
 void CComponent::SetGameObject(CGameObject* Object)
 {
-	m_GameObject = Object;
+	m_OwnerGameObject = Object;
 }

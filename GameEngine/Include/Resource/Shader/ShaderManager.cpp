@@ -1,6 +1,11 @@
 #include "ShaderManager.h"
 #include "../../Device.h"
 #include "ConstantBuffer.h"
+#include "MaterialConstantBuffer.h"
+#include "AnimationConstantBuffer.h"
+#include "Standard2DConstantBuffer.h"
+#include "TransformConstantBuffer.h"
+#include "ColorMeshShader.h"
 
 CShaderManager::CShaderManager()
 {}
@@ -10,6 +15,21 @@ CShaderManager::~CShaderManager()
 
 bool CShaderManager::Init()
 {
+	// Shader 
+	if (!CreateShader<CColorMeshShader>("ColorMeshShader"))
+		return false;
+
+	// 상수 버퍼
+	if (!CreateConstantBuffer("AnimationCBuffer", 0, (int)sizeof(AnimationCBuffer), (int)Buffer_Shader_Type::Pixel))
+		return false;
+	if (!CreateConstantBuffer("MaterialCBuffer", 1, (int)sizeof(MaterialCBuffer), (int)Buffer_Shader_Type::Pixel))
+		return false;
+	if (!CreateConstantBuffer("TransformCBuffer", 2, (int)sizeof(TransformCBuffer), (int)Buffer_Shader_Type::Pixel))
+		return false;
+	if (!CreateConstantBuffer("Standard2DBuffer", 3, (int)sizeof(Standard2DCBuffer), (int)Buffer_Shader_Type::Pixel))
+		return false;
+
+
 	return true;
 }
 

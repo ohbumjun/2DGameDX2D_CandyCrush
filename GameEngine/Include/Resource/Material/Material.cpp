@@ -1,301 +1,270 @@
 #include "Material.h"
-#include "../../Resource/ResourceManager.h"
+#include "../ResourceManager.h"
 #include "../../Render/RenderManager.h"
-#include "../../Resource/Shader/MaterialConstantBuffer.h"
+#include "../../Render/RenderState.h"
+#include "../../Scene/Scene.h"
+#include "../../Scene/SceneResource.h"
+#include "../Shader/MaterialConstantBuffer.h"
 
- CMaterial::CMaterial() :
-	 m_Scene(nullptr),
-	 m_BaseColor(Vector4::White),
-	 m_Opacity(1.f),
-	 m_CBuffer(nullptr),
-	 m_RenderStateArray{}
+CMaterial::CMaterial() :
+	m_Scene(nullptr),
+	m_BaseColor(Vector4::White),
+	m_Opacity(1.f),
+	m_CBuffer(nullptr),
+	m_RenderStateArray{}
 {
-	 SetTypeID<CMaterial>();
- }
+	SetTypeID<CMaterial>();
+}
 
- CMaterial::CMaterial(const CMaterial& Material) :
-	 CRef(Material)
+CMaterial::CMaterial(const CMaterial& Material) :CRef(Material)
 {
-	 *this = Material;
+	*this = Material;
 
-	 m_RefCount = 0;
-	 m_Scene = nullptr;
- }
+	m_RefCount = 0;
 
- CMaterial::~CMaterial()
-{}
+	m_Scene = nullptr;
+}
 
- void CMaterial::SetBlendRenderState(CRenderState* State)
+CMaterial::~CMaterial()
 {
-	 m_RenderStateArray[(int)RenderState_Type::Blend] = State;
- }
+}
 
- void CMaterial::SetBlendRenderState(const std::string& Name)
+void CMaterial::SetRenderState(CRenderState* State)
 {
-	 m_RenderStateArray[(int)RenderState_Type::Blend] = CRenderManager::GetInst()->FindRenderState(Name);
- }
+	m_RenderStateArray[static_cast<int>(RenderState_Type::Blend)] = State;
+}
 
- void CMaterial::SetTransparency(bool Enable)
+void CMaterial::SetRenderState(const std::string& Name)
 {
-	 if (Enable)
-	 {
-		 m_RenderStateArray[(int)RenderState_Type::Blend] = CRenderManager::GetInst()->FindRenderState("AlphaBlend");
-	 }
- }
+	m_RenderStateArray[static_cast<int>(RenderState_Type::Blend)] = CRenderManager::GetInst()->FindRenderState(Name);
+}
 
- void CMaterial::SetOpacity(float Opacity)
+void CMaterial::SetTransparency(bool Enable)
 {
-	 m_Opacity = Opacity;
-	 if (m_Opacity < 0.f)
-		 m_Opacity = 0.f;
-	 if (m_Opacity > 1.f)
-		 m_Opacity = 1.f;
- }
+	if (Enable)
+		m_RenderStateArray[static_cast<int>(RenderState_Type::Blend)] = CRenderManager::GetInst()->
+		FindRenderState("AlphaBlend");
+}
 
- void CMaterial::AddOpacity(float Opacity)
+void CMaterial::SetOpacity(float Opacity)
 {
-	 m_Opacity += Opacity;
-	 if (m_Opacity < 0.f)
-		 m_Opacity = 0.f;
-	 if (m_Opacity > 1.f)
-		 m_Opacity = 1.f;
- }
+	m_Opacity = Opacity;
 
-  void CMaterial::SetBaseColor(const Vector4& Color)
- {
-	  m_BaseColor = Color;
-  }
+	if (m_Opacity < 0.f)
+		m_Opacity = 0.f;
 
-  void CMaterial::SetBaseColor(float r, float g, float b, float a)
- {
-	  m_BaseColor = Vector4(r, g, b, a);
-  }
+	else if (m_Opacity > 1.f)
+		m_Opacity = 1.f;
+}
 
-  bool CMaterial::AddTexture(int Register, int ShaderType, const std::string& Name, CTexture* Texture)
- {
-	  if (!Texture)
-		  return false;
+void CMaterial::AddOpacity(float Opacity)
+{
+	m_Opacity += Opacity;
 
-	  m_TextureInfo.push_back(MaterialTextureInfo());
+	if (m_Opacity < 0.f)
+		m_Opacity = 0.f;
 
-	  int Index = (int)m_TextureInfo.size() - 1;
+	else if (m_Opacity > 1.f)
+		m_Opacity = 1.f;
+}
 
-	  m_TextureInfo[Index].Register = Register;
-	  m_TextureInfo[Index].ShaderType = ShaderType;
-	  m_TextureInfo[Index].Name = Name;
-	  m_TextureInfo[Index].Texture = Texture;
+void CMaterial::SetBaseColor(const Vector4& Color)
+{
+	m_BaseColor = Color;
+}
 
-	  return true;
-  }
+void CMaterial::SetBaseColor(float r, float g, float b, float a)
+{
+	m_BaseColor = Vector4(r, g, b, a);
+}
 
-   bool CMaterial::AddTexture(int Register, int ShaderType, const std::string& Name, 
-	   const TCHAR* FileName, const std::string& PathName)
-  {
-	   CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName);
+void CMaterial::AddTexture(int Register, int ShaderType, const std::string& Name, CTexture* Texture)
+{
+	m_TextureInfo.push_back(MaterialTextureInfo());
 
-	   CTexture* Texture = CResourceManager::GetInst()->FindTexture(Name);
+	int Index = static_cast<int>(m_TextureInfo.size()) - 1;
 
-	   if (!Texture)
-		   return false;
+	m_TextureInfo[Index].Register = Register;
+	m_TextureInfo[Index].Name = Name;
+	m_TextureInfo[Index].Texture = Texture;
+	m_TextureInfo[Index].ShaderType = ShaderType;
+}
 
-	   m_TextureInfo.push_back(MaterialTextureInfo());
+void CMaterial::AddTexture(int                Register, int ShaderType, const std::string& Name, const TCHAR* FileName,
+	const std::string& PathName)
+{
+	CTexture* Texture = nullptr;
 
-	   int Index = (int)m_TextureInfo.size() - 1;
-
-	   m_TextureInfo[Index].Register = Register;
-	   m_TextureInfo[Index].ShaderType = ShaderType;
-	   m_TextureInfo[Index].Name = Name;
-	   m_TextureInfo[Index].Texture = Texture;
-
-	   return true;
-   }
-
-   bool CMaterial::AddTexture(int Register, int ShaderType, const std::string& Name,
-	  const std::vector<TCHAR*>& vecFileName, const std::string& PathName)
-  {
-	   CResourceManager::GetInst()->LoadTexture(Name, vecFileName, PathName);
-
-	   CTexture* Texture = CResourceManager::GetInst()->FindTexture(Name);
-
-	   if (!Texture)
-		   return false;
-
-	   m_TextureInfo.push_back(MaterialTextureInfo());
-
-	   int Index = (int)m_TextureInfo.size() - 1;
-
-	   m_TextureInfo[Index].Register = Register;
-	   m_TextureInfo[Index].ShaderType = ShaderType;
-	   m_TextureInfo[Index].Name = Name;
-	   m_TextureInfo[Index].Texture = Texture;
-
-	   return true;
-   }
-
-   bool CMaterial::AddTextureFullPath(int Register, int ShaderType, 
-	   const std::string& Name, const TCHAR* FullPath)
-  {
-   
-	   CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath);
-
-	   CTexture* Texture = CResourceManager::GetInst()->FindTexture(Name);
-
-	   if (!Texture)
-		   return false;
-
-	   m_TextureInfo.push_back(MaterialTextureInfo());
-
-	   int Index = (int)m_TextureInfo.size() - 1;
-
-	   m_TextureInfo[Index].Register = Register;
-	   m_TextureInfo[Index].ShaderType = ShaderType;
-	   m_TextureInfo[Index].Name = Name;
-	   m_TextureInfo[Index].Texture = Texture;
-
-	   return true;
-   }
-
-   bool CMaterial::SetTexture(int Index, int Register, int ShaderType, 
-	   const std::string& Name, CTexture* Texture)
-  {
-	   if (Index >= (int)m_TextureInfo.size())
-		   return false;
-
-	   m_TextureInfo[Index].Register = Register;
-	   m_TextureInfo[Index].ShaderType = ShaderType;
-	   m_TextureInfo[Index].Name = Name;
-	   m_TextureInfo[Index].Texture = Texture;
-
-	   return true;
-   }
-
-   bool CMaterial::SetTexture(int Index, int Register, int ShaderType, const std::string& Name,
-	  const TCHAR* FileName, const std::string& PathName)
-  {
-	   CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName);
-
-	   CTexture* Texture = CResourceManager::GetInst()->FindTexture(Name);
-
-	   if (!Texture)
-		   return false;
-
-	   m_TextureInfo[Index].Texture = Texture;
-	   m_TextureInfo[Index].Register = Register;
-	   m_TextureInfo[Index].Name = Name;
-	   m_TextureInfo[Index].ShaderType = ShaderType;
-
-	   return true;
-   }
-
-   bool CMaterial::SetTexture(int Index, int Register, int ShaderType, const std::string& Name,
-	  const std::vector<TCHAR*>& vecFileName, const std::string& PathName)
-  {
-	   CResourceManager::GetInst()->LoadTexture(Name, vecFileName, PathName);
-
-	   CTexture* Texture = CResourceManager::GetInst()->FindTexture(Name);
-
-	   if (!Texture)
-		   return false;
-
-	   m_TextureInfo[Index].Register = Register;
-	   m_TextureInfo[Index].Name = Name;
-	   m_TextureInfo[Index].ShaderType = ShaderType;
-	   m_TextureInfo[Index].Texture = Texture;
-
-	   return true;
-   }
-
-   bool CMaterial::SetTextureFullPath(int Index, int Register, int ShaderType, const std::string& Name,
-	  const TCHAR* FullPath)
-  {
-	   CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath);
-
-	   CTexture* Texture = CResourceManager::GetInst()->FindTexture(Name);
-
-	   if (!Texture)
-		   return false;
-
-	   m_TextureInfo[Index].Register = Register;
-	   m_TextureInfo[Index].Name = Name;
-	   m_TextureInfo[Index].Texture = Texture;
-	   m_TextureInfo[Index].ShaderType = ShaderType;
-
-	   return true;
-   }
-
-bool CMaterial::Init()
- {
-	if (m_Scene)
+	if (!m_Scene)
 	{
-		// m_Shader = CResourceManager::GetInst()->FindShader("Mesh2DShader");
+		if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
+			return;
+
+		Texture = CResourceManager::GetInst()->FindTexture(Name);
 	}
+
 	else
 	{
-		// m_Shader = CResourceManager::GetInst()->FindShader("Mesh2DShader");
+		if (!m_Scene->GetSceneResource()->LoadTexture(Name, FileName, PathName))
+			return;
+
+		Texture = m_Scene->GetSceneResource()->FindTexture(Name);
 	}
 
-	m_CBuffer = new CMaterialConstantBuffer;
-	m_CBuffer->Init();
+	m_TextureInfo.push_back(MaterialTextureInfo());
 
-	return true;
- }
+	int Index = static_cast<int>(m_TextureInfo.size()) - 1;
+
+	m_TextureInfo[Index].Register = Register;
+	m_TextureInfo[Index].Name = Name;
+	m_TextureInfo[Index].Texture = Texture;
+	m_TextureInfo[Index].ShaderType = ShaderType;
+}
+
+void CMaterial::AddTextureFullPath(int Register, int ShaderType, const std::string& Name, const TCHAR* FullPath)
+{
+	/*if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
+		return;
+
+	m_TextureInfo.push_back(MaterialTextureInfo());
+
+	int	Index = (int)m_TextureInfo.size() - 1;
+
+	m_TextureInfo[Index].Register = Register;
+	m_TextureInfo[Index].Name = Name;
+	m_TextureInfo[Index].Texture = CResourceManager::GetInst()->FindTexture(Name);
+	m_TextureInfo[Index].ShaderType = ShaderType;*/
+}
+
+void CMaterial::AddTexture(int                        Register, int ShaderType, const std::string& Name,
+	const std::vector<TCHAR*>& vecFileName, const std::string& PathName)
+{
+	/*if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
+		return;
+
+	m_TextureInfo.push_back(MaterialTextureInfo());
+
+	int	Index = (int)m_TextureInfo.size() - 1;
+
+	m_TextureInfo[Index].Register = Register;
+	m_TextureInfo[Index].Name = Name;
+	m_TextureInfo[Index].Texture = CResourceManager::GetInst()->FindTexture(Name);
+	m_TextureInfo[Index].ShaderType = ShaderType;*/
+}
+
+void CMaterial::SetTexture(int Index, CTexture* Texture)
+{
+	m_TextureInfo[Index].Texture = Texture;
+}
+
+void CMaterial::SetTexture(int Index, int Register, int ShaderType, const std::string& Name, CTexture* Texture)
+{
+	m_TextureInfo[Index].Register = Register;
+	m_TextureInfo[Index].Name = Name;
+	m_TextureInfo[Index].Texture = Texture;
+	m_TextureInfo[Index].ShaderType = ShaderType;
+}
+
+void CMaterial::SetTexture(int Index, int Register, int ShaderType, const std::string& Name, const TCHAR* FileName,
+	const std::string& PathName)
+{
+	CTexture* Texture = nullptr;
+
+	if (!m_Scene)
+	{
+		if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
+			return;
+
+		Texture = CResourceManager::GetInst()->FindTexture(Name);
+	}
+
+	else
+	{
+		if (!m_Scene->GetSceneResource()->LoadTexture(Name, FileName, PathName))
+			return;
+
+		Texture = m_Scene->GetSceneResource()->FindTexture(Name);
+	}
+
+	m_TextureInfo[Index].Register = Register;
+	m_TextureInfo[Index].Name = Name;
+	m_TextureInfo[Index].Texture = Texture;
+	m_TextureInfo[Index].ShaderType = ShaderType;
+}
+
+void CMaterial::SetTextureFullPath(int                Index, int         Register, int ShaderType,
+	const std::string& Name, const TCHAR* FullPath)
+{
+	if (!CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath))
+		return;
+
+	m_TextureInfo[Index].Register = Register;
+	m_TextureInfo[Index].Name = Name;
+	m_TextureInfo[Index].Texture = CResourceManager::GetInst()->FindTexture(Name);
+	m_TextureInfo[Index].ShaderType = ShaderType;
+}
+
+void CMaterial::SetTexture(int                        Index, int Register, int ShaderType, const std::string& Name,
+	const std::vector<TCHAR*>& vecFileName, const std::string& PathName)
+{
+	/*if (!CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName))
+		return;
+
+	m_TextureInfo[Index].Register = Register;
+	m_TextureInfo[Index].Name = Name;
+	m_TextureInfo[Index].Texture = CResourceManager::GetInst()->FindTexture(Name);
+	m_TextureInfo[Index].ShaderType = ShaderType;*/
+}
 
 void CMaterial::SetShader(const std::string& Name)
-   {
-	   // m_Shader = CResourceManager::GetInst()->FindShader();
-   }
+{
+	m_Shader = static_cast<CGraphicShader*>(CResourceManager::GetInst()->FindShader(Name));
+}
 
-   void CMaterial::Render()
-   {
-	   // 입력 조립기 + Shader 세팅 
-	   if (m_Shader)
-		   m_Shader->SetShader();
+void CMaterial::Render()
+{
+	if (m_Shader)
+		m_Shader->SetShader();
 
-	   // 상수 버퍼 넘겨주기 
-	   if (m_CBuffer)
-	   {
-		   m_CBuffer->SetBaseColor(m_BaseColor);
-		   m_CBuffer->SetOpacity(m_Opacity);
+	if (m_CBuffer)
+	{
+		m_CBuffer->SetBaseColor(m_BaseColor);
+		m_CBuffer->SetOpacity(m_Opacity);
 
-		   m_CBuffer->UpdateCBuffer();
-	   }
+		m_CBuffer->UpdateCBuffer();
+	}
 
-	   // 출력 병합기 관련 상태 세팅
-	   for (int i = 0; i < (int)RenderState_Type::Max; i++)
-	   {
-		   if (m_RenderStateArray[i])
-			   m_RenderStateArray[i]->SetState();
-	   }
+	for (int i = 0; i < static_cast<int>(RenderState_Type::Max); ++i)
+	{
+		if (m_RenderStateArray[i])
+			m_RenderStateArray[i]->SetState();
+	}
 
-	   // Texture 자원 정보 넘겨주기
-	   size_t Size = m_TextureInfo.size();
-	   for (size_t i = 0; i < Size; i++)
-	   {
-		   m_TextureInfo[i].Texture->SetShader(m_TextureInfo[i].Register,
-			   m_TextureInfo[i].ShaderType, 0);
-	   }
+	size_t Size = m_TextureInfo.size();
 
-   }
+	for (size_t i = 0; i < Size; ++i)
+	{
+		m_TextureInfo[i].Texture->SetShader(m_TextureInfo[i].Register, m_TextureInfo[i].ShaderType, 0);
+	}
+}
 
-   void CMaterial::Reset()
-   {
-	   // Texture 자원 정보 해제하기
-	   size_t Size = m_TextureInfo.size();
-	   for (size_t i = 0; i < Size; i++)
-	   {
-		   m_TextureInfo[i].Texture->ResetShader(m_TextureInfo[i].Register,
-			   m_TextureInfo[i].ShaderType, 0);
-	   }
-   
-	   // 출력 병합기 관련 상태 해제 
-	   for (int i = 0; i < (int)RenderState_Type::Max; i++)
-	   {
-		   if (m_RenderStateArray[i])
-			   m_RenderStateArray[i]->SetState();
-	   }
-   }
+void CMaterial::Reset()
+{
+	size_t Size = m_TextureInfo.size();
 
-   CMaterial* CMaterial::Clone()
-   {
-	   return new CMaterial(*this);
-   }
+	for (size_t i = 0; i < Size; ++i)
+	{
+		m_TextureInfo[i].Texture->ResetShader(m_TextureInfo[i].Register, m_TextureInfo[i].ShaderType, 0);
+	}
+
+	for (int i = 0; i < static_cast<int>(RenderState_Type::Max); ++i)
+	{
+		if (m_RenderStateArray[i])
+			m_RenderStateArray[i]->ResetState();
+	}
+}
+
+CMaterial* CMaterial::Clone()
+{
+	return new CMaterial(*this);
+}

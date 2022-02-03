@@ -279,6 +279,9 @@
     <ClInclude Include="Animation\AnimationSequence2DInstance.h">
       <Filter>07. Animation</Filter>
     </ClInclude>
+    <ClInclude Include="Component\ObjectComponent.h">
+      <Filter>05. Component\02. ObjectComponent</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -430,6 +433,9 @@
     </ClCompile>
     <ClCompile Include="Animation\AnimationSequence2DInstance.cpp">
       <Filter>07. Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ObjectComponent.cpp">
+      <Filter>05. Component\02. ObjectComponent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

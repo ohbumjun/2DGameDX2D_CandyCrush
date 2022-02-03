@@ -82,6 +82,31 @@ CAnimationConstantBuffer* CResourceManager::GetAnimationCBuffer() const
 	return m_AnimationManager->GetAnimationCBuffer();
 }
 
+CMaterialConstantBuffer* CResourceManager::GetMaterialCBuffer() const
+{
+	return m_MaterialManager->GetMaterialConstantBuffer();
+}
+
+CShader* CResourceManager::FindShader(const std::string& Name)
+{
+	return m_ShaderManager->FindShader(Name);
+}
+
+CConstantBuffer* CResourceManager::FindConstantBuffer(const std::string& Name)
+{
+	return m_ShaderManager->FindConstantBuffer(Name);
+}
+
+CMaterial* CResourceManager::FindMaterial(const std::string& Name)
+{
+	return m_MaterialManager->FindMaterial(Name);
+}
+
+void CResourceManager::ReleaseMaterial(const std::string& Name)
+{
+	m_MaterialManager->ReleaseMaterial(Name);
+}
+
 bool CResourceManager::Init()
 {
 	// Mesh

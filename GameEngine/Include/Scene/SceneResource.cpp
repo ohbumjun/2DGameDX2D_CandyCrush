@@ -149,6 +149,24 @@ bool CSceneResource::LoadAnimationSequence2D(const std::string& Name, const TCHA
 	return true;
 }
 
+CShader* CSceneResource::FindShader(const std::string& Name)
+{
+	auto iter = m_mapShader.find(Name);
+
+	if (iter == m_mapShader.end())
+	{
+		CShader* Shader = CResourceManager::GetInst()->FindShader(Name);
+
+		if (!Shader)
+			return nullptr;
+
+		m_mapShader.insert(std::make_pair(Name, Shader));
+		return Shader;
+	}
+
+	return iter->second;
+}
+
 bool CSceneResource::Init()
 {
 	return true;

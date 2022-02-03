@@ -292,7 +292,7 @@ CAnimationSequence2DData* CAnimationSequence2DInstance::FindAnimationSequence2D(
 		 return;
 
 	// Frame ¹Ù²Ù°í
-	 float FrameCount = m_CurrentAnimation->GetSequence2D()->GetFrameCount();
+	 int FrameCount = (int)m_CurrentAnimation->GetSequence2D()->GetFrameCount();
 	 m_CurrentAnimation->m_FrameTime = m_CurrentAnimation->GetPlayTime() / FrameCount;
 	 m_CurrentAnimation->m_CurrentTime += DeltaTime;
 

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../Ref.h"
+#include "../Component/SceneComponent.h"
+#include "../Component/ObjectComponent.h"
 
 class CGameObject : public CRef
 {
