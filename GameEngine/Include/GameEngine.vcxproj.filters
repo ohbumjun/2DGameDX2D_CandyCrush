@@ -117,6 +117,9 @@
     <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\04. Animation">
       <UniqueIdentifier>{f427a670-106c-40a4-bfb8-11e9128c9f0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Component\01. SceneComponent\01. MeshComponent">
+      <UniqueIdentifier>{ff78ef78-477e-490a-8004-7842e49442a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -282,6 +285,12 @@
     <ClInclude Include="Component\ObjectComponent.h">
       <Filter>05. Component\02. ObjectComponent</Filter>
     </ClInclude>
+    <ClInclude Include="Component\SpriteComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\StaticMeshComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -437,6 +446,8 @@
     <ClCompile Include="Component\ObjectComponent.cpp">
       <Filter>05. Component\02. ObjectComponent</Filter>
     </ClCompile>
+    <ClCompile Include="Component\SpriteComponent.cpp" />
+    <ClCompile Include="Component\StaticMeshComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">

@@ -11,11 +11,11 @@ public :
 protected: 
 	Component_Type m_ComponentType;
 	class CScene* m_Scene;
-	class CGameObject* m_GameObject;
+	class CGameObject* m_OwnerGameObject;
 public :
 	CGameObject* GetGameObject() const
 {
-		return m_GameObject;
+		return m_OwnerGameObject;
 }
 	CScene* GetScene() const
 	{

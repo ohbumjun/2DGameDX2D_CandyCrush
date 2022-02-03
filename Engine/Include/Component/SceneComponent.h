@@ -22,6 +22,9 @@ public :
 	bool DeleteChild(const std::string& Name);
 	CSceneComponent* FindSceneComponent(const std::string& Name);
 public :
+	void SetSceneComponent(class CGameObject* Object);
+	void SetScene(class CScene* Scene);
+	void SetGameObject(CGameObject* Object) override;
 	virtual void Destroy() override;
 public :
 	virtual bool Init();

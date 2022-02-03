@@ -170,6 +170,8 @@
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="Component\ObjectComponent.h" />
     <ClInclude Include="Component\SceneComponent.h" />
+    <ClInclude Include="Component\SpriteComponent.h" />
+    <ClInclude Include="Component\StaticMeshComponent.h" />
     <ClInclude Include="Component\Transform.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="Engine.h" />
@@ -227,6 +229,8 @@
     <ClCompile Include="Component\Component.cpp" />
     <ClCompile Include="Component\ObjectComponent.cpp" />
     <ClCompile Include="Component\SceneComponent.cpp" />
+    <ClCompile Include="Component\SpriteComponent.cpp" />
+    <ClCompile Include="Component\StaticMeshComponent.cpp" />
     <ClCompile Include="Component\Transform.cpp" />
     <ClCompile Include="GameObject\GameObject.cpp" />
     <ClCompile Include="Ref.cpp" />
