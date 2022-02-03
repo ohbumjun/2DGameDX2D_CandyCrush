@@ -23,3 +23,8 @@
 {
 	 m_Buffer->UpdateBuffer(&m_BufferData);
  }
+
+CColliderConstantBuffer* CColliderConstantBuffer::Clone()
+ {
+	return new CColliderConstantBuffer(*this);
+}

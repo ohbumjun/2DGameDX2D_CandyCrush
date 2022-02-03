@@ -14,6 +14,7 @@ private :
 public :
     virtual bool Init() override;
     virtual void UpdateCBuffer() override;
+    CColliderConstantBuffer* Clone() override;
 public :
     void SetColliderColor(float r, float g, float b, float a)
 	{
@@ -28,5 +29,6 @@ public :
         m_BufferData.matWVP = matWVP;
 	}
 };
+
 
 
