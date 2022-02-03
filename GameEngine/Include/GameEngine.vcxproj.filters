@@ -129,6 +129,9 @@
     <Filter Include="08. Collision">
       <UniqueIdentifier>{675c5142-638c-4c29-b75e-7d4c1ddcac62}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\05. Collider">
+      <UniqueIdentifier>{e821be00-51a6-4c29-8600-86646c51c745}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -312,6 +315,9 @@
     <ClInclude Include="Collision\CollisionManager.h">
       <Filter>08. Collision</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Shader\ColliderConstantBuffer.h">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\05. Collider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -484,6 +490,9 @@
     </ClCompile>
     <ClCompile Include="Collision\CollisionManager.cpp">
       <Filter>08. Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\ColliderConstantBuffer.cpp">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\05. Collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
