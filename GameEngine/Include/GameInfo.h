@@ -172,3 +172,9 @@ struct MeshContainer {
 	D3D11_PRIMITIVE_TOPOLOGY Primitive;
 };
 
+struct CollisionProfile {
+	std::string Name;
+	bool CollisionEnable;
+	std::vector<Collision_Interaction> vecInteraction;
+	Collision_Channel Channel;
+};

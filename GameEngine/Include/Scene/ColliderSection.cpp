@@ -1,4 +1,5 @@
 #include "ColliderSection.h"
+#include "../Component/ColliderComponent.h"
 
 CColliderSection::CColliderSection()
 {}
@@ -33,7 +34,7 @@ void CColliderSection::Clear()
 void CColliderSection::AddCollider(CColliderComponet* Collider)
 {
 	m_vecCollider.push_back(Collider);
-	Collider->AddSectionIndex(m_Index);
+	// Collider->AddSectionIndex(m_Index);
 }
 
 void CColliderSection::CollisionObject(float DeltaTime)
@@ -43,4 +44,6 @@ CColliderComponent* CColliderSection::CollisionMouse(bool Is2D, float DeltaTime)
 {}
 
 int CColliderSection::SortY(const void* Src, const void* Dest)
-{}
+{
+	return 1;
+}

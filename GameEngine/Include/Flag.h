@@ -44,6 +44,25 @@ enum class Collider_Type {
 	Pixel
 };
 
+enum class Collision_Interaction {
+	Collision,
+	Ignore
+};
+
+enum class Collision_Channel {
+	Object,
+	Player,
+	PlayerAttack,
+	Monster,
+	MonsterAttack,
+	Channel1,
+	Channel2,
+	Channel3,
+	Channel4,
+	Channel5,
+	Channel_Max
+};
+
 enum class Component_Type {
 	SceneComponent,
 	ObjectComponent

@@ -167,6 +167,7 @@
   <ItemGroup>
     <ClInclude Include="Animation\AnimationSequence2DData.h" />
     <ClInclude Include="Animation\AnimationSequence2DInstance.h" />
+    <ClInclude Include="Collision\CollisionManager.h" />
     <ClInclude Include="Component\ColliderComponent.h" />
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="Component\ObjectComponent.h" />
@@ -229,6 +230,7 @@
   <ItemGroup>
     <ClCompile Include="Animation\AnimationSequence2DData.cpp" />
     <ClCompile Include="Animation\AnimationSequence2DInstance.cpp" />
+    <ClCompile Include="Collision\CollisionManager.cpp" />
     <ClCompile Include="Component\ColliderComponent.cpp" />
     <ClCompile Include="Component\Component.cpp" />
     <ClCompile Include="Component\ObjectComponent.cpp" />

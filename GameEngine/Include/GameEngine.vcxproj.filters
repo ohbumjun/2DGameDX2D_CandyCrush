@@ -126,6 +126,9 @@
     <Filter Include="05. Component\01. SceneComponent\02. Collider">
       <UniqueIdentifier>{fc4f82f4-b30c-43ea-a0c7-c8c5363249b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="08. Collision">
+      <UniqueIdentifier>{675c5142-638c-4c29-b75e-7d4c1ddcac62}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -306,6 +309,9 @@
     <ClInclude Include="Scene\ColliderSection.h">
       <Filter>03. Scene\02. SceneCollision</Filter>
     </ClInclude>
+    <ClInclude Include="Collision\CollisionManager.h">
+      <Filter>08. Collision</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -475,6 +481,9 @@
     </ClCompile>
     <ClCompile Include="Scene\ColliderSection.cpp">
       <Filter>03. Scene\02. SceneCollision</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision\CollisionManager.cpp">
+      <Filter>08. Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
