@@ -167,6 +167,7 @@
   <ItemGroup>
     <ClInclude Include="Animation\AnimationSequence2DData.h" />
     <ClInclude Include="Animation\AnimationSequence2DInstance.h" />
+    <ClInclude Include="Component\ColliderComponent.h" />
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="Component\ObjectComponent.h" />
     <ClInclude Include="Component\SceneComponent.h" />
@@ -212,6 +213,7 @@
     <ClInclude Include="Resource\Shader\TransformConstantBuffer.h" />
     <ClInclude Include="Resource\Texture\Texture.h" />
     <ClInclude Include="Resource\Texture\TextureManager.h" />
+    <ClInclude Include="Scene\ColliderSection.h" />
     <ClInclude Include="Scene\Scene.h" />
     <ClInclude Include="Scene\SceneCollision.h" />
     <ClInclude Include="Scene\SceneManager.h" />
@@ -227,6 +229,7 @@
   <ItemGroup>
     <ClCompile Include="Animation\AnimationSequence2DData.cpp" />
     <ClCompile Include="Animation\AnimationSequence2DInstance.cpp" />
+    <ClCompile Include="Component\ColliderComponent.cpp" />
     <ClCompile Include="Component\Component.cpp" />
     <ClCompile Include="Component\ObjectComponent.cpp" />
     <ClCompile Include="Component\SceneComponent.cpp" />
@@ -269,6 +272,7 @@
     <ClCompile Include="Resource\Shader\TransformConstantBuffer.cpp" />
     <ClCompile Include="Resource\Texture\Texture.cpp" />
     <ClCompile Include="Resource\Texture\TextureManager.cpp" />
+    <ClCompile Include="Scene\ColliderSection.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneCollision.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />

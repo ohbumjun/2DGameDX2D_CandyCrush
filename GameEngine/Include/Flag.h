@@ -32,6 +32,18 @@ enum class Image_Type {
 	Array
 };
 
+enum class Collision_State {
+	Begin,
+	End,
+	Max
+};
+
+enum class Collider_Type {
+	Circle,
+	Box2D,
+	Pixel
+};
+
 enum class Component_Type {
 	SceneComponent,
 	ObjectComponent

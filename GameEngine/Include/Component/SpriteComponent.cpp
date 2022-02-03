@@ -1,65 +1,66 @@
-#include "SpriteComponent.h"
-#include "../Scene/SceneResource.h"
-#include "../Scene/Scene.h"
-#include "../Resource/ResourceManager.h"
 
-CSpriteComponent::CSpriteComponent()
+#include "SpriteComponent.h"
+#include "../Scene/Scene.h"
+#include "../Scene/SceneResource.h"
+#include "../Animation/AnimationSequence2DInstance.h"
+#include "../Render/RenderManager.h"
+#include "../Resource/Shader/Standard2DConstantBuffer.h"
+#include "../Scene/SceneManager.h"
+
+CSpriteComponent::CSpriteComponent() :
+	m_Animation(nullptr)
 {
 	SetTypeID<CSpriteComponent>();
 	m_Render = true;
 }
 
-CSpriteComponent::CSpriteComponent(const CSpriteComponent& Component) :
-CSceneComponent(Component)
+CSpriteComponent::CSpriteComponent(const CSpriteComponent& com) :
+	CSceneComponent(com)
 {
-	m_SpriteMesh = Component.m_SpriteMesh;
+	m_Mesh = com.m_Mesh;
 
-	if (Component.m_Material)
-		m_Material = Component.m_Material->Clone();
-	if (Component.m_Animation)
-		m_Animation = Component.m_Animation->Clone();
+	if (com.m_Animation)
+		m_Animation = com.m_Animation->Clone();
+
+	if (com.m_Material)
+		m_Material = com.m_Material->Clone();
 }
 
 CSpriteComponent::~CSpriteComponent()
-{}
-
-void CSpriteComponent::SetMaterial(const std::string& Name)
 {
-	CMaterial* Material = nullptr;
-
-	if (m_Scene)
-	{
-		Material = m_Scene->GetSceneResource()->FindMaterial(Name);
-	}
-	else
-	{
-		Material = CResourceManager::GetInst()->FindMaterial(Name);
-	}
-
-	if (Material)
-	{
-		m_Material = Material->Clone();
-		m_Material->SetScene(m_Scene);
-	}
+	SAFE_DELETE(m_Animation);
 }
 
 void CSpriteComponent::SetMaterial(CMaterial* Material)
 {
-	if (Material)
-	{
-		m_Material = Material->Clone();
-		m_Material->SetScene(m_Scene);
-	}
-}
+	m_Material = Material->Clone();
 
-void CSpriteComponent::SetTransparency(bool Enable)
-{
-	m_Material->SetTransparency(Enable);
+	m_Material->SetScene(m_Scene);
 }
 
 void CSpriteComponent::SetBaseColor(const Vector4& Color)
 {
 	m_Material->SetBaseColor(Color);
+}
+
+void CSpriteComponent::SetBaseColor(float r, float g, float b, float a)
+{
+	m_Material->SetBaseColor(r, g, b, a);
+}
+
+void CSpriteComponent::SetRenderState(CRenderState* State)
+{
+	m_Material->SetRenderState(State);
+}
+
+void CSpriteComponent::SetRenderState(const std::string& Name)
+{
+	m_Material->SetRenderState(Name);
+}
+
+void CSpriteComponent::SetTransparency(bool Enable)
+{
+	m_Material->SetTransparency(Enable);
 }
 
 void CSpriteComponent::SetOpacity(float Opacity)
@@ -70,39 +71,6 @@ void CSpriteComponent::SetOpacity(float Opacity)
 void CSpriteComponent::AddOpacity(float Opacity)
 {
 	m_Material->AddOpacity(Opacity);
-}
-
-void CSpriteComponent::SetRenderState(const std::string& Name)
-{
-	m_Material->SetRenderState(Name);
-}
-
-void CSpriteComponent::SetRenderState(CRenderState* State)
-{
-	m_Material->SetRenderState(State);
-}
-
-void CSpriteComponent::SetTexture(int Index, int Register, int ShaderType, const std::string& Name, CTexture* Texture)
-{
-	m_Material->SetTexture(Index, Register, ShaderType, Name, Texture);
-}
-
-void CSpriteComponent::SetTexture(int Index, int Register, int ShaderType, const std::string& Name,
-	const TCHAR* FileName, const std::string& PathName)
-{
-	m_Material->SetTexture(Index, Register, ShaderType, Name, FileName, PathName);
-}
-
-void CSpriteComponent::SetTexture(int Index, int Register, int ShaderType, const std::string& Name,
-	const std::vector<TCHAR*>& vecFileName, const std::string& PathName)
-{
-	m_Material->SetTexture(Index, Register, ShaderType, Name, vecFileName, PathName);
-}
-
-void CSpriteComponent::SetTextureFullPath(int Index, int Register, int ShaderType, const std::string& FileName,
-	const TCHAR* FullPath)
-{
-	m_Material->SetTextureFullPath(Index, Register, ShaderType, FileName, FullPath);
 }
 
 void CSpriteComponent::AddTexture(int Register, int ShaderType, const std::string& Name, CTexture* Texture)
@@ -116,16 +84,38 @@ void CSpriteComponent::AddTexture(int Register, int ShaderType, const std::strin
 	m_Material->AddTexture(Register, ShaderType, Name, FileName, PathName);
 }
 
+void CSpriteComponent::AddTextureFullPath(int Register, int ShaderType, const std::string& Name, const TCHAR* FullPath)
+{
+	m_Material->AddTextureFullPath(Register, ShaderType, Name, FullPath);
+}
+
 void CSpriteComponent::AddTexture(int Register, int ShaderType, const std::string& Name,
 	const std::vector<TCHAR*>& vecFileName, const std::string& PathName)
 {
 	m_Material->AddTexture(Register, ShaderType, Name, vecFileName, PathName);
 }
 
-void CSpriteComponent::AddTextureFullPath(int Register, int ShaderType, const std::string& Name,
+void CSpriteComponent::SetTexture(int Index, int Register, int ShaderType, const std::string& Name, CTexture* Texture)
+{
+	m_Material->SetTexture(Index, Register, ShaderType, Name, Texture);
+}
+
+void CSpriteComponent::SetTexture(int Index, int Register, int ShaderType, const std::string& Name, const TCHAR* FileName,
+	const std::string& PathName)
+{
+	m_Material->SetTexture(Index, Register, ShaderType, Name, FileName, PathName);
+}
+
+void CSpriteComponent::SetTextureFullPath(int Index, int Register, int ShaderType, const std::string& Name,
 	const TCHAR* FullPath)
 {
-	m_Material->AddTexture(Register, ShaderType, Name, FullPath);
+	m_Material->SetTextureFullPath(Index, Register, ShaderType, Name, FullPath);
+}
+
+void CSpriteComponent::SetTexture(int Index, int Register, int ShaderType, const std::string& Name,
+	const std::vector<TCHAR*>& vecFileName, const std::string& PathName)
+{
+	m_Material->SetTexture(Index, Register, ShaderType, Name, vecFileName, PathName);
 }
 
 void CSpriteComponent::Start()
@@ -138,12 +128,12 @@ void CSpriteComponent::Start()
 
 bool CSpriteComponent::Init()
 {
-	if (!CSceneComponent::Init())
-		return false;
-
-	m_SpriteMesh = (CSpriteMesh*)m_Scene->GetSceneResource()->FindMesh("SpriteMesh");
-
+	m_Mesh = (CSpriteMesh*)m_Scene->GetSceneResource()->FindMesh("SpriteMesh");
 	SetMaterial(m_Scene->GetSceneResource()->FindMaterial("BaseTexture"));
+
+	SetMeshSize(1.f, 1.f, 0.f);
+	SetWorldScale((float)m_Material->GetTextureWidth(),
+		(float)m_Material->GetTextureHeight(), 1.f);
 
 	return true;
 }
@@ -151,6 +141,9 @@ bool CSpriteComponent::Init()
 void CSpriteComponent::Update(float DeltaTime)
 {
 	CSceneComponent::Update(DeltaTime);
+
+	if (m_Animation)
+		m_Animation->Update(DeltaTime);
 }
 
 void CSpriteComponent::PostUpdate(float DeltaTime)
@@ -167,12 +160,17 @@ void CSpriteComponent::Render()
 {
 	CSceneComponent::Render();
 
-	if (!m_Material || !m_SpriteMesh)
-		return;
+	if (m_Animation)
+	{
+		CRenderManager::GetInst()->GetStandard2DConstantBuffer()->SetAnimEnable(m_Animation->GetFrameCount() > 0);
+		CRenderManager::GetInst()->GetStandard2DConstantBuffer()->UpdateCBuffer();
+
+		m_Animation->SetShader();
+	}
 
 	m_Material->Render();
 
-	m_SpriteMesh->Render();
+	m_Mesh->Render();
 
 	m_Material->Reset();
 }

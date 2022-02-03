@@ -287,17 +287,20 @@ CAnimationSequence2DData* CAnimationSequence2DInstance::FindAnimationSequence2D(
 	 if (m_CurrentAnimation->GetSequence2D()->GetFrameCount() <= 0)
 		 return;
 
-	// Texture 넘기고
+	// Texture 넘기고 ?
+	// No. 이것은, 해당 Instance를 들고 있는 SpriteComponent의 Material에서 해당 Texutre를 넘길 것이다.
 	// m_CurrentAnimation->GetSequence2D()->GetTexture()->SetShader(0, (int)Buffer_Shader_Type::Pixel, 0);
 
 	// 상수 자원 넘기고
 	 AnimationFrameData FrameData = m_CurrentAnimation->GetSequence2D()->GetFrameData();
 	 Vector2 TextureSize = Vector2((float)m_CurrentAnimation->GetSequence2D()->GetTexture()->GetWidth(), (float)m_CurrentAnimation->GetSequence2D()->GetTexture()->GetHeight());
-	 m_CBuffer->SetStartUV(FrameData.StartPos / TextureSize);
-	 m_CBuffer->SetEndUV((FrameData.StartPos + FrameData.Size) / TextureSize);
-	 m_CBuffer->SetImageType(m_CurrentAnimation->GetSequence2D()->GetTexture()->GetImageType());
-	 m_CBuffer->UpdateCBuffer();
-
+	 if (m_CBuffer)
+	 {
+	 	 m_CBuffer->SetStartUV(FrameData.StartPos / TextureSize);
+		 m_CBuffer->SetEndUV((FrameData.StartPos + FrameData.Size) / TextureSize);
+		 m_CBuffer->SetImageType(m_CurrentAnimation->GetSequence2D()->GetTexture()->GetImageType());
+		 m_CBuffer->UpdateCBuffer();
+	 }
 }
 
  void CAnimationSequence2DInstance::Update(float DeltaTime)

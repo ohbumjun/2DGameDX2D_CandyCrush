@@ -24,18 +24,13 @@ CMaterialManager::~CMaterialManager()
 
 	 Material->SetShader("ColorMeshShader");
 
-	 // Base Texture Material
 	 if (!CreateMaterial<CMaterial>("BaseTexture"))
 		 return false;
 
 	 Material = FindMaterial("BaseTexture");
-
 	 Material->SetShader("Mesh2DShader");
 
 	 CTexture* Texture = CResourceManager::GetInst()->FindTexture("EngineTexture");
-
-	 if (!Texture)
-		 return false;
 
 	 Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "EngineTexture", Texture);
 

@@ -1,4 +1,6 @@
 #include "RenderManager.h"
+
+#include "BlendState.h"
 #include "DepthStencilState.h"
 #include "RenderState.h"
 #include "RenderStateManager.h"
@@ -176,9 +178,25 @@ void CRenderManager::Render()
 		}
 	}
 
+	for (size_t i = 0; i < Size; i++)
+	{
+		size_t PartSize = m_vecRenderLayer[i]->vecComponent.size();
+
+		for (size_t j = 0; j < PartSize; j++)
+		{
+			m_vecRenderLayer[i]->vecComponent[j]->PostRender();
+		}
+	}
+
 	// Alpha 시작
+	m_BlendState->SetState();
+
+	// Widget
+
+	// MouseWidget 세팅
 
 	// Alpha 끝
+	m_BlendState->ResetState();
 
 	// DepthStencil 끝
 	m_DepthState->ResetState();

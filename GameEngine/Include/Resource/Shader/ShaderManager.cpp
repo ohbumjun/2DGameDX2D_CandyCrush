@@ -6,6 +6,7 @@
 #include "Standard2DConstantBuffer.h"
 #include "TransformConstantBuffer.h"
 #include "ColorMeshShader.h"
+#include "Mesh2DShader.h"
 
 CShaderManager::CShaderManager()
 {}
@@ -17,6 +18,8 @@ bool CShaderManager::Init()
 {
 	// Shader 
 	if (!CreateShader<CColorMeshShader>("ColorMeshShader"))
+		return false;
+	if (!CreateShader<CMesh2DShader>("Mesh2DShader"))
 		return false;
 
 	// 상수 버퍼

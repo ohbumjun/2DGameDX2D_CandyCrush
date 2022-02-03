@@ -123,6 +123,9 @@
     <Filter Include="02. Resource\02. Shader\02. ShaderClass\02. Mesh2D">
       <UniqueIdentifier>{e0e8ba8b-67e6-4c7b-b315-e34645ba27e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Component\01. SceneComponent\02. Collider">
+      <UniqueIdentifier>{fc4f82f4-b30c-43ea-a0c7-c8c5363249b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -297,6 +300,12 @@
     <ClInclude Include="Resource\Shader\Mesh2DShader.h">
       <Filter>02. Resource\02. Shader\02. ShaderClass\02. Mesh2D</Filter>
     </ClInclude>
+    <ClInclude Include="Component\ColliderComponent.h">
+      <Filter>05. Component\01. SceneComponent\02. Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\ColliderSection.h">
+      <Filter>03. Scene\02. SceneCollision</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -460,6 +469,12 @@
     </ClCompile>
     <ClCompile Include="Resource\Shader\Mesh2DShader.cpp">
       <Filter>02. Resource\02. Shader\02. ShaderClass\02. Mesh2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ColliderComponent.cpp">
+      <Filter>05. Component\01. SceneComponent\02. Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\ColliderSection.cpp">
+      <Filter>03. Scene\02. SceneCollision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -23,6 +23,10 @@ public :
 {
 		return m_PlayAnimation;
 }
+	size_t GetFrameCount() const
+{
+		return m_CurrentAnimation->GetSequence2D()->GetFrameCount();
+}
 public :
 	void SetOwnerComponent(class CSpriteComponent* OwnerComponent)
 {
