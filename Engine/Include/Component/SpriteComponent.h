@@ -2,7 +2,6 @@
 #include "SceneComponent.h"
 #include "../Resource/Material/Material.h"
 #include "../Resource/Mesh/SpriteMesh.h"
-#include "../Animation/AnimationSequence2DInstance.h"
 
 class CSpriteComponent :
     public CSceneComponent
@@ -15,7 +14,6 @@ protected:
 protected:
     CSharedPtr<CMaterial> m_Material;
     CSharedPtr<CSpriteMesh> m_SpriteMesh;
-    CAnimationSequence2DInstance* m_Animation;
 public :
     void SetMaterial(const std::string& Name);
     void SetMaterial(CMaterial* Material);
@@ -41,22 +39,5 @@ public :
         const std::vector<TCHAR*>& vecFileName, const std::string& PathName = TEXTURE_PATH);
     void AddTextureFullPath(int Register, int ShaderType, const std::string& Name,
         const TCHAR* FullPath);
-public :
-    virtual void Start();
-    virtual bool Init();
-    virtual void Update(float DeltaTime);
-    virtual void PostUpdate(float DeltaTime);
-    virtual void PrevRender() override;
-    virtual void Render() override;
-    virtual void PostRender() override;
-    virtual CSpriteComponent* Clone();
-public :
-    template<typename T>
-    bool CreateAnimationInstance(const std::string& Name)
-{
-        T* Animation = new T;
-        Animation->SetScene(m_Scene);
-        Animation->SetOwner(this);
-}
 };
 

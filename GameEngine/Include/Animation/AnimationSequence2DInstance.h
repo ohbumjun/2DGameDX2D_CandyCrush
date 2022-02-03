@@ -19,6 +19,20 @@ private :
 	std::string m_Name;
 	bool m_PlayAnimation;
 public :
+	bool IsPlay() const
+{
+		return m_PlayAnimation;
+}
+public :
+	void SetOwnerComponent(class CSpriteComponent* OwnerComponent)
+{
+		m_OwnerComponent = OwnerComponent;
+}
+	void SetPlay(bool Play)
+{
+		m_PlayAnimation = Play;
+}
+public :
 	void AddAnimation(const std::string& SequenceName, const std::string& AnimationName,
 		bool Loop = true, float PlayScale = 1.f, float PlayTime = 1.f, bool Reverse = false);
 	void AddAnimation(const std::string& SequenceName , const std::string& AnimationName,

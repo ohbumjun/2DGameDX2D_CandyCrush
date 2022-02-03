@@ -167,6 +167,24 @@ CShader* CSceneResource::FindShader(const std::string& Name)
 	return iter->second;
 }
 
+CMaterial* CSceneResource::FindMaterial(const std::string& Name)
+{
+	auto iter = m_mapMaterial.find(Name);
+
+	if (iter == m_mapMaterial.end())
+	{
+		CMaterial* Material = CResourceManager::GetInst()->FindMaterial(Name);
+
+		if (!Material)
+			return nullptr;
+
+		m_mapMaterial.insert(std::make_pair(Name, Material));
+
+		return Material;
+	}
+	return nullptr;
+}
+
 bool CSceneResource::Init()
 {
 	return true;

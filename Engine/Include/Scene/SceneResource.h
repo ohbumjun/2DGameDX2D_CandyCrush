@@ -35,6 +35,8 @@ public: // ============= Animation ============
 		const std::string& PathName = TEXTURE_PATH);
 public: // ============= Shader ============
 	class CShader* FindShader(const std::string& Name);
+public: // ============= Material ============
+	CMaterial* FindMaterial(const std::string& Name);
 public:
 	virtual bool Init();
 	virtual void Start();

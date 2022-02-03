@@ -22,6 +22,9 @@ private :
 	bool m_InheritRotX;
 	bool m_InheritRotY;
 	bool m_InheritRotZ;
+	bool	m_InheritParentRotationPosX;
+	bool	m_InheritParentRotationPosY;
+	bool	m_InheritParentRotationPosZ;
 	bool m_UpdateScale;
 	bool m_UpdateRot;
 	bool m_UpdatePos;
@@ -63,11 +66,42 @@ public :
 	{
 		m_UpdatePos = Update;
 	}
+	void SetInheritParentRotationPosX(bool Inherit)
+	{
+		m_InheritParentRotationPosX = Inherit;
+	}
+
+	void SetInheritParentRotationPosY(bool Inherit)
+	{
+		m_InheritParentRotationPosY = Inherit;
+	}
+
+	void SetInheritParentRotationPosZ(bool Inherit)
+	{
+		m_InheritParentRotationPosZ = Inherit;
+	}
 private :
 	Vector3 m_RelativeScale;
 	Vector3 m_RelativeRot;
 	Vector3 m_RelativePos;
 	Vector3 m_RelativeAxis[AXIS_MAX];
+public :
+	Vector3 GetRelativeScale() const
+	{
+		return m_RelativeScale;
+	}
+	Vector3 GetRelativeRot() const
+	{
+		return m_RelativeRot;
+	}
+	Vector3 GetRelativePos() const
+	{
+		return m_RelativePos;
+	}
+	Vector3 GetRelativeAxis(AXIS Axis) const
+	{
+		return m_RelativeAxis[Axis];
+	}
 public :
 	void SetRelativePos(const Vector3& Pos);
 	void SetRelativePos(float x, float y, float z);
@@ -107,6 +141,10 @@ public :
 	{
 		return m_WorldPos;
 	}
+	Vector3 GetWorldAxis(AXIS Axis)
+	{
+		return m_WorldAxis[Axis];
+	}
 public:
 	void SetWorldPos(const Vector3& Pos);
 	void SetWorldPos(float x, float y, float z);
@@ -132,9 +170,42 @@ private :
 	Matrix m_matPos;
 	Matrix m_matRot;
 	Matrix m_matWorld;
+	const Matrix& GetWorldMatrix()	const
+	{
+		return m_matWorld;
+	}
 private :
 	Vector3 m_Pivot;
 	Vector3 m_MeshSize;
+public :
+	Vector3 GetPivot() const
+	{
+		return m_Pivot;
+	}
+	Vector3 GetMeshSize() const
+	{
+		return m_MeshSize;
+	}
+public:
+	void SetPivot(const Vector3& Pivot)
+	{
+		m_Pivot = Pivot;
+	}
+
+	void SetPivot(float x, float y, float z)
+	{
+		m_Pivot = Vector3(x, y, z);
+	}
+
+	void SetMeshSize(const Vector3& Size)
+	{
+		m_MeshSize = Size;
+	}
+
+	void SetMeshSize(float x, float y, float z)
+	{
+		m_MeshSize = Vector3(x, y, z);
+	}
 public :
 	bool Init();
 	void Start();

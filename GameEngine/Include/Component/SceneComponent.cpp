@@ -206,7 +206,7 @@ void CSceneComponent::PostUpdate(float DeltaTime)
 	}
 }
 
-bool CSceneComponent::PrevRender()
+void CSceneComponent::PrevRender()
 {
 	if (m_Render)
 		CRenderManager::GetInst()->AddRenderLayer(this);
@@ -217,11 +217,10 @@ bool CSceneComponent::PrevRender()
 	{
 		m_vecChild[i]->PrevRender();
 	}
-
-	return true;
+	
 }
 
-bool CSceneComponent::Render()
+void CSceneComponent::Render()
 {
 
 	m_Transform->SetTransform();
@@ -238,11 +237,9 @@ bool CSceneComponent::Render()
 		m_vecChild[i]->Render();
 	}
 	*/
-
-	return true;
 }
 
-bool CSceneComponent::PostRender()
+void CSceneComponent::PostRender()
 {
 	size_t Size = m_vecChild.size();
 
@@ -250,8 +247,7 @@ bool CSceneComponent::PostRender()
 	{
 		m_vecChild[i]->PostRender();
 	}
-
-	return true;
+	
 }
 
 CSceneComponent* CSceneComponent::Clone()

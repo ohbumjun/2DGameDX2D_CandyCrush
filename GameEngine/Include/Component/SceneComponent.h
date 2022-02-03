@@ -6,11 +6,11 @@
 class CSceneComponent : public CComponent {
 	friend class CGameObject;
 	friend class CRenderManager;
-private :
+protected :
 	CSceneComponent();
 	CSceneComponent(const  CSceneComponent& Component);
 	virtual ~CSceneComponent() override;
-private :
+protected :
 	CSharedPtr<CSceneComponent> m_Parent;
 	std::vector<CSharedPtr<CSceneComponent>> m_vecChild;
 	CTransform* m_Transform;
@@ -31,9 +31,9 @@ public :
 	virtual void Start();
 	virtual void Update(float DeltaTime);
 	virtual void PostUpdate(float DeltaTime);
-	virtual bool PrevRender();
-	virtual bool Render();
-	virtual bool PostRender();
+	virtual void PrevRender();
+	virtual void Render();
+	virtual void PostRender();
 	virtual CSceneComponent* Clone();
 
 public:	// =============== 저주받은 Transform 영역 ===============

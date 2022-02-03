@@ -14,9 +14,9 @@ public :
 	virtual void Start();
 	virtual void Update(float DeltaTime) = 0;
 	virtual void PostUpdate(float DeltaTime) = 0;
-	virtual bool PrevRender() = 0;
-	virtual bool Render() = 0;
-	virtual bool PostRender() = 0;
+	virtual void PrevRender() = 0;
+	virtual void Render() = 0;
+	virtual void PostRender() = 0;
 	virtual CObjectComponent* Clone() = 0;
 };
 

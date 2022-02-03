@@ -33,9 +33,9 @@ public :
 	virtual void Start() = 0;
 	virtual void Update(float DeltaTime) = 0;
 	virtual void PostUpdate(float DeltaTime) = 0;
-	virtual bool PrevRender() = 0;
-	virtual bool Render() = 0;
-	virtual bool PostRender() = 0;
+	virtual void PrevRender() = 0;
+	virtual void Render() = 0;
+	virtual void PostRender() = 0;
 	virtual CComponent* Clone() = 0;
 };
 

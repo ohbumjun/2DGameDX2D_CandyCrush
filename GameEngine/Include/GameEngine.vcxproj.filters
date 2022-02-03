@@ -286,10 +286,10 @@
       <Filter>05. Component\02. ObjectComponent</Filter>
     </ClInclude>
     <ClInclude Include="Component\SpriteComponent.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>05. Component\01. SceneComponent\01. MeshComponent</Filter>
     </ClInclude>
     <ClInclude Include="Component\StaticMeshComponent.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>05. Component\01. SceneComponent\01. MeshComponent</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -446,8 +446,12 @@
     <ClCompile Include="Component\ObjectComponent.cpp">
       <Filter>05. Component\02. ObjectComponent</Filter>
     </ClCompile>
-    <ClCompile Include="Component\SpriteComponent.cpp" />
-    <ClCompile Include="Component\StaticMeshComponent.cpp" />
+    <ClCompile Include="Component\SpriteComponent.cpp">
+      <Filter>05. Component\01. SceneComponent\01. MeshComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\StaticMeshComponent.cpp">
+      <Filter>05. Component\01. SceneComponent\01. MeshComponent</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">
