@@ -123,6 +123,11 @@ struct AnimationCBuffer {
 	Vector3 Empty;
 };
 
+struct ColliderCBuffer {
+	Vector4 Color;
+	Matrix matWVP;
+};
+
 struct MaterialCBuffer {
 	Vector4 BaseColor;
 	float Opacity;
@@ -177,4 +182,12 @@ struct CollisionProfile {
 	bool CollisionEnable;
 	std::vector<Collision_Interaction> vecInteraction;
 	Collision_Channel Channel;
+};
+
+struct CollisionResult {
+	class CColliderComponent* Src;
+	class CColliderComponent* Dest;
+	CollisionResult() :
+	Src(nullptr),
+	Dest(nullptr){}
 };

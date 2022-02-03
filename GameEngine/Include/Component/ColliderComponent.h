@@ -15,11 +15,22 @@ private :
     Vector3 m_Min;
     Vector3 m_Max;
     Vector3 m_Offset;
+    CollisionProfile* m_Profile;
     std::vector<int> m_vecColliderSectionIndex;
+    CollisionResult m_Result;
+private :
     std::list<CSharedPtr<CColliderComponent>> m_PrevCollisionList;
+    bool m_CurrentCollisionCheck;
     std::list<CSharedPtr<CColliderComponent>> m_CurrentCollisionList;
     std::list<std::function<void()>> m_CollisionObjectCallback[(int)Collision_State::Max];
+private :
+    bool m_MouseCollision;
+    CollisionResult m_MouseResult;
     std::list<std::function<void()>> m_CollisionMouseCallback[(int)Collision_State::Max];
+private :
+    CSharedPtr<class CMesh> m_Mesh;
+    CSharedPtr<class CShader> m_Shader;
+    class CColliderConstantBuffer* m_CBuffer;
 public :
     virtual bool Init() override;
     virtual void Start() override;

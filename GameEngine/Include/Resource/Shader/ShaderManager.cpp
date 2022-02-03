@@ -31,6 +31,8 @@ bool CShaderManager::Init()
 		return false;
 	if (!CreateConstantBuffer("Standard2DBuffer", 3, (int)sizeof(Standard2DCBuffer), (int)Buffer_Shader_Type::Pixel))
 		return false;
+	if (!CreateConstantBuffer("ColliderCBuffer", 4, (int)sizeof(ColliderCBuffer), (int)Buffer_Shader_Type::Pixel))
+		return false;
 
 
 	return true;

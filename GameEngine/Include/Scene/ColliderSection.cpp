@@ -41,7 +41,9 @@ void CColliderSection::CollisionObject(float DeltaTime)
 {}
 
 CColliderComponent* CColliderSection::CollisionMouse(bool Is2D, float DeltaTime)
-{}
+{
+	return nullptr;
+}
 
 int CColliderSection::SortY(const void* Src, const void* Dest)
 {
