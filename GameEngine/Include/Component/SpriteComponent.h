@@ -53,10 +53,18 @@ public :
 public :
     template<typename T>
     bool CreateAnimationInstance(const std::string& Name)
-{
+	{
         T* Animation = new T;
         Animation->SetScene(m_Scene);
         Animation->SetOwner(this);
-}
+	    if (!Animation->Init())
+	    {
+	        SAFE_DELETE(Animation);
+	        return false;
+	    }
+	    SAFE_DELETE(m_Animation);
+	    m_Animation = Animation;
+	    return true;
+	}
 };
 

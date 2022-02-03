@@ -1,6 +1,7 @@
 #include "AnimationSequence2DInstance.h"
 #include "../../Scene/Scene.h"
 #include "../../Scene/SceneResource.h"
+#include "../Component/SpriteComponent.h"
 #include "../Resource/ResourceManager.h"
 #include "../Resource/Shader/AnimationConstantBuffer.h"
 
@@ -84,7 +85,10 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 		m_CurrentAnimation = Animation;
 		if (m_OwnerComponent)
 		{
-			// SpriteComponent Owner 贸府窍扁 
+			// SpriteComponent Owner 贸府窍扁
+			m_OwnerComponent->SetTexture(0, 0, (int)Buffer_Shader_Type::Pixel, 
+				Animation->GetSequence2D()->GetTexture()->GetName(), 
+				Animation->GetSequence2D()->GetTexture());
 		}
 	}
 
@@ -134,7 +138,10 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 		 m_CurrentAnimation = Animation;
 		 if (m_OwnerComponent)
 		 {
-			 // SpriteComponent Owner 贸府窍扁 
+			 // SpriteComponent Owner 贸府窍扁
+			 m_OwnerComponent->SetTexture(0, 0, (int)Buffer_Shader_Type::Pixel,
+				 Animation->GetSequence2D()->GetTexture()->GetName(),
+				 Animation->GetSequence2D()->GetTexture());
 		 }
 	 }
 
@@ -159,7 +166,10 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 	// Owner Component 贸府窍扁 ( Texture Setting )
 	if (m_OwnerComponent)
 	{
-		
+		// SpriteComponent Owner 贸府窍扁
+		m_OwnerComponent->SetTexture(0, 0, (int)Buffer_Shader_Type::Pixel,
+			Animation->GetSequence2D()->GetTexture()->GetName(),
+			Animation->GetSequence2D()->GetTexture());
 	}
 }
 
@@ -221,7 +231,10 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 
 	if (m_OwnerComponent)
 	{
-		
+		// SpriteComponent Owner 贸府窍扁
+		m_OwnerComponent->SetTexture(0, 0, (int)Buffer_Shader_Type::Pixel,
+			Animation->GetSequence2D()->GetTexture()->GetName(),
+			Animation->GetSequence2D()->GetTexture());
 	}
 }
 
@@ -258,7 +271,10 @@ CAnimationSequence2DData* CAnimationSequence2DInstance::FindAnimationSequence2D(
 {
 	if (m_OwnerComponent && m_CurrentAnimation)
 	{
-		// 
+		// SpriteComponent Owner 贸府窍扁
+		m_OwnerComponent->SetTexture(0, 0, (int)Buffer_Shader_Type::Pixel,
+			m_CurrentAnimation->GetSequence2D()->GetTexture()->GetName(),
+			m_CurrentAnimation->GetSequence2D()->GetTexture());
 	}
 }
 

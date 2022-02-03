@@ -16,6 +16,8 @@ CSceneComponent(Component)
 
 	if (Component.m_Material)
 		m_Material = Component.m_Material->Clone();
+	if (Component.m_Animation)
+		m_Animation = Component.m_Animation->Clone();
 }
 
 CSpriteComponent::~CSpriteComponent()
@@ -129,6 +131,9 @@ void CSpriteComponent::AddTextureFullPath(int Register, int ShaderType, const st
 void CSpriteComponent::Start()
 {
 	CSceneComponent::Start();
+
+	if (m_Animation)
+		m_Animation->Start();
 }
 
 bool CSpriteComponent::Init()
@@ -136,6 +141,9 @@ bool CSpriteComponent::Init()
 	if (!CSceneComponent::Init())
 		return false;
 
+	m_SpriteMesh = (CSpriteMesh*)m_Scene->GetSceneResource()->FindMesh("SpriteMesh");
+
+	SetMaterial(m_Scene->GetSceneResource()->FindMaterial("BaseTexture"));
 
 	return true;
 }
