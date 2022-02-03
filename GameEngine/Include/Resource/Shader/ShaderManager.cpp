@@ -7,6 +7,7 @@
 #include "TransformConstantBuffer.h"
 #include "ColorMeshShader.h"
 #include "Mesh2DShader.h"
+#include "ColliderShader.h"
 
 CShaderManager::CShaderManager()
 {}
@@ -20,6 +21,8 @@ bool CShaderManager::Init()
 	if (!CreateShader<CColorMeshShader>("ColorMeshShader"))
 		return false;
 	if (!CreateShader<CMesh2DShader>("Mesh2DShader"))
+		return false;
+	if (!CreateShader<CColliderShader>("ColliderShader"))
 		return false;
 
 	// 상수 버퍼
