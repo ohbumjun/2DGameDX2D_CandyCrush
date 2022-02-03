@@ -120,6 +120,9 @@
     <Filter Include="05. Component\01. SceneComponent\01. MeshComponent">
       <UniqueIdentifier>{ff78ef78-477e-490a-8004-7842e49442a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\02. Shader\02. ShaderClass\02. Mesh2D">
+      <UniqueIdentifier>{e0e8ba8b-67e6-4c7b-b315-e34645ba27e9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -291,6 +294,9 @@
     <ClInclude Include="Component\StaticMeshComponent.h">
       <Filter>05. Component\01. SceneComponent\01. MeshComponent</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Shader\Mesh2DShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\02. Mesh2D</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -451,6 +457,9 @@
     </ClCompile>
     <ClCompile Include="Component\StaticMeshComponent.cpp">
       <Filter>05. Component\01. SceneComponent\01. MeshComponent</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\Mesh2DShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\02. Mesh2D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
