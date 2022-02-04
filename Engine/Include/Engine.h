@@ -23,7 +23,10 @@ public :
 	int Run();
 	void Logic();
 public :
-
+	Engine_Space GetEngineSpace() const
+{
+		return m_Space;
+}
 private :
 	bool Update(float DeltaTime);
 	bool PostUpdate(float DeltaTime);

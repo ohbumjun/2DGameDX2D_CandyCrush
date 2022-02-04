@@ -22,7 +22,7 @@ protected:
     std::list<CColliderComponent*>  m_PrevCollisionList;
     std::list<CColliderComponent*>  m_CurrentCollisionList; // 현재 프레임에 이전 영역에서 충돌된 목록
     CollisionProfile* m_Profile;
-    bool                m_CurrentSectionCheck;
+    bool                m_CurrentFrameCheck;
     CollisionResult     m_Result;
     CollisionResult     m_MouseResult;
     std::list<std::function<void(const CollisionResult&)>>  m_CollisionCallback[(int)Collision_State::Max];
@@ -73,14 +73,14 @@ public:
         m_vecSectionIndex.push_back(Index);
     }
 
-    void CurrentSectionCheck()
+    void SetCurrentFrameCheck()
     {
-        m_CurrentSectionCheck = true;
+        m_CurrentFrameCheck = true;
     }
 
-    bool GetCurrentSectionCheck()   const
+    bool GetCurrentFrameCheck()   const
     {
-        return m_CurrentSectionCheck;
+        return m_CurrentFrameCheck;
     }
 public:
     void SetCollisionProfile(const std::string& Name);

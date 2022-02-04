@@ -2,8 +2,8 @@
 #include "../GameInfo.h"
 #include "ColliderSection.h"
 
-struct CollisionSection {
-	std::vector<CollisionSection*> vecColliderSection;
+struct CollisionSectionInfo {
+	std::vector<CColliderSection*> vecColliderSection;
 	Vector3 SectionSize;
 	Vector3 Center;
 	Vector3 SectionTotalSize;
@@ -12,7 +12,7 @@ struct CollisionSection {
 	int CountX;
 	int CountY;
 	int CountZ;
-	CollisionSection() :
+	CollisionSectionInfo() :
 		CountX(1),
 		CountY(1),
 		CountZ(1),
@@ -30,16 +30,16 @@ private :
 	CSceneCollision();
 	~CSceneCollision();
 private :
-	CollisionSection* m_Section;
+	CollisionSectionInfo* m_Section;
 	std::list<CSharedPtr<class CColliderComponent>> m_SceneColliderList;
 	CSharedPtr<class CColliderComponent> m_MouseCollideComponent;
-	bool m_WidgetClick;
+	bool m_WidgetCollision;
 public :
 	void Start();
-	void Init();
+	bool Init();
 	void Collision(float DeltaTime);
 protected:
-	void CollisionMouseWidget(float DeltaTime);
+	bool CollisionMouseWidget(float DeltaTime);
 	void CollisionMouseObject(float DeltaTime);
 public :
 	void SetSectionSize(const Vector3& Size);

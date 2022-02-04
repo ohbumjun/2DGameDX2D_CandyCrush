@@ -12,7 +12,7 @@ CColliderComponent::CColliderComponent()
 	m_ComponentType = Component_Type::SceneComponent;
 	m_Render = true;
 
-	m_CurrentSectionCheck = false;
+	m_CurrentFrameCheck = false;
 	m_Profile = nullptr;
 	m_MouseCollision = false;
 	m_CBuffer = nullptr;
@@ -22,7 +22,7 @@ CColliderComponent::CColliderComponent(const CColliderComponent& com) :
 	CSceneComponent(com)
 {
 	m_MouseCollision = false;
-	m_CurrentSectionCheck = false;
+	m_CurrentFrameCheck = false;
 	m_Render = com.m_Render;
 	m_Profile = com.m_Profile;
 	m_CBuffer = com.m_CBuffer->Clone();
@@ -188,7 +188,7 @@ void CColliderComponent::ClearFrame()
 {
 	m_vecSectionIndex.clear();
 	m_CurrentCollisionList.clear();
-	m_CurrentSectionCheck = false;
+	m_CurrentFrameCheck = false;
 }
 
 void CColliderComponent::Start()
