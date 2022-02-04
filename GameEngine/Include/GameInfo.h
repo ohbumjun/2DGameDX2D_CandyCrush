@@ -180,9 +180,10 @@ struct MeshContainer {
 struct CollisionProfile {
 	std::string Name;
 	bool CollisionEnable;
-	std::vector<Collision_Interaction> vecInteraction;
 	Collision_Channel Channel;
+	std::vector<Collision_Interaction> vecInteraction;
 };
+
 
 struct CollisionResult {
 	class CColliderComponent* Src;

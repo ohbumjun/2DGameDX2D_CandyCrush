@@ -1,85 +1,80 @@
 #include "CollisionManager.h"
 
-DEFINITION_SINGLE(CCollisionManager);
-
- CCollisionManager::CCollisionManager()
+CCollisionManager::CCollisionManager()
 {}
 
- CCollisionManager::~CCollisionManager()
+CCollisionManager::~CCollisionManager()
 {
-	 auto iter = m_mapCollisionProfile.begin();
-	 auto iterEnd = m_mapCollisionProfile.end();
+	auto iter = m_mapProfile.begin();
+	auto iterEnd = m_mapProfile.end();
 
-	 for (; iter != iterEnd; ++iter)
-	 {
-		 SAFE_DELETE(iter->second);
-	 }
- }
-
- CollisionProfile* CCollisionManager::FindCollisionProfile(const std::string& Name)
-{
-	 auto iter = m_mapCollisionProfile.find(Name);
-	 
-	 if (iter == m_mapCollisionProfile.end())
-		 return nullptr;
-	 
-	 return iter->second;
- }
+	for (; iter != iterEnd; ++iter)
+	{
+		SAFE_DELETE(iter->second);
+	}
+}
 
  bool CCollisionManager::Init()
 {
-	 CreateProfile("Object", Collision_Channel::Object, true);
-	 CreateProfile("Player", Collision_Channel::Player, true);
-	 CreateProfile("PlayerAttack", Collision_Channel::PlayerAttack, true);
-	 CreateProfile("Monster", Collision_Channel::Monster, true);
-	 CreateProfile("MonsterAttack", Collision_Channel::MonsterAttack, true);
+	 CreateCollisionProflle("Object", true, Collision_Channel::Object);
+	 CreateCollisionProflle("Player", true, Collision_Channel::Object);
+	 CreateCollisionProflle("PlayerAttack", true, Collision_Channel::Object);
+	 CreateCollisionProflle("Monster", true, Collision_Channel::Object);
+	 CreateCollisionProflle("MonsterAttack", true, Collision_Channel::Object);
 
-	 SetCollisionState("Player", Collision_Channel::Player, Collision_Interaction::Ignore);
-	 SetCollisionState("Player", Collision_Channel::PlayerAttack, Collision_Interaction::Ignore);
+	 SetCollisionProfile("Player", Collision_Channel::Player, Collision_Interaction::Ignore);
+	 SetCollisionProfile("Player", Collision_Channel::PlayerAttack, Collision_Interaction::Ignore);
 
-	 SetCollisionState("PlayerAttack", Collision_Channel::Player, Collision_Interaction::Ignore);
-	 SetCollisionState("PlayerAttack", Collision_Channel::PlayerAttack, Collision_Interaction::Ignore);
-	 SetCollisionState("PlayerAttack", Collision_Channel::MonsterAttack, Collision_Interaction::Ignore);
+	 SetCollisionProfile("PlayerAttack", Collision_Channel::Player, Collision_Interaction::Ignore);
+	 SetCollisionProfile("PlayerAttack", Collision_Channel::PlayerAttack, Collision_Interaction::Ignore);
+	 SetCollisionProfile("PlayerAttack", Collision_Channel::MonsterAttack, Collision_Interaction::Ignore);
 
-	 SetCollisionState("Monster", Collision_Channel::Monster, Collision_Interaction::Ignore);
-	 SetCollisionState("Monster", Collision_Channel::MonsterAttack, Collision_Interaction::Ignore);
+	 SetCollisionProfile("Monster", Collision_Channel::Monster, Collision_Interaction::Ignore);
+	 SetCollisionProfile("Monster", Collision_Channel::MonsterAttack, Collision_Interaction::Ignore);
 
-	 SetCollisionState("MonsterAttack", Collision_Channel::Monster, Collision_Interaction::Ignore);
-	 SetCollisionState("MonsterAttack", Collision_Channel::MonsterAttack, Collision_Interaction::Ignore);
-	 SetCollisionState("MonsterAttack", Collision_Channel::PlayerAttack, Collision_Interaction::Ignore);
-
+	 SetCollisionProfile("MonsterAttack", Collision_Channel::Monster, Collision_Interaction::Ignore);
+	 SetCollisionProfile("MonsterAttack", Collision_Channel::MonsterAttack, Collision_Interaction::Ignore);
+	 SetCollisionProfile("MonsterAttack", Collision_Channel::PlayerAttack, Collision_Interaction::Ignore);
 
 	 return true;
- }
+}
 
- void CCollisionManager::CreateProfile(const std::string& Name, Collision_Channel Channel, bool Enable,
-	Collision_Interaction State)
+ CollisionProfile* CCollisionManager::FindCollisionProfile(const std::string& Name)
+{
+	 auto iter = m_mapProfile.find(Name);
+
+	 if (iter == m_mapProfile.end())
+		 return nullptr;
+
+	 return iter->second;
+}
+
+ void CCollisionManager::CreateCollisionProflle(const std::string& Name, bool Enable, Collision_Channel Channel,
+	Collision_Interaction Interaction)
 {
 	 CollisionProfile* Profile = FindCollisionProfile(Name);
 	 if (Profile)
 		 return;
 
 	 Profile = new CollisionProfile;
-	 Profile->Name = Name;
 	 Profile->Channel = Channel;
+	 Profile->Name = Name;
 	 Profile->CollisionEnable = Enable;
 	 Profile->vecInteraction.resize((int)Collision_Channel::Channel_Max);
 
-	 for (int i = 0; i < (int)Collision_Channel::Channel_Max; i++)
-	 {
-		 Profile->vecInteraction[i] = State;
-	 }
+	for (int i = 0; i < (int)Collision_Channel::Channel_Max; i++)
+	{
+		Profile->vecInteraction[i] = Interaction;
+	}
 
-	 m_mapCollisionProfile.insert(std::make_pair(Name, Profile));
- }
+	m_mapProfile.insert(std::make_pair(Name, Profile));
+}
 
- void CCollisionManager::SetCollisionState(const std::string& Name, Collision_Channel State,
+ void CCollisionManager::SetCollisionProfile(const std::string& Name, Collision_Channel Channel,
 	Collision_Interaction Interaction)
 {
 	 CollisionProfile* Profile = FindCollisionProfile(Name);
-
 	 if (!Profile)
 		 return;
-
-	 Profile->vecInteraction[(int)State] = Interaction;
- }
+	 Profile->vecInteraction[(int)Channel] = Interaction;
+}

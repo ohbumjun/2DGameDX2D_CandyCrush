@@ -123,6 +123,11 @@ struct AnimationCBuffer {
 	Vector3 Empty;
 };
 
+struct ColliderCBuffer {
+	Vector4 Color;
+	Matrix matWVP;
+};
+
 struct MaterialCBuffer {
 	Vector4 BaseColor;
 	float Opacity;
@@ -172,3 +177,18 @@ struct MeshContainer {
 	D3D11_PRIMITIVE_TOPOLOGY Primitive;
 };
 
+struct CollisionProfile {
+	std::string Name;
+	bool CollisionEnable;
+	Collision_Channel Channel;
+	std::vector<Collision_Interaction> vecInteraction;
+};
+
+
+struct CollisionResult {
+	class CColliderComponent* Src;
+	class CColliderComponent* Dest;
+	CollisionResult() :
+	Src(nullptr),
+	Dest(nullptr){}
+};

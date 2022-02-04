@@ -32,6 +32,37 @@ enum class Image_Type {
 	Array
 };
 
+enum class Collision_State {
+	Begin,
+	End,
+	Max
+};
+
+enum class Collider_Type {
+	Circle,
+	Box2D,
+	Pixel
+};
+
+enum class Collision_Interaction {
+	Collision,
+	Ignore
+};
+
+enum class Collision_Channel {
+	Object,
+	Player,
+	PlayerAttack,
+	Monster,
+	MonsterAttack,
+	Channel1,
+	Channel2,
+	Channel3,
+	Channel4,
+	Channel5,
+	Channel_Max
+};
+
 enum class Component_Type {
 	SceneComponent,
 	ObjectComponent
