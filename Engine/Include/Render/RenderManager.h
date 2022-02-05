@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../GameInfo.h"
+#include "../GameInfo.h"
 #include "../Resource/Shader/Standard2DConstantBuffer.h"
 
 struct RenderLayer {
@@ -20,6 +20,7 @@ struct RenderLayer {
 class CRenderManager {
 
 	friend class CResourceManager;
+	friend class CSceneManager;
 
 private:
 	class CRenderStateManager* m_RenderStateManager;

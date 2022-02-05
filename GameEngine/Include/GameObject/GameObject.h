@@ -54,6 +54,8 @@ public :
 	virtual void Render();
 	virtual void PostRender();
 	virtual CGameObject* Clone();
+private :
+	void AddCollision();
 public :
 	template<typename T>
 	T* CreateComponent(const std::string& Name)

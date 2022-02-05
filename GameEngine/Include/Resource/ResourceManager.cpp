@@ -2,6 +2,8 @@
 
 #include "Animation/AnimationManager.h"
 
+CResourceManager* CResourceManager::m_Inst = nullptr;
+
 CResourceManager::CResourceManager()
 {}
 

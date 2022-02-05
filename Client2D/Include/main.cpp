@@ -1,3 +1,5 @@
+#include "ClientManager.h"
+
 // 1) 데스크톱 어플리케이션 ( .exe )
 // 실제 게임을 실행시킬 프로젝트
 // 실제 게임이 동작되는 프로젝트가 된다.
@@ -20,8 +22,6 @@
 // 우리는 빌드 후 이벤트를 이용해야 한다.
 // 명령줄에다가 명령을 써서, 내가 원하는 파일을 실행해라 ! 라고 얘기해줄 수 있다. // 
 
-#include <Windows.h>
-#include "resource.h" // 리소스 파일 -> 아이콘으로 만들면
 // resource.h 에 icon id가 저장되어 있게 된다. 그것을 사용할 것 
 
 // Debug 일때는 _Debug.lib에 링크를 걸고
@@ -36,13 +36,22 @@
 
 #endif // _DEBUG
 
-#include "Engine.h"
-
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
 	_In_ LPWSTR    lpCmdLine,
 	_In_ int       nCmdShow)
 {
+	if (CClientManager::GetInst()->Init(hInstance))
+	{
+		CClientManager::DestroyInst();
+		return 0;
+	}
 
-	return 0;
+	CClientManager::GetInst()->CreateDefaultSceneMode();
+
+	int Ret = CClientManager::GetInst()->Run();
+
+	CClientManager::DestroyInst();
+
+	return Ret;
 }

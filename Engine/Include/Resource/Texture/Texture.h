@@ -1,13 +1,15 @@
 #pragma once
 
-#include "DirectXTex.h"
 #include "../../Ref.h"
 
+/*
+#include "DirectXTex.h"
 #ifdef _DEBUG
-	#pragma comment(lib, "DirectXTex_Debug.ib")
+	#pragma comment(lib, "DirectXTex_Debug.lib")
 #else
-	#pragma comment(lib, "DirectXTex.ib")
+	#pragma comment(lib, "DirectXTex.lib")
 #endif
+*/
 
 struct TextureResourceInfo {
 	ScratchImage* Image;

@@ -7,7 +7,7 @@
 #include "Shader/ShaderManager.h"
 #include "Material/Material.h"
 #include "Material/MaterialManager.h"
-#include "Animation/AnimationSequence2D.h"
+#include "Animation/AnimationManager.h"
 
 class CResourceManager
 {

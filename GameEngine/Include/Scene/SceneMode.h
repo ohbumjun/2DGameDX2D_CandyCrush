@@ -1,8 +1,9 @@
 #pragma once
 
-#include "../GameInfo.h"
+#include "../Ref.h"
+#include "../GameObject/GameObject.h"
 
-class CSceneMode
+class CSceneMode : public CRef
 {
 	friend class CScene;
 protected :

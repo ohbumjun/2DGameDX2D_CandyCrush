@@ -3,6 +3,12 @@
 #include "../../Scene/SceneResource.h"
 #include "../../Resource/ResourceManager.h"
 
+CAnimationSequence2D::CAnimationSequence2D()
+{}
+
+CAnimationSequence2D::~CAnimationSequence2D()
+{}
+
 bool CAnimationSequence2D::Init(CTexture* Texture)
 {
 	if (!Texture)

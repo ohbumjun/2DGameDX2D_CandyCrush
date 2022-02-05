@@ -3,6 +3,12 @@
 #include "Timer.h"
 #include "Input.h"
 
+DEFINITION_SINGLE(CEngine)
+
+// CEngine* CEngine::m_Inst = nullptr;
+
+bool CEngine::m_Loop = true;
+
 CEngine::CEngine() :
 	m_Timer(nullptr),
 m_Start(false),

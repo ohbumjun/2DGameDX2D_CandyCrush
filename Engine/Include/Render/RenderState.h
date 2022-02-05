@@ -18,6 +18,6 @@ public :
 		return m_Type;
 }
 public :
-	virtual void SetState();
-	virtual void ResetState();
+	virtual void SetState() = 0;
+	virtual void ResetState() = 0;
 };

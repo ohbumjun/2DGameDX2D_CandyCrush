@@ -226,6 +226,11 @@ void CColliderComponent::PostUpdate(float DeltaTime)
 	CSceneComponent::PostUpdate(DeltaTime);
 }
 
+void CColliderComponent::CheckCollision()
+{
+	CSceneComponent::CheckCollision();
+}
+
 void CColliderComponent::PrevRender()
 {
 	CSceneComponent::PrevRender();

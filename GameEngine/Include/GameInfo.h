@@ -35,6 +35,16 @@
 #include "Matrix.h"
 #include "SharedPtr.h"
 
+// Texture 
+#include "Resource/Texture/DirectXTex.h"
+
+#ifdef _DEBUG
+#pragma comment(lib, "DirectXTex_Debug.lib")
+#else
+#pragma comment(lib, "DirectXTex.lib")
+#endif // _DEBUG
+
+
 #define ROOT_PATH     "Root"
 #define SHADER_PATH  "Shader"
 #define TEXTURE_PATH "Texture"
@@ -46,25 +56,25 @@
 #define SAFE_RELEASE(p) {if (p) p->Release(); p = nullptr;}
 
 // template 처럼 Type에 Class가 들어올 수 도 있다
-#define DECLARE_SINGLE(Type) \
-	private : \
-		static Type* m_Inst; \
-	public : \
-		static Type* GetInst() \
-		{\
-			if (!m_Inst) \
-				m_Inst = new Type; \
-			return m_Inst; \
-		}\
-		static void DestroyInst() \
-		{ \
-			SAFE_DELETE(m_Inst); \
-		}; \
-	private: \
-			Type(); \
-			~Type(); \
+#define	DECLARE_SINGLE(Type)	\
+private:\
+	static Type*	m_Inst;\
+public:\
+	static Type* GetInst()\
+	{\
+		if(!m_Inst)\
+			m_Inst = new Type;\
+		return m_Inst;\
+	}\
+	static void DestroyInst()\
+	{\
+		SAFE_DELETE(m_Inst);\
+	}\
+private:\
+	Type();\
+	~Type();
 
-#define DEFINITION_SINGLE(Type) Type* Type::m_Inst = nullptr;
+#define	DEFINITION_SINGLE(Type)	Type* Type::m_Inst = nullptr;
 
 struct Resolution {
 	unsigned int Width;

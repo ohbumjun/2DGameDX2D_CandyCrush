@@ -1,5 +1,7 @@
 #include "SceneManager.h"
 
+CSceneManager* CSceneManager::m_Inst = nullptr;
+
 CSceneManager::CSceneManager() :
 	m_Scene(nullptr),
 	m_NextScene(nullptr)

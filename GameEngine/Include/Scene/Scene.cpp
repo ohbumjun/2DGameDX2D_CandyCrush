@@ -109,7 +109,17 @@ void CScene::PostUpdate(float DeltaTime)
 	m_ViewPort->PostUpdate(DeltaTime);
 
 	// 충돌체들을 충돌 영역에 포함시킨다.
+	iter = m_ObjList.begin();
+	iterEnd = m_ObjList.end();
 
+	for (; iter != iterEnd; ++iter)
+	{
+		(*iter)->AddCollision();
+	}
+
+	// 충돌체들을 이용해서
+	// 충돌 처리를 진행한다.
+	m_SceneCollision->Collision(DeltaTime);
 }
 
 void CScene::SetAutoChange(bool Change)

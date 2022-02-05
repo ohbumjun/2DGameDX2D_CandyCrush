@@ -171,3 +171,10 @@ CGameObject* CGameObject::Clone()
 {
 	return new CGameObject(*this);
 }
+
+void CGameObject::AddCollision()
+{
+	if (!m_RootComponent)
+		return;
+	m_RootComponent->CheckCollision();
+}

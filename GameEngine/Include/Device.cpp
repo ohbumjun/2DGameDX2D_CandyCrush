@@ -1,5 +1,9 @@
 #include "Device.h"
 
+// DEFINITION_SINGLE(CDevice);
+
+CDevice* CDevice::m_Inst = nullptr;
+
 CDevice::CDevice() :
 	m_Device(nullptr),
 	m_DeviceContext(nullptr),

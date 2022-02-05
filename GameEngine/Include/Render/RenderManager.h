@@ -20,6 +20,7 @@ struct RenderLayer {
 class CRenderManager {
 
 	friend class CResourceManager;
+	friend class CSceneManager;
 
 private:
 	class CRenderStateManager* m_RenderStateManager;

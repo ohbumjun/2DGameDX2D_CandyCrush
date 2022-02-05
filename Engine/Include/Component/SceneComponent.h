@@ -35,6 +35,7 @@ public :
 	virtual void Render();
 	virtual void PostRender();
 	virtual CSceneComponent* Clone();
+	virtual void CheckCollision();
 
 public:	// =============== 저주받은 Transform 영역 ===============
 	void SetInheritScale(bool Inherit)

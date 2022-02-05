@@ -7,6 +7,8 @@
 #include "../Component/Component.h"
 #include "../GameObject/GameObject.h"
 
+DEFINITION_SINGLE(CRenderManager);
+
 CRenderManager::CRenderManager()
 {}
 
