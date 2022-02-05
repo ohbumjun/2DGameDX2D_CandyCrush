@@ -50,7 +50,7 @@ void CColliderComponent::SetCollisionProfile(const std::string& Name)
 	m_Profile = CCollisionManager::GetInst()->FindCollisionProfile(Name);
 }
 
-void CColliderComponent::CheckPrevColliderSection()
+void CColliderComponent::FilterPrevColliderSection()
 {
 	auto	iter = m_PrevCollisionList.begin();
 	auto	iterEnd = m_PrevCollisionList.end();

@@ -84,7 +84,7 @@ public:
     }
 public:
     void SetCollisionProfile(const std::string& Name);
-    void CheckPrevColliderSection();
+    void FilterPrevColliderSection();
     void AddPrevCollision(CColliderComponent* Collider);
     void DeletePrevCollision(CColliderComponent* Collider);
     bool EmptyPrevCollision();

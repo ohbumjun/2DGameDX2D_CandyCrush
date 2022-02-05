@@ -10,6 +10,16 @@ protected :
 	virtual ~CSceneMode();
 private :
 	class CScene* m_Scene;
+	CSharedPtr<class CGameObject> m_PlayerObject;
+public :
+	void SetPlayerObject(class CGameObject* Player)
+	{
+		m_PlayerObject = Player;
+	}
+	class CGameObject* GetPlayerObject() const
+{
+		return m_PlayerObject;
+}
 public :
 	virtual bool Init();
 	virtual void Start();

@@ -1,29 +1,29 @@
 #include "SceneCollision.h"
-#include "ColliderSection.h"
+#include "Scene.h"
+#include "ViewPort.h"
 #include "../Engine.h"
 #include "../Input.h"
-#include "../Resource/Shader/ColliderConstantBuffer.h"
+#include "../Component/ColliderComponent.h"
 
 CSceneCollision::CSceneCollision() :
-m_Section(nullptr),
-m_MouseCollideComponent(nullptr),
-m_WidgetCollision(false)
-{}
+	m_Section(nullptr)
+{
+}
 
 CSceneCollision::~CSceneCollision()
 {
-	size_t Size = m_Section->vecColliderSection.size();
+	size_t Size = m_Section->vecSection.size();
 
 	for (size_t i = 0; i < Size; i++)
 	{
-		SAFE_DELETE(m_Section->vecColliderSection[i]);
+		SAFE_DELETE(m_Section->vecSection[i]);
 	}
-
 	SAFE_DELETE(m_Section);
 }
 
 void CSceneCollision::Start()
-{}
+{
+}
 
 bool CSceneCollision::Init()
 {
@@ -31,39 +31,43 @@ bool CSceneCollision::Init()
 	SetSectionCenter(0.f, 0.f, 0.f);
 	SetSectionCount(10, 10, 1);
 	CreateSection();
-
 	return true;
 }
 
-void CSceneCollision::Collision(float DeltaTime)
+void CSceneCollision::Collision(float DeltaTime) // 
 {
-	// 마우스와 충돌중이던 물체가 제거되었는지 확인
-	auto iter = m_SceneColliderList.begin();
-	auto iterEnd = m_SceneColliderList.end();
+	// 기본적으로 1) 마우스 vs UI 충돌 --> 2) 마우스 vs GameObject 충돌 처리
 
+	// --- 1) 마우스 vs UI 충돌 
+
+	// --- 2) 마우스 vs Object 충돌
+
+	// - 기존에 Mouse와 충돌 중이던 물체가 제거된다면, 충돌 해제를 해줘야 한다
+	// 뿐만 아니라, 사실상 아래의 코드가 SceneCollision 내의 전체 함수를 돌면서, Update 해주는 과정이라고 할 수 있다.
+	auto iter = m_ColliderList.begin();
+	auto iterEnd = m_ColliderList.end();
 	for (; iter != iterEnd;)
 	{
-		if ((*iter)->IsActive())
+		if (!(*iter)->IsActive())
 		{
-			if ((*iter) == m_MouseCollideComponent)
-			{
-				m_MouseCollideComponent = nullptr;
-			}
-
-			iter = m_SceneColliderList.erase(iter);
-			iterEnd = m_SceneColliderList.end();
-
+			if (m_MouseCollision == *iter)
+				m_MouseCollision = nullptr;
+			iter = m_ColliderList.erase(iter);
+			iterEnd = m_ColliderList.end();
 			continue;
 		}
 		++iter;
 	}
 
-	// 충돌체를 각자 영역으로 포함시키기
+	// 충돌체들을 각자의 영역으로 포함시켜주도록 한다.
 	CheckColliderSection();
 
-	// 충돌 영역 겹치는지 판단한다.
-	iter = m_SceneColliderList.begin();
-	iterEnd = m_SceneColliderList.end();
+	// 이제 판단할 것은 2가지 이다
+	// a. 충돌되는 그 순간
+	// b 충돌되고 있던 것이 떨어질 때
+	// 현재 충돌 영역이 겹치는지 판단한다
+	iter = m_ColliderList.begin();
+	iterEnd = m_ColliderList.end();
 
 	for (; iter != iterEnd; ++iter)
 	{
@@ -71,44 +75,53 @@ void CSceneCollision::Collision(float DeltaTime)
 			continue;
 		(*iter)->SetCurrentFrameCheck();
 
-		// 이전에 충돌했던 목록들과 비교하기
-		(*iter)->CheckPrevColliderSection();
+		// 해당 충돌체가 이전 프레임에 충돌한 애들과 충돌 영역이 겹치는지 판단
+		// 이전 충돌 영역인 애들과 같은 영역에 존재하지 않는다면, 현재 프레임에서는 떨어진 것
+		// 따라서 충돌 End에 해당하는 콜백함수를 호출하기 위함이다
+		(*iter)->FilterPrevColliderSection();
 	}
 
-	// 마우스와 Object 간의 충돌 여부 확인
-	CollisionMouseObject(DeltaTime);
+	// 먼저 마우스와 충돌체들의 충돌 여부를 체크한다.
+	CollisionMouse(DeltaTime);
 
-	// 충돌 처리
-	size_t Size = m_Section->vecColliderSection.size();
+	// 전체 Section을 반복 돌면서 충돌을 진행한다
+	size_t Size = m_Section->vecSection.size();
 
 	for (size_t i = 0; i < Size; i++)
 	{
-		m_Section->vecColliderSection[i]->Collision();
-		m_Section->vecColliderSection[i]->Clear();
+		// 충돌 시키고
+		m_Section->vecSection[i]->Collision();
+		// Clear 해주고 ( 해당 Section의 모든 충돌체 목록을 비워준다 )
+		m_Section->vecSection[i]->Clear();
 	}
 
-	// 모든 충돌체를 돌면서, 충돌 정보를 reset 해준다
-	iter = m_SceneColliderList.begin();
-	iterEnd = m_SceneColliderList.end();
-
+	// 모든 충돌체들을 돌면서
+	// 해당 충돌체들의 정보를 reset 해준다
+	iter = m_ColliderList.begin();
+	iterEnd = m_ColliderList.end();
 	for (; iter != iterEnd; ++iter)
 	{
-		// 이전에 충돌했던 목록들과 비교하기
 		(*iter)->ClearFrame();
 	}
+
 }
 
-bool CSceneCollision::CollisionMouseWidget(float DeltaTime)
+bool CSceneCollision::CollisionWidget()
 {
+	// return m_WidgetCollision = m_Scene->GetViewPort()->CollisionMouse();
 	return true;
 }
 
-void CSceneCollision::CollisionMouseObject(float DeltaTime)
+void CSceneCollision::CollisionMouse(float DeltaTime)
 {
-	bool MouseWidgetCollision = m_WidgetCollision;
+	bool MouseCollision = m_WidgetCollision;
 
-	if (!MouseWidgetCollision)
+	// UI 와 Object 충돌 진행
+	// UI와 충돌하지 않았을 때 비로소 Object와 충돌 진행
+	if (!MouseCollision)
 	{
+		// 마우스가 충돌 영역 중 어느 영역에 있는지 판단
+		// 2d, 3d일때를 구분해주려고 한다
 		if (CEngine::GetInst()->GetEngineSpace() == Engine_Space::Space2D)
 		{
 			Vector2 MousePos = CInput::GetInst()->GetMouseWorld2DPos();
@@ -127,37 +140,45 @@ void CSceneCollision::CollisionMouseObject(float DeltaTime)
 			IndexX = IndexX > m_Section->CountX ? -1 : IndexX;
 			IndexY = IndexY > m_Section->CountY ? -1 : IndexY;
 
+			// 범위를 벗어나지 않았을 때에만 진행
 			if (IndexX != -1 && IndexY != -1)
 			{
-				int SectionIndex = IndexY * m_Section->CountX + IndexX;
-				CColliderComponent* ColliderMouse = m_Section->vecColliderSection[SectionIndex]->CollisionMouse(true, DeltaTime);
+				// 만약 해당 Section의 충돌체 중 하나와 충돌이 일어났다면 해당 충돌체 정보가 return
+				// 그게 아니라면 null return
+				// y는 행, x는 열
+				CColliderComponent* ColliderMouse = m_Section->vecSection[IndexY * m_Section->CountX + IndexX]->CollisionMouse(true, DeltaTime);
 
 				if (ColliderMouse)
 				{
-					MouseWidgetCollision = true;
-
-					if (ColliderMouse != m_MouseCollideComponent)
-					{
+					MouseCollision = true;
+					// 현재 충돌한 녀석이 기존에 충돌한 녀석과 다른 녀석이라면 --> 충돌 callback 호출 
+					if (ColliderMouse != m_MouseCollision)
 						ColliderMouse->CallCollisionMouseCallback(Collision_State::Begin);
-					}
 
-					if (m_MouseCollideComponent && ColliderMouse != m_MouseCollideComponent)
+					if (m_MouseCollision && m_MouseCollision != ColliderMouse)
 					{
-						m_MouseCollideComponent->CallCollisionMouseCallback(Collision_State::End);
+						// 이번에는 기존 마우스의 마우스 떼짐 Callback 호출
+						m_MouseCollision->CallCollisionMouseCallback(Collision_State::End);
 					}
-					m_MouseCollideComponent = ColliderMouse;
+					// 충돌된 충돌체 정보 교체 
+					m_MouseCollision = ColliderMouse;
 				}
 			}
 		}
+		// 3차원
+		else
+		{
+		}
 	}
 
-	if (!MouseWidgetCollision)
+	// UI 혹은 GameObject 그 어떤 것과도 충돌된 것이 없다면
+	if (!MouseCollision)
 	{
-		// 어떤 것도 충돌하지 않았다면
-		if (m_MouseCollideComponent)
+		// 기존에 충돌된 충돌체에 대해서 충돌 end 함수 호출 
+		if (m_MouseCollision)
 		{
-			m_MouseCollideComponent->CallCollisionMouseCallback(Collision_State::End);
-			m_MouseCollideComponent = nullptr;
+			m_MouseCollision->CallCollisionMouseCallback(Collision_State::End);
+			m_MouseCollision = nullptr;
 		}
 	}
 }
@@ -167,67 +188,19 @@ void CSceneCollision::SetSectionSize(const Vector3& Size)
 	if (!m_Section)
 		m_Section = new CollisionSectionInfo;
 
+
 	m_Section->SectionSize = Size;
-	m_Section->SectionTotalSize = Size * Vector3((float)m_Section->CountX, 
-		(float)m_Section->CountY,(float)m_Section->CountZ);
+	m_Section->SectionTotalSize = m_Section->SectionSize
+		* Vector3((float)m_Section->CountX, (float)m_Section->CountY, (float)m_Section->CountZ);
 }
 
 void CSceneCollision::SetSectionSize(float x, float y, float z)
 {
 	if (!m_Section)
 		m_Section = new CollisionSectionInfo;
-
-	m_Section->SectionSize = Vector3(x,y,z);
-	m_Section->SectionTotalSize = m_Section->SectionSize * Vector3((float)m_Section->CountX,
-		(float)m_Section->CountY, (float)m_Section->CountZ);
-}
-
-void CSceneCollision::SetSectionMin(const Vector3& Min)
-{
-	if (!m_Section)
-		m_Section = new CollisionSectionInfo;
-
-	m_Section->Min = Min;
-	m_Section->SectionTotalSize = m_Section->Max - Min;
-	m_Section->SectionSize = m_Section->SectionTotalSize / Vector3((float)m_Section->CountX,
-		(float)m_Section->CountY, (float)m_Section->CountZ);
-	m_Section->Center = m_Section->Min + m_Section->Max / 2.f;
-}
-
-void CSceneCollision::SetSectionMin(float x, float y, float z)
-{
-	if (!m_Section)
-		m_Section = new CollisionSectionInfo;
-
-	m_Section->Min = Vector3(x, y, z);
-	m_Section->SectionTotalSize = m_Section->Max - m_Section->Min;
-	m_Section->SectionSize = m_Section->SectionTotalSize / Vector3((float)m_Section->CountX,
-		(float)m_Section->CountY, (float)m_Section->CountZ);
-	m_Section->Center = (m_Section->Max + m_Section->Min) / 2.f;
-}
-
-void CSceneCollision::SetSectionMax(const Vector3& Max)
-{
-	if (!m_Section)
-		m_Section = new CollisionSectionInfo;
-
-	m_Section->Max = Max;
-	m_Section->SectionTotalSize = Max - m_Section->Min;
-	m_Section->Center = (m_Section->Min + Max) / 2.f;
-	m_Section->SectionSize = m_Section->SectionTotalSize / Vector3((float)m_Section->CountX,
-		(float)m_Section->CountY, (float)m_Section->CountZ);
-}
-
-void CSceneCollision::SetSectionMax(float x, float y, float z)
-{
-	if (!m_Section)
-		m_Section = new CollisionSectionInfo;
-
-	m_Section->Max = Vector3(x, y, z);
-	m_Section->SectionTotalSize = m_Section->Max - m_Section->Min;
-	m_Section->SectionSize = m_Section->SectionTotalSize / Vector3((float)m_Section->CountX,
-		(float)m_Section->CountY, (float)m_Section->CountZ);
-	m_Section->Center = (m_Section->Max + m_Section->Min) / 2.f;
+	m_Section->SectionSize = Vector3(x, y, z);
+	m_Section->SectionTotalSize = m_Section->SectionSize *
+		Vector3((float)m_Section->CountX, (float)m_Section->CountY, (float)m_Section->CountZ);
 }
 
 void CSceneCollision::SetSectionCenter(const Vector3& Center)
@@ -236,6 +209,8 @@ void CSceneCollision::SetSectionCenter(const Vector3& Center)
 		m_Section = new CollisionSectionInfo;
 
 	m_Section->Center = Center;
+
+	// 좌 하단이 min, 우 상단이 max
 	m_Section->Min = m_Section->Center - m_Section->SectionTotalSize / 2.f;
 	m_Section->Max = m_Section->Center + m_Section->SectionTotalSize / 2.f;
 }
@@ -246,31 +221,77 @@ void CSceneCollision::SetSectionCenter(float x, float y, float z)
 		m_Section = new CollisionSectionInfo;
 
 	m_Section->Center = Vector3(x, y, z);
+
 	m_Section->Min = m_Section->Center - m_Section->SectionTotalSize / 2.f;
 	m_Section->Max = m_Section->Center + m_Section->SectionTotalSize / 2.f;
 }
 
-void CSceneCollision::SetSectionCount(int x, int y, int z)
+void CSceneCollision::SetSectionMin(const Vector3& Min)
 {
 	if (!m_Section)
 		m_Section = new CollisionSectionInfo;
 
-	m_Section->CountX = x;
-	m_Section->CountY = y;
-	m_Section->CountZ = z;
+	m_Section->Min = Min;
 
-	m_Section->SectionTotalSize = m_Section->SectionSize * Vector3((float)m_Section->CountX,
-		(float)m_Section->CountY, (float)m_Section->CountZ);
-	m_Section->Max = m_Section->Center + m_Section->SectionTotalSize / 2.f;
-	m_Section->Min = m_Section->Center - m_Section->SectionTotalSize / 2.f;
+	// 즉, 어떤 값을 세탕하던, 전체 크기와 Center를 세팅 
+	m_Section->SectionTotalSize = m_Section->Max - m_Section->Min;
+	m_Section->SectionSize = m_Section->SectionTotalSize /
+		Vector3((float)m_Section->CountX, (float)m_Section->CountY, (float)m_Section->CountZ);
+	m_Section->Center = (m_Section->Min + m_Section->Max) / 2.f;
 }
 
+void CSceneCollision::SetSectionMin(float x, float y, float z)
+{
+	if (!m_Section)
+		m_Section = new CollisionSectionInfo;
+
+	m_Section->Min = Vector3(x, y, z);
+	m_Section->SectionTotalSize = m_Section->Max - m_Section->Min;
+	m_Section->SectionSize = m_Section->SectionTotalSize /
+		Vector3((float)m_Section->CountX, (float)m_Section->CountY, (float)m_Section->CountZ);
+	m_Section->Center = (m_Section->Min + m_Section->Max) / 2.f;
+}
+
+void CSceneCollision::SetSectionMax(const Vector3& Max)
+{
+	if (!m_Section)
+		m_Section = new CollisionSectionInfo;
+
+	m_Section->Max = Max;
+	m_Section->SectionTotalSize = m_Section->Max - m_Section->Min;
+	m_Section->SectionSize = m_Section->SectionTotalSize /
+		Vector3((float)m_Section->CountX, (float)m_Section->CountY, (float)m_Section->CountZ);
+	m_Section->Center = (m_Section->Min + m_Section->Max) / 2.f;
+}
+
+void CSceneCollision::SetSectionMax(float x, float y, float z)
+{
+	if (!m_Section)
+		m_Section = new CollisionSectionInfo;
+
+	m_Section->Max = Vector3(x, y, z);
+	m_Section->SectionTotalSize = m_Section->Max - m_Section->Min;
+	m_Section->SectionSize = m_Section->SectionTotalSize /
+		Vector3((float)m_Section->CountX, (float)m_Section->CountY, (float)m_Section->CountZ);
+}
+
+void CSceneCollision::SetSectionCount(int CountX, int CountY, int CountZ)
+{
+	m_Section->CountX = CountX;
+	m_Section->CountY = CountY;
+	m_Section->CountZ = CountZ;
+
+	// CountX, Y, Z를 재설정해주면, 관련 변수들도 모두 재설정해줄 것이다. 
+	m_Section->SectionTotalSize = m_Section->SectionSize * Vector3((float)CountX, (float)CountY, (float)CountZ);
+	m_Section->Min = m_Section->Center - m_Section->SectionTotalSize / 2.f;
+	m_Section->Max = m_Section->Center + m_Section->SectionTotalSize / 2.f;
+}
+
+// 실제 공간들을 쪼갤 것이다. 
 void CSceneCollision::CreateSection()
 {
 	if (!m_Section)
 		m_Section = new CollisionSectionInfo;
-
-	int Index = 0;
 
 	for (int z = 0; z < m_Section->CountZ; z++)
 	{
@@ -279,9 +300,9 @@ void CSceneCollision::CreateSection()
 			for (int x = 0; x < m_Section->CountX; x++)
 			{
 				CColliderSection* Section = new CColliderSection;
-				Index = (m_Section->CountY * m_Section->CountX) * z + (m_Section->CountX) * y + x;
-				Section->Init(x, y, z, Index, m_Section->Min, m_Section->Max, 
-					m_Section->SectionTotalSize, m_Section->SectionSize);
+				Section->Init(x, y, z, z * (m_Section->CountX * m_Section->CountY) + y * m_Section->CountX + x,
+					m_Section->Min, m_Section->Max, m_Section->SectionSize, m_Section->SectionTotalSize);
+				m_Section->vecSection.push_back(Section);
 			}
 		}
 	}
@@ -289,25 +310,28 @@ void CSceneCollision::CreateSection()
 
 void CSceneCollision::Clear()
 {
-	size_t Size = m_Section->vecColliderSection.size();
+	size_t Size = m_Section->vecSection.size();
 
 	for (size_t i = 0; i < Size; i++)
 	{
-		SAFE_DELETE(m_Section->vecColliderSection[i]);
+		SAFE_DELETE(m_Section->vecSection[i]);
 	}
 	SAFE_DELETE(m_Section);
 }
 
 void CSceneCollision::AddCollider(CColliderComponent* Collider)
 {
-	// 매 프레임마다 충돌체 목록 비워주고, 다시 넣어주는 과정을 반복하기
-	m_SceneColliderList.push_back(Collider);
+	// 각 충돌체들은 매 프레임마다 이동한다
+	// 즉, 매 프레임마다 자신이 속한 충돌영역이 달라질 수 있으므로
+	// 매 프레임마다 충돌체 들을 비워주고, 새롭게 넣어주는 방식을 활용해야 한다. 
+	m_ColliderList.push_back(Collider);
 }
 
+// 각 Collider Component가 속한 Section을 확인한다. 
 void CSceneCollision::CheckColliderSection()
 {
-	auto iter = m_SceneColliderList.begin();
-	auto iterEnd = m_SceneColliderList.end();
+	auto iter = m_ColliderList.begin();
+	auto iterEnd = m_ColliderList.end();
 
 	for (; iter != iterEnd; ++iter)
 	{
@@ -316,8 +340,14 @@ void CSceneCollision::CheckColliderSection()
 		Vector3 Min = Collider->GetMin();
 		Vector3 Max = Collider->GetMax();
 
+		// 전체 Section의 좌하단을 뺀다 --> 위치한 Section의 Idx를 구하기 위함이다 .
+		// 각 Collider 의 Min, Max는 각 Collider 의 센터 중심으로 구해진다 .
+		// 전체 Section의 Min, 즉, 좌하단을 빼줘서 0,0 을 기준좌표로 하여 준비한다.
+		// 이를 통해, 해당 Section 기준으로 0,0 기준 좌표가 되고
+		// 이를 통해, 각 충돌체가 위치한 충돌 영역을 구할 수 있다.
+		// 마치 TileMap의 Tile 구하듯이 
 		Min -= m_Section->Min;
-		Max -= m_Section->Max;
+		Max -= m_Section->Min;
 
 		int IndexMinX, IndexMinY, IndexMinZ;
 		int IndexMaxX, IndexMaxY, IndexMaxZ;
@@ -339,17 +369,19 @@ void CSceneCollision::CheckColliderSection()
 		IndexMaxY = IndexMaxY >= m_Section->CountY ? m_Section->CountY - 1 : IndexMaxY;
 		IndexMaxZ = IndexMaxZ >= m_Section->CountZ ? m_Section->CountZ - 1 : IndexMaxZ;
 
+		// 하나의 충돌 Component 가 여러개의 충돌영역에 걸쳐 있을 수 있기 때문에
+		// 가능한 충돌 영역 모든 곳에 추가해주는 것이다. 
 		for (int z = IndexMinZ; z <= IndexMaxZ; z++)
 		{
 			for (int y = IndexMinY; y <= IndexMaxY; y++)
 			{
 				for (int x = IndexMinX; x <= IndexMaxX; x++)
 				{
-					int Index = z * (m_Section->CountX * m_Section->CountY) * z + (m_Section->CountX) * y + x;
-					m_Section->vecColliderSection[Index]->AddCollider(Collider);
+					// 전제 범위
+					int Index = z * (m_Section->CountX * m_Section->CountY) + y * m_Section->CountX + x;
+					m_Section->vecSection[Index]->AddCollider(Collider);
 				}
 			}
 		}
-
 	}
 }

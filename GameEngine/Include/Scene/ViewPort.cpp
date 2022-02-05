@@ -1,5 +1,11 @@
 #include "ViewPort.h"
 
+CViewPort::CViewPort()
+{}
+
+CViewPort::~CViewPort()
+{}
+
 bool CViewPort::Init()
 {
 	return true;

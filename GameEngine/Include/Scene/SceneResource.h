@@ -12,6 +12,8 @@ protected:
 	CSceneResource();
 	~CSceneResource();
 private :
+	class CScene* m_Scene;
+private :
 	std::unordered_map<std::string, CSharedPtr<CMesh>> m_mapMesh;
 	std::unordered_map<std::string, CSharedPtr<CTexture>> m_mapTexture;
 	std::unordered_map<std::string, CSharedPtr<CAnimationSequence2D>> m_mapSequence2D;

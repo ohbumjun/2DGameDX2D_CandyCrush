@@ -5,7 +5,10 @@ CTransform::CTransform()
 {}
 
 CTransform::CTransform(const CTransform& Transform)
-{}
+{
+	*this = Transform; // 꼭 필요한가 ?
+	m_TransformBuffer = Transform.m_TransformBuffer->Clone();
+}
 
 CTransform::~CTransform()
 {}

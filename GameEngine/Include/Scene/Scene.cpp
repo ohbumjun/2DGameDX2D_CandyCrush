@@ -1,13 +1,24 @@
 #include "Scene.h"
 
 CScene::CScene() :
-	m_SceneMode(nullptr),
-	m_SceneCollision(nullptr),
-	m_SceneResource(nullptr),
-	m_ViewPort(nullptr),
 	m_Change(false),
 	m_Start(false)
-{}
+{
+	m_SceneMode = new CSceneMode;
+	m_SceneMode->m_Scene = this;
+
+	m_SceneCollision = new CSceneCollision;
+	m_SceneCollision->m_Scene = this;
+	m_SceneCollision->Init();
+
+	m_SceneResource = new CSceneResource;
+	m_SceneResource->m_Scene = this;
+
+	m_ViewPort = new CViewPort;
+	m_ViewPort->m_Scene = this;
+	m_ViewPort->Init();
+
+}
 
 CScene::~CScene()
 {

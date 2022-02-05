@@ -1,7 +1,14 @@
 #pragma once
+#include "../GameInfo.h"
 
 class CViewPort
 {
+	friend class CScene;
+protected:
+	CViewPort();
+	~CViewPort();
+private:
+	class CScene* m_Scene;
 public:
 	virtual bool Init();
 	virtual void Start();
