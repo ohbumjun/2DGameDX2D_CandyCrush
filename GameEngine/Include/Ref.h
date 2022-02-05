@@ -40,12 +40,12 @@ public :
 }
 	void AddRef()
 {
-		m_RefCount += 1;
+		++m_RefCount;
 }
 	int Release()
 {
-		m_RefCount -= 1;
-		if (m_RefCount < 0)
+		--m_RefCount ;
+		if (m_RefCount <= 0)
 		{
 			delete this;
 			return 0;

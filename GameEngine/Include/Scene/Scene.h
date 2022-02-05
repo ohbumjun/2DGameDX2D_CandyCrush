@@ -15,7 +15,7 @@ protected:
 	virtual ~CScene();
 protected :
 	bool m_Change;
-	CSceneMode* m_SceneMode;
+	CSharedPtr<CSceneMode> m_SceneMode;
 	CSceneCollision* m_SceneCollision;
 	CSceneResource* m_SceneResource;
 	CViewPort* m_ViewPort;
@@ -68,14 +68,16 @@ private :
 	T* CreateSceneMode()
 {
 		m_SceneMode = new T;
-		m_SceneMode->m_Scene = this;
-	if (!m_SceneMode->Init())
-	{
-		SAFE_DELETE(m_SceneMode);
-		return nullptr;
-	}
 
-	return (T*)m_SceneMode;
+		m_SceneMode->m_Scene = this;
+
+		if (!m_SceneMode->Init())
+		{
+			m_SceneMode = nullptr; // SceneMode는 SharedPtr 형태로 공유되고 있기 때문이다.
+			return nullptr;
+		}
+
+		return (T*)m_SceneMode;
 }
 	template<typename T>
 	T* CreateEmptySceneMode()

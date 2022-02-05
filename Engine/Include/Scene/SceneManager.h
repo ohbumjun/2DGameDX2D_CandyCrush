@@ -67,7 +67,7 @@ public :
 		m_CreateObjectCallback = std::bind(Func, Obj, std::placeholders::_1, std::placeholders::_2);
 }
 	template<typename T>
-	T* CreateSceneMode(bool Current = true)
+	bool CreateSceneMode(bool Current = true)
 	{
 		if (Current)
 			return m_Scene->CreateSceneMode<T>();

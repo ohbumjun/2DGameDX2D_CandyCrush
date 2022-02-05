@@ -1,56 +1,100 @@
 #pragma once
 
-template<typename T>
-class CSharedPtr {
-public :
-	CSharedPtr() : m_Ptr(nullptr){};
-	CSharedPtr(T* Ptr) :m_Ptr(Ptr){};
-	CSharedPtr(const CSharedPtr<T>& Ptr) : m_Ptr(Ptr.m_Ptr){};
-private :
-	T* m_Ptr;
-public :
-	void operator = (T*Ptr)
+template <typename T>
+class CSharedPtr
 {
-		if (m_Ptr)
-			m_Ptr->Release();
+public:
+	CSharedPtr()	:
+		m_Ptr(nullptr)
+	{
+	}
+
+	CSharedPtr(T* Ptr)
+	{
 		m_Ptr = Ptr;
+
 		if (m_Ptr)
 			m_Ptr->AddRef();
-}
-	void operator = (const CSharedPtr<T>& Ptr)
-{
+	}
+
+	CSharedPtr(const CSharedPtr<T>& Ptr)
+	{
+		m_Ptr = Ptr.m_Ptr;
+
+		if (m_Ptr)
+			m_Ptr->AddRef();
+	}
+
+	~CSharedPtr()
+	{
 		if (m_Ptr)
 			m_Ptr->Release();
-		m_Ptr = Ptr.m_Ptr;
+	}
+
+private:
+	T* m_Ptr;
+
+public:
+	void operator = (T* Ptr)
+	{
+		if (Ptr)
+			Ptr->AddRef();
+
 		if (m_Ptr)
-			m_Ptr->AddRef();
-}
-	bool operator == (T* Ptr) const
-{
+			m_Ptr->Release();
+
+		m_Ptr = Ptr;
+	}
+
+	void operator = (const CSharedPtr<T>& Ptr)
+	{
+		if (Ptr.m_Ptr)
+			Ptr.m_Ptr->AddRef();
+
+		if (m_Ptr)
+			m_Ptr->Release();
+
+		m_Ptr = Ptr.m_Ptr;
+	}
+
+	bool operator == (T* Ptr)	const
+	{
 		return m_Ptr == Ptr;
-}
-	bool operator == (const CSharedPtr<T>& Ptr) const 
-{
+	}
+
+	bool operator == (const CSharedPtr<T>& Ptr)	const
+	{
 		return m_Ptr == Ptr.m_Ptr;
-}
-	bool operator != (T* Ptr) const
+	}
+
+	bool operator != (T* Ptr)	const
 	{
 		return m_Ptr != Ptr;
 	}
-	bool operator != (const CSharedPtr<T>& Ptr) const 
+
+	bool operator != (const CSharedPtr<T>& Ptr)	const
 	{
 		return m_Ptr != Ptr.m_Ptr;
 	}
-	operator T* () const
+
+	operator T* ()	const
 	{
 		return m_Ptr;
 	}
-	T* operator -> () const
-{
+
+	T* operator -> ()	const
+	{
 		return m_Ptr;
-}
-	T* operator * () const
-{
+	}
+
+	T* operator * ()	const
+	{
 		return m_Ptr;
-}
+	}
+
+	T* Get()
+	{
+		return m_Ptr;
+	}
 };
+

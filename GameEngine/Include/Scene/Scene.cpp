@@ -22,7 +22,6 @@ CScene::CScene() :
 
 CScene::~CScene()
 {
-	SAFE_DELETE(m_SceneMode);
 	SAFE_DELETE(m_SceneCollision);
 	SAFE_DELETE(m_SceneResource);
 	SAFE_DELETE(m_ViewPort);

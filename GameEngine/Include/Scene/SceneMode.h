@@ -1,31 +1,32 @@
 #pragma once
 
 #include "../Ref.h"
-#include "../GameObject/GameObject.h"
 
-class CSceneMode : public CRef
+class CSceneMode :
+	public CRef
 {
 	friend class CScene;
-protected :
+
+protected:
 	CSceneMode();
 	virtual ~CSceneMode();
-private :
+
+protected:
 	class CScene* m_Scene;
 	CSharedPtr<class CGameObject> m_PlayerObject;
-public :
-	void SetPlayerObject(class CGameObject* Player)
+
+public:
+	void SetPlayerObject(class CGameObject* Obj);
+
+	class CGameObject* GetPlayerObject()	const
 	{
-		m_PlayerObject = Player;
-	}
-	class CGameObject* GetPlayerObject() const
-{
 		return m_PlayerObject;
-}
-public :
-	virtual bool Init();
+	}
+
+public:
 	virtual void Start();
+	virtual bool Init();
 	virtual void Update(float DeltaTime);
 	virtual void PostUpdate(float DeltaTime);
 };
-
 
