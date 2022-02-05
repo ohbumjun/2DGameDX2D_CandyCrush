@@ -41,6 +41,24 @@ CGameObject* CScene::FindGameObject(const std::string& Name)
 	return nullptr;
 }
 
+
+void CScene::Start()
+{
+	m_SceneMode->Start();
+	m_SceneCollision->Start();
+	m_ViewPort->Start();
+
+	auto iter = m_ObjList.begin();
+	auto iterEnd = m_ObjList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		(*iter)->Start();
+	}
+
+	m_Start = true;
+}
+
 void CScene::Update(float DeltaTime)
 {
 	auto iter = m_ObjList.begin();
@@ -62,6 +80,8 @@ void CScene::Update(float DeltaTime)
 		(*iter)->Update(DeltaTime);
 		++iter;
 	}
+
+	m_ViewPort->Update(DeltaTime);
 }
 
 void CScene::PostUpdate(float DeltaTime)
@@ -85,6 +105,11 @@ void CScene::PostUpdate(float DeltaTime)
 		(*iter)->PostUpdate(DeltaTime);
 		++iter;
 	}
+
+	m_ViewPort->PostUpdate(DeltaTime);
+
+	// 충돌체들을 충돌 영역에 포함시킨다.
+
 }
 
 void CScene::SetAutoChange(bool Change)
@@ -97,18 +122,3 @@ bool CScene::Init()
 	return true;
 }
 
-void CScene::Start()
-{
-	m_SceneMode->Start();
-	m_SceneCollision->Start();
-	m_SceneResource->Start();
-	m_ViewPort->Start();
-
-	auto iter = m_ObjList.begin();
-	auto iterEnd = m_ObjList.end();
-
-	for (; iter != iterEnd; ++iter)
-	{
-		(*iter)->Start();
-	}
-}

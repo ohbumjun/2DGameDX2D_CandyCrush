@@ -190,9 +190,6 @@ bool CSceneResource::Init()
 	return true;
 }
 
-void CSceneResource::Start()
-{}
-
 void CSceneResource::Update(float DeltaTime)
 {}
 
