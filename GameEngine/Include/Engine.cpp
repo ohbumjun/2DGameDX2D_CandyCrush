@@ -2,10 +2,10 @@
 #include "Device.h"
 #include "Timer.h"
 #include "Input.h"
+#include "PathManager.h"
+#include "Scene/SceneManager.h"
 
 DEFINITION_SINGLE(CEngine)
-
-// CEngine* CEngine::m_Inst = nullptr;
 
 bool CEngine::m_Loop = true;
 
@@ -20,8 +20,10 @@ m_ClearColor { }
 CEngine::~CEngine()
 {
 	SAFE_DELETE(m_Timer);
-	CDevice::GetInst()->DestroyInst();
-	CInput::GetInst()->DestroyInst();
+	CInput::DestroyInst();
+	CDevice::DestroyInst();
+	CSceneManager::DestroyInst();
+	CPathManager::DestroyInst();
 }
 
 bool CEngine::Init(HINSTANCE hInst, const TCHAR* Name, 
@@ -46,10 +48,22 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd, unsigned Width, unsigned Height, 
 	m_RS.Width = Width;
 	m_RS.Height = Height;
 
+	m_Timer = new CTimer;
+
+	// 장치
 	if (!CDevice::GetInst()->Init(hWnd, Width, Height, WindowMode))
 		return false;
 
+	// 입력 
 	if (!CInput::GetInst()->Init(hInst, hWnd))
+		return false;
+
+	// Scene Manager
+	if (!CSceneManager::GetInst()->Init())
+		return false;
+
+	// PathManager
+	if (!CPathManager::GetInst()->Init())
 		return false;
 
 	return true;
@@ -59,15 +73,19 @@ int CEngine::Run()
 {
 	MSG msg = {};
 
-	if (PeekMessage(&msg, m_hWnd, 0, 0, PM_REMOVE))
+	while (m_Loop)
 	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+		if (PeekMessage(&msg, m_hWnd, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		else
+		{
+			Logic();
+		}
 	}
-	else
-	{
-		Logic();
-	}
+
 
 	return (int)msg.wParam;
 }
@@ -77,7 +95,6 @@ void CEngine::Logic()
 	if (!m_Start)
 	{
 		m_Start = true;
-
 	}
 
 	float DeltaTime = m_Timer->Update();
@@ -93,15 +110,18 @@ void CEngine::Logic()
 
 bool CEngine::Update(float DeltaTime)
 {
+	if (CSceneManager::GetInst()->Update(DeltaTime))
+		return true;
 
-	CInput::GetInst()->Update(DeltaTime);
-
-	return true;
+	return false;
 }
 
 bool CEngine::PostUpdate(float DeltaTime)
 {
-	return true;
+	if (CSceneManager::GetInst()->PostUpdate(DeltaTime))
+		return true;
+
+	return false;
 }
 
 bool CEngine::Render()
@@ -121,10 +141,10 @@ ATOM CEngine::Register(const TCHAR* Name, int IconID)
 	wcex.hInstance = m_hInst;
 	wcex.hIcon = LoadIcon(m_hInst, MAKEINTRESOURCE(IconID));
 	wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
-	wcex.hbrBackground = HBRUSH(COLOR_WINDOW + 1);
+	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wcex.lpszMenuName = nullptr;
 	wcex.lpszClassName = Name;
-	wcex.hIconSm = LoadIcon(m_hInst, MAKEINTRESOURCE(IconID));
+	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IconID));
 
 	return RegisterClassExW(&wcex);
 }
@@ -142,9 +162,9 @@ BOOL CEngine::Create(const TCHAR* Name)
 
 	RECT rc = { 0, 0, (LONG)m_RS.Width, (LONG)m_RS.Height };
 
-	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, false);
+	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
 
-	SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, rc.right - rc.left, rc.top - rc.bottom,
+	SetWindowPos(m_hWnd, HWND_TOPMOST, 0, 0, rc.right - rc.left, rc.bottom - rc.top,
 		SWP_NOZORDER);
 
 	ShowWindow(m_hWnd, SW_SHOW);

@@ -62,7 +62,7 @@ public :
 		m_CreateSceneModeCallback = std::bind(Func, Obj, std::placeholders::_1, std::placeholders::_2);
 }
 	template<typename T>
-	void SetCreateObjectCallback(T* Obj, class CGameObject* (T::*Func)(CScene* Scene, size_t Size))
+	void SetCreateObjectFunction(T* Obj, class CGameObject* (T::*Func)(CScene* Scene, size_t Size))
 {
 		m_CreateObjectCallback = std::bind(Func, Obj, std::placeholders::_1, std::placeholders::_2);
 }

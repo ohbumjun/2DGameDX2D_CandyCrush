@@ -58,6 +58,9 @@ void CColliderSection::Collision()
 {
 	size_t Size = m_vecCollider.size();
 
+	if (Size < 2)
+		return;
+
 	for (size_t  i = 0; i < Size - 1; i++)
 	{
 		CColliderComponent* Src = m_vecCollider[i];

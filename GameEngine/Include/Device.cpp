@@ -16,10 +16,16 @@ CDevice::~CDevice()
 	if (m_DeviceContext)
 		m_DeviceContext->ClearState();
 
-	SAFE_RELEASE(m_Device);
-	SAFE_RELEASE(m_DeviceContext);
+	SAFE_RELEASE(m_2DTarget);
+	SAFE_RELEASE(m_2DTargetWorld);
+	SAFE_RELEASE(m_2dFactory);
+
 	SAFE_RELEASE(m_TargetView);
 	SAFE_RELEASE(m_DepthStencilView);
+	SAFE_RELEASE(m_SwapChain);
+
+	SAFE_RELEASE(m_DeviceContext);
+	SAFE_RELEASE(m_Device);
 }
 
 Vector2 CDevice::GetViewPortRatio()

@@ -157,10 +157,12 @@
   <ItemGroup>
     <ClCompile Include="ClientManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Scene\StartScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientManager.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Scene\StartScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client2D.rc" />

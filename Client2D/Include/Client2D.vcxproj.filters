@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="01. SceneMode">
+      <UniqueIdentifier>{db068c4b-6c24-459d-92fd-d8b8c43abe3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Object">
+      <UniqueIdentifier>{49faa541-5ddb-48c3-afff-204e9492f9d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -21,6 +27,9 @@
     <ClCompile Include="ClientManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\StartScene.cpp">
+      <Filter>01. SceneMode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -28,6 +37,9 @@
     </ClInclude>
     <ClInclude Include="ClientManager.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\StartScene.h">
+      <Filter>01. SceneMode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

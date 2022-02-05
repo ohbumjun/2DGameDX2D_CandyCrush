@@ -15,6 +15,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03. Editor", "03. Editor", "{FFE508DC-0F60-40B7-A098-33D3A40999E6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client2D", "Client2D\Include\Client2D.vcxproj", "{42335E12-339B-46B1-9070-EA554A6932CC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8C06BB35-145E-4D78-A913-30ACBFAFE725} = {8C06BB35-145E-4D78-A913-30ACBFAFE725}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
