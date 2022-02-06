@@ -15,7 +15,7 @@ private :
 	CAnimationSequence2DData* m_CurrentAnimation;
 	class CScene* m_Scene;
 	class CSpriteComponent* m_OwnerComponent;
-	class CAnimationConstantBuffer* m_CBuffer;
+	class CAnimationConstantBuffer* m_CBuffer; // °øÀ¯
 	std::string m_Name;
 	bool m_PlayAnimation;
 public :

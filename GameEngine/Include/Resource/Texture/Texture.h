@@ -32,7 +32,8 @@ struct TextureResourceInfo {
 	~TextureResourceInfo()
 	{
 		SAFE_DELETE(Image);
-		SAFE_DELETE(SRV);
+		SAFE_RELEASE(SRV);
+
 		SAFE_DELETE_ARRAY(FullPath);
 		SAFE_DELETE_ARRAY(PathName);
 		SAFE_DELETE_ARRAY(FileName);

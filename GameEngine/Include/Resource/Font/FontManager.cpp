@@ -41,6 +41,8 @@ CFontManager::~CFontManager()
 			SAFE_RELEASE(iter->second);
 		}
 	}
+
+	SAFE_RELEASE(m_WriteFactory);
 }
 
 bool CFontManager::Init()

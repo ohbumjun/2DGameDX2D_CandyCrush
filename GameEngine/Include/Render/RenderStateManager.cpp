@@ -8,6 +8,7 @@ CRenderStateManager::CRenderStateManager()
 
 CRenderStateManager::~CRenderStateManager()
 {
+	/*
 	auto iter = m_mapRenderState.begin();
 	auto iterEnd = m_mapRenderState.end();
 
@@ -15,6 +16,7 @@ CRenderStateManager::~CRenderStateManager()
 	{
 		SAFE_DELETE(iter->second);
 	}
+	*/
 }
 
 void CRenderStateManager::SetBlendFactor(const std::string& Name, float r, float g, float b, float a)

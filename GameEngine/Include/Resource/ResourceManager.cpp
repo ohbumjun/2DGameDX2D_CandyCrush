@@ -11,6 +11,9 @@ CResourceManager::~CResourceManager()
 {
 	SAFE_DELETE(m_MeshManager);
 	SAFE_DELETE(m_TextureManager);
+	SAFE_DELETE(m_AnimationManager);
+	SAFE_DELETE(m_ShaderManager);
+	SAFE_DELETE(m_MaterialManager);
 }
 
 CMesh* CResourceManager::FindMesh(const std::string& Name)

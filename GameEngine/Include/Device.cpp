@@ -1,21 +1,20 @@
 #include "Device.h"
 
-// DEFINITION_SINGLE(CDevice);
+DEFINITION_SINGLE(CDevice);
 
-CDevice* CDevice::m_Inst = nullptr;
+// CDevice* CDevice::m_Inst = nullptr;
 
 CDevice::CDevice() :
-	m_Device(nullptr),
-	m_DeviceContext(nullptr),
+	m_2DTarget(nullptr),
+	m_2DTargetWorld(nullptr),
+	m_2dFactory(nullptr),
 	m_TargetView(nullptr),
-	m_DepthStencilView(nullptr)
+	m_DepthStencilView(nullptr),
+	m_SwapChain(nullptr)
 {}
 
 CDevice::~CDevice()
 {
-	if (m_DeviceContext)
-		m_DeviceContext->ClearState();
-
 	SAFE_RELEASE(m_2DTarget);
 	SAFE_RELEASE(m_2DTargetWorld);
 	SAFE_RELEASE(m_2dFactory);
@@ -24,13 +23,16 @@ CDevice::~CDevice()
 	SAFE_RELEASE(m_DepthStencilView);
 	SAFE_RELEASE(m_SwapChain);
 
+	if (m_DeviceContext)
+		m_DeviceContext->ClearState();
+
 	SAFE_RELEASE(m_DeviceContext);
 	SAFE_RELEASE(m_Device);
 }
 
 Vector2 CDevice::GetViewPortRatio()
 {
-	RECT Rect;
+	RECT Rect = {};
 
 	GetClientRect(m_hWnd, &Rect);
 
@@ -49,23 +51,23 @@ bool  CDevice::Init(HWND hWnd, unsigned Width, unsigned Height, bool WindowMode)
 	// Device 만들고
 	unsigned int Flag = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 
-#ifdef UNICODE
+#ifdef _DEBUG
 	Flag |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
-	D3D_FEATURE_LEVEL FLevel = D3D_FEATURE_LEVEL_11_1;
-	D3D_FEATURE_LEVEL FLevel1 = D3D_FEATURE_LEVEL_11_1;
+	D3D_FEATURE_LEVEL FLevel = D3D_FEATURE_LEVEL_11_0;
+	D3D_FEATURE_LEVEL FLevel1 = D3D_FEATURE_LEVEL_11_0;
 
-	if (FAILED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, NULL,
+	if (FAILED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, 0,
 		Flag, &FLevel, 1, D3D11_SDK_VERSION, &m_Device, &FLevel1, &m_DeviceContext)))
 		return false;
 
 	int SampleCount = 4;
-	UINT Check = 1;
+
+	UINT Check = 0;
 
 	// 검사하기
-	m_Device->CheckMultisampleQualityLevels(DXGI_FORMAT_B8G8R8A8_UNORM,
-		4, &Check);
+	m_Device->CheckMultisampleQualityLevels(DXGI_FORMAT_B8G8R8A8_UNORM,4, &Check);
 
 	if (Check < 1)
 		SampleCount = 1;
@@ -77,7 +79,7 @@ bool  CDevice::Init(HWND hWnd, unsigned Width, unsigned Height, bool WindowMode)
 	Desc.BufferDesc.Height = Height;
 	Desc.BufferDesc.RefreshRate.Numerator = 1;
 	Desc.BufferDesc.RefreshRate.Denominator = 60;
-	Desc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	Desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	Desc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	Desc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
@@ -104,21 +106,20 @@ bool  CDevice::Init(HWND hWnd, unsigned Width, unsigned Height, bool WindowMode)
 	{
 		SAFE_RELEASE(DXGIDevice);
 		SAFE_RELEASE(DXGIAdapter);
-		SAFE_RELEASE(DXGIAdapter);
+		SAFE_RELEASE(DXGIFactory);
 		return false;
 	}
 
 	SAFE_RELEASE(DXGIDevice);
 	SAFE_RELEASE(DXGIAdapter);
-	SAFE_RELEASE(DXGIAdapter);
+	SAFE_RELEASE(DXGIFactory);
 
 	// Get Buffer
 	ID3D11Texture2D* BackBuffer = nullptr;
 	m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&BackBuffer);
 
 	// Render TArget view
-	if (FAILED(m_Device->CreateRenderTargetView(BackBuffer, nullptr, &m_TargetView)))
-		return false;
+	m_Device->CreateRenderTargetView(BackBuffer, nullptr, &m_TargetView);
 
 	SAFE_RELEASE(BackBuffer);
 
@@ -136,11 +137,9 @@ bool  CDevice::Init(HWND hWnd, unsigned Width, unsigned Height, bool WindowMode)
 	DepthDesc.Usage = D3D11_USAGE_DEFAULT;
 	DepthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 
-	if (FAILED(m_Device->CreateTexture2D(&DepthDesc, nullptr, &DepthBuffer)))
-		return false;
+	m_Device->CreateTexture2D(&DepthDesc, nullptr, &DepthBuffer);
 
-	if (FAILED(m_Device->CreateDepthStencilView(DepthBuffer, nullptr, &m_DepthStencilView)))
-		return false;
+	m_Device->CreateDepthStencilView(DepthBuffer, nullptr, &m_DepthStencilView);
 
 	SAFE_RELEASE(DepthBuffer);
 

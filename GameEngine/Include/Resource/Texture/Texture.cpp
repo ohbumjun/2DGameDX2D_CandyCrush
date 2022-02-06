@@ -7,7 +7,14 @@ m_ImageType(Image_Type::Atlas)
 {}
 
 CTexture::~CTexture()
-{}
+{
+	size_t Size = m_vecTextureResourceInfo.size();
+
+	for (size_t i = 0; i < Size; i++)
+	{
+		SAFE_DELETE(m_vecTextureResourceInfo[i]);
+	}
+}
 
 bool CTexture::LoadTexture(const std::string& Name, const TCHAR* FileName, 
 	const std::string& PathName, int Index)

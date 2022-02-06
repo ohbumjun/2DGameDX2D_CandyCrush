@@ -11,7 +11,9 @@ CTransform::CTransform(const CTransform& Transform)
 }
 
 CTransform::~CTransform()
-{}
+{
+	SAFE_DELETE(m_TransformBuffer);
+}
 
 void CTransform::InheritScale(bool Current)
 {

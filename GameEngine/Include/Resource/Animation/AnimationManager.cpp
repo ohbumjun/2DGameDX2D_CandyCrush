@@ -6,7 +6,9 @@ CAnimationManager::CAnimationManager()
 {}
 
 CAnimationManager::~CAnimationManager()
-{}
+{
+	SAFE_DELETE(m_AnimationCBuffer);
+}
 
  CAnimationSequence2D* CAnimationManager::FindAnimationSequence2D(const std::string& Name)
 {
