@@ -59,7 +59,7 @@ void CGraphicShader::AddInputDesc(const char* Name, unsigned int      Index,
 bool CGraphicShader::CreateInputLayout()
 {
 	if (FAILED(CDevice::GetInst()->GetDevice()->CreateInputLayout(&m_vecInputDesc[0],
-		static_cast<UINT>(m_vecInputDesc.size()), m_VSBlob->GetBufferPointer(), m_VSBlob->GetBufferSize(),
+		(UINT)m_vecInputDesc.size(), m_VSBlob->GetBufferPointer(), m_VSBlob->GetBufferSize(),
 		&m_InputLayout)))
 		return false;
 

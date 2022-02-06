@@ -131,6 +131,12 @@ bool CSpriteComponent::Init()
 	m_Mesh = (CSpriteMesh*)m_Scene->GetSceneResource()->FindMesh("SpriteMesh");
 	SetMaterial(m_Scene->GetSceneResource()->FindMaterial("BaseTexture"));
 
+	if (!m_Material)
+	{
+		assert(false);
+		return false;
+	}
+
 	SetMeshSize(1.f, 1.f, 0.f);
 	SetWorldScale((float)m_Material->GetTextureWidth(),
 		(float)m_Material->GetTextureHeight(), 1.f);

@@ -26,6 +26,12 @@ bool CTexture::LoadTexture(const std::string& Name, const TCHAR* FileName,
 	TCHAR* FullPath = new TCHAR[MAX_PATH];
 	memset(FullPath, 0, sizeof(TCHAR) * MAX_PATH);
 
+	const PathInfo* Path = CPathManager::GetInst()->FindPath(PathName);
+
+	if (Path)
+		lstrcpy(FullPath, Path->Path);
+	lstrcat(FullPath, FileName);
+
 	Info->FullPath = FullPath;
 
 	Info->FileName = new TCHAR[MAX_PATH];
@@ -181,9 +187,9 @@ bool CTexture::CreateResource(int Index)
 {
 	TextureResourceInfo* Info = m_vecTextureResourceInfo[Index];
 
-	if (CreateShaderResourceView(CDevice::GetInst()->GetDevice(), Info->Image->GetImages(),
-		Info->Image->GetImageCount(), Info->Image->GetMetadata(),
-		&Info->SRV))
+
+	if (FAILED(CreateShaderResourceView(CDevice::GetInst()->GetDevice(), Info->Image->GetImages(),
+		Info->Image->GetImageCount(), Info->Image->GetMetadata(),&Info->SRV)))
 		return false;
 
 	Info->Width  = (unsigned int)Info->Image->GetImages()[0].width;

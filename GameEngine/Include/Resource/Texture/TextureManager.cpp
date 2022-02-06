@@ -13,29 +13,33 @@ CTextureManager::~CTextureManager()
 
 	for (; iter != iterEnd; ++iter)
 	{
-		SAFE_DELETE(iter->second);
+		SAFE_RELEASE(iter->second);
 	}
 }
 
 bool CTextureManager::Init()
 {
 	// 기본 Texture Load
-	LoadTexture("EngineTexture", TEXT("teemo.png"));
+	if (!LoadTexture("EngineTexture", TEXT("teemo.png")))
+	{
+		assert(false);
+		return false;
+	}
 
 	// 점, 선, 비등방성
 	float BorderColor[4] = {1.f, 1.f, 1.f, 1.f};
 
-	if (!CreateSamplerState("Point", D3D11_FILTER_MINIMUM_MIN_MAG_MIP_POINT,
+	if (!CreateSamplerState("Point", D3D11_FILTER_MIN_MAG_MIP_POINT,
 		D3D11_TEXTURE_ADDRESS_WRAP, D3D11_TEXTURE_ADDRESS_WRAP, D3D11_TEXTURE_ADDRESS_WRAP,
 		BorderColor))
 		return false;
 
-	if (!CreateSamplerState("Linear", D3D11_FILTER_MINIMUM_MIN_MAG_MIP_LINEAR,
+	if (!CreateSamplerState("Linear", D3D11_FILTER_MIN_MAG_MIP_LINEAR,
 		D3D11_TEXTURE_ADDRESS_WRAP, D3D11_TEXTURE_ADDRESS_WRAP, D3D11_TEXTURE_ADDRESS_WRAP,
 		BorderColor))
 		return false;
 
-	if (!CreateSamplerState("Anistropy", D3D11_FILTER_MINIMUM_ANISOTROPIC,
+	if (!CreateSamplerState("Anistropic", D3D11_FILTER_ANISOTROPIC,
 		D3D11_TEXTURE_ADDRESS_WRAP, D3D11_TEXTURE_ADDRESS_WRAP, D3D11_TEXTURE_ADDRESS_WRAP,
 		BorderColor))
 		return false;
@@ -46,11 +50,11 @@ bool CTextureManager::Init()
 	if (!SetSampler("Linear", 1))
 		return false;
 
-	if (!SetSampler("Anistropy", 2))
+	if (!SetSampler("Anistropic", 2))
 		return false;
 
 	// Default
-	if (!SetSampler("Anistropy", 3))
+	if (!SetSampler("Anistropic", 3))
 		return false;
 
 	return true;
@@ -146,7 +150,7 @@ bool CTextureManager::LoadTexture(const std::string& Name, const TCHAR* FileName
 
 	Texture = new CTexture;
 
-	if (Texture->LoadTexture(Name, FileName, PathName))
+	if (!Texture->LoadTexture(Name, FileName, PathName))
 	{
 		SAFE_DELETE(Texture);
 		return false;

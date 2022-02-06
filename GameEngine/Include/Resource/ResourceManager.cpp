@@ -132,5 +132,32 @@ bool CResourceManager::Init()
 		return false;
 	}
 
+	// Animation 
+	m_AnimationManager = new CAnimationManager;
+
+	if (!m_AnimationManager->Init())
+	{
+		SAFE_DELETE(m_AnimationManager);
+		return false;
+	}
+
+	// ShaderManager 
+	m_ShaderManager = new CShaderManager;
+
+	if (!m_ShaderManager->Init())
+	{
+		SAFE_DELETE(m_ShaderManager);
+		return false;
+	}
+
+	// Material 
+	m_MaterialManager = new CMaterialManager;
+
+	if (!m_MaterialManager->Init())
+	{
+		SAFE_DELETE(m_MaterialManager);
+		return false;
+	}
+
 	return true;
 }

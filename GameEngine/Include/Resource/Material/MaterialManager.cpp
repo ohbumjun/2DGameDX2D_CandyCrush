@@ -5,11 +5,15 @@
 DEFINITION_SINGLE(CMaterialManager);
 
 
-CMaterialManager::CMaterialManager()
+CMaterialManager::CMaterialManager() :
+	m_mapMaterial{},
+	m_CBuffer(nullptr)
 {}
 
 CMaterialManager::~CMaterialManager()
-{}
+{
+	SAFE_DELETE(m_CBuffer);
+}
 
  bool CMaterialManager::Init()
 {

@@ -263,6 +263,8 @@ CAnimationSequence2DData* CAnimationSequence2DInstance::FindAnimationSequence2D(
 {
 	 // 상수 버퍼 세팅
 	 m_CBuffer = CResourceManager::GetInst()->GetAnimationCBuffer();
+	 if (!m_CBuffer)
+		 return false;
 
 	 return true;
 }

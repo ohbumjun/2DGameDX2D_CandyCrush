@@ -24,6 +24,8 @@ CRenderManager::~CRenderManager()
 	m_vecRenderLayer.clear();
 
 	SAFE_DELETE(m_RenderStateManager);
+
+	SAFE_DELETE(m_Standard2DConstantBuffer);
 }
 
 RenderLayer* CRenderManager::FindRenderLayer(const std::string& Name)

@@ -6,11 +6,11 @@
 class CAnimationSequence2DInstance
 {
 	friend class CSpriteComponent;
-private :
+protected :
 	CAnimationSequence2DInstance();
 	CAnimationSequence2DInstance(const CAnimationSequence2DInstance& Instance);
 	virtual ~CAnimationSequence2DInstance();
-private :
+protected:
 	std::unordered_map<std::string, CAnimationSequence2DData*> m_mapAnimationSequence2D;
 	CAnimationSequence2DData* m_CurrentAnimation;
 	class CScene* m_Scene;
