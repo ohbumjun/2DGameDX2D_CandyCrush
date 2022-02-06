@@ -30,6 +30,12 @@
     <ClCompile Include="Scene\StartScene.cpp">
       <Filter>01. SceneMode</Filter>
     </ClCompile>
+    <ClCompile Include="GameObject\Player2D.cpp">
+      <Filter>02. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\PlayerAnimation.cpp">
+      <Filter>02. Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -40,6 +46,12 @@
     </ClInclude>
     <ClInclude Include="Scene\StartScene.h">
       <Filter>01. SceneMode</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Player2D.h">
+      <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\PlayerAnimation.h">
+      <Filter>02. Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

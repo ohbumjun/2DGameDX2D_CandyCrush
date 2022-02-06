@@ -9,7 +9,7 @@ class CAnimationSequence2DInstance
 private :
 	CAnimationSequence2DInstance();
 	CAnimationSequence2DInstance(const CAnimationSequence2DInstance& Instance);
-	~CAnimationSequence2DInstance();
+	virtual ~CAnimationSequence2DInstance();
 private :
 	std::unordered_map<std::string, CAnimationSequence2DData*> m_mapAnimationSequence2D;
 	CAnimationSequence2DData* m_CurrentAnimation;
@@ -53,12 +53,12 @@ public :
 public :
 	CAnimationSequence2DData* FindAnimationSequence2D(const std::string& Name);
 public :
-	bool Init();
-	void Start();
-	void SetShader();
-	void Update(float DeltaTime);
-	void ResetShader();
-	CAnimationSequence2DInstance* Clone();
+	virtual bool Init();
+	virtual void Start();
+	virtual void SetShader();
+	virtual void Update(float DeltaTime);
+	virtual void ResetShader();
+	virtual CAnimationSequence2DInstance* Clone();
 public :
 	template<typename T>
 	void SetEndFunction(const std::string& Name, T* Obj, void(T::*Func)())

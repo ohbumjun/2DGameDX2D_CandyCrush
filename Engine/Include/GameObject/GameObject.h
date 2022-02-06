@@ -60,14 +60,14 @@ public :
 	template<typename T>
 	T* CreateComponent(const std::string& Name)
 {
-		CSceneComponent* Component = FindSceneComponent(Name);
+		CComponent* Component = FindComponent(Name);
 		if (Component)
-			return Component;
+			return (T*)Component;
 
 		Component = new T;
 		Component->SetName(Name);
 		Component->SetGameObject(this);
-		Component->m_Scene = m_Scene;
+		Component->SetScene(m_Scene);
 
 		if (!Component->Init())
 		{
@@ -77,16 +77,15 @@ public :
 
 		if (Component->GetComponentType() == Component_Type::SceneComponent)
 		{
-			m_SceneComponentList.push_back(Component);
-			Component->m_Transform->m_OwnerGameObject = this;
+			m_SceneComponentList.push_back((class CSceneComponent*)Component);
+
+			if (!m_RootComponent)
+				m_RootComponent = (class CSceneComponent*)Component;
 		}
 		else
-			m_vecObjectComponent.push_back(Component);
+			m_vecObjectComponent.push_back((class CObjectComponent*)Component);
 
-		if (!m_RootComponent)
-			m_RootComponent = Component;
-
-		return Component;
+		return (T*)Component;
 	}
 
 

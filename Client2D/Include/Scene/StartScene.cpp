@@ -1,6 +1,7 @@
 #include "StartScene.h"
 #include "Scene/Scene.h"
 #include "Scene/SceneResource.h"
+#include "../GameObject/Player2D.h"
 
 CStartScene::CStartScene()
 {}
@@ -14,6 +15,8 @@ bool CStartScene::Init()
 		return false;
 
 	CreateAnimationSequence();
+
+	CPlayer2D* Player2D = m_Scene->CreateGameObject<CPlayer2D>("Player");
 
 	return true;
 }
