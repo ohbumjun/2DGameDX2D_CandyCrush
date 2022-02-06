@@ -45,13 +45,16 @@ void CBlendState::AddBlendDesc(bool BlendEnable, D3D11_BLEND SrcBlend,
 
 bool CBlendState::CreateBlendState(bool AlphaToCoverageEnable, bool IndependentBlendEnable)
 {
+	if (m_vecDesc.empty())
+		return false;
+
 	D3D11_BLEND_DESC Desc = {};
 
 	// 렌더타겟에 픽셀값을 설정할 때 알파값을 사용할 것인가 
 	Desc.AlphaToCoverageEnable = AlphaToCoverageEnable;
 	Desc.IndependentBlendEnable = IndependentBlendEnable;
 
-	memcpy(&Desc.RenderTarget[0], &m_vecDesc, sizeof(D3D11_RENDER_TARGET_BLEND_DESC) * m_vecDesc.size());
+	memcpy(Desc.RenderTarget, &m_vecDesc[0], sizeof(D3D11_RENDER_TARGET_BLEND_DESC) * m_vecDesc.size());
 
 	if (FAILED(CDevice::GetInst()->GetDevice()->CreateBlendState(&Desc, (ID3D11BlendState**)&m_State)))
 		return false;

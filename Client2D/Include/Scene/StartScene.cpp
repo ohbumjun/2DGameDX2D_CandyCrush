@@ -13,6 +13,8 @@ bool CStartScene::Init()
 	if (!CSceneMode::Init())
 		return false;
 
+	CreateAnimationSequence();
+
 	return true;
 }
 

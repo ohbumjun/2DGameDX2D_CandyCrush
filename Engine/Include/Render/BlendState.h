@@ -24,13 +24,13 @@ public:
 	}
 public :
 	void AddBlendDesc(bool           BlendEnable = true,
-	D3D11_BLEND    SrcBlend = D3D11_BLEND_SRC_ALPHA,
-		D3D11_BLEND    DestBlend = D3D11_BLEND_INV_SRC_ALPHA,
-	D3D11_BLEND_OP BlendOp =  D3D11_BLEND_OP_ADD,
-	D3D11_BLEND    SrcBlendAlpha = D3D11_BLEND_ONE,
-	D3D11_BLEND    DestBlendAlpha = D3D11_BLEND_ZERO ,
-	D3D11_BLEND_OP BlendOpAlpha = D3D11_BLEND_OP_ADD,
-	UINT8          RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL);
+		D3D11_BLEND SrcBlend = D3D11_BLEND_SRC_ALPHA,
+		D3D11_BLEND DestBlend = D3D11_BLEND_INV_SRC_ALPHA, 
+		D3D11_BLEND_OP BlendOp = D3D11_BLEND_OP_ADD,
+		D3D11_BLEND SrcBlendAlpha = D3D11_BLEND_ONE, 
+		D3D11_BLEND DestBlendAlpha = D3D11_BLEND_ZERO,
+		D3D11_BLEND_OP BlendOpAlpha = D3D11_BLEND_OP_ADD,
+		UINT8 RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL);
 	bool CreateBlendState(bool AlphaToCoverageEnable, bool IndependentBlendEnable);
 public :
 	virtual void SetState() override;

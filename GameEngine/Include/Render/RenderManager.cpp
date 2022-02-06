@@ -56,7 +56,7 @@ bool CRenderManager::CreateRenderLayer(const std::string& Name, int Priority)
 	return true;
 }
 
-void CRenderManager::AddRenderLayer(CComponent* Component)
+void CRenderManager::AddRenderLayer(CSceneComponent* Component)
 {
 	size_t Size = m_vecRenderLayer.size();
 
@@ -125,7 +125,11 @@ bool CRenderManager::Init()
 	m_RenderStateManager->Init();
 
 	m_BlendState = (CBlendState*)m_RenderStateManager->FindRenderState("AlphaBlend");
+	if (!m_BlendState)
+		return false;
 	m_DepthState = (CDepthStencilState*)m_RenderStateManager->FindRenderState("NoDepth");
+	if (!m_DepthState)
+		return false;
 
 	m_Standard2DConstantBuffer = new CStandard2DConstantBuffer;
 	m_Standard2DConstantBuffer->Init();
@@ -161,12 +165,14 @@ void CRenderManager::Render()
 	}
 
 	// Object PrevRender로 RenderLayer에 더해주기
-	auto iter = m_ObjList->begin();
-	auto iterEnd = m_ObjList->end();
-
-	for (; iter != iterEnd; ++iter)
 	{
-		(*iter)->PrevRender();
+		auto iter = m_ObjList->begin();
+		auto iterEnd = m_ObjList->end();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			(*iter)->PrevRender();
+		}
 	}
 
 	// Render Layer를 돌면서 Render 해주기
@@ -176,6 +182,8 @@ void CRenderManager::Render()
 
 		for (size_t j = 0; j < PartSize; j++)
 		{
+			if (!m_vecRenderLayer[i]->vecComponent[j])
+				continue;
 			m_vecRenderLayer[i]->vecComponent[j]->Render();
 		}
 	}
@@ -186,6 +194,8 @@ void CRenderManager::Render()
 
 		for (size_t j = 0; j < PartSize; j++)
 		{
+			if (!m_vecRenderLayer[i]->vecComponent[j])
+				continue;
 			m_vecRenderLayer[i]->vecComponent[j]->PostRender();
 		}
 	}

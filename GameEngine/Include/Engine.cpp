@@ -3,8 +3,10 @@
 #include "Timer.h"
 #include "Input.h"
 #include "PathManager.h"
+#include "Render/DepthStencilState.h"
 #include "Scene/SceneManager.h"
 #include "Resource/ResourceManager.h"
+#include "Render/RenderManager.h"
 
 DEFINITION_SINGLE(CEngine)
 
@@ -26,6 +28,7 @@ CEngine::~CEngine()
 	CSceneManager::DestroyInst();
 	CPathManager::DestroyInst();
 	CResourceManager::DestroyInst();
+	CRenderManager::DestroyInst();
 }
 
 bool CEngine::Init(HINSTANCE hInst, const TCHAR* Name, 
@@ -72,6 +75,10 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd, unsigned Width, unsigned Height, 
 	if (!CResourceManager::GetInst()->Init())
 		return false;
 
+	// Render
+	if (!CRenderManager::GetInst()->Init())
+		return false;
+
 	return true;
 }
 
@@ -91,7 +98,6 @@ int CEngine::Run()
 			Logic();
 		}
 	}
-
 
 	return (int)msg.wParam;
 }
@@ -132,6 +138,14 @@ bool CEngine::PostUpdate(float DeltaTime)
 
 bool CEngine::Render()
 {
+	CDevice::GetInst()->RenderStart();
+	CDevice::GetInst()->ClearRenderTarget(m_ClearColor);
+	CDevice::GetInst()->ClearDepthStencil(1.f, 0);
+
+	CRenderManager::GetInst()->Render();
+
+	CDevice::GetInst()->FlipAndRender();
+
 	return true;
 }
 

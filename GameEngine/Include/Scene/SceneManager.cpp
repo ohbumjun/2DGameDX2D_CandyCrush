@@ -17,6 +17,8 @@ bool CSceneManager::Init()
 {
 	m_Scene = new CScene;
 
+	CRenderManager::GetInst()->SetObjectList(&m_Scene->m_ObjList);
+
 	return true;
 }
 

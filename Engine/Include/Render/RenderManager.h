@@ -7,7 +7,7 @@ struct RenderLayer {
 	std::string Name;
 	int LayerPriority;
 	int RenderCount;
-	std::vector<class CComponent*> vecComponent;
+	std::vector<class CSceneComponent*> vecComponent;
 	RenderLayer() :
 		Name{},
 		LayerPriority(0),
@@ -38,7 +38,7 @@ private: // Render Layer
 	RenderLayer* FindRenderLayer(const std::string& Name);
 	bool CreateRenderLayer(const std::string& Name, int Priority);
 public :
-	void AddRenderLayer(class CComponent* Component);
+	void AddRenderLayer(class CSceneComponent* Component);
 	void SetRenderLayerPriority(const std::string& Name, int Priority);
 public :
 	void SetObjectList(const std::list<CSharedPtr<class CGameObject>>* ObjList)

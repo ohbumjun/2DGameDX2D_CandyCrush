@@ -164,6 +164,7 @@ void CSceneResource::AddAnimationFrameData(const std::string& Name, const Vector
 		m_mapSequence2D.insert(std::make_pair(Name, Sequence2D));
 
 		Sequence2D->AddFrameData(StartPos, Size);
+		return;
 	}
 
 	Sequence2D->AddFrameData(StartPos, Size);
