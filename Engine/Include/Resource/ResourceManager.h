@@ -41,7 +41,7 @@ public : // ============= Texture ==============
 
 public: // ============= Animation ============
 	CAnimationSequence2D* FindAnimationSequence2D(const std::string& Name);
-	bool LoadAnimationSequence2D(const std::string& Name, const TCHAR* FileName,
+	bool LoadAnimationSequence2D(const std::string& Name, const std::string& TextureName, const TCHAR* FileName,
 		const std::string& PathName = TEXTURE_PATH);
 	class CAnimationConstantBuffer* GetAnimationCBuffer() const;
 	class CMaterialConstantBuffer* GetMaterialCBuffer() const;

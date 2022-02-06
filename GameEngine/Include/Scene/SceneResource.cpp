@@ -121,7 +121,8 @@ CAnimationSequence2D* CSceneResource::FindAnimationSequence2D(const std::string&
 	return iter->second;
 }
 
-bool CSceneResource::LoadAnimationSequence2D(const std::string& Name, const TCHAR* FileName,
+bool CSceneResource::LoadAnimationSequence2D(const std::string& Name, const std::string& TextureName,
+	const TCHAR* FileName,
 	const std::string& PathName)
 {
 	CAnimationSequence2D* Sequence = FindAnimationSequence2D(Name);
@@ -131,7 +132,7 @@ bool CSceneResource::LoadAnimationSequence2D(const std::string& Name, const TCHA
 
 	Sequence = new CAnimationSequence2D;
 
-	LoadTexture(Name, FileName, PathName);
+	LoadTexture(TextureName, FileName, PathName);
 
 	CTexture* Texture = FindTexture(Name);
 
@@ -147,6 +148,25 @@ bool CSceneResource::LoadAnimationSequence2D(const std::string& Name, const TCHA
 	m_mapSequence2D.insert(std::make_pair(Name, Sequence));
 
 	return true;
+}
+
+void CSceneResource::AddAnimationFrameData(const std::string& Name, const Vector2& StartPos, const Vector2& Size)
+{
+	CAnimationSequence2D* Sequence2D = FindAnimationSequence2D(Name);
+
+	if (!Sequence2D)
+	{
+		Sequence2D = CResourceManager::GetInst()->FindAnimationSequence2D(Name);
+
+		if (!Sequence2D)
+			return;
+
+		m_mapSequence2D.insert(std::make_pair(Name, Sequence2D));
+
+		Sequence2D->AddFrameData(StartPos, Size);
+	}
+
+	Sequence2D->AddFrameData(StartPos, Size);
 }
 
 CShader* CSceneResource::FindShader(const std::string& Name)

@@ -4,6 +4,7 @@
 #include "Input.h"
 #include "PathManager.h"
 #include "Scene/SceneManager.h"
+#include "Resource/ResourceManager.h"
 
 DEFINITION_SINGLE(CEngine)
 
@@ -24,6 +25,7 @@ CEngine::~CEngine()
 	CDevice::DestroyInst();
 	CSceneManager::DestroyInst();
 	CPathManager::DestroyInst();
+	CResourceManager::DestroyInst();
 }
 
 bool CEngine::Init(HINSTANCE hInst, const TCHAR* Name, 
@@ -64,6 +66,10 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd, unsigned Width, unsigned Height, 
 
 	// PathManager
 	if (!CPathManager::GetInst()->Init())
+		return false;
+
+	// ResourceManager
+	if (!CResourceManager::GetInst()->Init())
 		return false;
 
 	return true;

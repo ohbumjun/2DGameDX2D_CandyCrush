@@ -11,6 +11,7 @@ public :
 private :
 public :
     virtual bool Init() override;
+    void CreateAnimationSequence();
 };
 
 

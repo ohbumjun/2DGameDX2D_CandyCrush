@@ -33,8 +33,9 @@ public: // ============= Texture ==============
 	bool LoadTextureFullPath(const std::string& Name, const TCHAR* FullPath);
 public: // ============= Animation ============
 	class CAnimationSequence2D* FindAnimationSequence2D(const std::string& Name);
-	bool LoadAnimationSequence2D(const std::string& Name, const TCHAR* FileName,
-		const std::string& PathName = TEXTURE_PATH);
+	bool LoadAnimationSequence2D(const std::string& Name, const std::string& TextureName,
+		const TCHAR* FileName, const std::string& PathName = TEXTURE_PATH);
+	void AddAnimationFrameData(const std::string& Name, const Vector2& StartPos, const Vector2& Size);
 public: // ============= Shader ============
 	class CShader* FindShader(const std::string& Name);
 public: // ============= Material ============

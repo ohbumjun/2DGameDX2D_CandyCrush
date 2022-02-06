@@ -108,13 +108,13 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 
 	 if (m_Scene)
 	 {
-		 m_Scene->GetSceneResource()->LoadAnimationSequence2D(SequenceName,
+		 m_Scene->GetSceneResource()->LoadAnimationSequence2D(SequenceName, SequenceName,
 			 FileName, PathName);
 		 Sequence = m_Scene->GetSceneResource()->FindAnimationSequence2D(SequenceName);
 	 }
 	 else
 	 {
-		 CResourceManager::GetInst()->LoadAnimationSequence2D(SequenceName,
+		 CResourceManager::GetInst()->LoadAnimationSequence2D(SequenceName, SequenceName,
 			 FileName, PathName);
 		 Sequence = CResourceManager::GetInst()->FindAnimationSequence2D(SequenceName);
 	 }

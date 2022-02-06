@@ -76,10 +76,10 @@ CAnimationSequence2D* CResourceManager::FindAnimationSequence2D(const std::strin
 	return m_AnimationManager->FindAnimationSequence2D(Name);
 }
 
-bool CResourceManager::LoadAnimationSequence2D(const std::string& Name, const TCHAR* FileName,
+bool CResourceManager::LoadAnimationSequence2D(const std::string& Name, const std::string& TextureName, const TCHAR* FileName,
 	const std::string& PathName)
 {
-	return m_AnimationManager->LoadAnimationSequence2D(Name, FileName, PathName);
+	return m_AnimationManager->LoadAnimationSequence2D(Name, TextureName, FileName, PathName);
 }
 
 CAnimationConstantBuffer* CResourceManager::GetAnimationCBuffer() const
