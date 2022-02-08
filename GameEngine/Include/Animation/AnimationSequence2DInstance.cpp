@@ -21,8 +21,8 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 	m_Name = Instance.m_Name;
 	m_PlayAnimation = Instance.m_PlayAnimation;
 
-	auto iter = Instance.m_mapAnimationSequence2D.begin();
-	auto iterEnd = Instance.m_mapAnimationSequence2D.end();
+	auto iter = Instance.m_mapAnimationSequence2DData.begin();
+	auto iterEnd = Instance.m_mapAnimationSequence2DData.end();
 
 	for (; iter != iterEnd; ++iter)
 	{
@@ -36,17 +36,17 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 		Animation->m_Reverse = iter->second->m_Reverse;
 		Animation->m_FrameTime = Animation->m_PlayTime / iter->second->m_Sequence2D->GetFrameCount();
 
-		if (m_mapAnimationSequence2D.empty())
+		if (m_mapAnimationSequence2DData.empty())
 			m_CurrentAnimation = Animation;
-		m_mapAnimationSequence2D.insert(std::make_pair(iter->first, Animation));
+		m_mapAnimationSequence2DData.insert(std::make_pair(iter->first, Animation));
 	}
 
 }
 
  CAnimationSequence2DInstance::~CAnimationSequence2DInstance()
 {
-	 auto iter = m_mapAnimationSequence2D.begin();
-	 auto iterEnd = m_mapAnimationSequence2D.end();
+	 auto iter = m_mapAnimationSequence2DData.begin();
+	 auto iterEnd = m_mapAnimationSequence2DData.end();
 
 	for (; iter != iterEnd; ++iter)
 	{
@@ -82,7 +82,7 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 	Animation->m_PlayTime = PlayTime;
 	Animation->m_FrameTime = PlayTime / Sequence->GetFrameCount();
 
-	if (m_mapAnimationSequence2D.empty())
+	if (m_mapAnimationSequence2DData.empty())
 	{
 		m_CurrentAnimation = Animation;
 		if (m_OwnerComponent)
@@ -94,7 +94,7 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 		}
 	}
 
-	m_mapAnimationSequence2D.insert(std::make_pair(AnimationName, Animation));
+	m_mapAnimationSequence2DData.insert(std::make_pair(AnimationName, Animation));
 
 }
 
@@ -135,7 +135,7 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 	 Animation->m_PlayTime = PlayTime;
 	 Animation->m_FrameTime = PlayTime / Sequence->GetFrameCount();
 
-	 if (m_mapAnimationSequence2D.empty())
+	 if (m_mapAnimationSequence2DData.empty())
 	 {
 		 m_CurrentAnimation = Animation;
 		 if (m_OwnerComponent)
@@ -147,7 +147,7 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 		 }
 	 }
 
-	 m_mapAnimationSequence2D.insert(std::make_pair(AnimationName, Animation));
+	 m_mapAnimationSequence2DData.insert(std::make_pair(AnimationName, Animation));
 
 }
 
@@ -252,9 +252,9 @@ void CAnimationSequence2DInstance::SetPlayAnimation(bool Play)
 
 CAnimationSequence2DData* CAnimationSequence2DInstance::FindAnimationSequence2D(const std::string& Name)
 {
-	 auto iter = m_mapAnimationSequence2D.find(Name);
+	 auto iter = m_mapAnimationSequence2DData.find(Name);
 
-	 if (iter == m_mapAnimationSequence2D.end())
+	 if (iter == m_mapAnimationSequence2DData.end())
 		 return nullptr;
 
 	 return iter->second;
@@ -397,7 +397,7 @@ void CAnimationSequence2DInstance::SaveFullPath(const char* FullPath)
 {
 	FILE* pFile = nullptr;
 
-	fopen_s(&pFile, FullPath, "rb");
+	fopen_s(&pFile, FullPath, "wb");
 
 	if (!pFile)
 		return;
@@ -413,11 +413,11 @@ void CAnimationSequence2DInstance::SaveFullPath(const char* FullPath)
 	fwrite(m_Name.c_str(), sizeof(char), Length, pFile);
 
 	// Sequence2DData Map Size
-	size_t MapSize = m_mapAnimationSequence2D.size();
+	size_t MapSize = m_mapAnimationSequence2DData.size();
 	fwrite(&MapSize, sizeof(size_t), 1, pFile);
 
-	auto iter = m_mapAnimationSequence2D.begin();
-	auto iterEnd = m_mapAnimationSequence2D.end();
+	auto iter = m_mapAnimationSequence2DData.begin();
+	auto iterEnd = m_mapAnimationSequence2DData.end();
 
 	for (; iter != iterEnd; ++iter)
 	{
@@ -436,12 +436,79 @@ void CAnimationSequence2DInstance::SaveFullPath(const char* FullPath)
 
 	if (Current)
 	{
-		
+		int Length = (int)m_CurrentAnimation->m_Name.length();
+		fwrite(&Length, sizeof(int), 1, pFile);
+		fwrite(m_CurrentAnimation->m_Name.c_str(), sizeof(char), Length, pFile);
 	}
 
-	CAnimationSequence2DData* m_CurrentAnimation;
+	fclose(pFile);
+
 }
 
 void CAnimationSequence2DInstance::LoadFullPath(const char* FullPath)
 {
+	FILE* pFile = nullptr;
+
+	fopen_s(&pFile, FullPath, "rb");
+
+	if (!pFile)
+		return;
+
+	// TypeID
+	fread(&m_TypeID, sizeof(size_t), 1, pFile);
+
+	// 이름 길이
+	int Length = 0;
+	fread(&Length, sizeof(bool), 1, pFile);
+
+	// 이름 
+	char Name[MAX_PATH] = {};
+	fread(Name, sizeof(char), Length, pFile);
+	m_Name = Name;
+
+	// Sequence2DData Map Size
+	size_t MapSize = 0;
+	fread(&MapSize, sizeof(size_t), 1, pFile);
+
+	m_mapAnimationSequence2DData.clear();
+
+	for (size_t i = 0; i < MapSize; i++)
+	{
+		int KeyLength = 0;
+		fread(&KeyLength, sizeof(int), 1, pFile);
+
+		char KeyName[MAX_PATH] = {};
+		fread(KeyName, sizeof(char), KeyLength, pFile);
+
+		CAnimationSequence2DData* AnimSeqData = new CAnimationSequence2DData;
+		AnimSeqData->Load(pFile);
+
+		if (m_mapAnimationSequence2DData.empty())
+		{
+			m_CurrentAnimation = AnimSeqData;
+		}
+		m_mapAnimationSequence2DData.insert(std::make_pair(KeyName, AnimSeqData));
+	}
+
+	bool Current = false;
+	fread(&Current, sizeof(bool), 1, pFile);
+
+	if (Current)
+	{
+		int Length = 0;
+		fread(&Length, sizeof(int), 1, pFile);
+
+		char AnimName[MAX_PATH] = {};
+		fread(AnimName, sizeof(char), Length, pFile);
+
+		CAnimationSequence2DData* AnimSeqData = FindAnimationSequence2D(AnimName);
+
+		if (AnimSeqData)
+		{
+			m_CurrentAnimation = AnimSeqData;
+		}
+	}
+
+	fclose(pFile);
+
 }

@@ -12,7 +12,7 @@ protected :
 	virtual ~CAnimationSequence2DInstance();
 protected:
 	size_t m_TypeID;
-	std::unordered_map<std::string, CAnimationSequence2DData*> m_mapAnimationSequence2D;
+	std::unordered_map<std::string, CAnimationSequence2DData*> m_mapAnimationSequence2DData;
 	CAnimationSequence2DData* m_CurrentAnimation;
 	class CScene* m_Scene;
 	class CSpriteComponent* m_OwnerComponent;

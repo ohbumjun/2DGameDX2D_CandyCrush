@@ -1,4 +1,5 @@
 #include "AnimationSequence2DData.h"
+#include "../Resource/ResourceManager.h"
 
  CAnimationSequence2DData::CAnimationSequence2DData() :
 	 m_PlayScale(1.f),
@@ -6,7 +7,8 @@
 	 m_FrameIndex(0),
 	 m_Loop(true),
 	 m_Reverse(false),
-	 m_FrameTime(0.f)
+	 m_FrameTime(0.f),
+	m_CurrentTime(0.f)
 {}
 
 
@@ -23,19 +25,15 @@
 
 void CAnimationSequence2DData::Save(FILE* pFile)
  {
-	int NameLength = m_Name.length();
+	int NameLength = (int)m_Name.length();
 	fwrite(&NameLength, sizeof(int), 1, pFile);
 	fwrite(m_Name.c_str(), sizeof(char), NameLength, pFile);
-
-
-	int m_FrameIndex;
-	float m_FrameTime;
-	float m_CurrentTime;
 
 	bool SequenceEnable = false;
 
 	if (m_Sequence2D)
 		SequenceEnable = true;
+	fwrite(&SequenceEnable, sizeof(bool), 1, pFile);
 
 	if (SequenceEnable)
 	{
@@ -44,7 +42,7 @@ void CAnimationSequence2DData::Save(FILE* pFile)
 		fwrite(&m_Loop, sizeof(bool), 1, pFile);
 		fwrite(&m_Reverse, sizeof(bool), 1, pFile);
 
-		int SeqNameLength = m_SequenceName.length();
+		int SeqNameLength = (int)m_SequenceName.length();
 		fwrite(&SeqNameLength, sizeof(int), 1, pFile);
 		fwrite(m_SequenceName.c_str(), sizeof(char), SeqNameLength, pFile);
 
@@ -54,9 +52,38 @@ void CAnimationSequence2DData::Save(FILE* pFile)
 
 void CAnimationSequence2DData::Load(FILE* pFile)
  {
-	/*
-	int m_FrameIndex;
-	float m_FrameTime;
-	float m_CurrentTime; --> Load 하면서 알아서 0으로 모두 세팅
-	*/
+	int NameLength = 0;
+	fread(&NameLength, sizeof(int), 1, pFile);
+
+	char Name[MAX_PATH] = {};
+	fread(Name, sizeof(char), NameLength, pFile);
+	m_Name = Name;
+
+	bool SequenceEnable = false;
+	fread(&SequenceEnable, sizeof(bool), 1, pFile);
+
+	if (SequenceEnable)
+	{
+		fread(&m_PlayScale, sizeof(float), 1, pFile);
+		fread(&m_PlayTime, sizeof(float), 1, pFile);
+		fread(&m_Loop, sizeof(bool), 1, pFile);
+		fread(&m_Reverse, sizeof(bool), 1, pFile);
+
+		int SeqNameLength = 0;
+		fread(&SeqNameLength, sizeof(int), 1, pFile);
+
+		char SeqName[MAX_PATH] = {};
+		fwrite(SeqName, sizeof(char), SeqNameLength, pFile);
+		m_SequenceName = SeqName;
+
+		m_Sequence2D = CResourceManager::GetInst()->FindAnimationSequence2D(SeqName);
+
+		if (!m_Sequence2D)
+		{
+			m_Sequence2D = new CAnimationSequence2D;
+		}
+
+		m_Sequence2D->Load(pFile);
+	}
+
  }
