@@ -238,3 +238,31 @@ void CTexture::ResetShader(int Register, int ShaderType, int TextureIndex)
 	if (ShaderType & (int)Buffer_Shader_Type::Compute)
 		CDevice::GetInst()->GetDeviceContext()->CSSetShaderResources(Register, 1, &SRV);
 }
+
+void CTexture::Save(FILE* pFile)
+{
+	int NameLength = (int)m_Name.length();
+	fwrite(&NameLength, sizeof(int), 1, pFile);
+	fwrite(m_Name.c_str(), sizeof(char), NameLength, pFile);
+
+	fwrite(&m_ImageType, sizeof(Image_Type), 1, pFile);
+
+	size_t ResourceSize = m_vecTextureResourceInfo.size();
+	fwrite(&ResourceSize, sizeof(size_t), 1, pFile);
+
+	for (size_t i = 0; i < ResourceSize; i++)
+	{
+		int Length = lstrlen(m_vecTextureResourceInfo[i]->FullPath);
+		fwrite(&Length, sizeof(int), 1, pFile);
+		fwrite(m_vecTextureResourceInfo[i]->FullPath, sizeof(TCHAR), Length, pFile);
+
+		Length = strlen(m_vecTextureResourceInfo[i]->PathName);
+		fwrite(&Length, sizeof(int), 1, pFile);
+		fwrite(m_vecTextureResourceInfo[i]->PathName, sizeof(char), Length, pFile);
+
+		Length = lstrlen(m_vecTextureResourceInfo[i]->FileName);
+		fwrite(&Length, sizeof(int), 1, pFile);
+		fwrite(m_vecTextureResourceInfo[i]->FileName, sizeof(TCHAR), Length, pFile);
+	}
+
+}

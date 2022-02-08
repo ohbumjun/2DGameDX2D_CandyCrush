@@ -3,7 +3,8 @@
 #include "../../Scene/SceneResource.h"
 #include "../../Resource/ResourceManager.h"
 
-CAnimationSequence2D::CAnimationSequence2D()
+CAnimationSequence2D::CAnimationSequence2D() :
+	m_IsFrameReverse(false)
 {}
 
 CAnimationSequence2D::~CAnimationSequence2D()
@@ -45,3 +46,28 @@ void CAnimationSequence2D::AddFrameData(const Vector2& StartPos, const Vector2& 
 	Data.Size = Size;
 	m_vecFrameData.push_back(Data);
 }
+
+void CAnimationSequence2D::Save(FILE* pFile)
+{
+	int NameLength = (int)m_Name.length();
+
+	fwrite(&NameLength, sizeof(int), 1, pFile);
+
+	fwrite(m_Name.c_str(), sizeof(char), NameLength, pFile);
+
+	m_Texture->Save(pFile);
+
+	size_t FrameCount = m_vecFrameData.size();
+
+	fwrite(&FrameCount, sizeof(size_t), 1, pFile);
+
+	if (FrameCount > 0)
+	{
+		fwrite(&m_vecFrameData[0], sizeof(AnimationFrameData), FrameCount, pFile);
+	}
+
+	fwrite(&m_IsFrameReverse, sizeof(size_t), 1, pFile);
+}
+
+void CAnimationSequence2D::Load(FILE* pFile)
+{}

@@ -75,4 +75,6 @@ public :
 public :
 	void SetShader(int Register, int ShaderType, int TextureIndex);
 	void ResetShader(int Register, int ShaderType, int TextureIndex);
+public :
+	void Save(FILE* pFile);
 };

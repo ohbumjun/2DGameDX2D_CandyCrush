@@ -14,7 +14,17 @@ private :
     class CScene* m_Scene;
     CSharedPtr<CTexture> m_Texture;
     std::vector<AnimationFrameData> m_vecFrameData;
+    bool m_IsFrameReverse;
 public :
+    void SetFrameReverse(bool Reverse)
+{
+        m_IsFrameReverse = Reverse;
+}
+public :
+    bool IsFrameReverse() const
+{
+        return m_IsFrameReverse;
+}
     size_t GetFrameCount() const
     {
         return m_vecFrameData.size();
@@ -39,6 +49,8 @@ public:
     bool Init(CTexture* Texture);
     bool Init(const std::string& Name, const TCHAR* FileName, const std::string& PathName = TEXTURE_PATH);
     void AddFrameData(const Vector2& StartPos, const Vector2& Size);
-
+public :
+    void Save(FILE* pFile);
+    void Load(FILE* pFile);
 };
 

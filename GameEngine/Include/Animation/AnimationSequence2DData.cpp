@@ -50,7 +50,6 @@ void CAnimationSequence2DData::Save(FILE* pFile)
 
 		m_Sequence2D->Save(pFile);
 	}
-
  }
 
 void CAnimationSequence2DData::Load(FILE* pFile)
