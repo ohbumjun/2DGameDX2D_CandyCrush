@@ -27,6 +27,10 @@ public :
 {
 		return m_Space;
 }
+	Resolution GetResolution() const
+{
+		return m_RS;
+}
 private :
 	bool Update(float DeltaTime);
 	bool PostUpdate(float DeltaTime);

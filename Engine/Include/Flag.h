@@ -14,6 +14,12 @@ enum class RenderState_Type {
 	Max
 };
 
+enum class Camera_Type {
+	UI,
+	Camera2D,
+	Camera3D
+};
+
 enum Key_State {
 	Key_Down,
 	Key_Push,

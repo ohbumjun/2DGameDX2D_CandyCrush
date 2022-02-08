@@ -21,6 +21,8 @@ bool CPlayer2D::Init()
 
 	m_Sprite = CreateComponent<CSpriteComponent>("PlayerSprite");
 	SetRootComponent(m_Sprite);
+
+	return true;
 }
 
 void CPlayer2D::Update(float DeltaTime)

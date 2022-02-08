@@ -39,9 +39,10 @@ float& Vector3::operator[](int Index)
 	if (Index == 0)
 		return x;
 	if (Index == 1)
-		return x;
+		return y;
 	if (Index == 2)
-		return x;
+		return z;
+	return x;
 }
 
 Vector3& Vector3::operator=(const Vector3& v)

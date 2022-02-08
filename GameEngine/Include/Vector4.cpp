@@ -43,6 +43,8 @@ float& Vector4::operator[](int Index)
 		return y;
 	if (Index == 2)
 		return z;
+	if (Index == 3)
+		return w;
 	return w;
 }
 
