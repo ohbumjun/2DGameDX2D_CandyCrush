@@ -73,6 +73,7 @@ public :
 	bool LoadTextureFullPath(const std::string& Name, const TCHAR* FullPath);
 	bool CreateResource(int Index = 0);
 public :
+	void SetImageType(Image_Type Type);
 	void SetShader(int Register, int ShaderType, int TextureIndex);
 	void ResetShader(int Register, int ShaderType, int TextureIndex);
 public :

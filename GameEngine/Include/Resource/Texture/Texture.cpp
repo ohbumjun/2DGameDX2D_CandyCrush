@@ -1,6 +1,7 @@
 #include "Texture.h"
 #include "../../PathManager.h"
 #include "../../Device.h"
+#include "../ResourceManager.h"
 
 CTexture::CTexture() :
 m_ImageType(Image_Type::Atlas)
@@ -196,6 +197,11 @@ bool CTexture::CreateResource(int Index)
 	Info->Height = (unsigned int)Info->Image->GetImages()[0].height;
 
 	return true;
+}
+
+void CTexture::SetImageType(Image_Type Type)
+{
+	m_ImageType = Type;
 }
 
 void CTexture::SetShader(int Register, int ShaderType, int TextureIndex)
