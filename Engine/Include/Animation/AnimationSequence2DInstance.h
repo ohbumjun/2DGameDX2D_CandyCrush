@@ -11,6 +11,7 @@ protected :
 	CAnimationSequence2DInstance(const CAnimationSequence2DInstance& Instance);
 	virtual ~CAnimationSequence2DInstance();
 protected:
+	size_t m_TypeID;
 	std::unordered_map<std::string, CAnimationSequence2DData*> m_mapAnimationSequence2D;
 	CAnimationSequence2DData* m_CurrentAnimation;
 	class CScene* m_Scene;
@@ -60,6 +61,9 @@ public :
 	virtual void ResetShader();
 	virtual CAnimationSequence2DInstance* Clone();
 public :
+	void SaveFullPath(const char* FullPath);
+	void LoadFullPath(const char* FullPath);
+public :
 	template<typename T>
 	void SetEndFunction(const std::string& Name, T* Obj, void(T::*Func)())
 {
@@ -77,6 +81,11 @@ public :
 			return;
 		Sequence2D->SetAnimationNotify(NotifyName, Frame, Obj, Func);
 	}
+	template<typename T>
+	void SetTypeID()
+{
+		m_TypeID = typeid(T).hash_code();
+}
 };
 
 

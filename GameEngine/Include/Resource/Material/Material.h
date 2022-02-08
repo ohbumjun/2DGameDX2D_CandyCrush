@@ -2,6 +2,7 @@
 
 #include "../Shader/GraphicShader.h"
 #include "../Texture/Texture.h"
+#include "../Shader/MaterialConstantBuffer.h"
 
 struct MaterialTextureInfo
 {
@@ -74,7 +75,7 @@ protected:
 private:
 	void SetConstantBuffer(class CMaterialConstantBuffer* Buffer)
 	{
-		m_CBuffer = Buffer;
+		m_CBuffer = Buffer->Clone();
 	}
 
 public:

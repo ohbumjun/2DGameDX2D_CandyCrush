@@ -33,6 +33,7 @@ CSpriteComponent::~CSpriteComponent()
 
 void CSpriteComponent::SetMaterial(CMaterial* Material)
 {
+	// Material은 공유되는 것 같다.
 	m_Material = Material->Clone();
 
 	m_Material->SetScene(m_Scene);

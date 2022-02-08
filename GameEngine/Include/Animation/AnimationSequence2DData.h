@@ -67,6 +67,9 @@ public :
 		m_PlayTime = Time;
 	}
 public :
+	void Save(FILE* pFile);
+	void Load(FILE* pFile);
+public :
 	template<typename T>
 	void SetAnimationNotify(const std::string& Name, int Frame, T* Obj, void(T::*Func)())
 {

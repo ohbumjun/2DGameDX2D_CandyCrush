@@ -9,7 +9,9 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 	m_PlayAnimation(false),
 	m_OwnerComponent(nullptr),
 	m_Scene(nullptr)
-{}
+{
+	SetTypeID<CAnimationSequence2DInstance>();
+}
 
  CAnimationSequence2DInstance::CAnimationSequence2DInstance(const CAnimationSequence2DInstance& Instance)
 {
@@ -389,4 +391,57 @@ CAnimationSequence2DData* CAnimationSequence2DInstance::FindAnimationSequence2D(
 CAnimationSequence2DInstance* CAnimationSequence2DInstance::Clone()
 {
 	return new CAnimationSequence2DInstance(*this);
+}
+
+void CAnimationSequence2DInstance::SaveFullPath(const char* FullPath)
+{
+	FILE* pFile = nullptr;
+
+	fopen_s(&pFile, FullPath, "rb");
+
+	if (!pFile)
+		return;
+
+	// TypeID
+	fwrite(&m_TypeID, sizeof(size_t), 1, pFile);
+
+	// 이름 길이
+	int Length = (int)m_Name.length();
+	fwrite(&Length, sizeof(bool), 1, pFile);
+
+	// 이름 
+	fwrite(m_Name.c_str(), sizeof(char), Length, pFile);
+
+	// Sequence2DData Map Size
+	size_t MapSize = m_mapAnimationSequence2D.size();
+	fwrite(&MapSize, sizeof(size_t), 1, pFile);
+
+	auto iter = m_mapAnimationSequence2D.begin();
+	auto iterEnd = m_mapAnimationSequence2D.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		int KeyLength = (int)iter->first.length();
+		fwrite(&KeyLength, sizeof(int), 1, pFile);
+		fwrite(iter->first.c_str(), sizeof(char), KeyLength, pFile);
+		iter->second->Save(pFile);
+	}
+
+	bool Current = false;
+
+	if (m_CurrentAnimation)
+		Current = true;
+
+	fwrite(&Current, sizeof(bool), 1, pFile);
+
+	if (Current)
+	{
+		
+	}
+
+	CAnimationSequence2DData* m_CurrentAnimation;
+}
+
+void CAnimationSequence2DInstance::LoadFullPath(const char* FullPath)
+{
 }
