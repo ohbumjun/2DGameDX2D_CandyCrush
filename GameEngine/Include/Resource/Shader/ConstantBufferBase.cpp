@@ -1,4 +1,5 @@
 #include "ConstantBufferBase.h"
+#include "../ResourceManager.h"
 
 CConstantBufferBase::CConstantBufferBase()
 {}
@@ -13,5 +14,5 @@ CConstantBufferBase::~CConstantBufferBase()
 
 void CConstantBufferBase::SetConstantBuffer(const std::string& Name)
 {
-	// m_Buffer = CResourceManager::GetInst()->FindConstantBuffer(Name);
+	m_Buffer = CResourceManager::GetInst()->FindConstantBuffer(Name);
 }

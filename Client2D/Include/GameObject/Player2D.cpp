@@ -23,7 +23,7 @@ bool CPlayer2D::Init()
 	m_Sprite = CreateComponent<CSpriteComponent>("PlayerSprite");
 	SetRootComponent(m_Sprite);
 
-	CAnimationSequence2DInstance* AnimationInstance = CResourceManager::GetInst()->LoadAnimationSequence2DInstance(TEXT("Kirby_Fight.anim"));
+	CAnimationSequence2DInstance* AnimationInstance = CResourceManager::GetInst()->LoadAnimationSequence2DInstance(TEXT("Blue_Normal.anim"));
 	m_Sprite->SetAnimationInstance(AnimationInstance);
 
 	return true;

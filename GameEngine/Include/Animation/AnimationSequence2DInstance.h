@@ -6,6 +6,7 @@
 class CAnimationSequence2DInstance
 {
 	friend class CSpriteComponent;
+	friend class CAnimationManager;
 protected :
 	CAnimationSequence2DInstance();
 	CAnimationSequence2DInstance(const CAnimationSequence2DInstance& Instance);

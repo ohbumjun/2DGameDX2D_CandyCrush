@@ -31,16 +31,20 @@ protected:
 	CMaterial(const CMaterial& Material);
 	virtual ~CMaterial() override;
 
-private:
+protected:
 	class CScene* m_Scene;
-
-
-public:
+	CSharedPtr<CGraphicShader>       m_Shader;
+	std::vector<MaterialTextureInfo> m_TextureInfo;
+	Vector4                          m_BaseColor;
+	float                            m_Opacity;
+	class CMaterialConstantBuffer* m_CBuffer;
+	CSharedPtr<class CRenderState>   m_RenderStateArray[static_cast<int>(RenderState_Type::Max)];
+// public 
+public :
 	void SetScene(class CScene* Scene)
 	{
 		m_Scene = Scene;
 	}
-
 public:
 	std::string GetTextureName(int Index = 0) const
 	{
@@ -61,23 +65,11 @@ public:
 	{
 		return m_TextureInfo[Index].Texture->GetHeight();
 	}
-
-
-
-protected:
-	CSharedPtr<CGraphicShader>       m_Shader;
-	std::vector<MaterialTextureInfo> m_TextureInfo;
-	Vector4                          m_BaseColor;
-	float                            m_Opacity;
-	class CMaterialConstantBuffer* m_CBuffer;
-	CSharedPtr<class CRenderState>   m_RenderStateArray[static_cast<int>(RenderState_Type::Max)];
-
 private:
 	void SetConstantBuffer(class CMaterialConstantBuffer* Buffer)
 	{
 		m_CBuffer = Buffer->Clone();
 	}
-
 public:
 	void SetRenderState(class CRenderState* State);
 	void SetRenderState(const std::string& Name);

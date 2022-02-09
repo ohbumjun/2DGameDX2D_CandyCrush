@@ -1,4 +1,6 @@
 #include "AnimationManager.h"
+#include "../../PathManager.h"
+#include "../../Animation/AnimationSequence2DInstance.h"
 
 DEFINITION_SINGLE(CAnimationManager);
 
@@ -65,6 +67,33 @@ void CAnimationManager::AddAnimationFrameData(const std::string& Name, const Vec
 		return;
 
 	Sequence2D->AddFrameData(StartPos, Size);
+}
+
+CAnimationSequence2DInstance* CAnimationManager::LoadAnimationSequence2DInstance(const TCHAR* FileName,
+	const std::string& PathName)
+{
+	CAnimationSequence2DInstance* AnimationInstance = new CAnimationSequence2DInstance;
+
+	TCHAR FullPath[MAX_PATH] = {};
+
+	const PathInfo* Path = CPathManager::GetInst()->FindPath(PathName);
+
+	if (Path)
+		lstrcpy(FullPath, Path->Path);
+	lstrcat(FullPath, FileName);
+
+	char FullPathMultibyte[MAX_PATH] = {};
+
+#ifdef UNICODE
+	int CovertLength = WideCharToMultiByte(CP_ACP, 0, FullPath, -1, 0, 0, 0, 0);
+	WideCharToMultiByte(CP_ACP, 0, FullPath, -1, FullPathMultibyte, CovertLength, 0, 0);
+#else
+	strcpy_s(FullPathMultibyte, FullPath);
+#endif
+
+	AnimationInstance->LoadFullPath(FullPathMultibyte);
+
+	return AnimationInstance;
 }
 
 bool CAnimationManager::Init()

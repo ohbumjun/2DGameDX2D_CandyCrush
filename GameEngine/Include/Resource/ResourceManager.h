@@ -45,6 +45,8 @@ public: // ============= Animation ============
 		const std::string& PathName = TEXTURE_PATH);
 	class CAnimationConstantBuffer* GetAnimationCBuffer() const;
 	class CMaterialConstantBuffer* GetMaterialCBuffer() const;
+	class CAnimationSequence2DInstance* LoadAnimationSequence2DInstance(const TCHAR* FileName,
+		const std::string& PathName = ENGINE_ANIMATION_PATH);
 
 public : // ============= Shader ============
 	template<typename T>

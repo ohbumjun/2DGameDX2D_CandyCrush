@@ -27,8 +27,8 @@ CEngine::~CEngine()
 	CDevice::DestroyInst();
 	CSceneManager::DestroyInst();
 	CPathManager::DestroyInst();
-	CResourceManager::DestroyInst();
 	CRenderManager::DestroyInst();
+	CResourceManager::DestroyInst(); // 가장 마지막에 지워주자 ..!
 }
 
 bool CEngine::Init(HINSTANCE hInst, const TCHAR* Name, 
@@ -59,6 +59,14 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd, unsigned Width, unsigned Height, 
 	if (!CDevice::GetInst()->Init(hWnd, Width, Height, WindowMode))
 		return false;
 
+	// PathManager --> ResourceManager보다 앞에 
+	if (!CPathManager::GetInst()->Init())
+		return false;
+
+	// ResourceManager --> SceneManager 보다 앞에 세팅하기
+	if (!CResourceManager::GetInst()->Init())
+		return false;
+
 	// 입력 
 	if (!CInput::GetInst()->Init(hInst, hWnd))
 		return false;
@@ -67,13 +75,7 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd, unsigned Width, unsigned Height, 
 	if (!CSceneManager::GetInst()->Init())
 		return false;
 
-	// PathManager
-	if (!CPathManager::GetInst()->Init())
-		return false;
 
-	// ResourceManager
-	if (!CResourceManager::GetInst()->Init())
-		return false;
 
 	// Render
 	if (!CRenderManager::GetInst()->Init())

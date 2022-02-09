@@ -22,15 +22,14 @@ CMaterial::CMaterial(const CMaterial& Material) :CRef(Material)
 
 	m_RefCount = 0;
 
-	m_Scene = nullptr;
+	m_CBuffer = Material.m_CBuffer->Clone();
 
-	
+	m_Scene = nullptr;
 }
 
 CMaterial::~CMaterial()
 {
-	// SAFE_DELETE(m_CBuffer);
-	
+	SAFE_DELETE(m_CBuffer);
 }
 
 void CMaterial::SetRenderState(CRenderState* State)

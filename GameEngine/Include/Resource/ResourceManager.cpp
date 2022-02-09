@@ -92,6 +92,12 @@ CMaterialConstantBuffer* CResourceManager::GetMaterialCBuffer() const
 	return m_MaterialManager->GetMaterialConstantBuffer();
 }
 
+CAnimationSequence2DInstance* CResourceManager::LoadAnimationSequence2DInstance(const TCHAR* FileName,
+	const std::string& PathName)
+{
+	return m_AnimationManager->LoadAnimationSequence2DInstance(FileName, PathName);
+}
+
 CShader* CResourceManager::FindShader(const std::string& Name)
 {
 	return m_ShaderManager->FindShader(Name);
