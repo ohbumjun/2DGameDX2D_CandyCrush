@@ -32,7 +32,7 @@ public:
 
 public:
     void SetMaterial(CMaterial* Material);
-
+    void SetAnimationInstance(class CAnimationSequence2DInstance* Instance);
 public:
     void SetBaseColor(const Vector4& Color);
     void SetBaseColor(float r, float g, float b, float a);

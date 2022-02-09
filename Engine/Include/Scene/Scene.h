@@ -17,11 +17,16 @@ protected :
 	bool m_Change;
 	CSharedPtr<CSceneMode> m_SceneMode;
 	CSceneCollision* m_SceneCollision;
+	class CCameraManager* m_CameraManager;
 	CSceneResource* m_SceneResource;
 	CViewPort* m_ViewPort;
 	bool m_Start;
 	std::list<CSharedPtr<class CGameObject>> m_ObjList;
 public :
+	CCameraManager* GetCameraManager() const
+{
+		return m_CameraManager;
+}
 	CSceneMode* GetSceneMode() const
 {
 		return m_SceneMode;

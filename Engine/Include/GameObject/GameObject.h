@@ -58,16 +58,26 @@ private :
 	void AddCollision();
 public :
 	template<typename T>
+	T* FindSceneComponentByType()
+{
+		auto iter = m_SceneComponentList.begin();
+		auto iterEnd = m_SceneComponentList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter)->GetTypeID() == typeid(T).hash_code())
+			return (T*)(*iter);
+	}
+
+	return nullptr;
+}
+	template<typename T>
 	T* CreateComponent(const std::string& Name)
 {
-		CComponent* Component = FindComponent(Name);
-		if (Component)
-			return (T*)Component;
-
-		Component = new T;
+		T* Component = new T;
 		Component->SetName(Name);
 		Component->SetGameObject(this);
-		Component->SetScene(m_Scene);
+		Component->m_Scene = m_Scene;
 
 		if (!Component->Init())
 		{
@@ -77,13 +87,18 @@ public :
 
 		if (Component->GetComponentType() == Component_Type::SceneComponent)
 		{
-			m_SceneComponentList.push_back((class CSceneComponent*)Component);
+			m_SceneComponentList.push_back((CSceneComponent*)Component);
+
+			Component->SetGameObject(this);
 
 			if (!m_RootComponent)
-				m_RootComponent = (class CSceneComponent*)Component;
+				m_RootComponent = Component;
 		}
 		else
-			m_vecObjectComponent.push_back((class CObjectComponent*)Component);
+		{
+			m_vecObjectComponent.push_back((CObjectComponent*)Component);
+		}
+
 
 		return (T*)Component;
 	}

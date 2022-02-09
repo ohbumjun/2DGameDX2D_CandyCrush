@@ -22,6 +22,8 @@ public :
 	bool Init();
 	void AddPath(const std::string& Name, const TCHAR* PathName,
 		const std::string& BaseName = ROOT_PATH);
+	bool AddEnginePath(const std::string& Name, const TCHAR* PathName,
+		const std::string& BaseName = ENGINE_ROOT_PATH);
 private :
 	static CPathManager* m_Inst;
 public :

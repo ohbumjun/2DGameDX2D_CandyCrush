@@ -12,13 +12,13 @@ private :
 private :
 	class CScene* m_Scene;
 private :
-	CSharedPtr<class CCameraComponent> m_CurrentCamara;
+	CSharedPtr<class CCameraComponent> m_CurrentCamera;
 	CSharedPtr<class CCameraComponent> m_KeepCamera;
 	CSharedPtr<class CCameraComponent> m_UICamera;
 public :
-	CCameraComponent* GetCurretCamera() const
+	CCameraComponent* GetCurrentCamera() const
 {
-		return m_CurrentCamara;
+		return m_CurrentCamera;
 }
 	CCameraComponent* GetUICamera() const
 	{
@@ -27,7 +27,7 @@ public :
 public :
 	void SetCurrentCamera(CCameraComponent* Camera)
 {
-		m_CurrentCamara = Camera;
+		m_CurrentCamera = Camera;
 }
 	void KeepCamera(CCameraComponent* Camera)
 	{
@@ -35,7 +35,7 @@ public :
 	}
 	void ReturnCamera()
 {
-		m_CurrentCamara = m_KeepCamera;
+		m_CurrentCamera = m_KeepCamera;
 		m_KeepCamera = nullptr;
 }
 public :

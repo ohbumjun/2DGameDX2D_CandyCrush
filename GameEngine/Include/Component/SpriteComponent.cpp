@@ -6,6 +6,7 @@
 #include "../Render/RenderManager.h"
 #include "../Resource/Shader/Standard2DConstantBuffer.h"
 #include "../Scene/SceneManager.h"
+#include "../Animation/AnimationSequence2DInstance.h"
 
 CSpriteComponent::CSpriteComponent() :
 	m_Animation(nullptr)
@@ -37,6 +38,22 @@ void CSpriteComponent::SetMaterial(CMaterial* Material)
 	m_Material = Material->Clone();
 
 	m_Material->SetScene(m_Scene);
+}
+
+void CSpriteComponent::SetAnimationInstance(CAnimationSequence2DInstance* Instance)
+{
+	if (!Instance)
+		return;
+	Instance->SetOwnerComponent(this);
+	Instance->SetScene(m_Scene);
+	if (!Instance->Init()) // 상수 버퍼 세팅 
+	{
+		SAFE_DELETE(Instance);
+		return;
+	}
+
+	SAFE_DELETE(m_Animation);
+	m_Animation = Instance;
 }
 
 void CSpriteComponent::SetBaseColor(const Vector4& Color)

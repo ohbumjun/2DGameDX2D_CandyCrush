@@ -1,4 +1,5 @@
 #include "Player2D.h"
+#include "Resource/ResourceManager.h"
 
 CPlayer2D::CPlayer2D()
 {
@@ -21,6 +22,9 @@ bool CPlayer2D::Init()
 
 	m_Sprite = CreateComponent<CSpriteComponent>("PlayerSprite");
 	SetRootComponent(m_Sprite);
+
+	CAnimationSequence2DInstance* AnimationInstance = CResourceManager::GetInst()->LoadAnimationSequence2DInstance(TEXT("Kirby_Fight.anim"));
+	m_Sprite->SetAnimationInstance(AnimationInstance);
 
 	return true;
 }

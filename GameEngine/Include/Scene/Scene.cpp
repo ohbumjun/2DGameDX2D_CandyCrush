@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "CameraManager.h"
 
 CScene::CScene() :
 	m_Change(false),
@@ -18,6 +19,10 @@ CScene::CScene() :
 	m_ViewPort->m_Scene = this;
 	m_ViewPort->Init();
 
+	m_CameraManager = new CCameraManager;
+	m_CameraManager->m_Scene = this;
+	m_CameraManager->Init();
+
 }
 
 CScene::~CScene()
@@ -25,6 +30,7 @@ CScene::~CScene()
 	SAFE_DELETE(m_SceneCollision);
 	SAFE_DELETE(m_SceneResource);
 	SAFE_DELETE(m_ViewPort);
+	SAFE_DELETE(m_CameraManager);
 }
 
 CGameObject* CScene::FindGameObject(const std::string& Name)
@@ -46,6 +52,7 @@ void CScene::Start()
 	m_SceneMode->Start();
 	m_SceneCollision->Start();
 	m_ViewPort->Start();
+	m_CameraManager->Start();
 
 	auto iter = m_ObjList.begin();
 	auto iterEnd = m_ObjList.end();
@@ -53,6 +60,17 @@ void CScene::Start()
 	for (; iter != iterEnd; ++iter)
 	{
 		(*iter)->Start();
+	}
+
+	// Player 에게 Camera 가 세팅되어 있다면, 해당 카메라를 메인 카메라로 세팅한다.
+	if (m_SceneMode->GetPlayerObject())
+	{
+		CCameraComponent* Camera = m_SceneMode->GetPlayerObject()->FindSceneComponentByType<CCameraComponent>();
+
+		if (Camera)
+		{
+			m_CameraManager->SetCurrentCamera(Camera);
+		}
 	}
 
 	m_Start = true;

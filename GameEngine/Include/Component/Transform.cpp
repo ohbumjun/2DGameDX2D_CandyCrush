@@ -1,5 +1,8 @@
 #include "Transform.h"
 #include "../Resource/Shader/TransformConstantBuffer.h"
+#include "../Scene/CameraManager.h"
+#include "../Component/CameraComponent.h"
+#include "../Scene/Scene.h"
 
 CTransform::CTransform()
 {}
@@ -489,6 +492,11 @@ void  CTransform::PostUpdate(float DeltaTime)
 
 void CTransform::SetTransform()
 {
+	CCameraComponent* CurrentCamera = m_Scene->GetCameraManager()->GetCurrentCamera();
+
+	m_TransformBuffer->SetMatView(CurrentCamera->GetViewMatrix());
+	m_TransformBuffer->SetMatProj(CurrentCamera->GetProjMatrix());
+
 	m_TransformBuffer->SetMatWorld(m_matWorld);
 
 	m_TransformBuffer->SetMeshSize(m_MeshSize);

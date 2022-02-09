@@ -44,7 +44,17 @@
 #pragma comment(lib, "DirectXTex.lib")
 #endif // _DEBUG
 
+// Engine Path
+#define ENGINE_ROOT_PATH "EngineRoot"
+#define	ENGINE_SHADER_PATH			"EngineShader"
+#define	ENGINE_TEXTURE_PATH			"EngineTexture"
+#define	ENGINE_FONT_PATH				"EngineFont"
+#define	ENGINE_ANIMATION_PATH		"EngineAnimation"
+#define	ENGINE_SCENE_PATH				"EngineScene"
+#define	ENGINE_SOUND_PATH			"EngineSound"
+#define	ENGINE_SEQUENCE_PATH			"EngineSequence"
 
+// 
 #define ROOT_PATH     "Root"
 #define SHADER_PATH  "Shader"
 #define TEXTURE_PATH "Texture"

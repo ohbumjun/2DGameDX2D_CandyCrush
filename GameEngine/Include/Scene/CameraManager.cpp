@@ -1,7 +1,7 @@
 #include "CameraManager.h"
 
  CCameraManager::CCameraManager() :
-	 m_CurrentCamara(nullptr),
+	 m_CurrentCamera(nullptr),
 	 m_KeepCamera(nullptr),
 	m_UICamera(nullptr)
 {}
@@ -11,11 +11,11 @@
 
  void CCameraManager::Init()
 {
-	 m_CurrentCamara = new CCameraComponent;
-	 m_CurrentCamara->Init();
-	 m_CurrentCamara->SetName("DefaultCamera");
-	 m_CurrentCamara->m_Scene = m_Scene;
-	 m_CurrentCamara->SetCameraType(Camera_Type::Camera2D);
+	 m_CurrentCamera = new CCameraComponent;
+	 m_CurrentCamera->Init();
+	 m_CurrentCamera->SetName("DefaultCamera");
+	 m_CurrentCamera->m_Scene = m_Scene;
+	 m_CurrentCamera->SetCameraType(Camera_Type::Camera2D);
 
 	 m_UICamera = new CCameraComponent;
 	 m_UICamera->Init();
@@ -26,19 +26,19 @@
 
  void CCameraManager::Start()
  {
-	 if (m_CurrentCamara->GetName() == "DefaultCamera")
-		 m_CurrentCamara->Start();
+	 if (m_CurrentCamera->GetName() == "DefaultCamera")
+		 m_CurrentCamera->Start();
 	 m_UICamera->Start();
  }
 
  void CCameraManager::Update(float DeltaTime)
  {
-	 if (m_CurrentCamara->GetName() == "DefaultCamera")
-		 m_CurrentCamara->Update(DeltaTime);
+	 if (m_CurrentCamera->GetName() == "DefaultCamera")
+		 m_CurrentCamera->Update(DeltaTime);
  }
 
  void CCameraManager::PostUpdate(float DeltaTime)
  {
-	 if (m_CurrentCamara->GetName() == "DefaultCamera")
-		 m_CurrentCamara->PostUpdate(DeltaTime);
+	 if (m_CurrentCamera->GetName() == "DefaultCamera")
+		 m_CurrentCamera->PostUpdate(DeltaTime);
  }

@@ -29,6 +29,10 @@ public :
 		return m_CurrentAnimation->GetSequence2D()->GetFrameCount();
 }
 public :
+	void SetScene(class CScene* Scene)
+{
+		m_Scene = Scene;
+}
 	void SetOwnerComponent(class CSpriteComponent* OwnerComponent)
 {
 		m_OwnerComponent = OwnerComponent;
