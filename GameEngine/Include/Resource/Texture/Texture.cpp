@@ -120,6 +120,8 @@ bool CTexture::LoadTextureFullPath(const std::string& Name, const TCHAR* FullPat
 
 	TextureResourceInfo* Info = new TextureResourceInfo;
 
+	Info->FullPath = new TCHAR[MAX_PATH];
+	memset(Info->FullPath, 0, sizeof(TCHAR) * MAX_PATH);
 	lstrcpy(Info->FullPath, FullPath);
 
 	Info->FileName = new TCHAR[MAX_PATH];

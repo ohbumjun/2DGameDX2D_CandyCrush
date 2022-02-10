@@ -456,10 +456,11 @@ void CAnimationSequence2DInstance::LoadFullPath(const char* FullPath)
 
 	// TypeID
 	fread(&m_TypeID, sizeof(size_t), 1, pFile);
+	fread(&m_PlayAnimation, sizeof(bool), 1, pFile);
 
 	// 이름 길이
 	int Length = 0;
-	fread(&Length, sizeof(bool), 1, pFile);
+	fread(&Length, sizeof(int), 1, pFile);
 
 	// 이름 
 	char Name[MAX_PATH] = {};
@@ -482,6 +483,13 @@ void CAnimationSequence2DInstance::LoadFullPath(const char* FullPath)
 
 		CAnimationSequence2DData* AnimSeqData = new CAnimationSequence2DData;
 		AnimSeqData->Load(pFile);
+
+		// 중복 추가 방지
+		if (FindAnimationSequence2D(KeyName))
+		{
+			SAFE_DELETE(AnimSeqData);
+			continue;
+		}
 
 		if (m_mapAnimationSequence2DData.empty())
 		{

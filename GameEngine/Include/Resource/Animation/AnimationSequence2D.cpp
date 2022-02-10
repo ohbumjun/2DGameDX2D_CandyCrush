@@ -78,97 +78,103 @@ void CAnimationSequence2D::Load(FILE* pFile)
 	fread(Name, sizeof(char), NameLength, pFile);
 	m_Name = Name;
 
-	// Texture 
+	// Texture
+	bool Sequence2DTexEnable = false;
+	fread(&Sequence2DTexEnable, sizeof(bool), 1, pFile);
 
-	int TexNameLength = 0;
-	fwrite(&TexNameLength, sizeof(int), 1, pFile);
-
-	char TexName[MAX_PATH] = {};
-	fread(TexName, sizeof(char), TexNameLength, pFile);
-	m_Name = TexName;
-
-	Image_Type ImageType;
-	fread(&ImageType, sizeof(Image_Type), 1, pFile);
-
-	size_t TexResourceSize = 0;
-	fread(&TexResourceSize, sizeof(size_t), 1, pFile);
-
-	std::string FinalPathName;
-	std::vector<std::wstring> vecFileName;
-	std::vector<std::wstring> vecFullPath;
-
-	for (size_t i = 0; i < TexResourceSize; i++)
+	if (Sequence2DTexEnable)
 	{
-		// FullPath
-		int Length = 0;
-		fread(&Length, sizeof(int), 1, pFile);
+		int TexNameLength = 0;
+		fread(&TexNameLength, sizeof(int), 1, pFile);
 
-		TCHAR FullPath[MAX_PATH] = {};
-		fread(FullPath, sizeof(TCHAR), Length, pFile);
-		vecFullPath.push_back(FullPath);
+		char TexName[MAX_PATH] = {};
+		fread(TexName, sizeof(char), TexNameLength, pFile);
+		m_Name = TexName;
 
-		// PathName
-		Length = 0;
-		fread(&Length, sizeof(int), 1, pFile);
+		Image_Type ImageType;
+		fread(&ImageType, sizeof(Image_Type), 1, pFile);
 
-		char PathName[MAX_PATH] = {};
-		fread(PathName, sizeof(char), Length, pFile);
-		FinalPathName = PathName;
+		int TexResourceSize = 0;
+		fread(&TexResourceSize, sizeof(int), 1, pFile);
 
-		// FileName
-		Length = 0;
-		fread(&Length, sizeof(int), 1, pFile);
+		std::string FinalPathName;
+		std::vector<std::wstring> vecFileName;
+		std::vector<std::wstring> vecFullPath;
 
-		TCHAR FileName[MAX_PATH] = {};
-		fread(FileName, sizeof(TCHAR), Length, pFile);
-		vecFileName.push_back(FileName);
-	}
-
-	switch (ImageType)
-	{
-	case Image_Type::Atlas:
-	{
-		if (vecFileName.size() == 1)
+		for (size_t i = 0; i < TexResourceSize; i++)
 		{
-			if (m_Scene)
+			// FullPath
+			int Length = 0;
+			fread(&Length, sizeof(int), 1, pFile);
+
+			TCHAR FullPath[MAX_PATH] = {};
+			fread(FullPath, sizeof(TCHAR), Length, pFile);
+			vecFullPath.push_back(FullPath);
+
+			// PathName
+			Length = 0;
+			fread(&Length, sizeof(int), 1, pFile);
+
+			char PathName[MAX_PATH] = {};
+			fread(PathName, sizeof(char), Length, pFile);
+			FinalPathName = PathName;
+
+			// FileName
+			Length = 0;
+			fread(&Length, sizeof(int), 1, pFile);
+
+			TCHAR FileName[MAX_PATH] = {};
+			fread(FileName, sizeof(TCHAR), Length, pFile);
+			vecFileName.push_back(FileName);
+		}
+
+		switch (ImageType)
+		{
+		case Image_Type::Atlas:
+		{
+			if (vecFileName.size() == 1)
 			{
-				m_Scene->GetSceneResource()->LoadTextureFullPath(TexName, vecFullPath[0].c_str());
-				m_Texture = m_Scene->GetSceneResource()->FindTexture(TexName);
+				if (m_Scene)
+				{
+					m_Scene->GetSceneResource()->LoadTextureFullPath(TexName, vecFullPath[0].c_str());
+					m_Texture = m_Scene->GetSceneResource()->FindTexture(TexName);
+				}
+				else
+				{
+					CResourceManager::GetInst()->LoadTextureFullPath(TexName, vecFullPath[0].c_str());
+					m_Texture = CResourceManager::GetInst()->FindTexture(TexName);
+				}
 			}
 			else
 			{
-				CResourceManager::GetInst()->LoadTextureFullPath(TexName, vecFullPath[0].c_str());
-				m_Texture = CResourceManager::GetInst()->FindTexture(TexName);
+
 			}
 		}
-		else
-		{
-
-		}
-	}
-	break;
-	case Image_Type::Frame:
-	{
-		if (vecFileName.size() == 1)
-		{
-
-		}
-		else
-		{
-
-		}
-	}
-	break;
-	case Image_Type::Array:
 		break;
-	}
+		case Image_Type::Frame:
+		{
+			if (vecFileName.size() == 1)
+			{
 
-	if (m_Texture)
-		m_Texture->SetImageType(ImageType);
+			}
+			else
+			{
+
+			}
+		}
+		break;
+		case Image_Type::Array:
+			break;
+		}
+
+		if (m_Texture)
+			m_Texture->SetImageType(ImageType);
+		
+	}
 
 	// Frame Count
-	size_t FrameCount = 0;
-	fread(&FrameCount, sizeof(size_t), 1, pFile);
+	int FrameCount = 0;
+	fread(&FrameCount, sizeof(int), 1, pFile);
 
 	if (FrameCount > 0)
 	{
@@ -176,5 +182,5 @@ void CAnimationSequence2D::Load(FILE* pFile)
 		fread(&m_vecFrameData[0], sizeof(AnimationFrameData), FrameCount, pFile);
 	}
 
-	fread(&m_IsFrameReverse, sizeof(size_t), 1, pFile);
+	fread(&m_IsFrameReverse, sizeof(bool), 1, pFile);
 }

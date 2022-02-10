@@ -191,7 +191,7 @@ bool CTextureManager::LoadTextureFullPath(const std::string& Name, const TCHAR* 
 
 	Texture = new CTexture;
 
-	if (Texture->LoadTextureFullPath(Name, FullPath))
+	if (!Texture->LoadTextureFullPath(Name, FullPath))
 	{
 		SAFE_DELETE(Texture);
 		return false;

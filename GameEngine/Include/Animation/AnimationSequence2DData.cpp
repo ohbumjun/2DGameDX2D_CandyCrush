@@ -64,8 +64,20 @@ void CAnimationSequence2DData::Load(FILE* pFile)
 
 	if (SequenceEnable)
 	{
-		fread(&m_PlayScale, sizeof(float), 1, pFile);
+		int Frame = 0;
+		fread(&Frame, sizeof(int), 1, pFile);
+		m_FrameIndex = Frame;
+
+		float Time = 0; // 애니메이션 동작 시간
+		fread(&Time, sizeof(float), 1, pFile);
+		m_CurrentTime = Time;
+
+		float FrameTime = 0.f; // 1프레임당 시간
+		fread(&FrameTime, sizeof(float), 1, pFile);
+		m_FrameTime = FrameTime;
+
 		fread(&m_PlayTime, sizeof(float), 1, pFile);
+		fread(&m_PlayScale, sizeof(float), 1, pFile);
 		fread(&m_Loop, sizeof(bool), 1, pFile);
 		fread(&m_Reverse, sizeof(bool), 1, pFile);
 
@@ -73,7 +85,7 @@ void CAnimationSequence2DData::Load(FILE* pFile)
 		fread(&SeqNameLength, sizeof(int), 1, pFile);
 
 		char SeqName[MAX_PATH] = {};
-		fwrite(SeqName, sizeof(char), SeqNameLength, pFile);
+		fread(SeqName, sizeof(char), SeqNameLength, pFile);
 		m_SequenceName = SeqName;
 
 		m_Sequence2D = CResourceManager::GetInst()->FindAnimationSequence2D(SeqName);

@@ -64,7 +64,7 @@ void CRenderManager::AddRenderLayer(CSceneComponent* Component)
 
 	for (size_t i = 0; i < Size; i++)
 	{
-		if (m_vecRenderLayer[i]->Name == Component->GetName())
+		if (m_vecRenderLayer[i]->Name == Component->m_LayerName)
 		{
 			if (m_vecRenderLayer[i]->RenderCount >= m_vecRenderLayer[i]->vecComponent.size())
 				m_vecRenderLayer[i]->vecComponent.resize(m_vecRenderLayer[i]->RenderCount * 2);

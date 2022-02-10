@@ -64,7 +64,7 @@ bool CPathManager::Init()
 
 	int EnginePathLength = lstrlen(EnginePath);
 
-	const TCHAR* EngineRootFolder = TEXT("DX_Project");
+	const TCHAR* EngineRootFolder = TEXT("CandyCrush");
 
 	int RootFolderLength = (int)lstrlen(EngineRootFolder);
 
