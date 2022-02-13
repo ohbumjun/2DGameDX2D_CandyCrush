@@ -11,6 +11,7 @@ m_StaticMesh(nullptr)
 {
 	SetTypeID<CStaticMeshComponent>();
 	m_Render = true;
+	m_ComponentType = Component_Type::SceneComponent;
 }
 
 CStaticMeshComponent::CStaticMeshComponent(const CStaticMeshComponent& Component) :

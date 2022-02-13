@@ -1,5 +1,9 @@
 #pragma once
+
 #include "SceneComponent.h"
+#include "../Resource/Mesh/StaticMesh.h"
+#include "../Resource/Material/Material.h"
+
 class CStaticMeshComponent :
     public CSceneComponent
 {
@@ -9,8 +13,8 @@ protected:
     CStaticMeshComponent(const CStaticMeshComponent& Component);
     virtual ~CStaticMeshComponent() override;
 protected :
-    CSharedPtr<class CStaticMesh> m_StaticMesh;
-    CSharedPtr<class CMaterial> m_Material;
+    CSharedPtr<CStaticMesh> m_StaticMesh;
+    CSharedPtr<CMaterial> m_Material;
 public :
     void SetMesh(const std::string& Name);
     void SetMesh(class CStaticMesh* Mesh);

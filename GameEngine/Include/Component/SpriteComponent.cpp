@@ -13,6 +13,7 @@ CSpriteComponent::CSpriteComponent() :
 {
 	SetTypeID<CSpriteComponent>();
 	m_Render = true;
+	m_ComponentType = Component_Type::SceneComponent;
 }
 
 CSpriteComponent::CSpriteComponent(const CSpriteComponent& com) :

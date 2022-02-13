@@ -594,8 +594,8 @@ void CTransform::SetTransform()
 	// 카메라 메니저의 Camera 행렬 정보를 가져와서 세팅한다
 	CCameraComponent* Camera = m_Scene->GetCameraManager()->GetCurrentCamera();
 
-	// m_CBuffer->SetMatView(Camera->GetViewMatrix());
-	// m_CBuffer->SetMatProj(Camera->GetProjMatrix());
+	m_CBuffer->SetMatView(Camera->GetViewMatrix());
+	m_CBuffer->SetMatProj(Camera->GetProjMatrix());
 
 	m_CBuffer->SetPivot(m_Pivot);
 	m_CBuffer->SetMeshSize(m_MeshSize);

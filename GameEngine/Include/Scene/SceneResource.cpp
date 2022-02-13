@@ -207,7 +207,7 @@ CMaterial* CSceneResource::FindMaterial(const std::string& Name)
 
 		return Material;
 	}
-	return nullptr;
+	return iter->second;
 }
 
 bool CSceneResource::Init()

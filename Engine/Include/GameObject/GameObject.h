@@ -10,7 +10,7 @@ protected:
 	CGameObject();
 	CGameObject(const CGameObject& Object);
 	virtual ~CGameObject() override;
-private:
+protected:
 	class CScene* m_Scene;
 public:
 	class CScene* GetScene() const
@@ -78,7 +78,6 @@ public :
 		Component->SetName(Name);
 		Component->SetGameObject(this);
 		Component->SetScene(m_Scene);
-		Component->SetGameObject(this);
 
 		if (!Component->Init())
 		{
@@ -88,12 +87,13 @@ public :
 
 		if (Component->GetComponentType() == Component_Type::SceneComponent)
 		{
-			m_SceneComponentList.push_back((class CSceneComponent*)Component);
+			m_SceneComponentList.push_back((CSceneComponent*)Component);
+			Component->SetGameObject(this);
 			if (!m_RootComponent)
-				m_RootComponent = Component;
+				m_RootComponent = (CSceneComponent*)Component;
 		}
 		else
-			m_vecObjectComponent.push_back((class CObjectComponent*)Component);
+			m_vecObjectComponent.push_back((CObjectComponent*)Component);
 
 
 		return Component;

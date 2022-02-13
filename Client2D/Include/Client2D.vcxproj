@@ -156,15 +156,20 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ClientManager.cpp" />
+    <ClCompile Include="GameObject\Block.cpp" />
+    <ClCompile Include="GameObject\Board.cpp" />
+    <ClCompile Include="GameObject\Cell.cpp" />
     <ClCompile Include="GameObject\Player2D.cpp" />
-    <ClCompile Include="GameObject\PlayerAnimation.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Scene\StartScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientManager.h" />
+    <ClInclude Include="Client.h" />
+    <ClInclude Include="GameObject\Block.h" />
+    <ClInclude Include="GameObject\Board.h" />
+    <ClInclude Include="GameObject\Cell.h" />
     <ClInclude Include="GameObject\Player2D.h" />
-    <ClInclude Include="GameObject\PlayerAnimation.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scene\StartScene.h" />
   </ItemGroup>

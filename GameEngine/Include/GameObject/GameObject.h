@@ -10,7 +10,7 @@ protected:
 	CGameObject();
 	CGameObject(const CGameObject& Object);
 	virtual ~CGameObject() override;
-private:
+protected:
 	class CScene* m_Scene;
 public:
 	class CScene* GetScene() const
@@ -74,11 +74,7 @@ public :
 	template<typename T>
 	T* CreateComponent(const std::string& Name)
 {
-		CSceneComponent* Component = FindSceneComponent(Name);
-		if (Component)
-			return Component;
-
-		Component = new T;
+		T* Component = new T;
 		Component->SetName(Name);
 		Component->SetGameObject(this);
 		Component->SetScene(m_Scene);
@@ -91,14 +87,14 @@ public :
 
 		if (Component->GetComponentType() == Component_Type::SceneComponent)
 		{
-			m_SceneComponentList.push_back(Component);
-			Component->m_Transform->m_OwnerGameObject = this;
+			m_SceneComponentList.push_back((CSceneComponent*)Component);
+			Component->SetGameObject(this);
+			if (!m_RootComponent)
+				m_RootComponent = (CSceneComponent*)Component;
 		}
 		else
-			m_vecObjectComponent.push_back(Component);
+			m_vecObjectComponent.push_back((CObjectComponent*)Component);
 
-		if (!m_RootComponent)
-			m_RootComponent = Component;
 
 		return Component;
 	}
