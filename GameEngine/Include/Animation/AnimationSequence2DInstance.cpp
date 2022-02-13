@@ -36,8 +36,9 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 		Animation->m_Reverse = iter->second->m_Reverse;
 		Animation->m_FrameTime = Animation->m_PlayTime / iter->second->m_Sequence2D->GetFrameCount();
 
-		if (m_mapAnimationSequence2DData.empty())
+		if (Animation->m_Name == Instance.m_CurrentAnimation->GetName())
 			m_CurrentAnimation = Animation;
+
 		m_mapAnimationSequence2DData.insert(std::make_pair(iter->first, Animation));
 	}
 
@@ -52,6 +53,8 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 	{
 		SAFE_DELETE(iter->second);
 	}
+
+	m_mapAnimationSequence2DData.clear();
 }
 
  void CAnimationSequence2DInstance::AddAnimation(const std::string& SequenceName,
@@ -156,7 +159,10 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 	 CAnimationSequence2DData* Animation = FindAnimationSequence2D(Name);
 	 if (!Animation)
 		 return;
+
 	 m_CurrentAnimation = Animation;
+	 m_CurrentAnimation->m_FrameIndex = 0;
+	 m_CurrentAnimation->m_CurrentTime = 0.f;
 
 	 size_t Size = m_CurrentAnimation->m_vecNotify.size();
 
@@ -209,13 +215,18 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 
  void CAnimationSequence2DInstance::ChangeAnimation(const std::string& Name)
 {
+	 if (m_CurrentAnimation->GetName() == Name)
+		 return;
+
 	 CAnimationSequence2DData* Animation = FindAnimationSequence2D(Name);
 	 if (!Animation)
 		 return;
 
 	 m_CurrentAnimation->m_CurrentTime = 0.f;
 	 m_CurrentAnimation->m_FrameIndex = 0;
+
 	 size_t Size = m_CurrentAnimation->m_vecNotify.size();
+
 	 for (size_t i = 0; i < Size; i++)
 	 {
 		 m_CurrentAnimation->m_vecNotify[i]->Call = false;
@@ -226,6 +237,7 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 	 m_CurrentAnimation->m_FrameIndex = 0;
 
 	 Size = m_CurrentAnimation->m_vecNotify.size();
+
 	 for (size_t i = 0; i < Size; i++)
 	 {
 		 m_CurrentAnimation->m_vecNotify[i]->Call = false;
@@ -242,12 +254,19 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 
  bool CAnimationSequence2DInstance::CheckCurrentAnimation(const std::string& Name)
 {
-	return m_CurrentAnimation == FindAnimationSequence2D(Name);
+	 return m_CurrentAnimation->m_Name == Name;
 }
 
 void CAnimationSequence2DInstance::SetPlayAnimation(bool Play)
 {
 	m_PlayAnimation = Play;
+}
+
+CAnimationSequence2DData* CAnimationSequence2DInstance::GetCurrentAnimation() const
+{
+	if (m_CurrentAnimation)
+		return m_CurrentAnimation;
+	return nullptr;
 }
 
 CAnimationSequence2DData* CAnimationSequence2DInstance::FindAnimationSequence2D(const std::string& Name)
@@ -264,7 +283,8 @@ CAnimationSequence2DData* CAnimationSequence2DInstance::FindAnimationSequence2D(
  bool CAnimationSequence2DInstance::Init()
 {
 	 // 상수 버퍼 세팅
-	 m_CBuffer = CResourceManager::GetInst()->GetAnimationCBuffer();
+	m_CBuffer = CResourceManager::GetInst()->GetAnimationCBuffer();
+
 	 if (!m_CBuffer)
 		 return false;
 
@@ -296,9 +316,11 @@ CAnimationSequence2DData* CAnimationSequence2DInstance::FindAnimationSequence2D(
 	// m_CurrentAnimation->GetSequence2D()->GetTexture()->SetShader(0, (int)Buffer_Shader_Type::Pixel, 0);
 
 	// 상수 자원 넘기고
-	 AnimationFrameData FrameData = m_CurrentAnimation->GetSequence2D()->GetFrameData();
+	 AnimationFrameData FrameData = m_CurrentAnimation->GetSequence2D()->GetFrameData(m_CurrentAnimation->m_FrameIndex);
+
 	 Vector2 TextureSize = Vector2((float)m_CurrentAnimation->GetSequence2D()->GetTexture()->GetWidth(), (float)m_CurrentAnimation->GetSequence2D()->GetTexture()->GetHeight());
-	 if (m_CBuffer)
+
+	if (m_CBuffer)
 	 {
 	 	 m_CBuffer->SetStartUV(FrameData.StartPos / TextureSize);
 		 m_CBuffer->SetEndUV((FrameData.StartPos + FrameData.Size) / TextureSize);
@@ -311,13 +333,19 @@ CAnimationSequence2DData* CAnimationSequence2DInstance::FindAnimationSequence2D(
 {
 	 if (!m_CurrentAnimation)
 		 return;
+
 	 if (!m_PlayAnimation)
+		 return;
+
+	 if (m_CurrentAnimation->GetSequence2D()->GetFrameCount() <= 0)
 		 return;
 
 	// Frame 바꾸고
 	 int FrameCount = (int)m_CurrentAnimation->GetSequence2D()->GetFrameCount();
+
 	 m_CurrentAnimation->m_FrameTime = m_CurrentAnimation->GetPlayTime() / FrameCount;
-	 m_CurrentAnimation->m_CurrentTime += DeltaTime;
+
+	 m_CurrentAnimation->m_CurrentTime += DeltaTime * m_CurrentAnimation->m_PlayScale;
 
 	 bool AnimEnd = false;
 
@@ -334,7 +362,7 @@ CAnimationSequence2DData* CAnimationSequence2DInstance::FindAnimationSequence2D(
 		else
 		{
 			m_CurrentAnimation->m_FrameIndex += 1;
-			if (m_CurrentAnimation->m_FrameIndex >= FrameCount)
+			if (m_CurrentAnimation->m_FrameIndex >= FrameCount - 1)
 				AnimEnd = true;
 		}
 	}
@@ -356,30 +384,34 @@ CAnimationSequence2DData* CAnimationSequence2DInstance::FindAnimationSequence2D(
 	// End 여부 파악하기
 	if (AnimEnd)
 	{
-		// Frame 조정 
-		if (m_CurrentAnimation->m_Reverse)
+		if (m_CurrentAnimation->m_Loop)
 		{
-			if (m_CurrentAnimation->m_Loop)
+			if (m_CurrentAnimation->m_Reverse)
 				m_CurrentAnimation->m_FrameIndex = FrameCount - 1;
 			else
 				m_CurrentAnimation->m_FrameIndex = 0;
 		}
 		else
 		{
-			if (m_CurrentAnimation->m_Loop)
+			if (m_CurrentAnimation->m_Reverse)
 				m_CurrentAnimation->m_FrameIndex = 0;
 			else
 				m_CurrentAnimation->m_FrameIndex = FrameCount - 1;
 		}
 
-		// Notify 조정
 		if (m_CurrentAnimation->m_EndNotify)
 			m_CurrentAnimation->m_EndNotify();
 
-		for (size_t i = 0; i < Size; i++)
+		if (m_CurrentAnimation->m_Loop)
 		{
-			m_CurrentAnimation->m_vecNotify[i]->Call = false;
+			size_t Size = m_CurrentAnimation->m_vecNotify.size();
+
+			for (size_t i = 0; i < Size; i++)
+			{
+				m_CurrentAnimation->m_vecNotify[i]->Call = false;
+			}
 		}
+
 	}
 }
 

@@ -1,175 +1,172 @@
 #include "RenderManager.h"
-
-#include "BlendState.h"
 #include "DepthStencilState.h"
-#include "RenderState.h"
 #include "RenderStateManager.h"
-#include "../Component/Component.h"
+#include "../Engine.h"
+#include "../Component/SceneComponent.h"
 #include "../GameObject/GameObject.h"
+#include "../Resource/Shader/Standard2DConstantBuffer.h"
+#include "../Scene/SceneManager.h"
+#include "../Scene/Scene.h"
+#include "../Scene/ViewPort.h"
 
-DEFINITION_SINGLE(CRenderManager);
+DEFINITION_SINGLE(CRenderManager)
 
-CRenderManager::CRenderManager()
-{}
+CRenderManager::CRenderManager() :
+	m_RenderStateManager(nullptr),
+	m_Standard2DCBuffer(nullptr)
+{
+}
 
 CRenderManager::~CRenderManager()
 {
-	size_t Size = m_vecRenderLayer.size();
-
-	for (size_t i = 0; i < Size; i++)
-	{
-		SAFE_DELETE(m_vecRenderLayer[i]);
-	}
-
-	m_vecRenderLayer.clear();
-
+	SAFE_DELETE(m_Standard2DCBuffer);
 	SAFE_DELETE(m_RenderStateManager);
 
-	SAFE_DELETE(m_Standard2DConstantBuffer);
-}
-
-RenderLayer* CRenderManager::FindRenderLayer(const std::string& Name)
-{
-	size_t Size = m_vecRenderLayer.size();
-
-	for (size_t i = 0; i < Size; i++)
+	auto iter = m_RenderLayerList.begin();
+	auto iterEnd = m_RenderLayerList.end();
+	for (; iter != iterEnd; ++iter)
 	{
-		if (m_vecRenderLayer[i]->Name == Name)
-			return m_vecRenderLayer[i];
+		SAFE_DELETE(*iter);
 	}
-	return nullptr;
+	m_RenderLayerList.clear();
 }
 
-bool CRenderManager::CreateRenderLayer(const std::string& Name, int Priority)
+void CRenderManager::AddRenderList(CSceneComponent* Component)
 {
-	RenderLayer* Layer = FindRenderLayer(Name);
+	RenderLayer* Layer = nullptr;
 
-	if (Layer)
-		return true;
+	auto iter = m_RenderLayerList.begin();
+	auto iterEnd = m_RenderLayerList.end();
 
-	Layer = new RenderLayer;
-	Layer->Name = Name;
-	Layer->LayerPriority = Priority;
-
-	m_vecRenderLayer.push_back(Layer);
-
-	std::sort(m_vecRenderLayer.begin(), m_vecRenderLayer.end(), CRenderManager::SortLayer);
-
-	return true;
-}
-
-void CRenderManager::AddRenderLayer(CSceneComponent* Component)
-{
-	size_t Size = m_vecRenderLayer.size();
-
-	for (size_t i = 0; i < Size; i++)
+	for (; iter != iterEnd; ++iter)
 	{
-		if (m_vecRenderLayer[i]->Name == Component->m_LayerName)
+		if ((*iter)->Name == Component->GetLayerName())
 		{
-			if (m_vecRenderLayer[i]->RenderCount >= m_vecRenderLayer[i]->vecComponent.size())
-				m_vecRenderLayer[i]->vecComponent.resize(m_vecRenderLayer[i]->RenderCount * 2);
-
-			m_vecRenderLayer[i]->vecComponent[m_vecRenderLayer[i]->RenderCount] = Component;
-
-			++m_vecRenderLayer[i]->RenderCount;
-
+			Layer = (*iter);
 			break;
 		}
 	}
+	if (!Layer)
+		return;
+
+	if (Layer->RenderCount == static_cast<int>(Layer->RenderList.size()))
+		Layer->RenderList.resize(Layer->RenderCount * 2);
+
+	Layer->RenderList[Layer->RenderCount] = Component;
+	++Layer->RenderCount;
 }
 
-void CRenderManager::SetRenderLayerPriority(const std::string& Name, int Priority)
+void CRenderManager::CreateLayer(const std::string& Name, int Priority)
 {
-	RenderLayer* Layer = FindRenderLayer(Name);
-
-	if (Layer)
-		return ;
-
+	RenderLayer* Layer = new RenderLayer;
+	Layer->Name = Name;
 	Layer->LayerPriority = Priority;
+
+	m_RenderLayerList.push_back(Layer);
+
+	// sort 다시 해두기
+	sort(m_RenderLayerList.begin(), m_RenderLayerList.end(), SortLayer);
 }
 
-void CRenderManager::SetBlendFactor(const std::string& Name, float r, float g, float b, float a)
-{
-	m_RenderStateManager->SetBlendFactor(Name, r, g, b, a);
-}
 
-void CRenderManager::AddBlendDesc(const std::string& Name, bool BlendEnable, D3D11_BLEND SrcBlend,
-	D3D11_BLEND DestBlend, D3D11_BLEND_OP BlendOp, D3D11_BLEND SrcBlendAlpha, D3D11_BLEND DestBlendAlpha,
-	D3D11_BLEND_OP BlendOpAlpha, UINT8 RenderTargetWriteMask)
+void CRenderManager::SetLayerPriority(const std::string& Name, int Priority)
 {
-	m_RenderStateManager->AddBlendDesc(Name, BlendEnable, SrcBlend, DestBlend,
-		BlendOp, SrcBlendAlpha, DestBlendAlpha, BlendOpAlpha, RenderTargetWriteMask);
-}
+	auto iter = m_RenderLayerList.begin();
+	auto iterEnd = m_RenderLayerList.end();
 
-bool CRenderManager::CreateBlendState(const std::string& Name, bool AlphaToCoverageEnable, bool IndependentBlendEnable)
-{
-	return m_RenderStateManager->CreateBlendState(Name, AlphaToCoverageEnable, IndependentBlendEnable);
-}
-
-bool CRenderManager::CreateDepthStencilState(const std::string& Name, bool DepthEnable,
-	D3D11_DEPTH_WRITE_MASK DepthWriteMask, D3D11_COMPARISON_FUNC DepthFunc, bool StencilEnable, UINT8 StencilReadMask,
-	UINT8 StencilWriteMask, D3D11_DEPTH_STENCILOP_DESC FrontFace, D3D11_DEPTH_STENCILOP_DESC BackFace)
-{
-	return m_RenderStateManager->CreateDepthStencilState(Name,
-		DepthEnable, DepthWriteMask, DepthFunc, StencilEnable,
-		StencilReadMask, StencilWriteMask,
-		FrontFace, BackFace);
-}
-
-CRenderState* CRenderManager::FindRenderState(const std::string& Name)
-{
-	return m_RenderStateManager->FindRenderState(Name);
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter)->Name == Name)
+		{
+			(*iter)->LayerPriority = Priority;
+			break;
+		}
+	}
+	sort(m_RenderLayerList.begin(), m_RenderLayerList.end(), SortLayer);
 }
 
 bool CRenderManager::Init()
 {
 	m_RenderStateManager = new CRenderStateManager;
+
 	m_RenderStateManager->Init();
 
-	m_BlendState = (CBlendState*)m_RenderStateManager->FindRenderState("AlphaBlend");
-	if (!m_BlendState)
-		return false;
-	m_DepthState = (CDepthStencilState*)m_RenderStateManager->FindRenderState("NoDepth");
-	if (!m_DepthState)
-		return false;
+	m_Standard2DCBuffer = new CStandard2DConstantBuffer;
+	m_Standard2DCBuffer->Init();
 
-	m_Standard2DConstantBuffer = new CStandard2DConstantBuffer;
-	m_Standard2DConstantBuffer->Init();
-
-	// Default Layer
+	// 기본 레이어 세팅해두기
 	RenderLayer* Layer = new RenderLayer;
+
+	// 모든 Scene Component 들은, 생성시 Default 를 m_LayerName으로 들고 있을 것이다
+	// SceneComponent 입장에서는 PrevRender 에서 m_Render가 true 이면 AddRenderList를 통해 들어온다
+	// Default 라는 이름의 m_LayerName을 가진 SceneComponent 들은, 지금 세팅한 Default Layer 에 들어오게 된다.
 	Layer->Name = "Default";
-	Layer->LayerPriority = 0;
-	m_vecRenderLayer.push_back(Layer);
-
-	// Widgte Layer
-	Layer = new RenderLayer;
-	Layer->Name = "ScreenWidget";
 	Layer->LayerPriority = 1;
-	m_vecRenderLayer.push_back(Layer);
 
-	std::sort(m_vecRenderLayer.begin(), m_vecRenderLayer.end(), CRenderManager::SortLayer);
+	m_RenderLayerList.push_back(Layer);
+
+	// Screen Widget 들을 위한 Layer 만들기
+	// 왜 이게 필요한 것일까 ?
+	// Screen Space로 세팅된 WidgetComponent 들을 별도로 세팅
+	// World Space 관점에서는 만약 해당 Object 위에 뭐가 나타나게 되면
+	// 해당 widget 들 마저 가리게 되는데
+	// 이러한 것을 방지하기 위해서 이다.
+	Layer = new RenderLayer;
+	Layer->Name = "ScreenWidgetComponent";
+	Layer->LayerPriority = 2;
+	m_RenderLayerList.push_back(Layer);
+
+	// Particle Layer
+	Layer = new RenderLayer;
+	Layer->Name = "Particle";
+	Layer->LayerPriority = 3;
+	m_RenderLayerList.push_back(Layer);
+
+	// Back Layer --> 가장 뒤쪽에 그릴 것이다.
+	Layer = new RenderLayer;
+	Layer->Name = "Back";
+	Layer->LayerPriority = 0;
+	m_RenderLayerList.push_back(Layer);
+
+	m_DepthDisable = FindRenderState("NoDepth");
+	if (!m_DepthDisable)
+	{
+		assert(false);
+		return false;
+	}
+
+	m_AlphaDisable = FindRenderState("AlphaBlend");
+	if (!m_AlphaDisable)
+	{
+		assert(false);
+		return false;
+	}
+
+	sort(m_RenderLayerList.begin(), m_RenderLayerList.end(), SortLayer);
 
 	return true;
 }
 
 void CRenderManager::Render()
 {
-	// DepthStencil 시작
-	m_DepthState->SetState();
+	// DepthStencilState
+	m_DepthDisable->SetState();
 
-	// Render Count 초기화
-	size_t Size = m_vecRenderLayer.size();
-
-	for (size_t i = 0; i < Size; i++)
+	// 먼저 모든 Layer 를 돌면서, Render Count를 0으로 세팅해둔다. 
 	{
-		m_vecRenderLayer[i]->RenderCount = 0;
+		auto iter = m_RenderLayerList.begin();
+		auto iterEnd = m_RenderLayerList.end();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			(*iter)->RenderCount = 0;
+		}
 	}
 
-	// Object PrevRender로 RenderLayer에 더해주기
+	// 아래 PrevRender 에서 실제 그릴 녀석들을 추가한다. 
 	{
-		auto iter = m_ObjList->begin();
-		auto iterEnd = m_ObjList->end();
+		auto iter = m_ObjectList->begin();
+		auto iterEnd = m_ObjectList->end();
 
 		for (; iter != iterEnd; ++iter)
 		{
@@ -177,46 +174,75 @@ void CRenderManager::Render()
 		}
 	}
 
-	// Render Layer를 돌면서 Render 해주기
-	for (size_t i = 0; i < Size; i++)
 	{
-		size_t PartSize = m_vecRenderLayer[i]->vecComponent.size();
-
-		for (size_t j = 0; j < PartSize; j++)
+		auto iter = m_RenderLayerList.begin();
+		auto iterEnd = m_RenderLayerList.end();
+		for (; iter != iterEnd; ++iter)
 		{
-			if (!m_vecRenderLayer[i]->vecComponent[j])
-				continue;
-			m_vecRenderLayer[i]->vecComponent[j]->Render();
+			for (int i = 0; i < (*iter)->RenderCount; i++)
+			{
+				(*iter)->RenderList[i]->Render();
+			}
 		}
 	}
 
-	for (size_t i = 0; i < Size; i++)
 	{
-		size_t PartSize = m_vecRenderLayer[i]->vecComponent.size();
-
-		for (size_t j = 0; j < PartSize; j++)
+		auto iter = m_RenderLayerList.begin();
+		auto iterEnd = m_RenderLayerList.end();
+		for (; iter != iterEnd; ++iter)
 		{
-			if (!m_vecRenderLayer[i]->vecComponent[j])
-				continue;
-			m_vecRenderLayer[i]->vecComponent[j]->PostRender();
+			for (int i = 0; i < (*iter)->RenderCount; i++)
+			{
+				(*iter)->RenderList[i]->PostRender();
+			}
 		}
 	}
 
-	// Alpha 시작
-	m_BlendState->SetState();
+	// 각종 Widget 출력 ---
+	// Widget 출력시 Alpha Blending 처리하기
+	m_AlphaDisable->SetState();
 
-	// Widget
+	// CSceneManager::GetInst()->GetScene()->GetViewPort()->Render();
 
-	// MouseWidget 세팅
+	// Mouse Widget 도 출력
+	// CUIWindow* MouseWidget = CEngine::GetInst()->GetMouseWidget();
+	// if (MouseWidget)
+		// MouseWidget->Render();
 
-	// Alpha 끝
-	m_BlendState->ResetState();
+	m_AlphaDisable->ResetState();
 
-	// DepthStencil 끝
-	m_DepthState->ResetState();
+	m_DepthDisable->ResetState();
 }
 
-bool CRenderManager::SortLayer(RenderLayer* Src, RenderLayer* Dest)
+bool CRenderManager::SortLayer(RenderLayer* Src, RenderLayer* End)
 {
-	return Src->LayerPriority < Dest->LayerPriority;
+	// 제일 큰애가 뒤로
+	// 가장 나중에 그려서, 맨 앞에 나오게 할 것이다. 
+	return Src->LayerPriority < End->LayerPriority;
+}
+
+void CRenderManager::SetBlendFactor(const std::string& Name, float r, float g,
+	float              b, float    a)
+{
+	m_RenderStateManager->SetBlendFactor(Name, r, g, b, a);
+}
+
+void CRenderManager::AddBlendInfo(const std::string& Name, bool                 BlendEnable,
+	D3D11_BLEND        SrcBlend, D3D11_BLEND      DestBlend, D3D11_BLEND_OP BlendOp,
+	D3D11_BLEND        SrcBlendAlpha, D3D11_BLEND DestBlendAlpha,
+	D3D11_BLEND_OP     BlendOpAlpha, UINT8        RenderTargetWriteMask)
+{
+	m_RenderStateManager->AddBlendDesc(Name, BlendEnable, SrcBlend, DestBlend,
+		BlendOp, SrcBlendAlpha, DestBlendAlpha, BlendOpAlpha, RenderTargetWriteMask);
+}
+
+bool CRenderManager::CreateBlendState(const std::string& Name,
+	bool               AlphaToCoverageEnable, bool IndependentBlendEnable)
+{
+	return m_RenderStateManager->CreateBlendState(Name, AlphaToCoverageEnable, IndependentBlendEnable);
+}
+
+CRenderState* CRenderManager::FindRenderState(const std::string& Name)
+{
+	return m_RenderStateManager->FindRenderState(Name);
 }

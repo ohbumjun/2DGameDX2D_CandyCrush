@@ -186,8 +186,8 @@ void CSpriteComponent::Render()
 
 	if (m_Animation)
 	{
-		CRenderManager::GetInst()->GetStandard2DConstantBuffer()->SetAnimEnable(m_Animation->GetFrameCount() > 0);
-		CRenderManager::GetInst()->GetStandard2DConstantBuffer()->UpdateCBuffer();
+		CRenderManager::GetInst()->GetStandard2DCBuffer()->SetAnimEnable(m_Animation->GetFrameCount() > 0);
+		CRenderManager::GetInst()->GetStandard2DCBuffer()->UpdateCBuffer();
 
 		m_Animation->SetShader();
 	}

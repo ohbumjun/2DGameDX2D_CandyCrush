@@ -14,8 +14,11 @@ bool CPlayerAnimation::Init()
 	if (!CAnimationSequence2DInstance::Init())
 		return false;
 
+	AddAnimation("PlayerIdle", "PlayerIdle");
+
 	return true;
 }
+
 
 CPlayerAnimation* CPlayerAnimation::Clone()
 {

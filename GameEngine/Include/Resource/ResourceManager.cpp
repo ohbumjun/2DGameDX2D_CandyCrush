@@ -30,13 +30,13 @@ bool CResourceManager::CreateSamplerState(const std::string& Name, D3D11_FILTER 
 	D3D11_TEXTURE_ADDRESS_MODE AddressU, D3D11_TEXTURE_ADDRESS_MODE AddressV, D3D11_TEXTURE_ADDRESS_MODE AddressW,
 	float BorderColor[4])
 {
-	return m_TextureManager->CreateSamplerState(Name, Filter,
+	return m_TextureManager->CreateSampler(Name, Filter,
 		AddressU, AddressV, AddressW, BorderColor);
 }
 
 ID3D11SamplerState* CResourceManager::FindSamplerState(const std::string& Name)
 {
-	return m_TextureManager->FindSamplerState(Name);
+	return m_TextureManager->FindSampler(Name);
 }
 
 bool CResourceManager::SetSampler(const std::string& Name, int Register, int ShaderType)
@@ -138,21 +138,21 @@ bool CResourceManager::Init()
 		return false;
 	}
 
+	// ShaderManager --> AnimationManager 이전에 오도록 세팅해야 한다.
+	m_ShaderManager = new CShaderManager;
+
+	if (!m_ShaderManager->Init())
+	{
+		SAFE_DELETE(m_ShaderManager);
+		return false;
+	}
+
 	// Animation 
 	m_AnimationManager = new CAnimationManager;
 
 	if (!m_AnimationManager->Init())
 	{
 		SAFE_DELETE(m_AnimationManager);
-		return false;
-	}
-
-	// ShaderManager 
-	m_ShaderManager = new CShaderManager;
-
-	if (!m_ShaderManager->Init())
-	{
-		SAFE_DELETE(m_ShaderManager);
 		return false;
 	}
 

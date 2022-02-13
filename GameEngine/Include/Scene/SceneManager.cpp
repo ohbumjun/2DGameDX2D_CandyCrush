@@ -4,7 +4,8 @@ CSceneManager* CSceneManager::m_Inst = nullptr;
 
 CSceneManager::CSceneManager() :
 	m_Scene(nullptr),
-	m_NextScene(nullptr)
+	m_NextScene(nullptr),
+	m_Start(false)
 {}
 
 CSceneManager::~CSceneManager()

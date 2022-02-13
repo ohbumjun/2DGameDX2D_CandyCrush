@@ -132,7 +132,11 @@ bool CSceneResource::LoadAnimationSequence2D(const std::string& Name, const std:
 
 	Sequence = new CAnimationSequence2D;
 
-	LoadTexture(TextureName, FileName, PathName);
+	if (!LoadTexture(TextureName, FileName, PathName))
+	{
+		SAFE_DELETE(Sequence);
+		return false;
+	}
 
 	CTexture* Texture = FindTexture(Name);
 

@@ -81,7 +81,7 @@ public :
 		Component = new T;
 		Component->SetName(Name);
 		Component->SetGameObject(this);
-		Component->m_Scene = m_Scene;
+		Component->SetScene(m_Scene);
 
 		if (!Component->Init())
 		{

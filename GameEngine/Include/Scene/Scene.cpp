@@ -50,9 +50,6 @@ CGameObject* CScene::FindGameObject(const std::string& Name)
 void CScene::Start()
 {
 	m_SceneMode->Start();
-	m_SceneCollision->Start();
-	m_ViewPort->Start();
-	m_CameraManager->Start();
 
 	auto iter = m_ObjList.begin();
 	auto iterEnd = m_ObjList.end();
@@ -61,6 +58,12 @@ void CScene::Start()
 	{
 		(*iter)->Start();
 	}
+
+	m_SceneCollision->Start();
+	m_ViewPort->Start();
+	m_CameraManager->Start();
+
+	m_Start = true;
 
 	// Player 에게 Camera 가 세팅되어 있다면, 해당 카메라를 메인 카메라로 세팅한다.
 	if (m_SceneMode->GetPlayerObject())
@@ -73,7 +76,6 @@ void CScene::Start()
 		}
 	}
 
-	m_Start = true;
 }
 
 void CScene::Update(float DeltaTime)

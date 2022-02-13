@@ -28,6 +28,7 @@ CMaterialManager::~CMaterialManager()
 
 	 Material->SetShader("ColorMeshShader");
 
+	// BaseTexture
 	 if (!CreateMaterial<CMaterial>("BaseTexture"))
 		 return false;
 

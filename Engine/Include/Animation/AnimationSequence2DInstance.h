@@ -21,6 +21,10 @@ protected:
 	std::string m_Name;
 	bool m_PlayAnimation;
 public :
+	std::string GetName() const
+{
+		return m_Name;
+}
 	bool IsPlay() const
 {
 		return m_PlayAnimation;
@@ -56,6 +60,7 @@ public :
 	void ChangeAnimation(const std::string& Name);
 	bool CheckCurrentAnimation(const std::string& Name);
 	void SetPlayAnimation(bool Play);
+	CAnimationSequence2DData* GetCurrentAnimation() const;
 public :
 	CAnimationSequence2DData* FindAnimationSequence2D(const std::string& Name);
 public :

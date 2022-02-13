@@ -14,6 +14,7 @@ CMaterialConstantBuffer::~CMaterialConstantBuffer()
 
 bool CMaterialConstantBuffer::Init()
 {
+	SetConstantBuffer("MaterialCBuffer");
 	return true;
 }
 

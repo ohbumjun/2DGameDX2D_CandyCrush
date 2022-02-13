@@ -26,15 +26,15 @@ bool CShaderManager::Init()
 		return false;
 
 	// 상수 버퍼
-	if (!CreateConstantBuffer("AnimationCBuffer", 0, (int)sizeof(AnimationCBuffer), (int)Buffer_Shader_Type::Pixel))
+	if (!CreateConstantBuffer("AnimationCBuffer", 0, sizeof(AnimationCBuffer), (int)Buffer_Shader_Type::Graphic))
 		return false;
-	if (!CreateConstantBuffer("MaterialCBuffer", 1, (int)sizeof(MaterialCBuffer), (int)Buffer_Shader_Type::Pixel))
+	if (!CreateConstantBuffer("MaterialCBuffer", 1, sizeof(MaterialCBuffer), (int)Buffer_Shader_Type::Graphic))
 		return false;
-	if (!CreateConstantBuffer("TransformCBuffer", 2, (int)sizeof(TransformCBuffer), (int)Buffer_Shader_Type::Pixel))
+	if (!CreateConstantBuffer("TransformCBuffer", 2, sizeof(TransformCBuffer), (int)Buffer_Shader_Type::Graphic))
 		return false;
-	if (!CreateConstantBuffer("Standard2DBuffer", 3, (int)sizeof(Standard2DCBuffer), (int)Buffer_Shader_Type::Pixel))
+	if (!CreateConstantBuffer("Standard2DCBuffer", 3, sizeof(Standard2DCBuffer), (int)Buffer_Shader_Type::Graphic))
 		return false;
-	if (!CreateConstantBuffer("ColliderCBuffer", 4, (int)sizeof(ColliderCBuffer), (int)Buffer_Shader_Type::Pixel))
+	if (!CreateConstantBuffer("ColliderCBuffer", 4, sizeof(ColliderCBuffer), (int)Buffer_Shader_Type::Graphic))
 		return false;
 
 
@@ -64,10 +64,13 @@ CConstantBuffer* CShaderManager::FindConstantBuffer(const std::string& Name)
 bool CShaderManager::CreateConstantBuffer(const std::string& Name, int Register, int Size, int ShaderType)
 {
 	CConstantBuffer* ConstantBuffer = FindConstantBuffer(Name);
+
 	if (ConstantBuffer)
 		return true;
 
 	ConstantBuffer = new CConstantBuffer;
+
+	ConstantBuffer->SetName(Name);
 
 	// 상수버퍼들은, Size, Register 들로 구분한다.
 	if (!ConstantBuffer->Init(Size, Register, ShaderType))

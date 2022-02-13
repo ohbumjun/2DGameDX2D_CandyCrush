@@ -25,10 +25,11 @@ bool CConstantBuffer::Init(int Size, int Register, int ConstantBufferShaderType)
 	m_ConstantBufferShaderType = ConstantBufferShaderType;
 
 	D3D11_BUFFER_DESC Desc = {};
-	Desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	Desc.ByteWidth = m_Size;
-	Desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
 	Desc.Usage = D3D11_USAGE_DYNAMIC;
+	Desc.ByteWidth = Size;
+	Desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	Desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 	if (FAILED(CDevice::GetInst()->GetDevice()->CreateBuffer(&Desc, nullptr, &m_Buffer)))
 		return false;
@@ -40,14 +41,11 @@ void CConstantBuffer::UpdateBuffer(void* Data)
 {
 	D3D11_MAPPED_SUBRESOURCE Map = {};
 
-	CDevice::GetInst()->GetDeviceContext()->Map(m_Buffer, 0, D3D11_MAP_WRITE_DISCARD,
-		0, &Map);
+	CDevice::GetInst()->GetDeviceContext()->Map(m_Buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &Map);
 
 	memcpy(Map.pData, Data, m_Size);
 
 	CDevice::GetInst()->GetDeviceContext()->Unmap(m_Buffer, 0);
-
-	// 셰이더 프로그램에 상수 버퍼 넘겨주기
 
 	if (m_ConstantBufferShaderType & static_cast<int>(Buffer_Shader_Type::Vertex))
 		CDevice::GetInst()->GetDeviceContext()->VSSetConstantBuffers(m_Register, 1, &m_Buffer);

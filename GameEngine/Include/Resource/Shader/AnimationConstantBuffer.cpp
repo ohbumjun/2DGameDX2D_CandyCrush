@@ -14,6 +14,7 @@ CAnimationConstantBuffer::~CAnimationConstantBuffer()
 
 bool CAnimationConstantBuffer::Init()
 {
+	SetConstantBuffer("AnimationCBuffer");
 	return true;
 }
 

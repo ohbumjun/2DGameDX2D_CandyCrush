@@ -22,14 +22,26 @@ CMaterial::CMaterial(const CMaterial& Material) :CRef(Material)
 
 	m_RefCount = 0;
 
+	m_Scene = nullptr;
+
 	m_CBuffer = Material.m_CBuffer->Clone();
 
-	m_Scene = nullptr;
+	m_RenderCallbackList.clear();
 }
 
 CMaterial::~CMaterial()
 {
+	auto iter = m_RenderCallbackList.begin();
+	auto iterEnd = m_RenderCallbackList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		SAFE_DELETE((*iter));
+	}
+
 	SAFE_DELETE(m_CBuffer);
+
+	m_RenderCallbackList.clear();
 }
 
 void CMaterial::SetRenderState(CRenderState* State)
@@ -164,8 +176,8 @@ void CMaterial::SetTexture(int Index, int Register, int ShaderType, const std::s
 {
 	m_TextureInfo[Index].Register = Register;
 	m_TextureInfo[Index].Name = Name;
-	m_TextureInfo[Index].Texture = Texture;
 	m_TextureInfo[Index].ShaderType = ShaderType;
+	m_TextureInfo[Index].Texture = Texture;
 }
 
 void CMaterial::SetTexture(int Index, int Register, int ShaderType, const std::string& Name, const TCHAR* FileName,
@@ -241,6 +253,14 @@ void CMaterial::Render()
 	{
 		if (m_RenderStateArray[i])
 			m_RenderStateArray[i]->SetState();
+	}
+
+	auto iter = m_RenderCallbackList.begin();
+	auto iterEnd = m_RenderCallbackList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		(*iter)->Callback();
 	}
 
 	size_t Size = m_TextureInfo.size();

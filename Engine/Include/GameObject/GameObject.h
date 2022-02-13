@@ -77,7 +77,8 @@ public :
 		T* Component = new T;
 		Component->SetName(Name);
 		Component->SetGameObject(this);
-		Component->m_Scene = m_Scene;
+		Component->SetScene(m_Scene);
+		Component->SetGameObject(this);
 
 		if (!Component->Init())
 		{
@@ -87,20 +88,15 @@ public :
 
 		if (Component->GetComponentType() == Component_Type::SceneComponent)
 		{
-			m_SceneComponentList.push_back((CSceneComponent*)Component);
-
-			Component->SetGameObject(this);
-
+			m_SceneComponentList.push_back((class CSceneComponent*)Component);
 			if (!m_RootComponent)
 				m_RootComponent = Component;
 		}
 		else
-		{
-			m_vecObjectComponent.push_back((CObjectComponent*)Component);
-		}
+			m_vecObjectComponent.push_back((class CObjectComponent*)Component);
 
 
-		return (T*)Component;
+		return Component;
 	}
 
 

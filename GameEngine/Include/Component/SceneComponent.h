@@ -3,41 +3,67 @@
 #include "Component.h"
 #include "Transform.h"
 
-class CSceneComponent : public CComponent {
+class CSceneComponent :
+	public CComponent
+{
 	friend class CGameObject;
 	friend class CRenderManager;
-protected :
-	CSceneComponent();
-	CSceneComponent(const  CSceneComponent& Component);
-	virtual ~CSceneComponent() override;
-protected :
-	CSharedPtr<CSceneComponent> m_Parent;
-	std::vector<CSharedPtr<CSceneComponent>> m_vecChild;
-	CTransform* m_Transform;
-	bool m_Render;
-	std::string m_LayerName;
-public :
-	void AddChild(CSceneComponent* Component);
-	bool DeleteChild(CSceneComponent* Component);
-	bool DeleteChild(const std::string& Name);
-	CSceneComponent* FindSceneComponent(const std::string& Name);
-public :
-	void SetSceneComponent(class CGameObject* Object);
-	void SetScene(class CScene* Scene);
-	void SetGameObject(CGameObject* Object) override;
-	virtual void Destroy() override;
-public :
-	virtual bool Init();
-	virtual void Start();
-	virtual void Update(float DeltaTime);
-	virtual void PostUpdate(float DeltaTime);
-	virtual void PrevRender();
-	virtual void Render();
-	virtual void PostRender();
-	virtual CSceneComponent* Clone();
-	virtual void CheckCollision();
 
-public:	// =============== 저주받은 Transform 영역 ===============
+protected:
+	CSceneComponent();
+	CSceneComponent(const CSceneComponent& com);
+	virtual ~CSceneComponent() override;
+
+protected:
+	// 자기가 속한 Layer의 이름
+	std::string m_LayerName;
+	CTransform* m_Transform;
+	CSceneComponent* m_Parent;
+	std::vector<CSharedPtr<CSceneComponent>> m_vecChild;
+	bool                                     m_Render;
+public:
+	std::string GetLayerName() const
+	{
+		return m_LayerName;
+	}
+
+	bool IsRender() const
+	{
+		return m_Render;
+	}
+
+public:
+	void SetLayerName(const std::string& Name)
+	{
+		m_LayerName = Name;
+	}
+
+public:
+	void SetSceneComponent(class CGameObject* Object);
+
+public:
+	virtual void SetScene(class CScene* Scene) override;
+	virtual void SetGameObject(class CGameObject* Object) override;
+
+public:
+	void             AddChild(CSceneComponent* Child);
+	bool             DeleteChild(CSceneComponent* Child);
+	bool             DeleteChild(const std::string& Name);
+	CSceneComponent* FindComponent(const std::string& Name);
+public:
+	virtual void Destroy() override;
+public:
+	virtual void             Start() override;
+	virtual bool             Init() override;
+	virtual void             Update(float DeltaTime) override;
+	virtual void             PostUpdate(float DeltaTime) override;
+	virtual void             PrevRender() override;
+	virtual void             Render() override;
+	virtual void CheckCollision();
+	virtual void             PostRender() override;
+	virtual CSceneComponent* Clone() override;
+
+public: // =============== 저주받은 Transform 영역 ===============
 	void SetInheritScale(bool Inherit)
 	{
 		m_Transform->SetInheritScale(Inherit);
@@ -99,17 +125,17 @@ public:	// =============== 저주받은 Transform 영역 ===============
 	}
 
 public:
-	Vector3 GetRelativeScale()	const
+	Vector3 GetRelativeScale() const
 	{
 		return m_Transform->GetRelativeScale();
 	}
 
-	Vector3 GetRelativeRot()	const
+	Vector3 GetRelativeRot() const
 	{
 		return m_Transform->GetRelativeRot();
 	}
 
-	Vector3 GetRelativePos()	const
+	Vector3 GetRelativePos() const
 	{
 		return m_Transform->GetRelativePos();
 	}
@@ -211,32 +237,32 @@ public:
 	}
 
 public:
-	Vector3 GetWorldScale()	const
+	Vector3 GetWorldScale() const
 	{
 		return m_Transform->GetWorldScale();
 	}
 
-	Vector3 GetWorldRot()	const
+	Vector3 GetWorldRot() const
 	{
 		return m_Transform->GetWorldRot();
 	}
 
-	Vector3 GetWorldPos()	const
+	Vector3 GetWorldPos() const
 	{
 		return m_Transform->GetWorldPos();
 	}
 
-	Vector3 GetPivot()	const
+	Vector3 GetPivot() const
 	{
 		return m_Transform->GetPivot();
 	}
 
-	Vector3 GetMeshSize()	const
+	Vector3 GetMeshSize() const
 	{
 		return m_Transform->GetMeshSize();
 	}
 
-	const Matrix& GetWorldMatrix()	const
+	const Matrix& GetWorldMatrix() const
 	{
 		return m_Transform->GetWorldMatrix();
 	}

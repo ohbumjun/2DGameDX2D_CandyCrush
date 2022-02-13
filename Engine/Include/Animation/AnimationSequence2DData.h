@@ -32,6 +32,10 @@ private :
 	bool m_Loop;
 	bool m_Reverse;
 public :
+	std::string GetName() const
+{
+		return m_Name;
+}
 	CAnimationSequence2D* GetSequence2D() const
 	{
 		return m_Sequence2D;

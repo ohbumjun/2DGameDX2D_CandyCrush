@@ -37,10 +37,14 @@ bool CMeshManager::Init()
 	};
 
 	FrameRect->SetName("FrameRect");
-	FrameRect->CreateMesh(FrameRect, sizeof(Vector3), 5, D3D11_USAGE_IMMUTABLE,
-		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	if (!FrameRect->CreateMesh(FrameRectPos, sizeof(Vector3), 5, D3D11_USAGE_IMMUTABLE,
+		D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP))
+	{
+		SAFE_DELETE(FrameRect);
+		return false;
+	}
 
-	m_mapMesh.insert(std::make_pair("FrameRectMesh", FrameRect));
+	m_mapMesh.insert(std::make_pair("FrameRect", FrameRect));
 
 	return true;
 }

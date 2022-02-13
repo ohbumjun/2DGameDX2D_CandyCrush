@@ -16,17 +16,24 @@ bool CDepthStencilState::CreateDepthStencilState(bool DepthEnable,
 	D3D11_DEPTH_STENCILOP_DESC FrontFace, D3D11_DEPTH_STENCILOP_DESC BackFace)
 {
 	D3D11_DEPTH_STENCIL_DESC Desc = {};
+
+	// 깊이 테스트 활성화 여부 
 	Desc.DepthEnable = DepthEnable;
+	// 쓰기 
 	Desc.DepthWriteMask = DepthWriteMask;
+	// 앞쪽 물체 렌더링 
 	Desc.DepthFunc = DepthFunc;
+	// 스탠실 테스트 활성화 
 	Desc.StencilEnable = StencilEnable;
+	// 스텐실 읽기
 	Desc.StencilReadMask = StencilReadMask;
+	// 스탠실 쓰기 
 	Desc.StencilWriteMask = StencilWriteMask;
 	Desc.FrontFace = FrontFace;
 	Desc.BackFace = BackFace;
 
-	if (CDevice::GetInst()->GetDevice()->CreateDepthStencilState(&Desc,
-		(ID3D11DepthStencilState**)&m_State))
+	if (FAILED(CDevice::GetInst()->GetDevice()->CreateDepthStencilState(&Desc,
+		(ID3D11DepthStencilState**)&m_State)))
 		return false;
 
 	return true;

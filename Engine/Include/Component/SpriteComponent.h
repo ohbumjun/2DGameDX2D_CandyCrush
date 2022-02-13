@@ -71,7 +71,7 @@ public:
         T* Anim = new T;
 
         Anim->SetScene(m_Scene);
-        Anim->SetOwner(this);
+        Anim->SetOwnerComponent(this);
 
         if (!Anim->Init())
         {

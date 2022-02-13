@@ -1,32 +1,50 @@
 #pragma once
 
-#include "Texture.h"
 #include "../../GameInfo.h"
 
-class CTextureManager {
+class CTextureManager
+{
 	friend class CResourceManager;
 
-private :
-	std::unordered_map<std::string, CSharedPtr<CTexture>> m_mapTexture;
-	std::unordered_map<std::string, ID3D11SamplerState*> m_mapSampler;
-public :
+private:
+	CTextureManager();
+	~CTextureManager();
+
+private:
+	std::unordered_map<std::string, CSharedPtr<class CTexture>> m_mapTexture;
+	std::unordered_map<std::string, ID3D11SamplerState*>        m_mapSampler;
+
+public:
 	bool Init();
-public :
-	bool CreateSamplerState(const std::string& Name, D3D11_FILTER  Filter,
-	D3D11_TEXTURE_ADDRESS_MODE AddressU,
-	D3D11_TEXTURE_ADDRESS_MODE AddressV,
-	D3D11_TEXTURE_ADDRESS_MODE AddressW, float  BorderColor[4]);
-	ID3D11SamplerState* FindSamplerState(const std::string& Name);
-	bool SetSampler(const std::string& Name, int Register, 
-		int ShaderType = (int)Buffer_Shader_Type::All);
-public :
-	CTexture* FindTexture(const std::string& Name);
-	void ReleaseTexture(const std::string& Name);
+
 	bool LoadTexture(const std::string& Name, const TCHAR* FileName,
-		const std::string& PathName = TEXTURE_PATH, int Index = 0);
+		const std::string& PathName = TEXTURE_PATH);
+	bool            LoadTextureFullPath(const std::string& Name, const TCHAR* FullPath);
 	bool LoadTexture(const std::string& Name, const std::vector<TCHAR*>& vecFileName,
 		const std::string& PathName = TEXTURE_PATH);
-	bool LoadTextureFullPath(const std::string& Name, const TCHAR* FullPath);
+	class CTexture* FindTexture(const std::string& Name);
+	void            ReleaseTexture(const std::string& Name);
 
-	DECLARE_SINGLE(CTextureManager);
+public:
+	/*
+	D3D11_FILTER Filter;
+	D3D11_TEXTURE_ADDRESS_MODE AddressU;
+	D3D11_TEXTURE_ADDRESS_MODE AddressV;
+	D3D11_TEXTURE_ADDRESS_MODE AddressW;
+	FLOAT MipLODBias;
+	UINT MaxAnisotropy;
+	D3D11_COMPARISON_FUNC ComparisonFunc;
+	FLOAT BorderColor[ 4 ];
+	FLOAT MinLOD;
+	FLOAT MaxLOD;
+	*/
+	bool CreateSampler(const std::string& Name, D3D11_FILTER Filter,
+		D3D11_TEXTURE_ADDRESS_MODE AddressU,
+		D3D11_TEXTURE_ADDRESS_MODE AddressV,
+		D3D11_TEXTURE_ADDRESS_MODE AddressW,
+		float                      BorderColor[4]);
+	ID3D11SamplerState* FindSampler(const std::string& Name);
+	bool                SetSampler(const std::string& Name, int Register,
+		int                ShaderType = static_cast<int>(
+			Buffer_Shader_Type::All));
 };
