@@ -22,7 +22,7 @@ bool CCell::Init()
 	m_Sprite = CreateComponent<CSpriteComponent>("CellSprite");
 	m_Sprite->SetAnimationInstance(AnimationInstance);
 	m_Sprite->GetAnimationInstance()->SetCurrentAnimation("RowLine");
-	
+	m_Sprite->SetLayerName("Cell");
 
 	return true;
 }
