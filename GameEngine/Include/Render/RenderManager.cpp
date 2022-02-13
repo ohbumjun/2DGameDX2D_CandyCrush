@@ -165,7 +165,7 @@ void CRenderManager::Render()
 
 	// 아래 PrevRender 에서 실제 그릴 녀석들을 추가한다. 
 	{
-		auto iter = m_ObjectList->begin();
+		auto iter = m_ObjectList->begin(); //
 		auto iterEnd = m_ObjectList->end();
 
 		for (; iter != iterEnd; ++iter)
