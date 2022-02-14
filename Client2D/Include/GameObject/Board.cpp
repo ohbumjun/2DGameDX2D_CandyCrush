@@ -88,19 +88,33 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 
 			Cell->m_Board = this;
 			Cell->SetScene(m_Scene);
-			// Cell->Init();
 
 			// x는 열, y는 행
-			Cell->SetWorldPos(BoardStartPos.x + m_CellSize.x * col, BoardStartPos.y + m_CellSize.y * row, 1.f);
+			float CellWorldYPos = BoardStartPos.y + m_CellSize.y * row;
+			Cell->SetWorldPos(BoardStartPos.x + m_CellSize.x * col, CellWorldYPos, 1.f);
+
+			// 크기 세팅
 			Cell->SetWorldScale(CellSize);
 
 			// Index 세팅 --> NewPosY도 세팅
 			Cell->SetInitInfo(row * m_ColCount + col, row, col);
 
+			// 경계선 Y Pos 세팅하기
+			float ShownAreaTopYPos = BoardStartPos.y + m_CellSize.y * m_VisualRowCount;
+			Cell->SetShownAreaTopYPos(ShownAreaTopYPos);
+
+			// WorldY Pos 세팅하기
+			Cell->SetWorldYPos(BoardStartPos.y + m_CellSize.y * row);
+
 			// 안보이는 영역에 있을 경우, opacity 0으로 설정
-			if (Cell->GetWorldPos().y >= m_CellSize.x * m_VisualRowCount)
+			if (CellWorldYPos >= ShownAreaTopYPos)
 			{
+				// Opacity 설정
+				// Cell->SetOpacity(0.0f);
 				Cell->SetOpacity(0.5f);
+
+				// 안보인다는 멤버 변수 설정
+				Cell->SetShowEnable(false);
 			}
 
 			m_vecCells[row * m_ColCount + col] = Cell;

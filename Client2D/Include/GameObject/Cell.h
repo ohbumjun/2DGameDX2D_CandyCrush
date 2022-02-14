@@ -18,8 +18,14 @@ private:
     int m_Index;
     int m_RowIndex;
     int m_ColIndex;
-    float m_NewPosY;
     float m_DownMoveSpeed;
+private:
+    float m_ShownAreaOffset;
+    float m_ShownAreaTopYPos;
+    bool m_IsShownEnable;
+private :
+    float m_PosY;
+    float m_NewPosY;
 public :
     int GetRowIndex() const
 {
@@ -38,6 +44,18 @@ public :
         return m_Sprite->GetAnimationInstance();
 }
 public :
+    void SetWorldYPos(float Pos)
+{
+        m_PosY = Pos;
+}
+    void SetShownAreaTopYPos(float Pos)
+{
+        m_ShownAreaTopYPos = Pos;
+}
+    void SetShowEnable(bool Enable)
+{
+        m_IsShownEnable = Enable;
+}
     void SetDownMoveSpeed (float Speed)
 {
         m_DownMoveSpeed = Speed;

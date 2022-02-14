@@ -79,12 +79,16 @@ protected:
 	class CMaterialConstantBuffer* m_CBuffer;
 	CSharedPtr<class CRenderState>   m_RenderStateArray[static_cast<int>(RenderState_Type::Max)];
 	std::list<RenderCallback*> m_RenderCallbackList;
+public :
+	float GetOpacity() const
+	{
+		return m_Opacity;
+	}
 public:
 	void SetConstantBuffer(class CMaterialConstantBuffer* Buffer)
 	{
 		m_CBuffer = Buffer->Clone();
 	}
-
 public:
 	void SetRenderState(class CRenderState* State);
 	void SetRenderState(const std::string& Name);
