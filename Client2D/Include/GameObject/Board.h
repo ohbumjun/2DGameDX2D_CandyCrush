@@ -23,10 +23,17 @@ private :
     int m_VisualRowCount;
     int m_IndexOffset;
     Vector2 m_CellSize;
+    bool m_CellsMoving;
+public :
+    void SetCellsMoving(bool Moving)
+{
+        m_CellsMoving = Moving;
+}
 public :
     virtual bool Init() override;
     bool CreateBoard(int CountRow, int CountCol, float WidthRatio, float HeightRatio, const Vector3& LB);
 private :
     void ClickCell(float DeltaTime);
+    void ShuffleRandom();
 };
 

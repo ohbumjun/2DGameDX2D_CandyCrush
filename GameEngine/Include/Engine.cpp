@@ -64,8 +64,13 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd, unsigned Width, unsigned Height, 
 	if (!CPathManager::GetInst()->Init())
 		return false;
 
+
 	// ResourceManager --> SceneManager 보다 앞에 세팅하기
 	if (!CResourceManager::GetInst()->Init())
+		return false;
+
+	// Render 
+	if (!CRenderManager::GetInst()->Init())
 		return false;
 
 	// 입력 
@@ -76,9 +81,6 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd, unsigned Width, unsigned Height, 
 	if (!CSceneManager::GetInst()->Init())
 		return false;
 
-	// Render
-	if (!CRenderManager::GetInst()->Init())
-		return false;
 
 	return true;
 }

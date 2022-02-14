@@ -14,13 +14,21 @@ private:
     virtual ~CCell();
 private:
     CSharedPtr<CSpriteComponent> m_Sprite;
-    CBoard* m_Board;
+    class CBoard* m_Board;
     int m_Index;
     int m_RowIndex;
     int m_ColIndex;
     float m_NewPosY;
     float m_DownMoveSpeed;
 public :
+    int GetRowIndex() const
+{
+        return m_RowIndex;
+}
+    int GetColIndex() const
+    {
+        return m_ColIndex;
+    }
     float GetDownMoveSpeed() const
 {
         return m_DownMoveSpeed;

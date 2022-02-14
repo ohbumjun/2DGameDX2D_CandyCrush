@@ -1,7 +1,10 @@
 #include "MaterialConstantBuffer.h"
 
 CMaterialConstantBuffer::CMaterialConstantBuffer()
-{}
+{
+	m_BufferData.Opacity = 1.f;
+	m_BufferData.BaseColor = Vector4(1.f, 1.f, 1.f, 1.f);
+}
 
 CMaterialConstantBuffer::CMaterialConstantBuffer(const CMaterialConstantBuffer& Buffer) :
 CConstantBufferBase(Buffer)

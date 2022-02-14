@@ -88,7 +88,6 @@ void CRenderManager::SetLayerPriority(const std::string& Name, int Priority)
 bool CRenderManager::Init()
 {
 	m_RenderStateManager = new CRenderStateManager;
-
 	m_RenderStateManager->Init();
 
 	m_Standard2DCBuffer = new CStandard2DConstantBuffer;

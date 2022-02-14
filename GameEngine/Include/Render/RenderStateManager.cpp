@@ -1,6 +1,7 @@
 #include "RenderStateManager.h"
 #include "BlendState.h"
 #include "DepthStencilState.h"
+#include "RenderState.h"
 
 CRenderStateManager::CRenderStateManager()
 {
