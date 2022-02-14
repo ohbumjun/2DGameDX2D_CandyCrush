@@ -246,6 +246,11 @@ void CMaterial::Render()
 		m_CBuffer->SetBaseColor(m_BaseColor);
 		m_CBuffer->SetOpacity(m_Opacity);
 
+		if (m_Opacity < 0.5f)
+		{
+			m_CBuffer->SetOpacity(m_Opacity);
+		}
+
 		m_CBuffer->UpdateCBuffer();
 	}
 

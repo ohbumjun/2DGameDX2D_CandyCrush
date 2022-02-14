@@ -3,6 +3,7 @@
 #include "resource.h"
 #include "Scene/SceneManager.h"
 #include "Scene/StartScene.h"
+#include "Input.h"
 
 DEFINITION_SINGLE(CClientManager)
 
@@ -23,6 +24,9 @@ bool CClientManager::Init(HINSTANCE hInst)
 		CEngine::DestroyInst();
 		return false;
 	}
+
+	// Input Callback ¼¼ÆÃ
+	CInput::GetInst()->CreateKey("BoardCellClick", VK_LBUTTON);
 
 	CSceneManager::GetInst()->SetCreateSceneModeFunction<CClientManager>(this, &CClientManager::CreateSceneMode);
 	CSceneManager::GetInst()->SetCreateObjectFunction<CClientManager>(this, &CClientManager::CreateObject);

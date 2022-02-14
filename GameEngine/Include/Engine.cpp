@@ -76,8 +76,6 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd, unsigned Width, unsigned Height, 
 	if (!CSceneManager::GetInst()->Init())
 		return false;
 
-
-
 	// Render
 	if (!CRenderManager::GetInst()->Init())
 		return false;
@@ -113,7 +111,11 @@ void CEngine::Logic()
 		CSceneManager::GetInst()->Start();
 	}
 
+	// Timer
 	float DeltaTime = m_Timer->Update();
+
+	// Input
+	CInput::GetInst()->Update(DeltaTime);
 
 	if (Update(DeltaTime))
 		return;
@@ -126,6 +128,7 @@ void CEngine::Logic()
 
 bool CEngine::Update(float DeltaTime)
 {
+	// SceneManager
 	if (CSceneManager::GetInst()->Update(DeltaTime))
 		return true;
 

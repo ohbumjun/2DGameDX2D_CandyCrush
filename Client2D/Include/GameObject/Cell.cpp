@@ -2,7 +2,8 @@
 #include "Resource/ResourceManager.h"
 #include "Animation/AnimationSequence2DInstance.h"
 
-CCell::CCell()
+CCell::CCell() :
+	m_DownMoveSpeed(100.f)
 {}
 
 CCell::CCell(const CCell& Player2D)
@@ -10,6 +11,12 @@ CCell::CCell(const CCell& Player2D)
 
 CCell::~CCell()
 {}
+
+void CCell::SetInitInfo(int Index, int RowIndex, int ColIndex)
+{
+	m_Index = Index;
+	m_NewPosY = GetWorldPos().y;
+}
 
 bool CCell::Init()
 {
@@ -30,6 +37,9 @@ bool CCell::Init()
 void CCell::Update(float DeltaTime)
 {
 	CGameObject::Update(DeltaTime);
+
+	// 계속 내려가기
+	// AddWorldPos(0.f, m_DownMoveSpeed * DeltaTime * -1.f, 0.f);
 }
 
 void CCell::PostUpdate(float DeltaTime)

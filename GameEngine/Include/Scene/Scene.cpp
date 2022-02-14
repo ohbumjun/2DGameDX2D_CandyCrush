@@ -87,8 +87,9 @@ void CScene::Update(float DeltaTime)
 	{
 		if (!(*iter)->IsActive())
 		{
-			SAFE_DELETE((*iter));
-			++iter;
+			// SAFE_DELETE((*iter));
+			iter = m_ObjList.erase(iter);
+			iterEnd = m_ObjList.end();
 			continue;
 		}
 		if (!(*iter)->IsEnable())
@@ -112,8 +113,9 @@ void CScene::PostUpdate(float DeltaTime)
 	{
 		if (!(*iter)->IsActive())
 		{
-			SAFE_DELETE((*iter));
-			++iter;
+			// SAFE_DELETE((*iter));
+			iter = m_ObjList.erase(iter);
+			iterEnd = m_ObjList.end();
 			continue;
 		}
 		if (!(*iter)->IsEnable())

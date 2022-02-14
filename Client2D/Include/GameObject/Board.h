@@ -22,7 +22,11 @@ private :
     int m_ColCount;
     int m_VisualRowCount;
     int m_IndexOffset;
+    Vector2 m_CellSize;
 public :
+    virtual bool Init() override;
     bool CreateBoard(int CountRow, int CountCol, float WidthRatio, float HeightRatio, const Vector3& LB);
+private :
+    void ClickCell(float DeltaTime);
 };
 
