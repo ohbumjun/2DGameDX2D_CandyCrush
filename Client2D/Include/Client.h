@@ -8,11 +8,11 @@ enum class Cell_Type {
 	Green
 };
 
-enum class Cell_Start {
+enum class Cell_State {
 	Normal,
 	RowLine,
 	ColLine,
-	Bag
+	Bag,
 	Notice,
 	MirrorBall
 };

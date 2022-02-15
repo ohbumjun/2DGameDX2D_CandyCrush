@@ -142,6 +142,8 @@ CAnimationSequence2DInstance* CAnimationManager::LoadAnimationSequence2DInstance
 
 	AnimationInstance->LoadFullPath(FullPathMultibyte);
 
+	AnimationInstance->Init();
+
 	return AnimationInstance;
 }
 

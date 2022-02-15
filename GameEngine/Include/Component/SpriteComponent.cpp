@@ -48,13 +48,7 @@ void CSpriteComponent::SetAnimationInstance(CAnimationSequence2DInstance* Instan
 		return;
 	Instance->SetOwnerComponent(this);
 	Instance->SetScene(m_Scene);
-	if (!Instance->Init()) // 상수 버퍼 세팅 
-	{
-		SAFE_DELETE(Instance);
-		return;
-	}
 
-	SAFE_DELETE(m_Animation);
 	m_Animation = Instance;
 }
 

@@ -15,6 +15,46 @@ CCell::CCell(const CCell& Player2D)
 CCell::~CCell()
 {}
 
+void CCell::SetCellType(Cell_Type Type)
+{
+	m_CellType = Type;
+
+	if (Type == Cell_Type::Blue)
+		SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Blue"));
+	if (Type == Cell_Type::Red)
+		SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Red"));
+	if (Type == Cell_Type::Orange)
+		SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Orange"));
+	if (Type == Cell_Type::Yellow)
+		SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Yellow"));
+	if (Type == Cell_Type::Green)
+		SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Green"));
+}
+
+void CCell::SetCellState(Cell_State State)
+{
+	m_CellState = State;
+
+	if (State == Cell_State::Normal)
+		SetCurrentAnimation("Normal");
+	if (State == Cell_State::RowLine)
+		SetCurrentAnimation("RowLine");
+	if (State == Cell_State::ColLine)
+		SetCurrentAnimation("ColLine");
+	if (State == Cell_State::Bag)
+		SetCurrentAnimation("Bag");
+	if (State == Cell_State::Notice)
+		SetCurrentAnimation("Notice");
+	if (State == Cell_State::MirrorBall)
+		SetCurrentAnimation("MirrorBall");
+
+}
+
+void CCell::SetCurrentAnimation(const std::string& Name)
+{
+	m_Sprite->GetAnimationInstance()->SetCurrentAnimation(Name);
+}
+
 void CCell::SetInitInfo(int Index, int RowIndex, int ColIndex)
 {
 	m_Index = Index;
@@ -27,7 +67,6 @@ bool CCell::Init()
 {
 	if (!CGameObject::Init())
 		return false;
-
 	
 	CAnimationSequence2DInstance* AnimationInstance = CResourceManager::GetInst()->FindAnimationInstance("Orange");
 

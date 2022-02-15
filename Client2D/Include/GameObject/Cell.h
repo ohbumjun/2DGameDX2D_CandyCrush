@@ -1,7 +1,7 @@
 #pragma once
 #include "GameObject\GameObject.h"
 #include "Component/SpriteComponent.h"
-
+#include "../Client.h"
 
 class CCell :
     public CGameObject
@@ -13,6 +13,8 @@ private:
     CCell(const CCell& Player2D);
     virtual ~CCell();
 private:
+    Cell_Type m_CellType;
+    Cell_State m_CellState;
     CSharedPtr<CSpriteComponent> m_Sprite;
     class CBoard* m_Board;
     int m_Index;
@@ -27,6 +29,14 @@ private :
     float m_PosY;
     float m_NewPosY;
 public :
+    Cell_Type GetCellType() const
+{
+        return m_CellType;
+}
+    Cell_State GetCellState() const
+{
+        return m_CellState;
+}
     int GetRowIndex() const
 {
         return m_RowIndex;
@@ -44,6 +54,9 @@ public :
         return m_Sprite->GetAnimationInstance();
 }
 public :
+    void SetCellType(Cell_Type Type);
+    void SetCellState(Cell_State State);
+    void SetCurrentAnimation(const std::string& Name);
     void SetWorldYPos(float Pos)
 {
         m_PosY = Pos;
@@ -82,7 +95,6 @@ public:
     virtual bool Init() override;
     virtual void Update(float DeltaTime) override;
     virtual void PostUpdate(float DeltaTime) override;
-    
 };
 
 
