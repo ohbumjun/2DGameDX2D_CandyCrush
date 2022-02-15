@@ -35,29 +35,32 @@ void CAnimationManager::LoadAnimationInstance()
 	// Blue
 	CAnimationSequence2DInstance* AnimationInstance = LoadAnimationSequence2DInstance(TEXT("Blue.anim"));
 	AnimationInstance->SetIsShared(true);
+	AnimationInstance->SetCurrentAnimation("Normal");
 	m_mapAnimInstance.insert(std::make_pair("Blue", AnimationInstance));
 
 	// Red
 	AnimationInstance = LoadAnimationSequence2DInstance(TEXT("Red.anim"));
 	AnimationInstance->SetIsShared(true);
+	AnimationInstance->SetCurrentAnimation("Normal");
 	m_mapAnimInstance.insert(std::make_pair("Red", AnimationInstance));
 
 	// Green
 	AnimationInstance = LoadAnimationSequence2DInstance(TEXT("Green.anim"));
 	AnimationInstance->SetIsShared(true);
+	AnimationInstance->SetCurrentAnimation("Normal");
 	m_mapAnimInstance.insert(std::make_pair("Green", AnimationInstance));
 
 	// Yellow
 	AnimationInstance = LoadAnimationSequence2DInstance(TEXT("Yellow.anim"));
 	AnimationInstance->SetIsShared(true);
+	AnimationInstance->SetCurrentAnimation("Normal");
 	m_mapAnimInstance.insert(std::make_pair("Yellow", AnimationInstance));
 
 	// Orange
 	AnimationInstance = LoadAnimationSequence2DInstance(TEXT("Orange.anim"));
 	AnimationInstance->SetIsShared(true);
+	AnimationInstance->SetCurrentAnimation("Normal");
 	m_mapAnimInstance.insert(std::make_pair("Orange", AnimationInstance));
-
-
 
 }
 

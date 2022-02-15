@@ -1,6 +1,6 @@
 #pragma once
 
-enum class Cell_Type {
+enum Cell_Type {
 	Blue,
 	Red,
 	Orange,
@@ -15,4 +15,10 @@ enum class Cell_State {
 	Bag,
 	Notice,
 	MirrorBall
+};
+
+enum Mouse_Click {
+	None,
+	First,
+	Second
 };

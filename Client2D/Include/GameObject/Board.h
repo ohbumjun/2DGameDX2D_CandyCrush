@@ -23,7 +23,12 @@ private :
     int m_VisualRowCount;
     int m_IndexOffset;
     Vector2 m_CellSize;
+private : // Cell 들이 이동중인가
     bool m_CellsMoving;
+private : // Mouse Click
+    Mouse_Click m_MouseClick;
+    CCell* m_FirstClickCell;
+    CCell* m_SecClickCell;
 public :
     void SetCellsMoving(bool Moving)
 {

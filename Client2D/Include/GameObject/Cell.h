@@ -26,9 +26,19 @@ private:
     float m_ShownAreaTopYPos;
     bool m_IsShownEnable;
 private :
-    float m_PosY;
-    float m_NewPosY;
+    float m_PosY; // 아래 이동
+    float m_NewDownPosY;
+    bool m_IsSwitch; // 마우스 클릭 
+    Vector3 m_ClickDestPos;
 public :
+    bool IsSwitch() const
+{
+        return m_IsSwitch;
+}
+    Vector3 GetClickDestPos() const
+{
+        return m_ClickDestPos;
+}
     Cell_Type GetCellType() const
 {
         return m_CellType;
@@ -45,6 +55,10 @@ public :
     {
         return m_ColIndex;
     }
+    int GetIndex() const
+    {
+        return m_Index;
+    }
     float GetDownMoveSpeed() const
 {
         return m_DownMoveSpeed;
@@ -57,6 +71,14 @@ public :
     void SetCellType(Cell_Type Type);
     void SetCellState(Cell_State State);
     void SetCurrentAnimation(const std::string& Name);
+	void SetIsSwitch(bool Switch)
+	{
+	    m_IsSwitch = Switch;
+	}
+    void SetClickDestPos(const Vector3& ClickDest)
+    {
+        m_ClickDestPos = ClickDest;
+    }
     void SetWorldYPos(float Pos)
 {
         m_PosY = Pos;
@@ -75,7 +97,7 @@ public :
 }
     void SetNewPosY(float NewPosY)
 {
-        m_NewPosY = NewPosY;
+        m_NewDownPosY = NewPosY;
 }
     void SetAnimationInstance(CAnimationSequence2DInstance* Instance)
 {
@@ -91,6 +113,8 @@ public :
 }
 private:
     void SetInitInfo(int Index, int RowIndex, int ColIndex);
+    void GoDown(float DeltaTime);
+    void SwitchMove(float DeltaTime);
 public:
     virtual bool Init() override;
     virtual void Update(float DeltaTime) override;

@@ -7,28 +7,15 @@
 #include "Input.h"
 
 CBoard::CBoard() :
-	m_CellsMoving(false)
-{}
+	m_CellsMoving(false),
+	m_MouseClick(Mouse_Click::None),
+	m_FirstClickCell(nullptr),
+	m_SecClickCell(nullptr)
+{
+}
 
 CBoard::~CBoard()
 {
-	// Block
-	/*
-	size_t Size = m_vecBlocks.size();
-
-	for (size_t i = 0; i < Size; i++)
-	{
-		SAFE_DELETE(m_vecBlocks[i]);
-	}
-
-	// Cell
-	Size = m_vecCells.size();
-
-	for (size_t i = 0; i < Size; i++)
-	{
-		SAFE_DELETE(m_vecCells[i]);
-	}
-	*/
 }
 
 bool CBoard::Init()
@@ -120,6 +107,9 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 			m_vecCells[row * m_ColCount + col] = Cell;
 		}
 	}
+
+	// 한번 랜덤하게 섞기
+	ShuffleRandom();
 		
 	return true;
 }
@@ -137,17 +127,55 @@ void CBoard::ClickCell(float DeltaTime)
 	int IndexX = (int)(ConvertPos.x / m_CellSize.x);
 	int IndexY = (int)(ConvertPos.y / m_CellSize.y);
 
-	// 범위 밖은 조사하지 않는다.
+	// 범위 밖은 조사하지 않는다. + 클릭 정보 초기화
 	if (IndexX < 0 || IndexX >= m_ColCount)
+	{
+		m_FirstClickCell = nullptr;
+		m_SecClickCell = nullptr;
+		m_MouseClick = Mouse_Click::None;
 		return;
+	}
+
 	if (IndexY < 0 || IndexY >= m_VisualRowCount)
+	{
+		m_FirstClickCell = nullptr;
+		m_SecClickCell = nullptr;
+		m_MouseClick = Mouse_Click::None;
 		return;
+	}
 
-	// Cell 이동 처리
-	m_CellsMoving = true;
+	// 첫번째 Cell 선택
+	if (m_MouseClick == Mouse_Click::None)
+	{
+		m_FirstClickCell = m_vecCells[IndexY * m_ColCount + IndexX];
+		m_MouseClick = Mouse_Click::First;
+	}
+	// 두번째 Cell 선택
+	else if (m_MouseClick == Mouse_Click::First)
+	{
+		// 만약 첫번째 선택된 녀석과 같은 녀석이면 skip
+		if ((IndexY * m_ColCount + IndexX) == m_FirstClickCell->GetIndex())
+			return;
 
-	// m_vecCells[IndexY * m_ColCount + IndexX]->SetOpacity(0.f);
+		m_SecClickCell = m_vecCells[IndexY * m_ColCount + IndexX];
 
+		// 2개의 Cell 에 새로운 위치 세팅
+		m_FirstClickCell->SetClickDestPos(m_SecClickCell->GetWorldPos());
+		m_SecClickCell->SetClickDestPos(m_FirstClickCell->GetWorldPos());
+
+		// Switch 중이라고 표시하기
+		m_FirstClickCell->SetIsSwitch(true);
+		m_SecClickCell->SetIsSwitch(true);
+
+		// Cell 이동중 표시하기
+		m_CellsMoving = true;
+	}
+
+	// todo : Cell 이동 처리
+	// m_CellsMoving = true;
+
+	// todo : Scene에서 제거하기
+	/*
 	// 해당 위치의 Cell 사라지게 하기
 	// 이렇게 하면 Scene 내에서는 지워져서 Render는 안되지만
 	// 여전히 m_vecCells 안에는 남아있게 된다.
@@ -172,6 +200,7 @@ void CBoard::ClickCell(float DeltaTime)
 		m_vecCells[CurIndex]->SetNewPosY(CurPos.y - m_CellSize.y);
 
 	}
+	*/
 
 	// todo : 움직인 Cell 새로운 위치 세팅
 	/*
@@ -206,4 +235,10 @@ void CBoard::ClickCell(float DeltaTime)
 }
 
 void CBoard::ShuffleRandom()
-{}
+{
+	for (int i = 0; i < m_TotCount; i++)
+	{
+		int Type = rand() % 5;
+		m_vecCells[i]->SetCellType((Cell_Type)Type);
+	}
+}

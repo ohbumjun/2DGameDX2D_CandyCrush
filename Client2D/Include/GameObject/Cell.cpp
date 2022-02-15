@@ -60,7 +60,90 @@ void CCell::SetInitInfo(int Index, int RowIndex, int ColIndex)
 	m_Index = Index;
 	m_RowIndex = RowIndex;
 	m_ColIndex = ColIndex;
-	m_NewPosY = GetWorldPos().y;
+	m_NewDownPosY = GetWorldPos().y;
+}
+
+void CCell::GoDown(float DeltaTime)
+{
+	// 계속 내려가기
+	if (m_PosY > m_NewDownPosY)
+	{
+		AddWorldPos(0.f, m_DownMoveSpeed * DeltaTime * -1.f, 0.f);
+
+		float CurYPos = GetWorldPos().y;
+
+		// 이동중이라고 Board에 표시하기
+		m_Board->SetCellsMoving(true);
+
+		// 만약 안보이는 위치였다가 보이는 위치로 들어가게 된다면
+		if (!m_IsShownEnable)
+		{
+			if (CurYPos < m_ShownAreaTopYPos - m_ShownAreaOffset)
+			{
+				// 최종 남은 위치까지 알파값을 서서히 증가시킨다
+				m_Sprite->SetOpacity(((m_PosY - CurYPos) / GetWorldScale().y));
+
+				// 만약 최종 위치에 도달했다면
+				if (CurYPos <= m_NewDownPosY)
+				{
+					m_IsShownEnable = true;
+				}
+			}
+		}
+
+		// 새로운 위치에 도달했다면 
+		if (CurYPos <= m_NewDownPosY)
+		{
+			Vector3 WorldPos = GetWorldPos();
+			SetWorldPos(WorldPos.x, m_NewDownPosY, WorldPos.z);
+			m_Board->SetCellsMoving(false);
+			m_PosY = m_NewDownPosY;
+		}
+	}
+}
+
+void CCell::SwitchMove(float DeltaTime)
+{
+	if (m_IsSwitch)
+	{
+		Vector3 WorldPos = GetWorldPos();
+
+		float MoveDist = -1.f;
+
+		// 가로 이동
+		if (m_ClickDestPos.x != WorldPos.x)
+		{
+			MoveDist = m_ClickDestPos.x - WorldPos.x;
+
+			AddWorldPos(MoveDist * DeltaTime * 2.f, 0.f, 0.f);
+
+			// Cell 이동 중 표시
+			m_Board->SetCellsMoving(true);
+		}
+
+		// 세로 이동
+		else if (m_ClickDestPos.y != WorldPos.y)
+		{
+			MoveDist = m_ClickDestPos.y < WorldPos.y;
+
+			AddWorldPos(0.f, MoveDist * DeltaTime * 2.f, 0.f);
+
+			// Cell 이동 중 표시
+			m_Board->SetCellsMoving(false);
+		}
+
+		// 위치에 도달
+		if (m_ClickDestPos.Dist(WorldPos) < 10.f)
+			{
+				// 위치 다시 세팅 
+				SetWorldPos(m_ClickDestPos);
+
+				m_IsSwitch = false;
+
+				// Cell 이동 중 false로 
+				m_Board->SetCellsMoving(false);
+			}
+	}
 }
 
 bool CCell::Init()
@@ -85,43 +168,9 @@ void CCell::Update(float DeltaTime)
 {
 	CGameObject::Update(DeltaTime);
 
-	// SetOpacity(0.2f);
+	GoDown(DeltaTime);
 
-	if (m_PosY > m_NewPosY)
-	{
-		// 계속 내려가기
-		AddWorldPos(0.f, m_DownMoveSpeed * DeltaTime * -1.f, 0.f);
-
-		float CurYPos = GetWorldPos().y;
-
-		// 이동중이라고 Board에 표시하기
-		m_Board->SetCellsMoving(true);
-
-		// 만약 안보이는 위치였다가 보이는 위치로 들어가게 된다면
-		if (!m_IsShownEnable)
-		{
-			if (CurYPos < m_ShownAreaTopYPos - m_ShownAreaOffset)
-			{
-				// 최종 남은 위치까지 알파값을 서서히 증가시킨다
-				m_Sprite->SetOpacity(((m_PosY - CurYPos) / GetWorldScale().y));
-
-				// 만약 최종 위치에 도달했다면
-				if (CurYPos <= m_NewPosY)
-				{
-					m_IsShownEnable = true;
-				}
-			}
-		}
-
-		 // 새로운 위치에 도달했다면 
-		if (CurYPos <= m_NewPosY)
-		{
-			Vector3 WorldPos = GetWorldPos();
-			SetWorldPos(WorldPos.x, m_NewPosY, WorldPos.z);
-			m_Board->SetCellsMoving(false);
-			m_PosY = m_NewPosY;
-		}
-	}
+	SwitchMove(DeltaTime);
 }
 
 void CCell::PostUpdate(float DeltaTime)
