@@ -4,9 +4,11 @@
 #include "Board.h"
 
 CCell::CCell() :
-	m_DownMoveSpeed(50.f),
+	m_MoveSpeed(50.f),
 	m_ShownAreaOffset(1.f),
-	m_IsShownEnable(true)
+	m_IsShownEnable(true),
+	m_IsGoingBack(false),
+	m_IsSwitch(false)
 {}
 
 CCell::CCell(const CCell& Player2D)
@@ -68,7 +70,7 @@ void CCell::GoDown(float DeltaTime)
 	// 계속 내려가기
 	if (m_PosY > m_NewDownPosY)
 	{
-		AddWorldPos(0.f, m_DownMoveSpeed * DeltaTime * -1.f, 0.f);
+		AddWorldPos(0.f, m_MoveSpeed * DeltaTime * -1.f, 0.f);
 
 		float CurYPos = GetWorldPos().y;
 
@@ -115,7 +117,7 @@ void CCell::SwitchMove(float DeltaTime)
 		{
 			MoveDist = m_ClickDestPos.x - WorldPos.x;
 
-			AddWorldPos(MoveDist * DeltaTime * 2.f, 0.f, 0.f);
+			AddWorldPos(MoveDist * DeltaTime * 4.f, 0.f, 0.f);
 
 			// Cell 이동 중 표시
 			m_Board->SetCellsMoving(true);
@@ -124,25 +126,36 @@ void CCell::SwitchMove(float DeltaTime)
 		// 세로 이동
 		else if (m_ClickDestPos.y != WorldPos.y)
 		{
-			MoveDist = m_ClickDestPos.y < WorldPos.y;
+			MoveDist = m_ClickDestPos.y - WorldPos.y;
 
-			AddWorldPos(0.f, MoveDist * DeltaTime * 2.f, 0.f);
+			AddWorldPos(0.f, MoveDist * DeltaTime * 4.f, 0.f);
 
 			// Cell 이동 중 표시
-			m_Board->SetCellsMoving(false);
+			m_Board->SetCellsMoving(true);
 		}
 
 		// 위치에 도달
-		if (m_ClickDestPos.Dist(WorldPos) < 10.f)
+		if (m_ClickDestPos.Dist(WorldPos) < 0.5f)
+		{
+			// 위치 다시 세팅 
+			SetWorldPos(m_ClickDestPos);
+
+			m_IsSwitch = false;
+
+			// Cell 이동 중 false로 
+			m_Board->SetCellsMoving(false);
+
+			// 다시 돌아가고 있는 것이었다면 False로 세팅 
+			if (m_IsGoingBack)
 			{
-				// 위치 다시 세팅 
-				SetWorldPos(m_ClickDestPos);
-
-				m_IsSwitch = false;
-
-				// Cell 이동 중 false로 
-				m_Board->SetCellsMoving(false);
+				m_IsGoingBack = false;
+				m_Board->SetClickCellMoveComplete();
 			}
+			// 다시 돌아가고 있는 것이 아니었다면, 이동 완료 횟수 증가 --> 해당 위치에서 Match Cell 여부를 확인할 것이다.
+			else
+				m_Board->AddClickCellMoveDone();
+
+		}
 	}
 }
 

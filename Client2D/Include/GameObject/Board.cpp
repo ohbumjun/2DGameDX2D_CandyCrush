@@ -10,12 +10,58 @@ CBoard::CBoard() :
 	m_CellsMoving(false),
 	m_MouseClick(Mouse_Click::None),
 	m_FirstClickCell(nullptr),
-	m_SecClickCell(nullptr)
+	m_SecClickCell(nullptr),
+	m_ClickCellsMoveDone(0)
 {
 }
 
 CBoard::~CBoard()
 {
+}
+
+void CBoard::AddClickCellMoveDone()
+{
+	m_ClickCellsMoveDone += 1;
+
+	if (m_ClickCellsMoveDone == 2)
+	{
+		// Match 함수 실행
+		FindMatchCells();
+
+		// 다시 0으로 세팅
+		m_ClickCellsMoveDone = 0;
+	}
+}
+
+void CBoard::FindMatchCells()
+{
+	// Match가 없다면, 기존에 이동시킨 Cell 들을 다시 원래 대로 세팅한다.
+	if (m_FirstClickCell && m_SecClickCell)
+	{
+		// 2개의 Cell 에 새로운 위치 세팅
+		m_FirstClickCell->SetClickDestPos(m_SecClickCell->GetWorldPos());
+		m_SecClickCell->SetClickDestPos(m_FirstClickCell->GetWorldPos());
+
+		// Switch 중이라고 표시하기
+		m_FirstClickCell->SetIsSwitch(true);
+		m_SecClickCell->SetIsSwitch(true);
+
+		// 다시 돌아가는 녀석들이라고 세팅
+		m_FirstClickCell->SetIsGoingBack(true);
+		m_SecClickCell->SetIsGoingBack(true);
+
+		// Cell 이동중 표시하기
+		m_CellsMoving = true;
+	}
+}
+
+void CBoard::SetClickCellMoveComplete()
+{
+	// 다시 마우스 클릭 상태를 되돌려서, 클릭이 가능하게 세팅한다.
+	m_MouseClick = Mouse_Click::None;
+
+	// 이동 여부 False로 다시 세팅
+	m_CellsMoving = false;
 }
 
 bool CBoard::Init()

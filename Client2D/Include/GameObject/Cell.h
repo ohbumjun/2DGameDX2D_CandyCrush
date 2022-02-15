@@ -20,7 +20,7 @@ private:
     int m_Index;
     int m_RowIndex;
     int m_ColIndex;
-    float m_DownMoveSpeed;
+    float m_MoveSpeed;
 private:
     float m_ShownAreaOffset;
     float m_ShownAreaTopYPos;
@@ -28,9 +28,14 @@ private:
 private :
     float m_PosY; // 아래 이동
     float m_NewDownPosY;
-    bool m_IsSwitch; // 마우스 클릭 
+    bool m_IsSwitch; // 마우스 클릭
+    bool m_IsGoingBack;
     Vector3 m_ClickDestPos;
 public :
+    bool IsGoingBack() const
+{
+        return m_IsGoingBack;
+}
     bool IsSwitch() const
 {
         return m_IsSwitch;
@@ -59,9 +64,9 @@ public :
     {
         return m_Index;
     }
-    float GetDownMoveSpeed() const
+    float GetMoveSpeed() const
 {
-        return m_DownMoveSpeed;
+        return m_MoveSpeed;
 }
     CAnimationSequence2DInstance* GetAnimationInstance() const
 {
@@ -71,6 +76,10 @@ public :
     void SetCellType(Cell_Type Type);
     void SetCellState(Cell_State State);
     void SetCurrentAnimation(const std::string& Name);
+    void SetIsGoingBack(bool Back)
+    {
+        m_IsGoingBack = Back;
+    }
 	void SetIsSwitch(bool Switch)
 	{
 	    m_IsSwitch = Switch;
@@ -91,9 +100,9 @@ public :
 {
         m_IsShownEnable = Enable;
 }
-    void SetDownMoveSpeed (float Speed)
+    void SetMoveSpeed (float Speed)
 {
-        m_DownMoveSpeed = Speed;
+        m_MoveSpeed = Speed;
 }
     void SetNewPosY(float NewPosY)
 {

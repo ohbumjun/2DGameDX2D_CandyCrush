@@ -29,6 +29,7 @@ private : // Mouse Click
     Mouse_Click m_MouseClick;
     CCell* m_FirstClickCell;
     CCell* m_SecClickCell;
+    int m_ClickCellsMoveDone;
 public :
     void SetCellsMoving(bool Moving)
 {
@@ -37,8 +38,11 @@ public :
 public :
     virtual bool Init() override;
     bool CreateBoard(int CountRow, int CountCol, float WidthRatio, float HeightRatio, const Vector3& LB);
+    void AddClickCellMoveDone();
+    void SetClickCellMoveComplete();
 private :
     void ClickCell(float DeltaTime);
     void ShuffleRandom();
+    void FindMatchCells();
 };
 
