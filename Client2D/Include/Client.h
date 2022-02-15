@@ -7,3 +7,12 @@ enum class Cell_Type {
 	Yellow,
 	Green
 };
+
+enum class Cell_Start {
+	Normal,
+	RowLine,
+	ColLine,
+	Bag
+	Notice,
+	MirrorBall
+};

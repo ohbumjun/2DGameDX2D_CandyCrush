@@ -98,6 +98,11 @@ CAnimationSequence2DInstance* CResourceManager::LoadAnimationSequence2DInstance(
 	return m_AnimationManager->LoadAnimationSequence2DInstance(FileName, PathName);
 }
 
+CAnimationSequence2DInstance* CResourceManager::FindAnimationInstance(const std::string& Name)
+{
+	return m_AnimationManager->FindAnimationInstance(Name);
+}
+
 CShader* CResourceManager::FindShader(const std::string& Name)
 {
 	return m_ShaderManager->FindShader(Name);

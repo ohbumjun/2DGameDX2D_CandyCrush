@@ -29,7 +29,7 @@ bool CCell::Init()
 		return false;
 
 	
-	CAnimationSequence2DInstance* AnimationInstance = CResourceManager::GetInst()->LoadAnimationSequence2DInstance(TEXT("Blue.anim"));
+	CAnimationSequence2DInstance* AnimationInstance = CResourceManager::GetInst()->FindAnimationInstance("Blue");
 
 	m_Sprite = CreateComponent<CSpriteComponent>("CellSprite");
 	m_Sprite->SetAnimationInstance(AnimationInstance);

@@ -4,6 +4,7 @@
 #include "AnimationSequence2D.h"
 #include "../Texture/Texture.h"
 #include "../Shader/AnimationConstantBuffer.h"
+#include "../../Animation/AnimationSequence2DInstance.h"
 
 class CAnimationManager
 {
@@ -11,12 +12,16 @@ class CAnimationManager
 
 private :
 	std::unordered_map<std::string, CSharedPtr<CAnimationSequence2D>> m_mapSequence2D;
+	std::unordered_map<std::string, CAnimationSequence2DInstance*> m_mapAnimInstance;
 	CAnimationConstantBuffer* m_AnimationCBuffer;
 public :
 	CAnimationConstantBuffer* GetAnimationCBuffer() const
 {
 		return m_AnimationCBuffer;
 }
+private :
+	CAnimationSequence2DInstance* FindAnimationInstance(const std::string& Name);
+	void LoadAnimationInstance();
 private :
 	CAnimationSequence2D* FindAnimationSequence2D(const std::string& Name);
 	bool LoadAnimationSequence2D(const std::string& Name, const std::string& TextureName, const TCHAR* FileName,

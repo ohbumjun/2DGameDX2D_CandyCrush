@@ -47,7 +47,7 @@ public: // ============= Animation ============
 	class CMaterialConstantBuffer* GetMaterialCBuffer() const;
 	class CAnimationSequence2DInstance* LoadAnimationSequence2DInstance(const TCHAR* FileName,
 		const std::string& PathName = ENGINE_ANIMATION_PATH);
-
+	CAnimationSequence2DInstance* FindAnimationInstance(const std::string& Name);
 public : // ============= Shader ============
 	template<typename T>
 	bool CreateShader(const std::string& Name)

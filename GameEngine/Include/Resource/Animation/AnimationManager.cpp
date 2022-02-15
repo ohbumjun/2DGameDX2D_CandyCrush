@@ -10,9 +10,53 @@ CAnimationManager::CAnimationManager()
 CAnimationManager::~CAnimationManager()
 {
 	SAFE_DELETE(m_AnimationCBuffer);
+
+	auto iter = m_mapAnimInstance.begin();
+	auto iterEnd = m_mapAnimInstance.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		SAFE_DELETE(iter->second);
+	}
 }
 
- CAnimationSequence2D* CAnimationManager::FindAnimationSequence2D(const std::string& Name)
+CAnimationSequence2DInstance* CAnimationManager::FindAnimationInstance(const std::string& Name)
+{
+	auto iter = m_mapAnimInstance.find(Name);
+
+	if (iter == m_mapAnimInstance.end())
+		return nullptr;
+
+	return iter->second;
+}
+
+void CAnimationManager::LoadAnimationInstance()
+{
+	// Blue
+	CAnimationSequence2DInstance* AnimationInstance = LoadAnimationSequence2DInstance(TEXT("Blue.anim"));
+	m_mapAnimInstance.insert(std::make_pair("Blue", AnimationInstance));
+
+	// Red
+	AnimationInstance = LoadAnimationSequence2DInstance(TEXT("Red.anim"));
+	m_mapAnimInstance.insert(std::make_pair("Red", AnimationInstance));
+
+	// Green
+	AnimationInstance = LoadAnimationSequence2DInstance(TEXT("Green.anim"));
+	m_mapAnimInstance.insert(std::make_pair("Green", AnimationInstance));
+
+	// Yellow
+	AnimationInstance = LoadAnimationSequence2DInstance(TEXT("Yellow.anim"));
+	m_mapAnimInstance.insert(std::make_pair("Yellow", AnimationInstance));
+
+	// Orange
+	AnimationInstance = LoadAnimationSequence2DInstance(TEXT("Orange.anim"));
+	m_mapAnimInstance.insert(std::make_pair("Orange", AnimationInstance));
+
+
+
+}
+
+CAnimationSequence2D*       CAnimationManager::FindAnimationSequence2D(const std::string& Name)
 {
 	 auto iter = m_mapSequence2D.find(Name);
 
@@ -100,5 +144,7 @@ bool CAnimationManager::Init()
 {
 	m_AnimationCBuffer = new CAnimationConstantBuffer;
 	m_AnimationCBuffer->Init();
+
+	LoadAnimationInstance();
 	return true;
 }
