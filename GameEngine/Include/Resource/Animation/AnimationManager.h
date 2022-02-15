@@ -23,7 +23,7 @@ private :
 	CAnimationSequence2DInstance* FindAnimationInstance(const std::string& Name);
 	void LoadAnimationInstance();
 	class CAnimationSequence2DInstance* LoadAnimationSequence2DInstance(const TCHAR* FileName,
-		const std::string& PathName = ENGINE_ANIMATION_PATH);
+		const std::string& PathName = ENGINE_ANIMATION_PATH);//
 private :
 	CAnimationSequence2D* FindAnimationSequence2D(const std::string& Name);
 	bool LoadAnimationSequence2D(const std::string& Name, const std::string& TextureName, const TCHAR* FileName,
