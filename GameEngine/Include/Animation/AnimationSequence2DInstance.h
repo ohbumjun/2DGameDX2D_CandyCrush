@@ -12,6 +12,7 @@ protected :
 	CAnimationSequence2DInstance(const CAnimationSequence2DInstance& Instance);
 	virtual ~CAnimationSequence2DInstance();
 protected:
+	bool m_IsShared;
 	size_t m_TypeID;
 	std::unordered_map<std::string, CAnimationSequence2DData*> m_mapAnimationSequence2DData;
 	CAnimationSequence2DData* m_CurrentAnimation;
@@ -33,7 +34,15 @@ public :
 {
 		return m_CurrentAnimation->GetSequence2D()->GetFrameCount();
 }
+	bool IsShared() const 
+{
+		return m_IsShared;
+}
 public :
+	void SetIsShared(bool Shared)
+{
+		m_IsShared = Shared;
+}
 	void SetScene(class CScene* Scene)
 {
 		m_Scene = Scene;

@@ -8,7 +8,8 @@
 CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 	m_PlayAnimation(false),
 	m_OwnerComponent(nullptr),
-	m_Scene(nullptr)
+	m_Scene(nullptr),
+	m_IsShared(false)
 {
 	SetTypeID<CAnimationSequence2DInstance>();
 }

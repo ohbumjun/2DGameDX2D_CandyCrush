@@ -24,9 +24,9 @@ bool CPlayer2D::Init()
 	m_Sprite = CreateComponent<CSpriteComponent>("PlayerSprite");
 	SetRootComponent(m_Sprite);
 
-	CAnimationSequence2DInstance* AnimationInstance = CResourceManager::GetInst()->LoadAnimationSequence2DInstance(TEXT("Blue.anim"));
-	m_Sprite->SetAnimationInstance(AnimationInstance);
-	m_Sprite->GetAnimationInstance()->SetCurrentAnimation("RowLine");
+	// CAnimationSequence2DInstance* AnimationInstance = CResourceManager::GetInst()->LoadAnimationSequence2DInstance(TEXT("Blue.anim"));
+	// m_Sprite->SetAnimationInstance(AnimationInstance);
+	// m_Sprite->GetAnimationInstance()->SetCurrentAnimation("RowLine");
 
 	// m_Sprite->CreateAnimationInstance<CPlayerAnimation>();
 

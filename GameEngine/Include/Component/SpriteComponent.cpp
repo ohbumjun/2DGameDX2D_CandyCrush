@@ -30,7 +30,8 @@ CSpriteComponent::CSpriteComponent(const CSpriteComponent& com) :
 
 CSpriteComponent::~CSpriteComponent()
 {
-	SAFE_DELETE(m_Animation);
+	if (!m_Animation->IsShared())
+		SAFE_DELETE(m_Animation);
 }
 
 void CSpriteComponent::SetMaterial(CMaterial* Material)
