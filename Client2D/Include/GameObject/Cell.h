@@ -32,6 +32,10 @@ private :
     bool m_IsGoingBack;
     Vector3 m_ClickDestPos;
 public :
+    float GetNewDownPosY () const
+{
+        return m_NewDownPosY;
+}
     bool IsGoingBack() const
 {
         return m_IsGoingBack;
@@ -92,6 +96,10 @@ public :
 {
         m_PosY = Pos;
 }
+    void SetNewDownPosY (float PosY)
+    {
+        m_NewDownPosY = PosY;
+    }
     void SetShownAreaTopYPos(float Pos)
 {
         m_ShownAreaTopYPos = Pos;
@@ -121,7 +129,7 @@ public :
         m_Sprite->SetOpacity(Opacity);
 }
 private:
-    void SetInitInfo(int Index, int RowIndex, int ColIndex);
+    void SetIndexInfo(int Index, int RowIndex, int ColIndex);
     void GoDown(float DeltaTime);
     void SwitchMove(float DeltaTime);
 public:

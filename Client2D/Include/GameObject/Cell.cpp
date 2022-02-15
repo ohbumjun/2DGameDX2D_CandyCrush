@@ -4,7 +4,7 @@
 #include "Board.h"
 
 CCell::CCell() :
-	m_MoveSpeed(50.f),
+	m_MoveSpeed(200.f),
 	m_ShownAreaOffset(1.f),
 	m_IsShownEnable(true),
 	m_IsGoingBack(false),
@@ -57,12 +57,11 @@ void CCell::SetCurrentAnimation(const std::string& Name)
 	m_Sprite->GetAnimationInstance()->SetCurrentAnimation(Name);
 }
 
-void CCell::SetInitInfo(int Index, int RowIndex, int ColIndex)
+void CCell::SetIndexInfo(int Index, int RowIndex, int ColIndex)
 {
 	m_Index = Index;
 	m_RowIndex = RowIndex;
 	m_ColIndex = ColIndex;
-	m_NewDownPosY = GetWorldPos().y;
 }
 
 void CCell::GoDown(float DeltaTime)
@@ -140,21 +139,17 @@ void CCell::SwitchMove(float DeltaTime)
 			// 위치 다시 세팅 
 			SetWorldPos(m_ClickDestPos);
 
-			m_IsSwitch = false;
-
-			// Cell 이동 중 false로 
-			m_Board->SetCellsMoving(false);
-
 			// 다시 돌아가고 있는 것이었다면 False로 세팅 
 			if (m_IsGoingBack)
 			{
-				m_IsGoingBack = false;
+				// 진짜 아예 Cell 들의 Swith 이동이 끝난 것이다.
 				m_Board->SetClickCellMoveComplete();
 			}
 			// 다시 돌아가고 있는 것이 아니었다면, 이동 완료 횟수 증가 --> 해당 위치에서 Match Cell 여부를 확인할 것이다.
 			else
+			{
 				m_Board->AddClickCellMoveDone();
-
+			}
 		}
 	}
 }
