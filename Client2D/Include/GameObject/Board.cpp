@@ -52,6 +52,7 @@ void CBoard::ReIndexingClickCells()
 	m_FirstClickCell->SetIndexInfo(SecIndex, SecRowIndex, SecColIndex);
 	m_SecClickCell->SetIndexInfo(FirstIndex, FirstRowIndex, FirstColIndex);
 
+	CCell* Temp = m_FirstClickCell
 	m_vecCells[FirstIndex] = m_SecClickCell;
 	m_vecCells[SecIndex]   = m_FirstClickCell;
 
@@ -101,25 +102,58 @@ void CBoard::FindMatchCells()
 	}
 
 	// todo : 움직인 Cell 새로운 Index 세팅
+	// 먼저, 각 Cell 마다, 몇 행을 내려가야 하는가에 대한 정보를 세팅한다.
 	for (int row = 0; row < m_VisualRowCount; row++)
 	{
 		for (int col = 0; col < m_ColCount; col++)
 		{
-			if (m_vecCells[row * m_ColCount + col]->IsActive())
+			// 사라진 녀석들만 고려할 것이다.
+			// 사라진 녀석들 그 위에를 고려할 것이기 때문이다.
+			if (!m_vecCells[row * m_ColCount + col]->IsActive())
+			{
+				// 사라진 Cell 들 그 위를 조사한다.
+				for (int nRow = row + 1; nRow < m_RowCount; nRow++)
+				{
+					// 내려올 Cell
+					CurIndex = nRow * m_ColCount + col;
+
+					// 만약 해당 Cell도 사라진 상태라면 skip
+					if (!m_vecCells[nRow * m_ColCount + col]->IsActive())
+						continue;
+
+					m_vecCellDownNums[CurIndex] += 1;
+				}
+			}
+		}
+	}
+
+	// 여기서 실제로 새로운 Index를 세팅할 것이다.
+	for (int row = 0; row < m_RowCount; row++)
+	{
+		for (int col = 0; col < m_ColCount; col++)
+		{
+			// 내려올 Cell
+			CurIndex = row * m_ColCount + col;
+
+			if (m_vecCellDownNums[CurIndex] == 0)
 				continue;
 
-			// 사라진 Cell 들 그 위를 조사한다.
-			for (int nRow = row + 1; nRow < m_RowCount; nRow++)
-			{
-				// 내려올 Cell
-				CurIndex = nRow * m_ColCount + col;
-				NxtIndex = (nRow - DestroyedCells) * m_ColCount + col;
+			NxtIndex = (row - m_vecCellDownNums[CurIndex]) * m_ColCount + col;
 
-				// todo : 새롭게 vecCells 위치 조정하기
-				m_vecCells[NxtIndex] = m_vecCells[CurIndex];
-				m_vecCells[NxtIndex]->SetIndexInfo(NxtIndex, (nRow - DestroyedCells), col);
-				m_vecCells[CurIndex] = nullptr;
-			}
+			m_vecCells[NxtIndex] = m_vecCells[CurIndex];
+			m_vecCells[NxtIndex]->SetIndexInfo(NxtIndex, (row - m_vecCellDownNums[CurIndex]), col);
+		}
+	}
+
+	//m_vecCellDownNums 정보 초기화
+	for (int row = 0; row < m_RowCount; row++)
+	{
+		for (int col = 0; col < m_ColCount; col++)
+		{
+			// 내려올 Cell
+			CurIndex = row * m_ColCount + col;
+
+			m_vecCellDownNums[CurIndex] = 0;
 		}
 	}
 
@@ -292,8 +326,11 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 	m_VisualRowCount = CountRow;
 	m_IndexOffset = m_ColCount * m_VisualRowCount;
 
-	// m_vecNewCellNums
+	// m_vecNewCellNums : 각 열마다 몇개가 새로 생성되어야 하는가
 	m_vecNewCellNums.resize(CountCol);
+
+	// 각 위치의 Cell 마다, 몇개행이 내려가야 하는가
+	m_vecCellDownNums.resize(m_TotCount);
 
 	// Component 세팅
 	m_Static = CreateComponent<CStaticMeshComponent>("BoardComponent");

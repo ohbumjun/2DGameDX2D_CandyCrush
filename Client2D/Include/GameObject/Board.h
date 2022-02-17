@@ -23,6 +23,8 @@ private :
     int m_VisualRowCount;
     int m_IndexOffset;
     Vector2 m_CellSize;
+private : // 새로운 Cell Index 세팅 --> 각 Cell이 몇개 내려가야 하는지
+    std::vector<int> m_vecCellDownNums;
 private : // Cell 들이 이동중인가
     bool m_CellsMoving;
 private : // Mouse Click
