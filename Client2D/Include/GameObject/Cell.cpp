@@ -143,7 +143,7 @@ void CCell::SwitchMove(float DeltaTime)
 			if (m_IsGoingBack)
 			{
 				// 진짜 아예 Cell 들의 Swith 이동이 끝난 것이다.
-				m_Board->SetClickCellMoveComplete();
+				m_Board->AddClickCellMoveBackDone();
 			}
 			// 다시 돌아가고 있는 것이 아니었다면, 이동 완료 횟수 증가 --> 해당 위치에서 Match Cell 여부를 확인할 것이다.
 			else

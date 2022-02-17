@@ -52,9 +52,13 @@ void CBoard::ReIndexingClickCells()
 	m_FirstClickCell->SetIndexInfo(SecIndex, SecRowIndex, SecColIndex);
 	m_SecClickCell->SetIndexInfo(FirstIndex, FirstRowIndex, FirstColIndex);
 
-	CCell* Temp = m_FirstClickCell
+	// Swap 알고리즘 적용
+	// 반드시, CSharedPtr 형태로 해줘야 한다.
+	// 그렇지 않으면 m_vecCells[FirstIndex] = m_SecClickCell; 에서, m_vecCells[FirstIndex] 의
+	// RefCount가 0이 되어서, 사라져 버린다.
+	CSharedPtr<CCell> Temp = m_vecCells[FirstIndex];
 	m_vecCells[FirstIndex] = m_SecClickCell;
-	m_vecCells[SecIndex]   = m_FirstClickCell;
+	m_vecCells[SecIndex]   = Temp;
 
 	/*
 	CCell* TempCell = m_FirstClickCell;
@@ -74,12 +78,11 @@ void CBoard::FindMatchCells()
 	// 해당 위치의 Cell 사라지게 하기
 	// 이렇게 하면 Scene 내에서는 지워져서 Render는 안되지만
 	// 여전히 m_vecCells 안에는 남아있게 된다.
-	int DestroyedCells = 2;
+	int DestroyedCells = 1;
 
 	m_vecCells[IndexY * m_ColCount + IndexX]->Destroy();
-	m_vecCells[(IndexY + 1) * m_ColCount + IndexX]->Destroy();
 
-	m_vecNewCellNums[IndexX] += 2;
+	m_vecColNewCellNums[IndexX] += DestroyedCells;
 
 	// todo : 실제 해당 Cell 에서도 제거하기
 
@@ -103,6 +106,7 @@ void CBoard::FindMatchCells()
 
 	// todo : 움직인 Cell 새로운 Index 세팅
 	// 먼저, 각 Cell 마다, 몇 행을 내려가야 하는가에 대한 정보를 세팅한다.
+	// m_VisualRowCount 를 고려하는 이유는, 그 아래까지만 Match 되는 Cell 들이 존재하기 때문이다
 	for (int row = 0; row < m_VisualRowCount; row++)
 	{
 		for (int col = 0; col < m_ColCount; col++)
@@ -138,7 +142,8 @@ void CBoard::FindMatchCells()
 			if (m_vecCellDownNums[CurIndex] == 0)
 				continue;
 
-			NxtIndex = (row - m_vecCellDownNums[CurIndex]) * m_ColCount + col;
+			int NRow = (row - m_vecCellDownNums[CurIndex]);
+			NxtIndex = NRow * m_ColCount + col;
 
 			m_vecCells[NxtIndex] = m_vecCells[CurIndex];
 			m_vecCells[NxtIndex]->SetIndexInfo(NxtIndex, (row - m_vecCellDownNums[CurIndex]), col);
@@ -146,15 +151,9 @@ void CBoard::FindMatchCells()
 	}
 
 	//m_vecCellDownNums 정보 초기화
-	for (int row = 0; row < m_RowCount; row++)
+	for (int i = 0; i < m_TotCount; i++)
 	{
-		for (int col = 0; col < m_ColCount; col++)
-		{
-			// 내려올 Cell
-			CurIndex = row * m_ColCount + col;
-
-			m_vecCellDownNums[CurIndex] = 0;
-		}
+		m_vecCellDownNums[i] = 0;
 	}
 
 	// 새로운 Cell 생성
@@ -162,7 +161,7 @@ void CBoard::FindMatchCells()
 
 	// todo : Match가 있었다면 Click Cell 정보를 초기화 해준다.
 	if (Match)
-		SetClickCellMoveComplete();
+		SetFindMatchCellsDone();
 
 	// todo : Match가 없다면, 기존에 이동시킨 Cell 들을 다시 원래 대로 세팅한다.
 	else
@@ -187,6 +186,21 @@ void CBoard::FindMatchCells()
 	}
 }
 
+void CBoard::SetFindMatchCellsDone()
+{
+	// 다시 마우스 클릭 상태를 되돌려서, 클릭이 가능하게 세팅한다.
+	m_MouseClick = Mouse_Click::None;
+
+	// 이동 여부 False로 다시 세팅
+	m_CellsMoving = false;
+
+	ResetClickCellInfos();
+
+	// 클릭한 Cell 들을 nullptr 처리한다
+	m_FirstClickCell = nullptr;
+	m_SecClickCell = nullptr;
+}
+
 void CBoard::CreateNewCells()
 {
 	// todo : 새로운 Cell 생성하기
@@ -198,10 +212,10 @@ void CBoard::CreateNewCells()
 	// 위에서 부터 아래로 세팅할 것이다.
 	for (int col = 0; col < m_ColCount; col++)
 	{
-		if (m_vecNewCellNums[col] == 0)
+		if (m_vecColNewCellNums[col] == 0)
 			continue;
 
-		for (int offset = 0; offset < m_vecNewCellNums[col]; offset++)
+		for (int offset = 0; offset < m_vecColNewCellNums[col]; offset++)
 		{
 			int RowIndex = m_RowCount - 1 - offset;
 			int Index = RowIndex * m_ColCount + col;
@@ -252,11 +266,11 @@ void CBoard::CreateNewCells()
 	// 다시 초기화
 	for (int i = 0; i < m_ColCount; i++)
 	{
-		m_vecNewCellNums[i] = 0;
+		m_vecColNewCellNums[i] = 0;
 	}
 }
 
-void CBoard::SetClickCellMoveComplete() // 정말로 클릭한 Cell 들의 이동이 끝날 때 실행하는 함수
+void CBoard::AddClickCellMoveBackDone() // 정말로 클릭한 Cell 들의 이동이 끝날 때 실행하는 함수
 {
 	m_ClickCellsMoveDone += 1;
 
@@ -326,8 +340,8 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 	m_VisualRowCount = CountRow;
 	m_IndexOffset = m_ColCount * m_VisualRowCount;
 
-	// m_vecNewCellNums : 각 열마다 몇개가 새로 생성되어야 하는가
-	m_vecNewCellNums.resize(CountCol);
+	// m_vecColNewCellNums : 각 열마다 몇개가 새로 생성되어야 하는가
+	m_vecColNewCellNums.resize(CountCol);
 
 	// 각 위치의 Cell 마다, 몇개행이 내려가야 하는가
 	m_vecCellDownNums.resize(m_TotCount);
@@ -460,7 +474,6 @@ void CBoard::ClickCell(float DeltaTime)
 		}
 
 		m_SecClickCell = m_vecCells[IndexY * m_ColCount + IndexX];
-
 
 		Vector3 SecondPos = m_SecClickCell->GetWorldPos();
 		Vector3 FirstPos = m_FirstClickCell->GetWorldPos();

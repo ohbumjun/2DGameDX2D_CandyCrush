@@ -33,7 +33,7 @@ private : // Mouse Click
     CCell* m_SecClickCell;
     int m_ClickCellsMoveDone;
 private : // Cell »ý¼º
-    std::vector<int> m_vecNewCellNums;
+    std::vector<int> m_vecColNewCellNums;
 public :
     void SetCellsMoving(bool Moving)
 {
@@ -46,13 +46,14 @@ public :
 public :
     bool CreateBoard(int CountRow, int CountCol, float WidthRatio, float HeightRatio, const Vector3& LB);
     void AddClickCellMoveDone();
+    void AddClickCellMoveBackDone();
     void ReIndexingClickCells();
-    void SetClickCellMoveComplete();
     void ResetClickCellInfos();
 private :
     void ClickCell(float DeltaTime);
     void ShuffleRandom();
     void FindMatchCells();
+    void SetFindMatchCellsDone();
     void CreateNewCells();
 };
 
