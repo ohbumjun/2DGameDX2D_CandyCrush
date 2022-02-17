@@ -26,7 +26,7 @@ void CBoard::AddClickCellMoveDone()
 	if (m_ClickCellsMoveDone >= 2)
 	{
 		// First, Second Cell 들 Index 다시 세팅
-		ReIndexingClickCells();
+		SwitchClickCellsInfo();
 
 		// Click Cell 정보들 초기화
 		ResetClickCellInfos();
@@ -39,18 +39,23 @@ void CBoard::AddClickCellMoveDone()
 	}
 }
 
-void CBoard::ReIndexingClickCells()
+void CBoard::SwitchClickCellsInfo()
 {
 	int FirstRowIndex = m_FirstClickCell->GetRowIndex();
 	int FirstColIndex  = m_FirstClickCell->GetColIndex();
 	int FirstIndex = FirstRowIndex * m_ColCount + FirstColIndex;
+	// float FirstNewPosY = m_FirstClickCell->GetNewDownPosY();
 
 	int SecRowIndex = m_SecClickCell->GetRowIndex();
 	int SecColIndex = m_SecClickCell->GetColIndex();
 	int SecIndex = SecRowIndex * m_ColCount + SecColIndex;
+	// float SecNewPosY = m_SecClickCell->GetNewDownPosY();
 
 	m_FirstClickCell->SetIndexInfo(SecIndex, SecRowIndex, SecColIndex);
+	// m_FirstClickCell->SetNewDownPosY(SecNewPosY);
+
 	m_SecClickCell->SetIndexInfo(FirstIndex, FirstRowIndex, FirstColIndex);
+	// m_SecClickCell->SetNewDownPosY(FirstNewPosY);
 
 	// Swap 알고리즘 적용
 	// 반드시, CSharedPtr 형태로 해줘야 한다.
@@ -60,11 +65,6 @@ void CBoard::ReIndexingClickCells()
 	m_vecCells[FirstIndex] = m_SecClickCell;
 	m_vecCells[SecIndex]   = Temp;
 
-	/*
-	CCell* TempCell = m_FirstClickCell;
-	m_FirstClickCell = m_SecClickCell;
-	m_SecClickCell = TempCell;
-	*/
 }
 
 void CBoard::FindMatchCells()
@@ -285,7 +285,7 @@ void CBoard::AddClickCellMoveBackDone() // 정말로 클릭한 Cell 들의 이동이 끝날 �
 		m_CellsMoving = false;
 
 		// 다시 First, Second Cell 의 Index를 처리한다.
-		ReIndexingClickCells();
+		SwitchClickCellsInfo();
 
 		ResetClickCellInfos();
 

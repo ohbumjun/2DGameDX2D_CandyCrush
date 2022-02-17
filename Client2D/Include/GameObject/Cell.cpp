@@ -96,8 +96,11 @@ void CCell::GoDown(float DeltaTime)
 		if (CurYPos <= m_NewDownPosY)
 		{
 			Vector3 WorldPos = GetWorldPos();
+
 			SetWorldPos(WorldPos.x, m_NewDownPosY, WorldPos.z);
+
 			m_Board->SetCellsMoving(false);
+
 			m_PosY = m_NewDownPosY;
 		}
 	}
@@ -138,6 +141,9 @@ void CCell::SwitchMove(float DeltaTime)
 		{
 			// 위치 다시 세팅 
 			SetWorldPos(m_ClickDestPos);
+
+			m_PosY = m_ClickDestPos.y;
+			m_NewDownPosY = m_ClickDestPos.y;
 
 			// 다시 돌아가고 있는 것이었다면 False로 세팅 
 			if (m_IsGoingBack)

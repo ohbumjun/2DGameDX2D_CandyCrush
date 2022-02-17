@@ -47,7 +47,7 @@ public :
     bool CreateBoard(int CountRow, int CountCol, float WidthRatio, float HeightRatio, const Vector3& LB);
     void AddClickCellMoveDone();
     void AddClickCellMoveBackDone();
-    void ReIndexingClickCells();
+    void SwitchClickCellsInfo();
     void ResetClickCellInfos();
 private :
     void ClickCell(float DeltaTime);
