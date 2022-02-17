@@ -530,7 +530,7 @@ bool CBoard::Init()
 		return false;
 
 	// Input Callback ¼¼ÆÃ
-	CInput::GetInst()->SetKeyCallback("BoardCellClick", Key_State::Key_Down, this,
+	CInput::GetInst()->SetKeyCallback("BoardCellClick", Key_State::Key_Down, this, //
 		&CBoard::ClickCell);
 
 	m_DRow = { -1, 1, 0, 0 };
