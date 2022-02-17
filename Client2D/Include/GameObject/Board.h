@@ -66,5 +66,6 @@ private :
     void FindMatchCells();
     void SetFindMatchCellsDone();
     void CreateNewCells();
+    void DestroyCells();
 };
 

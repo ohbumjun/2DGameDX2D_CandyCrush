@@ -80,83 +80,7 @@ void CBoard::FindMatchCells()
 	// 해당 위치의 Cell 사라지게 하기
 	// 이렇게 하면 Scene 내에서는 지워져서 Render는 안되지만
 	// 여전히 m_vecCells 안에는 남아있게 된다.
-	int DestroyedCells = 1;
-
-	m_vecCells[IndexY * m_ColCount + IndexX]->Destroy();
-
-	m_vecColNewCellNums[IndexX] += DestroyedCells;
-
-	// todo : 실제 해당 Cell 에서도 제거하기
-
-	// todo : 이 위에 녀석들 New Pos 세팅하기
-	int SelectCellRow = m_vecCells[IndexY * m_ColCount + IndexX]->GetRowIndex();
-	int SelectCellCol = m_vecCells[IndexY * m_ColCount + IndexX]->GetColIndex();
-	int CurIndex = -1, NxtIndex = -1;
-
-	for (int row = SelectCellRow + 1; row < m_RowCount; row++)
-	{
-		// 내려올 Cell
-		CurIndex = row * m_ColCount + SelectCellCol;
-
-		// 현재 위치
-		float CurNewPosY = m_vecCells[CurIndex]->GetNewDownPosY();
-
-		// 내려갈 위치
-		m_vecCells[CurIndex]->SetNewPosY(CurNewPosY - m_CellSize.y * DestroyedCells);
-
-	}
-
-	// todo : 움직인 Cell 새로운 Index 세팅
-	// 먼저, 각 Cell 마다, 몇 행을 내려가야 하는가에 대한 정보를 세팅한다.
-	// m_VisualRowCount 를 고려하는 이유는, 그 아래까지만 Match 되는 Cell 들이 존재하기 때문이다
-	for (int row = 0; row < m_VisualRowCount; row++)
-	{
-		for (int col = 0; col < m_ColCount; col++)
-		{
-			// 사라진 녀석들만 고려할 것이다.
-			// 사라진 녀석들 그 위에를 고려할 것이기 때문이다.
-			if (!m_vecCells[row * m_ColCount + col]->IsActive())
-			{
-				// 사라진 Cell 들 그 위를 조사한다.
-				for (int nRow = row + 1; nRow < m_RowCount; nRow++)
-				{
-					// 내려올 Cell
-					CurIndex = nRow * m_ColCount + col;
-
-					// 만약 해당 Cell도 사라진 상태라면 skip
-					if (!m_vecCells[nRow * m_ColCount + col]->IsActive())
-						continue;
-
-					m_vecCellDownNums[CurIndex] += 1;
-				}
-			}
-		}
-	}
-
-	// 여기서 실제로 새로운 Index를 세팅할 것이다.
-	for (int row = 0; row < m_RowCount; row++)
-	{
-		for (int col = 0; col < m_ColCount; col++)
-		{
-			// 내려올 Cell
-			CurIndex = row * m_ColCount + col;
-
-			if (m_vecCellDownNums[CurIndex] == 0)
-				continue;
-
-			int NRow = (row - m_vecCellDownNums[CurIndex]);
-			NxtIndex = NRow * m_ColCount + col;
-
-			m_vecCells[NxtIndex] = m_vecCells[CurIndex];
-			m_vecCells[NxtIndex]->SetIndexInfo(NxtIndex, (row - m_vecCellDownNums[CurIndex]), col);
-		}
-	}
-
-	//m_vecCellDownNums 정보 초기화
-	for (int i = 0; i < m_TotCount; i++)
-	{
-		m_vecCellDownNums[i] = 0;
-	}
+	DestroyCells();
 
 	// 새로운 Cell 생성
 	CreateNewCells();
@@ -272,6 +196,112 @@ void CBoard::CreateNewCells()
 	}
 }
 
+void CBoard::DestroyCells()
+{
+	// 없앨 Cell들의 Index List에 근거해서 Cell 들을 true로 표시하여
+	// 제거한 녀석이라고 세팅한다.
+	auto iter = m_ListDestroyedCellIndex.begin();
+	auto iterEnd = m_ListDestroyedCellIndex.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		m_vecCellIsMatch[(*iter)] = false;
+	}
+
+	// 초기화 해준다
+	m_ListDestroyedCellIndex.clear();
+
+	for (int Index = 0; Index < m_TotCount; Index++)
+	{
+		// 만약 Match 된 녀석이라면 
+		if (m_vecCellIsMatch[Index]) 
+		{
+			int RowIndex = Index / m_ColCount;
+			int ColIndex = Index % m_ColCount;
+
+			// 화면에서 제거해주고
+			m_vecCells[Index]->Destroy();
+
+			// 해당 Column 에서 생성한 새로운 Cell 개수를 +1 해준다.
+			// 해당 Column 에서 제거된 Cell의 개수를 지정하는 것이다.
+			m_vecColNewCellNums[Index] += 1;
+		}
+	}
+
+	// todo : 이 위에 녀석들 New Pos 세팅하기
+	// 어차피 사라진 녀석들은 화면에 보여지는 영역
+	// 안에서만 사라진 상태로 놓일 것이다. --> m_VisualRowCount
+	int DestroyedIndex = -1;
+
+	for (int row = 0; row < m_VisualRowCount; row++)
+	{
+		for (int col = 0; col < m_ColCount; col++)
+		{
+			DestroyedIndex = row * m_ColCount + col;
+
+			// 사라진 녀석이 아니라면 Skip
+			if (m_vecCells[DestroyedIndex]->IsActive())
+				continue;
+
+			// 제거된 녀석 그 위로 새롭게 NewPosY를 세팅해서 내려오게 해준다.
+			int ChangeTargetIndex = -1;
+
+			// 내려갈 개수 
+			int DownCellNum = m_vecColNewCellNums[col];
+
+			for (int ChangeRow = row + 1; ChangeRow < m_RowCount; ChangeRow++)
+			{
+				// 내려올 Cell
+				ChangeTargetIndex = ChangeRow * m_ColCount + col;
+
+				// 현재 위치
+				float CurNewPosY = m_vecCells[ChangeTargetIndex]->GetNewDownPosY();
+
+				// 내려갈 위치 조정하기 
+				// m_vecCells[ChangeTargetIndex]->SetNewPosY(CurNewPosY - m_CellSize.y * DownCellNum);
+				m_vecCells[ChangeTargetIndex]->SetNewPosY(CurNewPosY - m_CellSize.y);
+
+				// 내려갈 Idx 증가시켜주기
+				m_vecCellDownNums[ChangeTargetIndex] += 1;
+			}
+		}
+	}
+
+	// todo : 움직인 Cell 새로운 Index 세팅
+	// 여기서 실제로 새로운 Index를 세팅할 것이다.
+	int TargetIndex = -1;
+	for (int row = 0; row < m_RowCount; row++)
+	{
+		for (int col = 0; col < m_ColCount; col++)
+		{
+			// 내려올 Cell
+			TargetIndex = row * m_ColCount + col;
+
+			// 만약 해당 Cell 이 내려갈 개수가 없다면 Skip
+			if (m_vecCellDownNums[TargetIndex] == 0)
+				continue;
+
+			int NRow = (row - m_vecCellDownNums[TargetIndex]);
+			TargetIndex = NRow * m_ColCount + col;
+
+			m_vecCells[TargetIndex] = m_vecCells[TargetIndex];
+			m_vecCells[TargetIndex]->SetIndexInfo(TargetIndex, (row - m_vecCellDownNums[TargetIndex]), col);
+		}
+	}
+
+	//m_vecCellDownNums 정보 초기화
+	for (int i = 0; i < m_TotCount; i++)
+	{
+		m_vecCellDownNums[i] = 0;
+	}
+
+	// 각 열에서 사라진 개수도 0으로 초기화 해주기 
+	for (int i = 0; i < m_ColCount; i++)
+	{
+		m_vecColNewCellNums[i] = 0;
+	}
+}
+
 void CBoard::AddClickCellMoveBackDone() // 정말로 클릭한 Cell 들의 이동이 끝날 때 실행하는 함수
 {
 	m_ClickCellsMoveDone += 1;
@@ -324,12 +354,12 @@ bool CBoard::CheckMatch(CCell* FirstClickCell, CCell* SecClickCell)
 	// Match 정보 초기화 해준다.... ? 위랑 아래랑도 동시에 가능한 것 아닌가 ?
 
 	Match_State FCellResult;
-	Match_State FCellRowResult;
-	Match_State FCellColResult;
+	Match_State FCellRowResult = Match_State::NoMatch;
+	Match_State FCellColResult  = Match_State::NoMatch;
 
 	Match_State SCellResult;
-	Match_State SCellRowResult;
-	Match_State SCellColResult;
+	Match_State SCellRowResult = Match_State::NoMatch;
+	Match_State SCellColResult  = Match_State::NoMatch;
 
 	// 1번째 Click Cell에 대한 검사 먼저 하기 
 	FCellRowResult = CheckRowMatch(FirstClickCell);
@@ -348,8 +378,10 @@ bool CBoard::CheckMatch(CCell* FirstClickCell, CCell* SecClickCell)
 	// FirstCell 과 행 혹은 열 평행인지에 따라 다른 로직을 적용
 	// 같은 Row를 또 다시 검사해줄 필요는 없기 때문이다
 	// 다른 Row 혹은 다른 Col을 조사할 것이다.
-	SCellRowResult = CheckRowMatch(FirstClickCell);
-	SCellColResult = CheckColMatch(FirstClickCell);
+	if (FirstClickCell->GetColIndex() != SecClickCell->GetColIndex())
+		SCellRowResult = CheckRowMatch(SecClickCell);
+	if (FirstClickCell->GetRowIndex() != SecClickCell->GetRowIndex())
+		SCellColResult = CheckColMatch(SecClickCell);
 
 	// todo :  Row, Column을 다 확인한 이후
 	// Match_State에 따라서
@@ -357,9 +389,6 @@ bool CBoard::CheckMatch(CCell* FirstClickCell, CCell* SecClickCell)
 	// 최대 녀석으로 세팅한다.
 	SCellResult = (int)SCellColResult > (int)SCellRowResult ? SCellColResult : SCellRowResult;
 
-	// todo :  Row, Column을 다 확인한 이후
-	// Match_State에 따라서
-	// SecondCell 이 이동한 위치에 새로운 Ball Type을 세팅할지 결정한다.
 }
 
 Match_State CBoard::CheckRowMatch(CCell* ClickCell)
@@ -369,8 +398,8 @@ Match_State CBoard::CheckRowMatch(CCell* ClickCell)
 	// 최소 3개까지 조사, 최대 조사 개수는 Row // Col 여부에 따라 달라지게 될 것이다.
 	int MinCheckLength = 3, MaxCheckLength = -1;
 
-	int FRowIndex = ClickCell->GetRowIndex();
-	int FColIndex = ClickCell->GetColIndex();
+	int RowIndex = ClickCell->GetRowIndex();
+	int ColIndex = ClickCell->GetColIndex();
 
 	// 현재 검사하는 Cell의 Index
 	int Index = -1;
@@ -380,22 +409,29 @@ Match_State CBoard::CheckRowMatch(CCell* ClickCell)
 
 	MinCheckLength = 3, MaxCheckLength = m_VisualRowCount;
 
+
 	// 최대 --> 최소 길이 순으로 조사하기
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
 	{
+		// 현재 ClickCell 이 포함된 Row 범위에 대해서만 조사할 것이다.
+		int CheckStartRow = RowIndex - (CheckMatchNum - 1);
+
+		if (CheckStartRow < 0)
+			CheckStartRow = 0;
+
 		// 해당 길이로 아래 --> 위쪽 순서로 조사한다.
-		for (int StRow = 0; StRow <= m_VisualRowCount - MaxCheckLength; StRow++)
+		for (int StRow = CheckStartRow; StRow <= m_VisualRowCount - MaxCheckLength; StRow++)
 		{
 			IsRowMatch = true;
 
-			Index = StRow * m_ColCount + FColIndex;
+			Index = StRow * m_ColCount + ColIndex;
 
 			Cell_Type InitCellType = m_vecCells[Index]->GetCellType();
 
 			// 첫번째와 나머지 녀석들이 같은지 체크한다 + Sliding Window 개념을 적용한다.
 			for (int AddedRow = 1; AddedRow <= CheckMatchNum; AddedRow++)
 			{
-				Index = (StRow + AddedRow) * m_ColCount + FColIndex;
+				Index = (StRow + AddedRow) * m_ColCount + ColIndex;
 				if (m_vecCells[Index]->GetCellType() != InitCellType)
 				{
 					IsRowMatch = false;
@@ -416,7 +452,7 @@ Match_State CBoard::CheckRowMatch(CCell* ClickCell)
 					MatchIndex = MatchedRow * m_ColCount + FColIndex;
 					m_vecCellIsMatch[MatchIndex] = true;
 				*/
-					m_ListDestroyedCellIndex.push_back(MatchedRow * m_ColCount + FColIndex);
+					m_ListDestroyedCellIndex.push_back(MatchedRow * m_ColCount + ColIndex);
 				}
 				break;
 			}
@@ -462,8 +498,14 @@ Match_State CBoard::CheckColMatch(CCell* ClickCell)
 	// 최대 --> 최소 길이 순으로 조사하기
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
 	{
+		// 현재 ClickCell 이 포함된 Col 범위에 대해서만 조사할 것이다.
+		int CheckStartCol = ColIndex - (CheckMatchNum - 1);
+
+		if (CheckStartCol < 0)
+			CheckStartCol = 0;
+
 		// 해당 길이로 왼쪽 --> 오른쪽 순서로 조사한다.
-		for (int StCol = 0; StCol <= m_ColCount - MaxCheckLength; StCol++)
+		for (int StCol = CheckStartCol; StCol <= m_ColCount - MaxCheckLength; StCol++)
 		{
 			IsColMatch = true;
 
