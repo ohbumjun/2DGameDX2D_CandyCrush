@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include "GameObject/GameObject.h"
 #include "Block.h"
 #include "Cell.h"
@@ -23,8 +25,13 @@ private :
     int m_VisualRowCount;
     int m_IndexOffset;
     Vector2 m_CellSize;
+    std::array<int, 4> m_DRow;
+    std::array<int, 4> m_DCol;
 private : // 새로운 Cell Index 세팅 --> 각 Cell이 몇개 내려가야 하는지
     std::vector<int> m_vecCellDownNums;
+private: // 각 Cell 이 현재 Match인지 아닌지
+    std::vector<bool> m_vecCellIsMatch;
+    std::list<int> m_ListDestroyedCellIndex;
 private : // Cell 들이 이동중인가
     bool m_CellsMoving;
 private : // Mouse Click
@@ -49,6 +56,10 @@ public :
     void AddClickCellMoveBackDone();
     void SwitchClickCellsInfo();
     void ResetClickCellInfos();
+private : 
+    bool CheckMatch(CCell* FirstClickCell, CCell* SecClickCell);
+    Match_State CheckRowMatch(CCell* ClickCell);
+    Match_State CheckColMatch(CCell* ClickCell);
 private :
     void ClickCell(float DeltaTime);
     void ShuffleRandom();

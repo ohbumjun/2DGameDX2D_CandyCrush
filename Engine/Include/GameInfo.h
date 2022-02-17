@@ -6,6 +6,7 @@
 #include <Windows.h>
 #include <list>
 #include <vector>
+#include <array>
 #include <unordered_map>
 #include <cstring>
 #include <functional>

@@ -17,6 +17,15 @@ enum class Cell_State {
 	MirrorBall
 };
 
+enum class Match_State {
+	NoMatch,
+	Normal,
+	RowLine,
+	ColLine,
+	Bag,
+	MirrorBall
+};
+
 enum Mouse_Click {
 	None,
 	First,
