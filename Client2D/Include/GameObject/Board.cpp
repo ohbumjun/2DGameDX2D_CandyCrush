@@ -13,7 +13,8 @@ CBoard::CBoard() :
 	m_SecClickCell(nullptr),
 	m_ClickCellsMoveDone(0),
 	m_DRow{-1, 1, 0, 0},
-	m_DCol{0, 0, 1, -1}
+	m_DCol{0, 0, 1, -1},
+	m_IsCheckUpdateNeeded(false)
 {
 }
 
@@ -132,7 +133,7 @@ void CBoard::SetFindMatchCellsDone()
 
 void CBoard::CreateNewCells()
 {
-	// todo : 새로운 Cell 생성하기
+	// todo : 새로운 Cell 생성하기 --> MatchState 적용하기 : ex) m_vecMatchState
 
 	// 최상단 높이
 	Vector3 BoardStartPos = GetWorldPos();
@@ -191,35 +192,24 @@ void CBoard::CreateNewCells()
 
 	// todo : 새롭게 Cell 생성 이후, Random Shuffle
 	// ShuffleRandom();
-	// 다시 초기화
+
+
+	// Column 별 새로 생성할 Cell 개수 다시 초기화
 	for (int i = 0; i < m_ColCount; i++)
 	{
 		m_vecColNewCellNums[i] = 0;
+	}
+
+	// Match State 초기화 해주기
+	for (int i = 0; i < m_TotCount; i++)
+	{
+		m_vecMatchState[i] = Match_State::NoMatch;
 	}
 }
 
 void CBoard::DestroyCells()
 {
-	// 혹시 모르니 m_ListDestroyedCellIndex 에서 unique 한 값만 남긴다.
-	// 이를 위해서는 먼저 정렬 처리를 해줘야 한다.
-	m_ListDestroyedCellIndex.sort();
-
-	m_ListDestroyedCellIndex.unique();
-
-	// 없앨 Cell들의 Index List에 근거해서 Cell 들을 true로 표시하여
-	// 제거한 녀석이라고 세팅한다.
-	auto iter = m_ListDestroyedCellIndex.begin();
-	auto iterEnd = m_ListDestroyedCellIndex.end();
-
-	for (; iter != iterEnd; ++iter)
-	{
-		m_vecCellIsMatch[(*iter)] = true;
-	}
-
-	// 초기화 해준다
-	m_ListDestroyedCellIndex.clear();
-
-	for (int Index = 0; Index < m_TotCount; Index++)
+	for (int Index = 0; Index < m_TotCount / 2; Index++)
 	{
 		// 만약 Match 된 녀석이라면 
 		if (m_vecCellIsMatch[Index]) 
@@ -307,7 +297,7 @@ void CBoard::DestroyCells()
 	}
 
 	// Match 정보도 초기화 해준다
-	for (int i = 0; i < m_TotCount; i++)
+	for (int i = 0; i < m_TotCount / 2; i++)
 	{
 		m_vecCellIsMatch[i] = false;
 	}
@@ -331,12 +321,16 @@ bool CBoard::FindMatchUpdate()
 	if (m_CellsMoving)
 		return false;
 
-	// 현재 클릭 상태라면, X
+	// 현재 이동시킨 Cell 을 처리중이라면
 	if (m_FirstClickCell || m_SecClickCell)
 		return false;
 
+	// Update 할 필요가 없다면 진행하지 않는다.
+	if (!m_IsCheckUpdateNeeded)
+		return false;
+
 	// Match 되는 녀석들이 있는지 확인한다.
-	Match = CheckMatchAfterTwoClick(m_FirstClickCell, m_SecClickCell);
+	Match = CheckMatchUpdate();
 
 	// todo : Scene에서 제거하기
 	// 해당 위치의 Cell 사라지게 하기
@@ -348,6 +342,81 @@ bool CBoard::FindMatchUpdate()
 	CreateNewCells();
 
 	return Match;
+}
+
+bool CBoard::CheckMatchUpdate()
+{
+	// Cell 이 이동중이라면 X
+	if (m_CellsMoving)
+		return false;
+
+	// 현재 클릭 상태라면, X
+	if (m_FirstClickCell || m_SecClickCell)
+		return false;
+
+	// Update 할 필요가 없다면
+	if (!m_IsCheckUpdateNeeded)
+		return false;
+
+	// 새로운 위치로 이동 완료한 Cell 들에 대해서만 조사할 것이다
+	int RowIndex = -1, ColIndex = -1;
+
+	Match_State CellResult;
+	Match_State CellRowResult = Match_State::NoMatch;
+	Match_State CellColResult = Match_State::NoMatch;
+	Match_State CellBagResult = Match_State::NoMatch;
+
+	// 딱 반만 Update 한다.
+	int CheckMaxIndex = m_VisualRowCount * m_ColCount;
+
+	for (int i = 0; i < CheckMaxIndex; i++)
+	{
+		if (m_vecCells[i]->IsPlacedNew() == false)
+			continue;
+
+		RowIndex = m_vecCells[i]->GetRowIndex();
+		ColIndex = m_vecCells[i]->GetColIndex();
+
+		// 1번째 Click Cell에 대한 검사 먼저 하기 
+		CellRowResult = CheckRowMatch(RowIndex, ColIndex, i);
+		CellColResult = CheckColMatch(RowIndex, ColIndex, i);
+
+		// 최대 녀석으로 세팅한다.
+		CellResult = (int)CellColResult > (int)CellRowResult ? CellColResult : CellRowResult;
+
+		// Bag 조합 검사하기
+		CellBagResult = CheckBagMatch(RowIndex, ColIndex, i) ? Match_State::Bag : Match_State::NoMatch;
+
+		// 최종 결과
+		CellResult = (int)CellResult > (int)CellBagResult ? CellResult : CellBagResult;
+
+		// 최종 결과 저장하기
+		m_vecMatchState[i] = CellResult;
+	}
+
+	// 각 Cell 의 최종 결과에 따라서, 새로운 종류의 Cell 을 해당 위치에 생성할지 말지를 결정한다.
+
+	// 모든 Cell 들을 다시 m_IsPlacedNew 를 false 처리한다.
+	for (int i = 0; i < m_TotCount; i++)
+	{
+		m_vecCells[i]->SetPlacedNew(false);
+	}
+
+	// 한번 Update 했으니, 더이상 Update 를 해줄 필요가 없다.
+	m_IsCheckUpdateNeeded = false;
+
+	return true;
+}
+
+bool CBoard::CheckCellsMoving()
+{
+	for (int i = 0; i < m_TotCount; i++)
+	{
+		if (m_vecCells[i]->IsMoving())
+			return true;
+	}
+
+	return false;
 }
 
 void CBoard::AddClickCellMoveBackDone() // 정말로 클릭한 Cell 들의 이동이 끝날 때 실행하는 함수
@@ -411,9 +480,9 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	Match_State SCellColResult   = Match_State::NoMatch;
 	Match_State SCellBagResult  = Match_State::NoMatch;
 
-	// 1번째 Click Cell에 대한 검사 먼저 하기 
-	FCellRowResult = CheckRowMatch(FirstClickCell);
-	FCellColResult = CheckColMatch(FirstClickCell);
+	// 1번째 Click Cell에 대한 검사 먼저 하기
+	FCellRowResult = CheckRowMatch(FirstClickCell->GetRowIndex(), FirstClickCell->GetColIndex(), FirstClickCell->GetIndex());
+	FCellColResult = CheckColMatch(FirstClickCell->GetRowIndex(), FirstClickCell->GetColIndex(), FirstClickCell->GetIndex());
 
 	// todo :  Row, Column을 다 확인한 이후
 	// Match_State에 따라서
@@ -422,7 +491,7 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	FCellResult = (int)FCellColResult > (int)FCellRowResult ? FCellColResult : FCellRowResult;
 
 	// Bag 조합 검사하기
-	FCellBagResult = CheckBagMatch(FirstClickCell) ? Match_State::Bag : Match_State::NoMatch;
+	FCellBagResult = CheckBagMatch(FirstClickCell->GetRowIndex(), FirstClickCell->GetColIndex(), FirstClickCell->GetIndex()) ? Match_State::Bag : Match_State::NoMatch;
 
 	// 최종 결과
 	FCellResult = (int)FCellResult > (int)FCellBagResult ? FCellResult : FCellBagResult;
@@ -433,11 +502,12 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	// 2번째 Cell 기준으로 Match 확인하기
 	// FirstCell 과 행 혹은 열 평행인지에 따라 다른 로직을 적용
 	// 같은 Row를 또 다시 검사해줄 필요는 없기 때문이다
-	// 다른 Row 혹은 다른 Col을 조사할 것이다.
-	if (FirstClickCell->GetColIndex() != SecClickCell->GetColIndex())
-		SCellRowResult = CheckRowMatch(SecClickCell);
-	if (FirstClickCell->GetRowIndex() != SecClickCell->GetRowIndex())
-		SCellColResult = CheckColMatch(SecClickCell);
+	// 다른 Row 혹은 다른 Col을 조사할 것이다. --> 아니다. 둘다 조사는 해야 한다.
+	// if (FirstClickCell->GetColIndex() != SecClickCell->GetColIndex())
+	SCellRowResult = CheckRowMatch(SecClickCell->GetRowIndex(), SecClickCell->GetColIndex(), SecClickCell->GetIndex());
+
+	// if (FirstClickCell->GetRowIndex() != SecClickCell->GetRowIndex())
+	SCellColResult = CheckColMatch(SecClickCell->GetRowIndex(), SecClickCell->GetColIndex(), SecClickCell->GetIndex());
 
 	// todo :  Row, Column을 다 확인한 이후
 	// Match_State에 따라서
@@ -446,7 +516,7 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	SCellResult = (int)SCellColResult > (int)SCellRowResult ? SCellColResult : SCellRowResult;
 
 	// Bag 조합 검사하기
-	SCellBagResult = CheckBagMatch(FirstClickCell) ? Match_State::Bag : Match_State::NoMatch;
+	SCellBagResult = CheckBagMatch(SecClickCell->GetRowIndex(), SecClickCell->GetColIndex(), SecClickCell->GetIndex()) ? Match_State::Bag : Match_State::NoMatch;
 
 	// 최종 결과
 	SCellResult = (int)SCellResult > (int)SCellBagResult ? SCellResult : SCellBagResult;
@@ -456,18 +526,16 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	return Result;
 }
 
-Match_State CBoard::CheckRowMatch(CCell* ClickCell)
+// 세로 검사 ( 위아래 )
+Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index)
 {
-	Match_State RowResultState;
+	Match_State RowResultState = Match_State::NoMatch;
 
 	// 최소 3개까지 조사, 최대 조사 개수는 Row // Col 여부에 따라 달라지게 될 것이다.
 	int MinCheckLength = 3, MaxCheckLength = m_VisualRowCount;
 
-	int RowIndex = ClickCell->GetRowIndex();
-	int ColIndex = ClickCell->GetColIndex();
-
-	// 현재 검사하는 Cell의 Index
-	int Index = -1;
+	// Index : 현재 검사하는 Cell의 Index
+	int CurIndex = -1;
 
 	// 1번째 : Row 검사하기 ---------------------------------------------------------------------------
 	bool IsRowMatch = true;
@@ -484,17 +552,21 @@ Match_State CBoard::CheckRowMatch(CCell* ClickCell)
 		// 해당 길이로 아래 --> 위쪽 순서로 조사한다.
 		for (int StRow = CheckStartRow; StRow <= CheckStartRow + (CheckMatchNum - 1); StRow++)
 		{
+			// 보여지는 영역을 제외한, 그 위에 존재하는 Cell 과의 Match를 조사한다면 더이상 비교를 진행하지 않는다.
+			if (CheckStartRow + (CheckMatchNum - 1) >= m_VisualRowCount)
+				continue;
+
 			IsRowMatch = true;
 
-			Index = StRow * m_ColCount + ColIndex;
+			CurIndex = StRow * m_ColCount + ColIndex;
 
-			Cell_Type InitCellType = m_vecCells[Index]->GetCellType();
+			Cell_Type InitCellType = m_vecCells[CurIndex]->GetCellType();
 
 			// 첫번째와 나머지 녀석들이 같은지 체크한다 + Sliding Window 개념을 적용한다.
 			for (int AddedRow = 1; AddedRow <= (CheckMatchNum - 1); AddedRow++)
 			{
-				Index = (StRow + AddedRow) * m_ColCount + ColIndex;
-				if (m_vecCells[Index]->GetCellType() != InitCellType)
+				CurIndex = (StRow + AddedRow) * m_ColCount + ColIndex;
+				if (m_vecCells[CurIndex]->GetCellType() != InitCellType)
 				{
 					IsRowMatch = false;
 					break;
@@ -513,7 +585,8 @@ Match_State CBoard::CheckRowMatch(CCell* ClickCell)
 					MatchIndex = MatchedRow * m_ColCount + FColIndex;
 					m_vecCellIsMatch[MatchIndex] = true;
 				*/
-					m_ListDestroyedCellIndex.push_back(MatchedRow * m_ColCount + ColIndex);
+					if (!m_vecCellIsMatch[MatchedRow * m_ColCount + ColIndex])
+						m_vecCellIsMatch[MatchedRow * m_ColCount + ColIndex] = true;
 				}
 
 				break;
@@ -542,20 +615,18 @@ Match_State CBoard::CheckRowMatch(CCell* ClickCell)
 	return RowResultState;
 }
 
-Match_State CBoard::CheckColMatch(CCell* ClickCell)
+// 가로 검사 ( 왼쪽 오른쪽 )
+Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index)
 {
 	Match_State ColResultState;
 
 	// 현재 검사하는 Cell의 Index
-	int Index = -1;
+	int CurIndex = -1;
 
 	bool IsColMatch = true;
 
 	// 최소 3개까지 조사, 최대 조사 개수는 Row // Col 여부에 따라 달라지게 될 것이다.
 	int MinCheckLength = 3, MaxCheckLength = m_ColCount;
-
-	int RowIndex = ClickCell->GetRowIndex();
-	int ColIndex = ClickCell->GetColIndex();
 
 	// 최대 --> 최소 길이 순으로 조사하기
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
@@ -565,22 +636,22 @@ Match_State CBoard::CheckColMatch(CCell* ClickCell)
 
 		if (CheckStartCol < 0)
 			CheckStartCol = 0;
-
+		
 		// 해당 길이로 왼쪽 --> 오른쪽 순서로 조사한다.
 		for (int StCol = CheckStartCol; StCol <= (CheckStartCol + CheckMatchNum - 1); StCol++)
 		{
 			IsColMatch = true;
 
-			Index = RowIndex * m_ColCount + StCol;
+			CurIndex = RowIndex * m_ColCount + StCol;
 
-			Cell_Type InitCellType = m_vecCells[Index]->GetCellType();
+			Cell_Type InitCellType = m_vecCells[CurIndex]->GetCellType();
 
 			// 첫번째와 나머지 녀석들이 같은지 체크한다 + Sliding Window 개념을 적용한다.
 			for (int AddedCol = 1; AddedCol <= CheckMatchNum - 1; AddedCol++)
 			{
-				Index = RowIndex * m_ColCount + (StCol + AddedCol);
+				CurIndex = RowIndex * m_ColCount + (StCol + AddedCol);
 
-				if (m_vecCells[Index]->GetCellType() != InitCellType)
+				if (m_vecCells[CurIndex]->GetCellType() != InitCellType)
 				{
 					IsColMatch = false;
 					break;
@@ -596,11 +667,8 @@ Match_State CBoard::CheckColMatch(CCell* ClickCell)
 
 				for (int MatchedCol = StartCol; MatchedCol <= EndCol; MatchedCol++)
 				{
-					/*
-					int MatchIndex = FRowIndex * m_ColCount + MatchedCol;
-					m_vecCellIsMatch[MatchIndex] = true;
-					*/
-					m_ListDestroyedCellIndex.push_back(RowIndex * m_ColCount + MatchedCol);
+					if (!m_vecCellIsMatch[RowIndex * m_ColCount + MatchedCol])
+						m_vecCellIsMatch[RowIndex * m_ColCount + MatchedCol] = true;
 				}
 				break;
 			}
@@ -628,26 +696,23 @@ Match_State CBoard::CheckColMatch(CCell* ClickCell)
 	return ColResultState;
 }
 
-bool CBoard::CheckBagMatch(CCell* ClickCell)
+bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index)
 {
-	bool BoolUpRight = CheckBagUpRightMatch(ClickCell);
-	bool BoolDownRight = CheckBagDownRightMatch(ClickCell);
-	bool BoolUpLeft = CheckBagUpLeftMatch(ClickCell);
-	bool BoolDownLeft = CheckBagDownLeftMatch(ClickCell);
-	bool BoolCenterRight = CheckBagCenterRightMatch(ClickCell);
-	bool BoolCenterLeft = CheckBagCenterLeftMatch(ClickCell);
-	bool BoolCenterDown = CheckBagCenterDownMatch(ClickCell);///
-	bool BoolCenterUp = CheckBagCenterUpMatch(ClickCell);
+	bool BoolUpRight = CheckBagUpRightMatch(RowIndex, ColIndex, Index);
+	bool BoolDownRight = CheckBagDownRightMatch(RowIndex, ColIndex, Index);
+	bool BoolUpLeft = CheckBagUpLeftMatch(RowIndex, ColIndex, Index);
+	bool BoolDownLeft = CheckBagDownLeftMatch(RowIndex, ColIndex, Index);
+	bool BoolCenterRight = CheckBagCenterRightMatch(RowIndex, ColIndex, Index);
+	bool BoolCenterLeft = CheckBagCenterLeftMatch(RowIndex, ColIndex, Index);
+	bool BoolCenterDown = CheckBagCenterDownMatch(RowIndex, ColIndex, Index);
+	bool BoolCenterUp = CheckBagCenterUpMatch(RowIndex, ColIndex, Index);
 
 	return BoolUpRight || BoolDownRight || BoolUpLeft || BoolDownLeft ||
 		BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
 }
 
-bool CBoard::CheckBagUpRightMatch(CCell* ClickCell)
+bool CBoard::CheckBagUpRightMatch(int RowIdx, int ColIdx, int Index)
 {
-	int RowIdx = ClickCell->GetRowIndex();
-	int ColIdx = ClickCell->GetColIndex();
-
 	// 오른쪽 3개를 검사해야 하는데 범위를 벗어났다면 X
 	if (ColIdx + 2 >= m_ColCount)
 		return false;
@@ -694,17 +759,16 @@ bool CBoard::CheckBagUpRightMatch(CCell* ClickCell)
 
 		for (size_t i = 0; i < Size; i++)
 		{
-			m_ListDestroyedCellIndex.push_back(MatchIdxList[i]);
+			if (!m_vecCellIsMatch[MatchIdxList[i]])
+				m_vecCellIsMatch[MatchIdxList[i]] = true;
 		}
 	}
 
 	return true;
 }
 
-bool CBoard::CheckBagDownRightMatch(CCell* ClickCell)
+bool CBoard::CheckBagDownRightMatch(int RowIdx, int ColIdx, int Index)
 {
-	int RowIdx = ClickCell->GetRowIndex();
-	int ColIdx = ClickCell->GetColIndex();
 
 	// 오른쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
 	if (ColIdx + 2 >= m_ColCount)
@@ -752,18 +816,16 @@ bool CBoard::CheckBagDownRightMatch(CCell* ClickCell)
 
 		for (size_t i = 0; i < Size; i++)
 		{
-			m_ListDestroyedCellIndex.push_back(MatchIdxList[i]);
+			if (!m_vecCellIsMatch[MatchIdxList[i]])
+				m_vecCellIsMatch[MatchIdxList[i]] = true;
 		}
 	}
 
 	return true;
 }
 
-bool CBoard::CheckBagUpLeftMatch(CCell* ClickCell)
+bool CBoard::CheckBagUpLeftMatch(int RowIdx, int ColIdx, int Index)
 {
-	int RowIdx = ClickCell->GetRowIndex();
-	int ColIdx = ClickCell->GetColIndex();
-
 	// 왼쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
 	if (ColIdx - 2 < 0)
 		return false;
@@ -810,18 +872,16 @@ bool CBoard::CheckBagUpLeftMatch(CCell* ClickCell)
 
 		for (size_t i = 0; i < Size; i++)
 		{
-			m_ListDestroyedCellIndex.push_back(MatchIdxList[i]);
+			if (!m_vecCellIsMatch[MatchIdxList[i]])
+				m_vecCellIsMatch[MatchIdxList[i]] = true;
 		}
 	}
 
 	return true;
 }
 
-bool CBoard::CheckBagDownLeftMatch(CCell* ClickCell)
+bool CBoard::CheckBagDownLeftMatch(int RowIdx, int ColIdx, int Index)
 {
-	int RowIdx = ClickCell->GetRowIndex();
-	int ColIdx = ClickCell->GetColIndex();
-
 	// 왼쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
 	if (ColIdx - 2 < 0)
 		return false;
@@ -868,18 +928,16 @@ bool CBoard::CheckBagDownLeftMatch(CCell* ClickCell)
 
 		for (size_t i = 0; i < Size; i++)
 		{
-			m_ListDestroyedCellIndex.push_back(MatchIdxList[i]);
+			if (!m_vecCellIsMatch[MatchIdxList[i]])
+				m_vecCellIsMatch[MatchIdxList[i]] = true;
 		}
 	}
 
 	return true;
 }
 
-bool CBoard::CheckBagCenterRightMatch(CCell* ClickCell)
+bool CBoard::CheckBagCenterRightMatch(int RowIdx, int ColIdx, int Index)
 {
-	int RowIdx = ClickCell->GetRowIndex();
-	int ColIdx = ClickCell->GetColIndex();
-
 	// 오른쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
 	if (ColIdx + 2 >= m_ColCount)
 		return false;
@@ -934,18 +992,16 @@ bool CBoard::CheckBagCenterRightMatch(CCell* ClickCell)
 
 		for (size_t i = 0; i < Size; i++)
 		{
-			m_ListDestroyedCellIndex.push_back(MatchIdxList[i]);
+			if (!m_vecCellIsMatch[MatchIdxList[i]])
+				m_vecCellIsMatch[MatchIdxList[i]] = true;
 		}
 	}
 
 	return true;
 }
 
-bool CBoard::CheckBagCenterLeftMatch(CCell* ClickCell)
+bool CBoard::CheckBagCenterLeftMatch(int RowIdx, int ColIdx, int Index)
 {
-	int RowIdx = ClickCell->GetRowIndex();
-	int ColIdx = ClickCell->GetColIndex();
-
 	// 왼쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
 	if (ColIdx - 2 < 0)
 		return false;
@@ -1000,18 +1056,16 @@ bool CBoard::CheckBagCenterLeftMatch(CCell* ClickCell)
 
 		for (size_t i = 0; i < Size; i++)
 		{
-			m_ListDestroyedCellIndex.push_back(MatchIdxList[i]);
+			if (!m_vecCellIsMatch[MatchIdxList[i]])
+				m_vecCellIsMatch[MatchIdxList[i]] = true;
 		}
 	}
 
 	return true;
 }
 
-bool CBoard::CheckBagCenterDownMatch(CCell* ClickCell)
+bool CBoard::CheckBagCenterDownMatch(int RowIdx, int ColIdx, int Index)
 {
-	int RowIdx = ClickCell->GetRowIndex();
-	int ColIdx = ClickCell->GetColIndex();
-
 	// 아래 2개를 검사해야 하는데 범위를 벗어났다면 X
 	if (RowIdx - 2 < 0)
 		return false;
@@ -1066,18 +1120,16 @@ bool CBoard::CheckBagCenterDownMatch(CCell* ClickCell)
 
 		for (size_t i = 0; i < Size; i++)
 		{
-			m_ListDestroyedCellIndex.push_back(MatchIdxList[i]);
+			if (!m_vecCellIsMatch[MatchIdxList[i]])
+				m_vecCellIsMatch[MatchIdxList[i]] = true;
 		}
 	}
 
 	return true;
 }
 
-bool CBoard::CheckBagCenterUpMatch(CCell* ClickCell)
+bool CBoard::CheckBagCenterUpMatch(int RowIdx, int ColIdx, int Index)
 {
-	int RowIdx = ClickCell->GetRowIndex();
-	int ColIdx = ClickCell->GetColIndex();
-
 	// 위 2개를 검사해야 하는데 범위를 벗어났다면 X
 	if (RowIdx + 2 >= m_VisualRowCount)
 		return false;
@@ -1132,7 +1184,8 @@ bool CBoard::CheckBagCenterUpMatch(CCell* ClickCell)
 
 		for (size_t i = 0; i < Size; i++)
 		{
-			m_ListDestroyedCellIndex.push_back(MatchIdxList[i]);
+			if (!m_vecCellIsMatch[MatchIdxList[i]])
+				m_vecCellIsMatch[MatchIdxList[i]] = true;
 		}
 	}
 
@@ -1157,6 +1210,8 @@ bool CBoard::Init()
 void CBoard::Update(float DeltaTime)
 {
 	CGameObject::Update(DeltaTime);
+
+	m_CellsMoving = CheckCellsMoving();
 
 	// CreateNewCells();
 
@@ -1183,9 +1238,13 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 	// 각 위치의 Cell 마다, 몇개행이 내려가야 하는가
 	m_vecCellDownNums.resize(m_TotCount);
 
+	// 각 Cell 의 Match Type
+	m_vecMatchState.resize(m_TotCount);
+
 	// 각 Cell의 Match 여부
-	m_vecCellIsMatch.resize(m_TotCount);
-	for (int i = 0; i < m_TotCount; i++)
+	m_vecCellIsMatch.resize(m_TotCount / 2);
+
+	for (int i = 0; i < m_TotCount / 2; i++)
 	{
 		m_vecCellIsMatch[i] = false;
 	}
@@ -1336,6 +1395,9 @@ void CBoard::ClickCell(float DeltaTime)
 
 		// Cell 이동중 표시하기
 		m_CellsMoving = true;
+
+		// 실시간 CheckUpdate 표시하기
+		m_IsCheckUpdateNeeded = true;
 	}
 }
 

@@ -23,6 +23,10 @@ public :
 	int Run();
 	void Logic();
 public :
+	HWND GetWindowHandle () const
+{
+		return m_hWnd;
+}
 	Engine_Space GetEngineSpace() const
 {
 		return m_Space;

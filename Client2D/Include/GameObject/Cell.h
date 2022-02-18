@@ -29,9 +29,19 @@ private :
     float m_PosY; // 아래 이동
     float m_NewDownPosY;
     bool m_IsSwitch; // 마우스 클릭
-    bool m_IsGoingBack;
+    bool m_IsGoingBack; // 다시 되돌아가는지
+    bool m_IsPlacedNew; // 새로운 위치로 이동한 녀석인지
+    bool m_IsMoving;
     Vector3 m_ClickDestPos;
 public :
+    bool IsMoving () const
+{
+        return m_IsMoving;
+}
+    bool IsPlacedNew() const
+{
+        return m_IsPlacedNew;
+}
     float GetNewDownPosY () const
 {
         return m_NewDownPosY;
@@ -80,6 +90,11 @@ public :
     void SetCellType(Cell_Type Type);
     void SetCellState(Cell_State State);
     void SetCurrentAnimation(const std::string& Name);
+public :
+    void SetPlacedNew (bool New)
+{
+        m_IsPlacedNew = New;
+}
     void SetIsGoingBack(bool Back)
     {
         m_IsGoingBack = Back;

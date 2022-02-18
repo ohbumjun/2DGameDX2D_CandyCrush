@@ -74,7 +74,8 @@ void CCell::GoDown(float DeltaTime)
 		float CurYPos = GetWorldPos().y;
 
 		// 이동중이라고 Board에 표시하기
-		m_Board->SetCellsMoving(true);
+		// m_Board->SetCellsMoving(true);
+		m_IsMoving = true;
 
 		// 만약 안보이는 위치였다가 보이는 위치로 들어가게 된다면
 		if (!m_IsShownEnable)
@@ -92,6 +93,8 @@ void CCell::GoDown(float DeltaTime)
 			}
 		}
 
+		m_IsPlacedNew = false;
+
 		// 새로운 위치에 도달했다면 
 		if (CurYPos <= m_NewDownPosY)
 		{
@@ -99,9 +102,14 @@ void CCell::GoDown(float DeltaTime)
 
 			SetWorldPos(WorldPos.x, m_NewDownPosY, WorldPos.z);
 
-			m_Board->SetCellsMoving(false);
+			// m_Board->SetCellsMoving(false);
+			m_IsMoving = false;
 
 			m_PosY = m_NewDownPosY;
+
+			// 해단 녀석에 대해서만, 이제 Board Update 에서 Match 여부를 조사하게 될 것이다.
+			if (!m_IsPlacedNew)
+				m_IsPlacedNew = true;
 		}
 	}
 }

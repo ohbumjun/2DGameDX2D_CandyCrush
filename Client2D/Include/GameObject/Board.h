@@ -27,20 +27,24 @@ private :
     Vector2 m_CellSize;
     std::array<int, 4> m_DRow;
     std::array<int, 4> m_DCol;
-private : // 새로운 Cell Index 세팅 --> 각 Cell이 몇개 내려가야 하는지
+	// 새로운 Cell Index 세팅 --> 각 Cell이 몇개 내려가야 하는지
     std::vector<int> m_vecCellDownNums;
-private: // 각 Cell 이 현재 Match인지 아닌지
+	// 각 Cell 이 현재 Match인지 아닌지
     std::vector<bool> m_vecCellIsMatch;
     std::list<int> m_ListDestroyedCellIndex;
-private : // Cell 들이 이동중인가
+	// Cell 들이 이동중인가
     bool m_CellsMoving;
-private : // Mouse Click
+	// Mouse Click
     Mouse_Click m_MouseClick;
     CCell* m_FirstClickCell;
     CCell* m_SecClickCell;
     int m_ClickCellsMoveDone;
-private : // Cell 생성
+	// Column별 새롭게 생성한 Cell 개수
     std::vector<int> m_vecColNewCellNums;
+    // 각 Cell의 Match Type
+    std::vector<Match_State> m_vecMatchState;
+    // 실시간 Match Update 를 해야 하는가 --> Cell 들을 클릭해서 이동시킬 때 true로 세팅 --> 다 하고 나서 다시 false
+    bool m_IsCheckUpdateNeeded;
 public :
     void SetCellsMoving(bool Moving)
 {
@@ -58,18 +62,18 @@ public :
     void ResetClickCellInfos();
 private : 
     bool CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell);
-    Match_State CheckRowMatch(CCell* ClickCell);
-    Match_State CheckColMatch(CCell* ClickCell);
+    Match_State CheckRowMatch(int RowIndex, int ColIndex, int Index);
+    Match_State CheckColMatch(int RowIndex, int ColIndex, int Index);
 private :
-    bool CheckBagMatch(CCell* ClickCell);
-    bool CheckBagUpRightMatch(CCell* ClickCell);
-    bool CheckBagDownRightMatch(CCell* ClickCell);
-    bool CheckBagUpLeftMatch(CCell* ClickCell);
-    bool CheckBagDownLeftMatch(CCell* ClickCell);
-    bool CheckBagCenterRightMatch(CCell* ClickCell);
-    bool CheckBagCenterLeftMatch(CCell* ClickCell);
-    bool CheckBagCenterDownMatch(CCell* ClickCell);
-    bool CheckBagCenterUpMatch(CCell* ClickCell);
+    bool CheckBagMatch(int RowIndex, int ColIndex, int Index);
+    bool CheckBagUpRightMatch(int RowIndex, int ColIndex, int Index);
+    bool CheckBagDownRightMatch(int RowIndex, int ColIndex, int Index);
+    bool CheckBagUpLeftMatch(int RowIndex, int ColIndex, int Index);
+    bool CheckBagDownLeftMatch(int RowIndex, int ColIndex, int Index);
+    bool CheckBagCenterRightMatch(int RowIndex, int ColIndex, int Index);
+    bool CheckBagCenterLeftMatch(int RowIndex, int ColIndex, int Index);
+    bool CheckBagCenterDownMatch(int RowIndex, int ColIndex, int Index);
+    bool CheckBagCenterUpMatch(int RowIndex, int ColIndex, int Index);
 private :
     void ClickCell(float DeltaTime);
     void ShuffleRandom();
@@ -77,6 +81,8 @@ private :
     void SetFindMatchCellsDone();
     void CreateNewCells();
     void DestroyCells();
-    bool FindMatchUpdate(); // 실시간으로 Match 여부 검사하기 
+    bool FindMatchUpdate(); // 실시간으로 Match 여부 검사하기
+    bool CheckMatchUpdate();
+    bool CheckCellsMoving();
 };
 
