@@ -577,7 +577,7 @@ bool CBoard::CheckBagMatch(CCell* ClickCell)
 	bool BoolUpRight = CheckBagUpRightMatch(ClickCell);
 	bool BoolDownRight = CheckBagDownRightMatch(ClickCell); //
 	bool BoolUpLeft =  CheckBagUpLeftMatch(ClickCell);//
-	bool BoolDownLeft = CheckBagDownLeftMatch(ClickCell);
+	bool BoolDownLeft = CheckBagDownLeftMatch(ClickCell);//
 	bool CheckBagCenterRightMatch(CCell * ClickCell);
 	bool CheckBagCenterLeftMatch(CCell * ClickCell);
 	bool CheckBagCenterDownMatch(CCell * ClickCell);
