@@ -179,6 +179,9 @@ void CBoard::CreateNewCells()
 			// 안보인다는 멤버 변수 설정
 			Cell->SetShowEnable(false);
 
+			// 보여지는 영역 경계선 설정하기
+			Cell->SetShownAreaTopYPos(BoardStartPos.y + m_CellSize.y * m_VisualRowCount);
+
 			// WorldY Pos 세팅하기
 			Cell->SetWorldYPos(TopYPos - m_CellSize.y * offset);
 
@@ -540,32 +543,47 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index)
 	// 1번째 : Row 검사하기 ---------------------------------------------------------------------------
 	bool IsRowMatch = true;
 
+	int CheckStartRow = -1, CheckEndRow = -1;
+
 	// 최대 --> 최소 길이 순으로 조사하기
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
 	{
-		// 현재 ClickCell 이 포함된 Row 범위에 대해서만 조사할 것이다.
-		int CheckStartRow = RowIndex - (CheckMatchNum - 1);
-
-		if (CheckStartRow < 0)
-			CheckStartRow = 0;
-
-		// 해당 길이로 아래 --> 위쪽 순서로 조사한다.
-		for (int StRow = CheckStartRow; StRow <= CheckStartRow + (CheckMatchNum - 1); StRow++)
+		for (int StartRowOffset = 0; StartRowOffset <= CheckMatchNum - 1; StartRowOffset ++)
 		{
-			// 보여지는 영역을 제외한, 그 위에 존재하는 Cell 과의 Match를 조사한다면 더이상 비교를 진행하지 않는다.
-			if (CheckStartRow + (CheckMatchNum - 1) >= m_VisualRowCount)
-				continue;
-
 			IsRowMatch = true;
 
-			CurIndex = StRow * m_ColCount + ColIndex;
+			// 현재 ClickCell 이 포함된 Row 범위에 대해서만 조사할 것이다.
+			// 아래 범위에서, 위로 올라가면서 검사 시작 Row 를 설정해줄 것이다.
+			CheckStartRow = (RowIndex + StartRowOffset) - (CheckMatchNum - 1);
 
-			Cell_Type InitCellType = m_vecCells[CurIndex]->GetCellType();
-
-			// 첫번째와 나머지 녀석들이 같은지 체크한다 + Sliding Window 개념을 적용한다.
-			for (int AddedRow = 1; AddedRow <= (CheckMatchNum - 1); AddedRow++)
+			// 아래로 범위가 벗어난 경우
+			if (CheckStartRow < 0)
 			{
-				CurIndex = (StRow + AddedRow) * m_ColCount + ColIndex;
+				IsRowMatch = true;
+				continue;
+			}
+
+			// 위로 범위가 벗어난 경우
+			CheckEndRow = CheckStartRow + (CheckMatchNum - 1);
+
+			if (CheckEndRow >= m_VisualRowCount)
+			{
+				IsRowMatch = false;
+				// continue;
+				// 어차피 여기예 계속 걸릴 것이므로 ( 왜냐하면, CheckEndRow는 계속 증가 ) --> continue 가 아니라 break 세팅
+				break;
+			}
+
+
+			Cell_Type InitCellType = m_vecCells[CheckStartRow * m_ColCount + ColIndex]->GetCellType();
+
+			// Match 가 있는지 조사한다.
+			// 해당 길이로 아래 --> 위쪽 순서로 조사한다.
+			for (int StRow = CheckStartRow + 1; StRow <= CheckEndRow; StRow++)
+			{
+				// 첫번째와 나머지 녀석들이 같은지 체크한다 + Sliding Window 개념을 적용한다.
+				CurIndex = StRow * m_ColCount + ColIndex;
+
 				if (m_vecCells[CurIndex]->GetCellType() != InitCellType)
 				{
 					IsRowMatch = false;
@@ -573,23 +591,18 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index)
 				}
 			}
 
-			// 만약 해당 Row (세로)가 Match 라면, 해당 Cell 들을 Match 상태로 바꿔준다.
+			// 만약 해당 Row(세로)가 Match 라면, 해당 Cell 들을 Match 상태로 바꿔준다.
 			// 그리고 For 문을 나간다.
 			if (IsRowMatch)
 			{
-				int StartRow = StRow;
-				int EndRow = StRow + CheckMatchNum - 1;
-				for (int MatchedRow = StartRow; MatchedRow <= EndRow; MatchedRow++)
+				for (int MatchedRow = CheckStartRow; MatchedRow <= CheckEndRow; MatchedRow++)
 				{
-				/*
-					MatchIndex = MatchedRow * m_ColCount + FColIndex;
-					m_vecCellIsMatch[MatchIndex] = true;
-				*/
 					if (!m_vecCellIsMatch[MatchedRow * m_ColCount + ColIndex])
 						m_vecCellIsMatch[MatchedRow * m_ColCount + ColIndex] = true;
 				}
 
-				break;
+				// For 문을 빠져나간다.
+				break; 
 			}
 		}
 
@@ -604,9 +617,12 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index)
 			else if (CheckMatchNum >= 5)
 				RowResultState = Match_State::MirrorBall;
 
-			// For 문 나가기 
+			// For 문 나가기 --> 제일 높은 숫자부터, 아래숫자로 검사하는 것이기 때문이다.
 			break;
 		}
+
+		if (IsRowMatch)
+			break;
 	}
 
 	if (!IsRowMatch)
@@ -628,28 +644,43 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index)
 	// 최소 3개까지 조사, 최대 조사 개수는 Row // Col 여부에 따라 달라지게 될 것이다.
 	int MinCheckLength = 3, MaxCheckLength = m_ColCount;
 
+	int CheckStartCol = -1, CheckEndCol = -1;
+
 	// 최대 --> 최소 길이 순으로 조사하기
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
 	{
-		// 현재 ClickCell 이 포함된 Col 범위에 대해서만 조사할 것이다.
-		int CheckStartCol = ColIndex - (CheckMatchNum - 1);
-
-		if (CheckStartCol < 0)
-			CheckStartCol = 0;
-		
-		// 해당 길이로 왼쪽 --> 오른쪽 순서로 조사한다.
-		for (int StCol = CheckStartCol; StCol <= (CheckStartCol + CheckMatchNum - 1); StCol++)
+		for (int StartColOffset = 0; StartColOffset <= CheckMatchNum - 1; StartColOffset++)
 		{
 			IsColMatch = true;
 
-			CurIndex = RowIndex * m_ColCount + StCol;
+			// 현재 ClickCell 이 포함된 Row 범위에 대해서만 조사할 것이다.
+			CheckStartCol = (ColIndex + StartColOffset) - (CheckMatchNum - 1);
 
-			Cell_Type InitCellType = m_vecCells[CurIndex]->GetCellType();
-
-			// 첫번째와 나머지 녀석들이 같은지 체크한다 + Sliding Window 개념을 적용한다.
-			for (int AddedCol = 1; AddedCol <= CheckMatchNum - 1; AddedCol++)
+			// 아래로 범위가 벗어난 경우
+			if (CheckStartCol < 0)
 			{
-				CurIndex = RowIndex * m_ColCount + (StCol + AddedCol);
+				IsColMatch = true;
+				continue;
+			}
+
+			// 오른쪽으로 범위가 벗어난 경우
+			CheckEndCol = CheckStartCol + (CheckMatchNum - 1);
+
+			if (CheckEndCol >= m_ColCount)
+			{
+				IsColMatch = false;
+				// continue;
+				// 여기 걸리면 이후에도 여기 계속 걸린다.
+				// 어차피 CheckEndCol 는 계속 증가하기 때문이다.
+				break;
+			}
+
+			Cell_Type InitCellType = m_vecCells[RowIndex * m_ColCount + CheckStartCol]->GetCellType();
+
+			// 해당 길이로 왼쪽 --> 오른쪽 순서로 조사한다.
+			for (int StCol = CheckStartCol + 1; StCol <= CheckEndCol; StCol++)
+			{
+				CurIndex = RowIndex * m_ColCount + StCol;
 
 				if (m_vecCells[CurIndex]->GetCellType() != InitCellType)
 				{
@@ -659,17 +690,15 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index)
 			}
 
 			// 만약 해당 Row (세로)가 Match 라면, 해당 Cell 들을 Match 상태로 바꿔준다.
-			// 그리고 For 문을 나간다.
 			if (IsColMatch)
 			{
-				int StartCol = StCol;
-				int EndCol = StCol + CheckMatchNum - 1;
-
-				for (int MatchedCol = StartCol; MatchedCol <= EndCol; MatchedCol++)
+				for (int MatchedCol = CheckStartCol; MatchedCol <= CheckEndCol; MatchedCol++)
 				{
 					if (!m_vecCellIsMatch[RowIndex * m_ColCount + MatchedCol])
 						m_vecCellIsMatch[RowIndex * m_ColCount + MatchedCol] = true;
 				}
+
+				// For 문을 빠져나간다.
 				break;
 			}
 		}
@@ -685,9 +714,12 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index)
 			else if (CheckMatchNum >= 5)
 				ColResultState = Match_State::MirrorBall;
 
-			// For 문 나가기 
+			// For 문 나가기 --> 제일 높은 숫자부터 조사하는 것이기 때문이다.
 			break;
 		}
+
+		if (IsColMatch)
+			break;
 	}
 
 	if (!IsColMatch)
@@ -1297,6 +1329,7 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 
 			// 경계선 Y Pos 세팅하기
 			float ShownAreaTopYPos = BoardStartPos.y + m_CellSize.y * m_VisualRowCount;
+
 			Cell->SetShownAreaTopYPos(ShownAreaTopYPos);
 
 			// WorldY Pos 세팅하기

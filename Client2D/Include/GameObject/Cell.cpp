@@ -6,7 +6,7 @@
 CCell::CCell() :
 	m_MoveSpeed(200.f),
 	m_ShownAreaOffset(1.f),
-	m_IsShownEnable(true),
+	m_IsShownEnable(false),
 	m_IsGoingBack(false),
 	m_IsSwitch(false)
 {}
@@ -86,7 +86,8 @@ void CCell::GoDown(float DeltaTime)
 				m_Sprite->SetOpacity(((m_PosY - CurYPos) / GetWorldScale().y));
 
 				// 만약 최종 위치에 도달했다면
-				if (CurYPos <= m_NewDownPosY)
+				// 
+				if (CurYPos <= m_NewDownPosY + m_ShownAreaOffset)
 				{
 					m_IsShownEnable = true;
 				}
@@ -110,6 +111,7 @@ void CCell::GoDown(float DeltaTime)
 			// 해단 녀석에 대해서만, 이제 Board Update 에서 Match 여부를 조사하게 될 것이다.
 			if (!m_IsPlacedNew)
 				m_IsPlacedNew = true;
+
 		}
 	}
 }
