@@ -57,7 +57,7 @@ public :
     void SwitchClickCellsInfo();
     void ResetClickCellInfos();
 private : 
-    bool CheckMatch(CCell* FirstClickCell, CCell* SecClickCell);
+    bool CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell);
     Match_State CheckRowMatch(CCell* ClickCell);
     Match_State CheckColMatch(CCell* ClickCell);
 private :
@@ -73,9 +73,10 @@ private :
 private :
     void ClickCell(float DeltaTime);
     void ShuffleRandom();
-    void FindMatchCells();
+    void FindMatchCellsAfterTwoClick(); // 2개 Cell 클릭 이후 실행하기
     void SetFindMatchCellsDone();
     void CreateNewCells();
     void DestroyCells();
+    bool FindMatchUpdate(); // 실시간으로 Match 여부 검사하기 
 };
 
