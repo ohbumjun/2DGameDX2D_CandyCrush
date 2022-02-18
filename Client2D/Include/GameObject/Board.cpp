@@ -575,7 +575,7 @@ Match_State CBoard::CheckColMatch(CCell* ClickCell)
 bool CBoard::CheckBagMatch(CCell* ClickCell)
 {
 	bool BoolUpRight = CheckBagUpRightMatch(ClickCell);
-	bool BoolDownRight = CheckBagDownRightMatch(ClickCell);
+	bool BoolDownRight = CheckBagDownRightMatch(ClickCell); //
 	bool BoolUpLeft =  CheckBagUpLeftMatch(ClickCell);
 	bool BoolDownLeft = CheckBagDownLeftMatch(ClickCell);
 	bool CheckBagCenterRightMatch(CCell * ClickCell);
