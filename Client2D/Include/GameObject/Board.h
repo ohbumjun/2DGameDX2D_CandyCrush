@@ -61,6 +61,16 @@ private :
     Match_State CheckRowMatch(CCell* ClickCell);
     Match_State CheckColMatch(CCell* ClickCell);
 private :
+    bool CheckBagMatch(CCell* ClickCell);
+    bool CheckBagUpRightMatch(CCell* ClickCell);
+    bool CheckBagDownRightMatch(CCell* ClickCell);
+    bool CheckBagUpLeftMatch(CCell* ClickCell);
+    bool CheckBagDownLeftMatch(CCell* ClickCell);
+    bool CheckBagCenterRightMatch(CCell* ClickCell);
+    bool CheckBagCenterLeftMatch(CCell* ClickCell);
+    bool CheckBagCenterDownMatch(CCell* ClickCell);
+    bool CheckBagCenterUpMatch(CCell* ClickCell);
+private :
     void ClickCell(float DeltaTime);
     void ShuffleRandom();
     void FindMatchCells();

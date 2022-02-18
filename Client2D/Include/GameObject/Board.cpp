@@ -198,6 +198,12 @@ void CBoard::CreateNewCells()
 
 void CBoard::DestroyCells()
 {
+	// 혹시 모르니 m_ListDestroyedCellIndex 에서 unique 한 값만 남긴다.
+	// 이를 위해서는 먼저 정렬 처리를 해줘야 한다.
+	m_ListDestroyedCellIndex.sort();
+
+	m_ListDestroyedCellIndex.unique();
+
 	// 없앨 Cell들의 Index List에 근거해서 Cell 들을 true로 표시하여
 	// 제거한 녀석이라고 세팅한다.
 	auto iter = m_ListDestroyedCellIndex.begin();
@@ -389,6 +395,7 @@ bool CBoard::CheckMatch(CCell* FirstClickCell, CCell* SecClickCell)
 	// 최대 녀석으로 세팅한다.
 	SCellResult = (int)SCellColResult > (int)SCellRowResult ? SCellColResult : SCellRowResult;
 
+	return true;
 }
 
 Match_State CBoard::CheckRowMatch(CCell* ClickCell)
@@ -408,7 +415,6 @@ Match_State CBoard::CheckRowMatch(CCell* ClickCell)
 	bool IsRowMatch = true;
 
 	MinCheckLength = 3, MaxCheckLength = m_VisualRowCount;
-
 
 	// 최대 --> 최소 길이 순으로 조사하기
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
@@ -564,6 +570,514 @@ Match_State CBoard::CheckColMatch(CCell* ClickCell)
 		ColResultState = Match_State::NoMatch;
 
 	return ColResultState;
+}
+
+bool CBoard::CheckBagMatch(CCell* ClickCell)
+{
+	bool BoolUpRight = CheckBagUpRightMatch(ClickCell);
+	bool BoolDownRight = CheckBagDownRightMatch(ClickCell);
+	bool BoolUpLeft =  CheckBagUpLeftMatch(ClickCell);
+	bool BoolDownLeft = CheckBagDownLeftMatch(ClickCell);
+	bool CheckBagCenterRightMatch(CCell * ClickCell);
+	bool CheckBagCenterLeftMatch(CCell * ClickCell);
+	bool CheckBagCenterDownMatch(CCell * ClickCell);
+	bool CheckBagCenterUpMatch(CCell * ClickCell);
+}
+
+bool CBoard::CheckBagUpRightMatch(CCell* ClickCell)
+{
+	int RowIdx = ClickCell->GetRowIndex();
+	int ColIdx = ClickCell->GetColIndex();
+
+	// 오른쪽 3개를 검사해야 하는데 범위를 벗어났다면 X
+	if (ColIdx + 2 >= m_ColCount)
+		return false;
+
+	// 아래 2개를 검사해야 하는데 범위를 벗어났다면 X
+	if (RowIdx - 2 < 0)
+		return false;
+
+	Cell_Type InitType = m_vecCells[RowIdx + m_ColCount + ColIdx]->GetCellType();
+
+	bool Match = true;
+
+	// Match가 이루어진 Idx 정보들을 담는 배열
+	std::vector<int> MatchIdxList;
+	MatchIdxList.reserve(6);
+
+	// 한 세트안에서의 제일 위의 Row 에서는
+	// 현재 Col 에서부터 오른쪽 2칸을 검사한다.
+	for (int col = ColIdx + 1; col <= ColIdx + 2; col++)
+	{
+		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType)
+		{
+			Match = false;
+			return false;
+		}
+		MatchIdxList.push_back(RowIdx * m_ColCount + col);
+	}
+
+	// 아래 2개
+	for (int row = RowIdx - 1; row >= RowIdx - 2; row--)
+	{
+		if (m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType() != InitType)
+		{
+			Match = false;
+			return false;
+		}
+		MatchIdxList.push_back(row * m_ColCount + ColIdx);
+	}
+
+	// 만약 모드 맞았다면
+	if (Match)
+	{
+		size_t Size = MatchIdxList.size();
+
+		for (size_t i = 0; i < Size; i++)
+		{
+			m_ListDestroyedCellIndex.push_back(MatchIdxList[i]);
+		}
+	}
+
+	return true;
+}
+
+bool CBoard::CheckBagDownRightMatch(CCell* ClickCell)
+{
+	int RowIdx = ClickCell->GetRowIndex();
+	int ColIdx = ClickCell->GetColIndex();
+
+	// 오른쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
+	if (ColIdx + 2 >= m_ColCount)
+		return false;
+
+	// 위 2개를 검사해야 하는데 범위를 벗어났다면 X
+	if (RowIdx + 2 >= m_VisualRowCount)
+		return false;
+
+	Cell_Type InitType = m_vecCells[RowIdx + m_ColCount + ColIdx]->GetCellType();
+
+	bool Match = true;
+
+	// Match가 이루어진 Idx 정보들을 담는 배열
+	std::vector<int> MatchIdxList;
+	MatchIdxList.reserve(6);
+
+	// 현재 Row 
+	// && 현재 Col 에서부터 오른쪽 2칸을 검사한다.
+	for (int col = ColIdx + 1; col <= ColIdx + 2; col++)
+	{
+		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType)
+		{
+			Match = false;
+			return false;
+		}
+		MatchIdxList.push_back(RowIdx * m_ColCount + col);
+	}
+
+	// 위 2개 Row 를 고려한다.
+	for (int row = RowIdx + 1; row <= RowIdx + 2; row++)
+	{
+		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType)
+		{
+			Match = false;
+			return false;
+		}
+		MatchIdxList.push_back(row);
+	}
+
+	// 만약 모드 맞았다면
+	if (Match)
+	{
+		size_t Size = MatchIdxList.size();
+
+		for (size_t i = 0; i < Size; i++)
+		{
+			m_ListDestroyedCellIndex.push_back(MatchIdxList[i]);
+		}
+	}
+
+	return true;
+}
+
+bool CBoard::CheckBagUpLeftMatch(CCell* ClickCell)
+{
+	int RowIdx = ClickCell->GetRowIndex();
+	int ColIdx = ClickCell->GetColIndex();
+
+	// 왼쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
+	if (ColIdx - 2 < 0)
+		return false;
+
+	// 아래 2개를 검사해야 하는데 범위를 벗어났다면 X
+	if (RowIdx - 2 < 0)
+		return false;
+
+	Cell_Type InitType = m_vecCells[RowIdx + m_ColCount + ColIdx]->GetCellType();
+
+	bool Match = true;
+
+	// Match가 이루어진 Idx 정보들을 담는 배열
+	std::vector<int> MatchIdxList;
+	MatchIdxList.reserve(6);
+
+	// 현재 Row 
+	// && 현재 Col 에서부터 왼쪽 2칸을 검사한다.
+	for (int col = ColIdx - 1; col >= ColIdx - 2; col--)
+	{
+		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType)
+		{
+			Match = false;
+			return false;
+		}
+		MatchIdxList.push_back(RowIdx * m_ColCount + col);
+	}
+
+	// 아래 2개 Row 를 고려한다.
+	for (int row = RowIdx - 1; row >= RowIdx - 2; row--)
+	{
+		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType)
+		{
+			Match = false;
+			return false;
+		}
+		MatchIdxList.push_back(row * m_ColCount + ColIdx);
+	}
+
+	// 만약 모드 맞았다면
+	if (Match)
+	{
+		size_t Size = MatchIdxList.size();
+
+		for (size_t i = 0; i < Size; i++)
+		{
+			m_ListDestroyedCellIndex.push_back(MatchIdxList[i]);
+		}
+	}
+
+	return true;
+}
+
+bool CBoard::CheckBagDownLeftMatch(CCell* ClickCell)
+{
+	int RowIdx = ClickCell->GetRowIndex();
+	int ColIdx = ClickCell->GetColIndex();
+
+	// 왼쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
+	if (ColIdx - 2 < 0)
+		return false;
+
+	// 위 2개를 검사해야 하는데 범위를 벗어났다면 X
+	if (RowIdx + 2 >= m_VisualRowCount)
+		return false;
+
+	Cell_Type InitType = m_vecCells[RowIdx + m_ColCount + ColIdx]->GetCellType();
+
+	bool Match = true;
+
+	// Match가 이루어진 Idx 정보들을 담는 배열
+	std::vector<int> MatchIdxList;
+	MatchIdxList.reserve(6);
+
+	// 현재 Row 
+	// && 현재 Col 에서부터 왼쪽 2칸을 검사한다.
+	for (int col = ColIdx - 1; col >= ColIdx - 2; col--)
+	{
+		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType)
+		{
+			Match = false;
+			return false;
+		}
+		MatchIdxList.push_back(RowIdx * m_ColCount + col);
+	}
+
+	// 위 2개 Row 를 고려한다.
+	for (int row = RowIdx + 1; row >= RowIdx + 2; row++)
+	{
+		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType)
+		{
+			Match = false;
+			return false;
+		}
+		MatchIdxList.push_back(row * m_ColCount + ColIdx);
+	}
+
+	// 만약 모드 맞았다면
+	if (Match)
+	{
+		size_t Size = MatchIdxList.size();
+
+		for (size_t i = 0; i < Size; i++)
+		{
+			m_ListDestroyedCellIndex.push_back(MatchIdxList[i]);
+		}
+	}
+
+	return true;
+}
+
+bool CBoard::CheckBagCenterRightMatch(CCell* ClickCell)
+{
+	int RowIdx = ClickCell->GetRowIndex();
+	int ColIdx = ClickCell->GetColIndex();
+
+	// 오른쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
+	if (ColIdx + 2 >= m_ColCount)
+		return false;
+
+	// 위 1개를 검사해야 하는데 범위를 벗어났다면 X
+	if (RowIdx + 1 >= m_VisualRowCount)
+		return false;
+
+	// 아래 1개를 검사해야 하는데 범위를 벗어났다면 X
+	if (RowIdx - 1 < 0)
+		return false;
+
+	Cell_Type InitType = m_vecCells[RowIdx + m_ColCount + ColIdx]->GetCellType();
+
+	bool Match = true;
+
+	// Match가 이루어진 Idx 정보들을 담는 배열
+	std::vector<int> MatchIdxList;
+	MatchIdxList.reserve(6);
+
+	// 현재 Row 
+	// && 현재 Col 에서부터 오른쪽 2칸을 검사한다.
+	for (int col = ColIdx + 1; col <= ColIdx + 2; col++)
+	{
+		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType)
+		{
+			Match = false;
+			return false;
+		}
+		MatchIdxList.push_back(RowIdx * m_ColCount + col);
+	}
+
+	// 위 1개, 아래 1개 Row 를 고려한다.
+	if (m_vecCells[(RowIdx + 1) * m_ColCount + ColIdx]->GetCellType() != InitType)
+	{
+		Match = false;
+		return false;
+	}
+	MatchIdxList.push_back((RowIdx + 1) * m_ColCount + ColIdx);
+
+	if (m_vecCells[(RowIdx - 1) * m_ColCount + ColIdx]->GetCellType() != InitType)
+	{
+		Match = false;
+		return false;
+	}
+	MatchIdxList.push_back((RowIdx - 1) * m_ColCount + ColIdx);
+
+	// 만약 모드 맞았다면
+	if (Match)
+	{
+		size_t Size = MatchIdxList.size();
+
+		for (size_t i = 0; i < Size; i++)
+		{
+			m_ListDestroyedCellIndex.push_back(MatchIdxList[i]);
+		}
+	}
+
+	return true;
+}
+
+bool CBoard::CheckBagCenterLeftMatch(CCell* ClickCell)
+{
+	int RowIdx = ClickCell->GetRowIndex();
+	int ColIdx = ClickCell->GetColIndex();
+
+	// 왼쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
+	if (ColIdx - 2 < 0)
+		return false;
+
+	// 위 1개를 검사해야 하는데 범위를 벗어났다면 X
+	if (RowIdx + 1 >= m_VisualRowCount)
+		return false;
+
+	// 아래 1개를 검사해야 하는데 범위를 벗어났다면 X
+	if (RowIdx - 1 < 0)
+		return false;
+
+	Cell_Type InitType = m_vecCells[RowIdx + m_ColCount + ColIdx]->GetCellType();
+
+	bool Match = true;
+
+	// Match가 이루어진 Idx 정보들을 담는 배열
+	std::vector<int> MatchIdxList;
+	MatchIdxList.reserve(6);
+
+	// 현재 Row 
+	// && 현재 Col 에서부터 왼쪽 2칸을 검사한다.
+	for (int col = ColIdx - 1; col >= ColIdx - 2; col--)
+	{
+		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType)
+		{
+			Match = false;
+			return false;
+		}
+		MatchIdxList.push_back(RowIdx * m_ColCount + col);
+	}
+
+	// 위 1개, 아래 1개 Row 를 고려한다.
+	if (m_vecCells[(RowIdx + 1) * m_ColCount + ColIdx]->GetCellType() != InitType)
+	{
+		Match = false;
+		return false;
+	}
+	MatchIdxList.push_back((RowIdx + 1) * m_ColCount + ColIdx);
+
+	if (m_vecCells[(RowIdx - 1) * m_ColCount + ColIdx]->GetCellType() != InitType)
+	{
+		Match = false;
+		return false;
+	}
+	MatchIdxList.push_back((RowIdx - 1) * m_ColCount + ColIdx);
+
+	// 만약 모드 맞았다면
+	if (Match)
+	{
+		size_t Size = MatchIdxList.size();
+
+		for (size_t i = 0; i < Size; i++)
+		{
+			m_ListDestroyedCellIndex.push_back(MatchIdxList[i]);
+		}
+	}
+
+	return true;
+}
+
+bool CBoard::CheckBagCenterDownMatch(CCell* ClickCell)
+{
+	int RowIdx = ClickCell->GetRowIndex();
+	int ColIdx = ClickCell->GetColIndex();
+
+	// 아래 2개를 검사해야 하는데 범위를 벗어났다면 X
+	if (RowIdx - 2 < 0)
+		return false;
+
+	// 왼쪽 1개를 검사해야 하는데 범위를 벗어났다면 X
+	if (ColIdx + 1 >= m_ColCount)
+		return false;
+
+	// 오른쪽 1개를 검사해야 하는데 범위를 벗어났다면 X
+	if (ColIdx - 1 < 0)
+		return false;
+
+	Cell_Type InitType = m_vecCells[RowIdx + m_ColCount + ColIdx]->GetCellType();
+
+	bool Match = true;
+
+	// Match가 이루어진 Idx 정보들을 담는 배열
+	std::vector<int> MatchIdxList;
+	MatchIdxList.reserve(6);
+
+	// 현재 Row 
+	// && 현재 Row 에서부터 아래 2칸을 검사한다.
+	for (int row = RowIdx - 1; row >= RowIdx - 2; row--)
+	{
+		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType)
+		{
+			Match = false;
+			return false;
+		}
+		MatchIdxList.push_back(row * m_ColCount + ColIdx);
+	}
+
+	// 왼쪽 1개, 오른쪽 1개 Row 를 고려한다.
+	if (m_vecCells[RowIdx * m_ColCount + (ColIdx - 1)]->GetCellType() != InitType)
+	{
+		Match = false;
+		return false;
+	}
+	MatchIdxList.push_back(RowIdx * m_ColCount + (ColIdx - 1));
+
+	if (m_vecCells[RowIdx * m_ColCount + (ColIdx + 1)]->GetCellType() != InitType)
+	{
+		Match = false;
+		return false;
+	}
+	MatchIdxList.push_back(RowIdx * m_ColCount + (ColIdx + 1));
+
+	// 만약 모드 맞았다면
+	if (Match)
+	{
+		size_t Size = MatchIdxList.size();
+
+		for (size_t i = 0; i < Size; i++)
+		{
+			m_ListDestroyedCellIndex.push_back(MatchIdxList[i]);
+		}
+	}
+
+	return true;
+}
+
+bool CBoard::CheckBagCenterUpMatch(CCell* ClickCell)
+{
+	int RowIdx = ClickCell->GetRowIndex();
+	int ColIdx = ClickCell->GetColIndex();
+
+	// 위 2개를 검사해야 하는데 범위를 벗어났다면 X
+	if (RowIdx + 2 >= m_VisualRowCount)
+		return false;
+
+	// 왼쪽 1개를 검사해야 하는데 범위를 벗어났다면 X
+	if (ColIdx + 1 >= m_ColCount)
+		return false;
+
+	// 오른쪽 1개를 검사해야 하는데 범위를 벗어났다면 X
+	if (ColIdx - 1 < 0)
+		return false;
+
+	Cell_Type InitType = m_vecCells[RowIdx + m_ColCount + ColIdx]->GetCellType();
+
+	bool Match = true;
+
+	// Match가 이루어진 Idx 정보들을 담는 배열
+	std::vector<int> MatchIdxList;
+	MatchIdxList.reserve(6);
+
+	// 현재 Row 
+	// && 현재 Row 에서부터 위 2칸을 검사한다.
+	for (int row = RowIdx + 1; row <= RowIdx + 2; row++)
+	{
+		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType)
+		{
+			Match = false;
+			return false;
+		}
+		MatchIdxList.push_back(row * m_ColCount + ColIdx);
+	}
+
+	// 왼쪽 1개, 오른쪽 1개 Row 를 고려한다.
+	if (m_vecCells[RowIdx * m_ColCount + (ColIdx - 1)]->GetCellType() != InitType)
+	{
+		Match = false;
+		return false;
+	}
+	MatchIdxList.push_back(RowIdx * m_ColCount + (ColIdx - 1));
+
+	if (m_vecCells[RowIdx * m_ColCount + (ColIdx + 1)]->GetCellType() != InitType)
+	{
+		Match = false;
+		return false;
+	}
+	MatchIdxList.push_back(RowIdx * m_ColCount + (ColIdx + 1));
+
+	// 만약 모드 맞았다면
+	if (Match)
+	{
+		size_t Size = MatchIdxList.size();
+
+		for (size_t i = 0; i < Size; i++)
+		{
+			m_ListDestroyedCellIndex.push_back(MatchIdxList[i]);
+		}
+	}
+
+	return true;
 }
 
 bool CBoard::Init()
