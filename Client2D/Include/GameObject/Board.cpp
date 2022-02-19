@@ -423,8 +423,8 @@ bool CBoard::CheckMatchUpdate()
 		ColIndex = m_vecCells[i]->GetColIndex();
 
 		// 1번째 Click Cell에 대한 검사 먼저 하기 
-		CellRowResult = CheckRowMatch(RowIndex, ColIndex, i);
-		CellColResult = CheckColMatch(RowIndex, ColIndex, i);
+		CellRowResult = CheckRowMatch(RowIndex, ColIndex, i, false);
+		CellColResult = CheckColMatch(RowIndex, ColIndex, i, false);
 
 		// 최대 녀석으로 세팅한다.
 		CellResult = (int)CellColResult > (int)CellRowResult ? CellColResult : CellRowResult;
@@ -438,6 +438,11 @@ bool CBoard::CheckMatchUpdate()
 		// 최종 결과 저장하기
 		// 이것은 특수 타입의 Cell 을 만들기 위함인데
 		// 이를 위해서는 여기 로직을 이후 다시 더 보완해야 한다.
+		if ((int)CellResult > (int)Match_State::Normal)
+		{
+			m_vecMatchState[i] = CellResult;
+		}
+
 		m_vecMatchState[i] = CellResult;
 	}
 
@@ -488,6 +493,8 @@ Cell_State CBoard::ChangeMatchStateToCellState(Match_State State)
 	case Match_State::MirrorBall:
 		return Cell_State::MirrorBall;
 	}
+
+	return Cell_State::Normal;
 }
 
 void CBoard::AddClickCellMoveBackDone() // 정말로 클릭한 Cell 들의 이동이 끝날 때 실행하는 함수
@@ -552,8 +559,10 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	Match_State SCellBagResult = Match_State::NoMatch;
 
 	// 1번째 Click Cell에 대한 검사 먼저 하기
-	FCellRowResult = CheckRowMatch(FirstClickCell->GetRowIndex(), FirstClickCell->GetColIndex(), FirstClickCell->GetIndex());
-	FCellColResult = CheckColMatch(FirstClickCell->GetRowIndex(), FirstClickCell->GetColIndex(), FirstClickCell->GetIndex());
+	FCellRowResult = CheckRowMatch(FirstClickCell->GetRowIndex(), 
+		FirstClickCell->GetColIndex(), FirstClickCell->GetIndex(), true);
+	FCellColResult = CheckColMatch(FirstClickCell->GetRowIndex(), 
+		FirstClickCell->GetColIndex(), FirstClickCell->GetIndex(), true);
 
 	// todo :  Row, Column을 다 확인한 이후
 	// Match_State에 따라서
@@ -578,10 +587,12 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	// 같은 Row를 또 다시 검사해줄 필요는 없기 때문이다
 	// 다른 Row 혹은 다른 Col을 조사할 것이다. --> 아니다. 둘다 조사는 해야 한다.
 	// if (FirstClickCell->GetColIndex() != SecClickCell->GetColIndex())
-	SCellRowResult = CheckRowMatch(SecClickCell->GetRowIndex(), SecClickCell->GetColIndex(), SecClickCell->GetIndex());
+	SCellRowResult = CheckRowMatch(SecClickCell->GetRowIndex(), 
+		SecClickCell->GetColIndex(), SecClickCell->GetIndex(), true);
 
 	// if (FirstClickCell->GetRowIndex() != SecClickCell->GetRowIndex())
-	SCellColResult = CheckColMatch(SecClickCell->GetRowIndex(), SecClickCell->GetColIndex(), SecClickCell->GetIndex());
+	SCellColResult = CheckColMatch(SecClickCell->GetRowIndex(), 
+		SecClickCell->GetColIndex(), SecClickCell->GetIndex(), true);
 
 	// todo :  Row, Column을 다 확인한 이후
 	// Match_State에 따라서
@@ -604,7 +615,7 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 }
 
 // 세로 검사 ( 위아래 )
-Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index)
+Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool IsClickCell)
 {
 	Match_State RowResultState = Match_State::NoMatch;
 
@@ -690,10 +701,34 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index)
 			// Match_State를 세팅한다.
 			if (CheckMatchNum == 3)
 				RowResultState = Match_State::Normal;
-			else if (CheckMatchNum == 4)
-				RowResultState = Match_State::RowLine;
-			else if (CheckMatchNum >= 5)
-				RowResultState = Match_State::MirrorBall;
+			else if (CheckMatchNum >= 4)
+			{
+				// Click 해서 Match 하는 상황인지, 아니면, 일반 Update 상황에서의 Match 인지를 고려해야 한다.
+				// Click 해서 Match 하는 상황이면, 무조건 자신의 MatchNum 대로 Match_State 를 세팅한다.
+				if (IsClickCell)
+				{
+					if (CheckMatchNum == 4)
+						RowResultState = Match_State::RowLine;
+					else if (CheckMatchNum >= 5)
+						RowResultState = Match_State::MirrorBall;
+				}
+				else
+				{
+					// 그게 아니라, 실시간 Update 중 Match 라면, 자신이 가장 아래에 있을 때만 Special 세팅을 해준다.
+					if (CheckStartRow == RowIndex)
+					{
+						if (CheckMatchNum == 4)
+							RowResultState = Match_State::RowLine;
+						else if (CheckMatchNum >= 5)
+							RowResultState = Match_State::MirrorBall;
+					}
+					// 그게 아니라면, 그냥 Normal Match 로 표시해준다
+					else
+					{
+						RowResultState = Match_State::Normal;
+					}
+				}
+			}
 
 			// Match 결과 true로 세팅
 			Match = true;
@@ -710,7 +745,7 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index)
 }
 
 // 가로 검사 ( 왼쪽 오른쪽 )
-Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index)
+Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool IsClickCell)
 {
 	Match_State ColResultState;
 
@@ -789,14 +824,35 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index)
 
 		if (IsLengthMatch)
 		{
-			// 여기서 Match 한 숫자가 무엇인지 확인하고
-			// Match_State를 세팅한다.
 			if (CheckMatchNum == 3)
 				ColResultState = Match_State::Normal;
-			else if (CheckMatchNum == 4)
-				ColResultState = Match_State::RowLine;
-			else if (CheckMatchNum >= 5)
-				ColResultState = Match_State::MirrorBall;
+			else if (CheckMatchNum >= 4)
+			{
+				if (IsClickCell)
+				{
+					if (CheckMatchNum == 4)
+						ColResultState = Match_State::ColLine;
+					else if (CheckMatchNum >= 5)
+						ColResultState = Match_State::MirrorBall;
+				}
+				else
+				{
+					// 그게 아니라, 실시간 Update 중 Match 라면, 자신이 가장 아래에 있을 때만 Special 세팅을 해준다.
+					if (CheckStartCol == ColIndex)
+					{
+						if (CheckMatchNum == 4)
+							ColResultState = Match_State::ColLine;
+						else if (CheckMatchNum >= 5)
+							ColResultState = Match_State::MirrorBall;
+					}
+					// 그게 아니라면, 그냥 Normal Match 로 표시해준다
+					else
+					{
+						ColResultState = Match_State::Normal;
+					}
+				}
+			}
+
 
 			// 전체 Match 결과 true로 세팅
 			Match = true;
@@ -1314,7 +1370,7 @@ bool CBoard::Init()
 		return false;
 
 	// Input Callback 세팅
-	CInput::GetInst()->SetKeyCallback("BoardCellClick", Key_State::Key_Down, this, //
+	CInput::GetInst()->SetKeyCallback("BoardCellClick", Key_State::Key_Down, this, 
 		&CBoard::ClickCell);
 
 	m_DRow = { -1, 1, 0, 0 };
@@ -1378,7 +1434,6 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 	// 높이의 경우 2배로 세팅한다. --> 실제 화면에 보여지는 영역 + 위로 숨은 영역
 	// x,y : 열, 행
 	m_Static->SetWorldScale((float)(RS.Width * (WidthRatio / 100.f)), (float)(RS.Height * (HeightRatio / 100.f)) * 2.f, 1.f);
-
 
 	// Block, Cell 세팅
 	m_vecBlocks.resize(m_TotCount);

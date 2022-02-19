@@ -65,8 +65,8 @@ public: // Click
 private: // Check Match
     bool CheckMatchUpdate();
     bool CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell);
-    Match_State CheckRowMatch(int RowIndex, int ColIndex, int Index);
-    Match_State CheckColMatch(int RowIndex, int ColIndex, int Index);
+    Match_State CheckRowMatch(int RowIndex, int ColIndex, int Index, bool IsClickCell);
+    Match_State CheckColMatch(int RowIndex, int ColIndex, int Index, bool IsClickCell);
 private:
     bool CheckBagMatch(int RowIndex, int ColIndex, int Index);
     bool CheckBagRightDownMatch(int RowIndex, int ColIndex, int Index);
