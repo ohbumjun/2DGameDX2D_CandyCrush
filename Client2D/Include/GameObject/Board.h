@@ -79,8 +79,8 @@ private:
     bool CheckBagCenterUpMatch(int RowIndex, int ColIndex, int Index);
 private : // Create New Cell
     void CreateNewCellsAboveShownArea();
-    CCell* CreateSingleNewCell(int RowIndex, int ColIndex, const Vector3& WorldPos, float NewYPos,
-        Cell_Type Type, float Opacity, bool ShowEnable);
+    CCell* CreateSingleNewCell(const std::string& Name, int RowIndex, int ColIndex, const Vector3& WorldPos, float NewYPos,
+        Cell_Type Type, float Opacity, bool ShowEnable, Cell_State State);
 private:
     void ShuffleRandom();
     void FindMatchCellsAfterTwoClick(); // 2개 Cell 클릭 이후 실행하기
@@ -88,4 +88,6 @@ private:
     void DestroyCells();
     bool FindMatchUpdate(); // 실시간으로 Match 여부 검사하기
     bool CheckCellsMoving();
+private : // Match State 를 그에 대응하는 Cell_State 로 바꿔주는 함수
+    Cell_State ChangeMatchStateToCellState(Match_State State);
 };

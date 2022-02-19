@@ -38,7 +38,16 @@ CAnimationSequence2DInstance::CAnimationSequence2DInstance() :
 		Animation->m_FrameTime = Animation->m_PlayTime / iter->second->m_Sequence2D->GetFrameCount();
 
 		if (Animation->m_Name == Instance.m_CurrentAnimation->GetName())
+		{
 			m_CurrentAnimation = Animation;
+			if (m_OwnerComponent)
+			{
+				// SpriteComponent Owner 처리하기
+				m_OwnerComponent->SetTexture(0, 0, (int)Buffer_Shader_Type::Pixel,
+					Animation->GetSequence2D()->GetTexture()->GetName(),
+					Animation->GetSequence2D()->GetTexture());
+			}
+		}
 
 		m_mapAnimationSequence2DData.insert(std::make_pair(iter->first, Animation));
 	}

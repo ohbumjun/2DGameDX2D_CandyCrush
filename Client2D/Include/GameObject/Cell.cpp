@@ -102,7 +102,7 @@ void CCell::GoDown(float DeltaTime)
 		// 만약 안보이는 위치였다가 보이는 위치로 들어가게 된다면
 		if (!m_IsShownEnable)
 		{
-			if (CurYPos < m_ShownAreaTopYPos)
+			if (CurYPos < m_ShownAreaTopYPos - m_ShownAreaOffset)
 			{
 				// 최종 남은 위치까지 알파값을 서서히 증가시킨다
 				// 총 가야할 거리

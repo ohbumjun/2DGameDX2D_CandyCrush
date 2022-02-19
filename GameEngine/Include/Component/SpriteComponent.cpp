@@ -30,8 +30,8 @@ CSpriteComponent::CSpriteComponent(const CSpriteComponent& com) :
 
 CSpriteComponent::~CSpriteComponent()
 {
-	if (!m_Animation->IsShared())
-		SAFE_DELETE(m_Animation);
+	// if (!m_Animation->IsShared())
+	SAFE_DELETE(m_Animation);
 }
 
 void CSpriteComponent::SetMaterial(CMaterial* Material)
@@ -46,10 +46,21 @@ void CSpriteComponent::SetAnimationInstance(CAnimationSequence2DInstance* Instan
 {
 	if (!Instance)
 		return;
-	Instance->SetOwnerComponent(this);
-	Instance->SetScene(m_Scene);
 
-	m_Animation = Instance;
+	CAnimationSequence2DInstance* CloneInstance = Instance->Clone();
+
+	CloneInstance->SetOwnerComponent(this);
+	CloneInstance->SetScene(m_Scene);
+
+	if (!CloneInstance->Init())
+	{
+		SAFE_DELETE(CloneInstance);
+		return;
+	}
+
+	SAFE_DELETE(m_Animation);
+
+	m_Animation = CloneInstance;
 }
 
 void CSpriteComponent::SetBaseColor(const Vector4& Color)

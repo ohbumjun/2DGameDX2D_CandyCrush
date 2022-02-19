@@ -155,7 +155,13 @@ void CBoard::CreateNewCellsAboveShownArea()
 
 			float NewYPos = TopYPos - m_CellSize.y * offset;
 
-			CreateSingleNewCell(RowIndex, col, WorldPos,NewYPos, (Cell_Type)Type, 0.1f, false);
+			Cell_State CellState = ChangeMatchStateToCellState(Match_State::NoMatch);
+
+			char Name[MAX_PATH] = {};
+
+			sprintf_s(Name, "Cell%d", RowIndex * m_ColCount + col);
+
+			CreateSingleNewCell(Name, RowIndex, col, WorldPos,NewYPos, (Cell_Type)Type, 0.1f, false, CellState);
 		}
 	}
 
@@ -176,12 +182,13 @@ void CBoard::CreateNewCellsAboveShownArea()
 	}
 }
 
-CCell* CBoard::CreateSingleNewCell(int RowIndex, int ColIndex, const Vector3& WorldPos, float NewYPos, 
-	Cell_Type Type, float Opacity, bool ShowEnable)
+CCell* CBoard::CreateSingleNewCell(const std::string& Name, int RowIndex, int ColIndex, 
+	const Vector3& WorldPos, float NewYPos, Cell_Type Type, 
+	float Opacity, bool ShowEnable, Cell_State State)
 {
 	int Index = RowIndex * m_ColCount + ColIndex;
 
-	CCell* Cell = CSceneManager::GetInst()->GetScene()->CreateGameObject<CCell>("Cell");
+	CCell* Cell = CSceneManager::GetInst()->GetScene()->CreateGameObject<CCell>(Name);
 
 	Vector3 BoardStartPos = GetWorldPos();
 
@@ -218,8 +225,9 @@ CCell* CBoard::CreateSingleNewCell(int RowIndex, int ColIndex, const Vector3& Wo
 	// NewY Pos 세팅하기
 	Cell->SetNewDownPosY(NewYPos);
 
-	// Normal 로 세팅
+	// Cell State 세팅 --> Current Animation 세팅
 	// Cell->SetCurrentAnimation("Normal");
+	Cell->SetCellState(State);
 
 	// vector 목록에 추가 
 	m_vecCells[Index] = Cell;
@@ -239,12 +247,27 @@ void CBoard::DestroyCells()
 			int RowIndex = Index / m_ColCount;
 			int ColIndex = Index % m_ColCount;
 
-			// 화면에서 제거해주고
-			m_vecCells[Index]->Destroy();
+			// 해당 위치에서의 MatchState 를 확인해서
+			// Normal 보다 큰 녀석이면, 그냥 State 만 바꿔주고
+			if ((int)m_vecMatchState[Index] > (int)Match_State::Normal)
+			{
+				m_vecCells[Index]->SetCellState(ChangeMatchStateToCellState(m_vecMatchState[Index]));
+				// m_vecCells[Index]->SetCellState(Cell_State::MirrorBall);
+				// CCell* Cell =  (CCell*)m_Scene->FindGameObject(m_vecCells[Index]->GetName());
+				// Cell->SetCurrentAnimation("Bag");
+				// m_vecCells[Index]->SetCurrentAnimation("Bag");
+			}
+			// 그게 아니라면, 제거 이후, 해당 Col 에서의 제거개수 + 1 을 해주면 된다.
+			else
+			{
+				// 화면에서 제거해주고
+				m_vecCells[Index]->Destroy();
 
-			// 해당 Column 에서 생성한 새로운 Cell 개수를 +1 해준다.
-			// 해당 Column 에서 제거된 Cell의 개수를 지정하는 것이다.
-			m_vecColNewCellNums[ColIndex] += 1;
+				// 해당 Column 에서 생성한 새로운 Cell 개수를 +1 해준다.
+				// 해당 Column 에서 제거된 Cell의 개수를 지정하는 것이다.
+				m_vecColNewCellNums[ColIndex] += 1;
+			}
+
 		}
 	}
 
@@ -273,6 +296,10 @@ void CBoard::DestroyCells()
 			{
 				// 내려올 Cell
 				ChangeTargetIndex = ChangeRow * m_ColCount + col;
+
+				// 사라진 Cell 이라면 내려오기 조정 X
+				if (!m_vecCells[ChangeTargetIndex]->IsActive())
+					continue;
 
 				// 현재 위치
 				float CurNewPosY = m_vecCells[ChangeTargetIndex]->GetNewDownPosY();
@@ -408,11 +435,6 @@ bool CBoard::CheckMatchUpdate()
 		// 최종 결과
 		CellResult = (int)CellResult > (int)CellBagResult ? CellResult : CellBagResult;
 
-		if ((int)CellResult > (int)Match_State::NoMatch)
-		{
-			m_vecMatchState[i] = CellResult;
-		}
-
 		// 최종 결과 저장하기
 		// 이것은 특수 타입의 Cell 을 만들기 위함인데
 		// 이를 위해서는 여기 로직을 이후 다시 더 보완해야 한다.
@@ -442,6 +464,30 @@ bool CBoard::CheckCellsMoving()
 	}
 
 	return false;
+}
+
+Cell_State CBoard::ChangeMatchStateToCellState(Match_State State)
+{
+	switch (State)
+	{
+	case Match_State::NoMatch :
+		return Cell_State::Normal;
+
+	case Match_State::Normal:
+		return Cell_State::Normal;
+
+	case Match_State::RowLine:
+		return Cell_State::RowLine;
+
+	case Match_State::ColLine:
+		return Cell_State::ColLine;
+
+	case Match_State::Bag:
+		return Cell_State::Bag;
+
+	case Match_State::MirrorBall:
+		return Cell_State::MirrorBall;
+	}
 }
 
 void CBoard::AddClickCellMoveBackDone() // 정말로 클릭한 Cell 들의 이동이 끝날 때 실행하는 함수
@@ -521,6 +567,9 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	// 최종 결과
 	FCellResult = (int)FCellResult > (int)FCellBagResult ? FCellResult : FCellBagResult;
 
+	// State 세팅 
+	m_vecMatchState[FirstClickCell->GetIndex()] = FCellResult;
+
 	// todo : 여기세 Ball Type을 세팅해서 새롭게 넣어준다.
 	// todo : 그러면, 그 위에 녀석들은, 새롭게 내려갈 위치 및 Index 가 달라져야 한다는 것을 의미한다.
 
@@ -545,6 +594,9 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 
 	// 최종 결과
 	SCellResult = (int)SCellResult > (int)SCellBagResult ? SCellResult : SCellBagResult;
+
+	// State 세팅하기 
+	m_vecMatchState[SecClickCell->GetIndex()] = SCellResult;
 
 	bool Result = (int)SCellResult > (int)Match_State::NoMatch || (int)FCellResult > (int)Match_State::NoMatch;
 
@@ -1349,7 +1401,14 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 
 			int Type = (int)(rand() % (int)Cell_Type::End);
 
-			CCell* NewCell =  CreateSingleNewCell(row, col, WorldPos, NewYPos, (Cell_Type)Type, 1.f,true);
+			Cell_State CellState = ChangeMatchStateToCellState(Match_State::NoMatch);
+
+			char Name[MAX_PATH] = {};
+
+			sprintf_s(Name, "Cell%d", row * m_ColCount + col);
+
+			CCell* NewCell =  CreateSingleNewCell(Name, row, col, WorldPos, NewYPos, (Cell_Type)Type,
+				1.f,true, CellState);
 
 			if (CellWorldYPos >= BoardStartPos.y + m_CellSize.y * m_VisualRowCount)
 			{

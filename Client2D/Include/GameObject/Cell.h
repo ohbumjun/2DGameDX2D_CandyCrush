@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject\GameObject.h"
 #include "Component/SpriteComponent.h"
+#include "Animation/AnimationSequence2DInstance.h"
 #include "../Client.h"
 
 class CCell :
