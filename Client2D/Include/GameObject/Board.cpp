@@ -174,7 +174,7 @@ void CBoard::CreateNewCells()
 			Cell->SetCellType((Cell_Type)Type);
 
 			// 투명도 세팅 ( 안보이게 하기 )
-			Cell->SetOpacity(0.5f);
+			Cell->SetOpacity(0.1f);
 
 			// 안보인다는 멤버 변수 설정
 			Cell->SetShowEnable(false);
@@ -212,6 +212,8 @@ void CBoard::CreateNewCells()
 
 void CBoard::DestroyCells()
 {
+	int CheckMaxIndex = m_VisualRowCount * m_ColCount;
+
 	for (int Index = 0; Index < m_TotCount / 2; Index++)
 	{
 		// 만약 Match 된 녀석이라면 
@@ -328,10 +330,6 @@ bool CBoard::FindMatchUpdate()
 	if (m_FirstClickCell || m_SecClickCell)
 		return false;
 
-	// Update 할 필요가 없다면 진행하지 않는다.
-	if (!m_IsCheckUpdateNeeded)
-		return false;
-
 	// Match 되는 녀석들이 있는지 확인한다.
 	Match = CheckMatchUpdate();
 
@@ -358,8 +356,8 @@ bool CBoard::CheckMatchUpdate()
 		return false;
 
 	// Update 할 필요가 없다면
-	if (!m_IsCheckUpdateNeeded)
-		return false;
+	// if (!m_IsCheckUpdateNeeded)
+	//	return false;
 
 	// 새로운 위치로 이동 완료한 Cell 들에 대해서만 조사할 것이다
 	int RowIndex = -1, ColIndex = -1;
@@ -393,7 +391,14 @@ bool CBoard::CheckMatchUpdate()
 		// 최종 결과
 		CellResult = (int)CellResult > (int)CellBagResult ? CellResult : CellBagResult;
 
+		if ((int)CellResult > (int)Match_State::NoMatch)
+		{
+			m_vecMatchState[i] = CellResult;
+		}
+
 		// 최종 결과 저장하기
+		// 이것은 특수 타입의 Cell 을 만들기 위함인데
+		// 이를 위해서는 여기 로직을 이후 다시 더 보완해야 한다.
 		m_vecMatchState[i] = CellResult;
 	}
 
@@ -406,7 +411,7 @@ bool CBoard::CheckMatchUpdate()
 	}
 
 	// 한번 Update 했으니, 더이상 Update 를 해줄 필요가 없다.
-	m_IsCheckUpdateNeeded = false;
+	// m_IsCheckUpdateNeeded = false;
 
 	return true;
 }
@@ -540,17 +545,20 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index)
 	// Index : 현재 검사하는 Cell의 Index
 	int CurIndex = -1;
 
-	// 1번째 : Row 검사하기 ---------------------------------------------------------------------------
-	bool IsRowMatch = true;
-
 	int CheckStartRow = -1, CheckEndRow = -1;
+
+	// Match 결과
+	bool Match = false;
 
 	// 최대 --> 최소 길이 순으로 조사하기
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
 	{
+		// 특정 길이에서의 Row Match 여부 
+		bool IsResultRowMatch = false;
+		
 		for (int StartRowOffset = 0; StartRowOffset <= CheckMatchNum - 1; StartRowOffset ++)
 		{
-			IsRowMatch = true;
+			bool IsPartRowMatch = true;
 
 			// 현재 ClickCell 이 포함된 Row 범위에 대해서만 조사할 것이다.
 			// 아래 범위에서, 위로 올라가면서 검사 시작 Row 를 설정해줄 것이다.
@@ -559,7 +567,7 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index)
 			// 아래로 범위가 벗어난 경우
 			if (CheckStartRow < 0)
 			{
-				IsRowMatch = true;
+				IsPartRowMatch = false;
 				continue;
 			}
 
@@ -568,12 +576,11 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index)
 
 			if (CheckEndRow >= m_VisualRowCount)
 			{
-				IsRowMatch = false;
+				IsPartRowMatch = false;
 				// continue;
 				// 어차피 여기예 계속 걸릴 것이므로 ( 왜냐하면, CheckEndRow는 계속 증가 ) --> continue 가 아니라 break 세팅
 				break;
 			}
-
 
 			Cell_Type InitCellType = m_vecCells[CheckStartRow * m_ColCount + ColIndex]->GetCellType();
 
@@ -586,14 +593,14 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index)
 
 				if (m_vecCells[CurIndex]->GetCellType() != InitCellType)
 				{
-					IsRowMatch = false;
+					IsPartRowMatch = false;
 					break;
 				}
 			}
 
 			// 만약 해당 Row(세로)가 Match 라면, 해당 Cell 들을 Match 상태로 바꿔준다.
 			// 그리고 For 문을 나간다.
-			if (IsRowMatch)
+			if (IsPartRowMatch)
 			{
 				for (int MatchedRow = CheckStartRow; MatchedRow <= CheckEndRow; MatchedRow++)
 				{
@@ -601,12 +608,14 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index)
 						m_vecCellIsMatch[MatchedRow * m_ColCount + ColIndex] = true;
 				}
 
+				IsResultRowMatch = true;
+
 				// For 문을 빠져나간다.
 				break; 
 			}
 		}
 
-		if (IsRowMatch)
+		if (IsResultRowMatch)
 		{
 			// 여기서 Match 한 숫자가 무엇인지 확인하고
 			// Match_State를 세팅한다.
@@ -617,15 +626,15 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index)
 			else if (CheckMatchNum >= 5)
 				RowResultState = Match_State::MirrorBall;
 
+			// Match 결과 true로 세팅
+			Match = true;
+
 			// For 문 나가기 --> 제일 높은 숫자부터, 아래숫자로 검사하는 것이기 때문이다.
 			break;
 		}
-
-		if (IsRowMatch)
-			break;
 	}
 
-	if (!IsRowMatch)
+	if (!Match)
 		RowResultState = Match_State::NoMatch;
 
 	return RowResultState;
@@ -639,7 +648,8 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index)
 	// 현재 검사하는 Cell의 Index
 	int CurIndex = -1;
 
-	bool IsColMatch = true;
+	// Match 최종 결과 
+	bool Match = false;
 
 	// 최소 3개까지 조사, 최대 조사 개수는 Row // Col 여부에 따라 달라지게 될 것이다.
 	int MinCheckLength = 3, MaxCheckLength = m_ColCount;
@@ -649,9 +659,11 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index)
 	// 최대 --> 최소 길이 순으로 조사하기
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
 	{
+		bool IsLengthMatch = false;
+
 		for (int StartColOffset = 0; StartColOffset <= CheckMatchNum - 1; StartColOffset++)
 		{
-			IsColMatch = true;
+			bool IsPartMatch = true;
 
 			// 현재 ClickCell 이 포함된 Row 범위에 대해서만 조사할 것이다.
 			CheckStartCol = (ColIndex + StartColOffset) - (CheckMatchNum - 1);
@@ -659,7 +671,7 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index)
 			// 아래로 범위가 벗어난 경우
 			if (CheckStartCol < 0)
 			{
-				IsColMatch = true;
+				IsPartMatch = false;
 				continue;
 			}
 
@@ -668,7 +680,7 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index)
 
 			if (CheckEndCol >= m_ColCount)
 			{
-				IsColMatch = false;
+				IsPartMatch = false;
 				// continue;
 				// 여기 걸리면 이후에도 여기 계속 걸린다.
 				// 어차피 CheckEndCol 는 계속 증가하기 때문이다.
@@ -684,13 +696,13 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index)
 
 				if (m_vecCells[CurIndex]->GetCellType() != InitCellType)
 				{
-					IsColMatch = false;
+					IsPartMatch = false;
 					break;
 				}
 			}
 
 			// 만약 해당 Row (세로)가 Match 라면, 해당 Cell 들을 Match 상태로 바꿔준다.
-			if (IsColMatch)
+			if (IsPartMatch)
 			{
 				for (int MatchedCol = CheckStartCol; MatchedCol <= CheckEndCol; MatchedCol++)
 				{
@@ -698,12 +710,15 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index)
 						m_vecCellIsMatch[RowIndex * m_ColCount + MatchedCol] = true;
 				}
 
+				// 해당 길이에서의 match 여부를 true 로 세팅
+				IsLengthMatch = true;
+
 				// For 문을 빠져나간다.
 				break;
 			}
 		}
 
-		if (IsColMatch)
+		if (IsLengthMatch)
 		{
 			// 여기서 Match 한 숫자가 무엇인지 확인하고
 			// Match_State를 세팅한다.
@@ -714,15 +729,16 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index)
 			else if (CheckMatchNum >= 5)
 				ColResultState = Match_State::MirrorBall;
 
+			// 전체 Match 결과 true로 세팅
+			Match = true;
+
 			// For 문 나가기 --> 제일 높은 숫자부터 조사하는 것이기 때문이다.
+			// 한 세트가 끝난 이후. 해당 세트에서 Match가 나왔다면, 더이상 진행할 필요는 없다.
 			break;
 		}
-
-		if (IsColMatch)
-			break;
 	}
 
-	if (!IsColMatch)
+	if (!Match)
 		ColResultState = Match_State::NoMatch;
 
 	return ColResultState;
@@ -730,20 +746,20 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index)
 
 bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index)
 {
-	bool BoolUpRight = CheckBagUpRightMatch(RowIndex, ColIndex, Index);
-	bool BoolDownRight = CheckBagDownRightMatch(RowIndex, ColIndex, Index);
-	bool BoolUpLeft = CheckBagUpLeftMatch(RowIndex, ColIndex, Index);
-	bool BoolDownLeft = CheckBagDownLeftMatch(RowIndex, ColIndex, Index);
+	bool BoolRightDown = CheckBagRightDownMatch(RowIndex, ColIndex, Index);
+	bool BoolRightUp = CheckBagRightUpMatch(RowIndex, ColIndex, Index);
+	bool BoolLeftDown = CheckBagLeftDownMatch(RowIndex, ColIndex, Index);
+	bool BoolLeftUp = CheckBagLeftUpMatch(RowIndex, ColIndex, Index);
 	bool BoolCenterRight = CheckBagCenterRightMatch(RowIndex, ColIndex, Index);
 	bool BoolCenterLeft = CheckBagCenterLeftMatch(RowIndex, ColIndex, Index);
 	bool BoolCenterDown = CheckBagCenterDownMatch(RowIndex, ColIndex, Index);
 	bool BoolCenterUp = CheckBagCenterUpMatch(RowIndex, ColIndex, Index);
 
-	return BoolUpRight || BoolDownRight || BoolUpLeft || BoolDownLeft ||
+	return BoolRightDown || BoolRightUp || BoolLeftDown || BoolLeftUp ||
 		BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
 }
 
-bool CBoard::CheckBagUpRightMatch(int RowIdx, int ColIdx, int Index)
+bool CBoard::CheckBagRightDownMatch(int RowIdx, int ColIdx, int Index)
 {
 	// 오른쪽 3개를 검사해야 하는데 범위를 벗어났다면 X
 	if (ColIdx + 2 >= m_ColCount)
@@ -761,7 +777,6 @@ bool CBoard::CheckBagUpRightMatch(int RowIdx, int ColIdx, int Index)
 	std::vector<int> MatchIdxList;
 	MatchIdxList.reserve(6);
 
-	// 한 세트안에서의 제일 위의 Row 에서는
 	// 현재 Col 에서부터 오른쪽 2칸을 검사한다.
 	for (int col = ColIdx + 1; col <= ColIdx + 2; col++)
 	{
@@ -776,7 +791,7 @@ bool CBoard::CheckBagUpRightMatch(int RowIdx, int ColIdx, int Index)
 	// 아래 2개
 	for (int row = RowIdx - 1; row >= RowIdx - 2; row--)
 	{
-		if (m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType() != InitType)
+		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType)
 		{
 			Match = false;
 			return false;
@@ -799,7 +814,7 @@ bool CBoard::CheckBagUpRightMatch(int RowIdx, int ColIdx, int Index)
 	return true;
 }
 
-bool CBoard::CheckBagDownRightMatch(int RowIdx, int ColIdx, int Index)
+bool CBoard::CheckBagRightUpMatch(int RowIdx, int ColIdx, int Index)
 {
 
 	// 오른쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
@@ -838,7 +853,7 @@ bool CBoard::CheckBagDownRightMatch(int RowIdx, int ColIdx, int Index)
 			Match = false;
 			return false;
 		}
-		MatchIdxList.push_back(row);
+		MatchIdxList.push_back(row * m_ColCount + ColIdx);
 	}
 
 	// 만약 모드 맞았다면
@@ -856,7 +871,7 @@ bool CBoard::CheckBagDownRightMatch(int RowIdx, int ColIdx, int Index)
 	return true;
 }
 
-bool CBoard::CheckBagUpLeftMatch(int RowIdx, int ColIdx, int Index)
+bool CBoard::CheckBagLeftDownMatch(int RowIdx, int ColIdx, int Index)
 {
 	// 왼쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
 	if (ColIdx - 2 < 0)
@@ -912,7 +927,7 @@ bool CBoard::CheckBagUpLeftMatch(int RowIdx, int ColIdx, int Index)
 	return true;
 }
 
-bool CBoard::CheckBagDownLeftMatch(int RowIdx, int ColIdx, int Index)
+bool CBoard::CheckBagLeftUpMatch(int RowIdx, int ColIdx, int Index)
 {
 	// 왼쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
 	if (ColIdx - 2 < 0)
@@ -943,7 +958,7 @@ bool CBoard::CheckBagDownLeftMatch(int RowIdx, int ColIdx, int Index)
 	}
 
 	// 위 2개 Row 를 고려한다.
-	for (int row = RowIdx + 1; row >= RowIdx + 2; row++)
+	for (int row = RowIdx + 1; row <= RowIdx + 2; row++)
 	{
 		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType)
 		{
@@ -1247,7 +1262,7 @@ void CBoard::Update(float DeltaTime)
 
 	// CreateNewCells();
 
-	// FindMatchUpdate();
+	FindMatchUpdate();
 }
 
 void CBoard::PostUpdate(float DeltaTime)
@@ -1343,7 +1358,7 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 			{
 				// Opacity 설정
 				// Cell->SetOpacity(0.0f);
-				Cell->SetOpacity(0.5f);
+				Cell->SetOpacity(0.1f);
 
 				// 안보인다는 멤버 변수 설정
 				Cell->SetShowEnable(false);

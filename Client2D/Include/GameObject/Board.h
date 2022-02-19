@@ -66,10 +66,10 @@ private :
     Match_State CheckColMatch(int RowIndex, int ColIndex, int Index);
 private :
     bool CheckBagMatch(int RowIndex, int ColIndex, int Index);
-    bool CheckBagUpRightMatch(int RowIndex, int ColIndex, int Index);
-    bool CheckBagDownRightMatch(int RowIndex, int ColIndex, int Index);
-    bool CheckBagUpLeftMatch(int RowIndex, int ColIndex, int Index);
-    bool CheckBagDownLeftMatch(int RowIndex, int ColIndex, int Index);
+    bool CheckBagRightDownMatch(int RowIndex, int ColIndex, int Index);
+    bool CheckBagRightUpMatch(int RowIndex, int ColIndex, int Index);
+    bool CheckBagLeftDownMatch(int RowIndex, int ColIndex, int Index);
+    bool CheckBagLeftUpMatch(int RowIndex, int ColIndex, int Index);
     bool CheckBagCenterRightMatch(int RowIndex, int ColIndex, int Index);
     bool CheckBagCenterLeftMatch(int RowIndex, int ColIndex, int Index);
     bool CheckBagCenterDownMatch(int RowIndex, int ColIndex, int Index);
