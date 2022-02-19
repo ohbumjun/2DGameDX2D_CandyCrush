@@ -5,7 +5,8 @@ enum Cell_Type {
 	Red,
 	Orange,
 	Yellow,
-	Green
+	Green,
+	End
 };
 
 enum class Cell_State {
@@ -14,7 +15,8 @@ enum class Cell_State {
 	ColLine,
 	Bag,
 	Notice,
-	MirrorBall
+	MirrorBall,
+	End
 };
 
 enum class Match_State {
@@ -23,7 +25,8 @@ enum class Match_State {
 	RowLine,
 	ColLine,
 	Bag,
-	MirrorBall
+	MirrorBall,
+	End
 };
 
 enum Mouse_Click {

@@ -39,42 +39,43 @@ void CCell::SetCellState(Cell_State State)
 
 	if (State == Cell_State::Normal)
 		SetCurrentAnimation("Normal");
-	if (State == Cell_State::RowLine)
+	else if (State == Cell_State::RowLine)
 		SetCurrentAnimation("RowLine");
-	if (State == Cell_State::ColLine)
+	else if (State == Cell_State::ColLine)
 		SetCurrentAnimation("ColLine");
-	if (State == Cell_State::Bag)
+	else if (State == Cell_State::Bag)
 		SetCurrentAnimation("Bag");
-	if (State == Cell_State::Notice)
+	else if (State == Cell_State::Notice)
 		SetCurrentAnimation("Notice");
-	if (State == Cell_State::MirrorBall)
+	else if (State == Cell_State::MirrorBall)
 		SetCurrentAnimation("MirrorBall");
+}
+
+void CCell::SetCellState (Match_State State)
+{
+
+	// NoMatch, Normal 둘다 Cell_State 는 Normal 로 
+	if (State == Match_State::NoMatch)
+		SetCellState(Cell_State::Normal);
+	else if (State == Match_State::Normal)
+		SetCellState(Cell_State::Normal);
+	else if (State == Match_State::RowLine)
+		SetCellState(Cell_State::RowLine);
+	else if (State == Match_State::ColLine)
+		SetCellState(Cell_State::ColLine);
+	else if (State == Match_State::Bag)
+		SetCellState(Cell_State::Bag);
+	else if (State == Match_State::MirrorBall)
+		SetCellState(Cell_State::MirrorBall);
+
+	// Notice 는 Match_State 후보 목록에 존재하지 않는다.
 
 }
 
-void CCell::SetCurrentAnimation(Match_State State)
+
+
+void CCell::SetCurrentAnimation(const std::string& Name)
 {
-	std::string Name = "";
-
-	switch (State)
-	{
-	case Match_State::NoMatch :
-		Name = "Normal";
-		break;
-	case Match_State::RowLine :
-		Name = "RowLine";
-		break;
-	case Match_State::ColLine :
-		Name = "ColLine";
-		break;
-	case Match_State::Bag:
-		Name = "Bag";
-		break;
-	case Match_State::MirrorBall:
-		Name = "MirrorBall";
-		break;
-	}
-
 	m_Sprite->GetAnimationInstance()->SetCurrentAnimation(Name);
 }
 

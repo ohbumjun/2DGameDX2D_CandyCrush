@@ -89,7 +89,8 @@ public :
 public :
     void SetCellType(Cell_Type Type);
     void SetCellState(Cell_State State);
-    void SetCurrentAnimation(Match_State State);
+    void SetCellState(Match_State State);
+    void SetCurrentAnimation(const std::string& Name);
 public :
     void SetPlacedNew (bool New)
 {
@@ -154,3 +155,4 @@ public:
 };
 
 
+;

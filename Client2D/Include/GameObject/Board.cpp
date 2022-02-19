@@ -12,8 +12,8 @@ CBoard::CBoard() :
 	m_FirstClickCell(nullptr),
 	m_SecClickCell(nullptr),
 	m_ClickCellsMoveDone(0),
-	m_DRow{-1, 1, 0, 0},
-	m_DCol{0, 0, 1, -1},
+	m_DRow{ -1, 1, 0, 0 },
+	m_DCol{ 0, 0, 1, -1 },
 	m_IsCheckUpdateNeeded(false)
 {
 }
@@ -45,7 +45,7 @@ void CBoard::AddClickCellMoveDone()
 void CBoard::SwitchClickCellsInfo()
 {
 	int FirstRowIndex = m_FirstClickCell->GetRowIndex();
-	int FirstColIndex  = m_FirstClickCell->GetColIndex();
+	int FirstColIndex = m_FirstClickCell->GetColIndex();
 	int FirstIndex = FirstRowIndex * m_ColCount + FirstColIndex;
 	// float FirstNewPosY = m_FirstClickCell->GetNewDownPosY();
 
@@ -66,7 +66,7 @@ void CBoard::SwitchClickCellsInfo()
 	// RefCount가 0이 되어서, 사라져 버린다.
 	CSharedPtr<CCell> Temp = m_vecCells[FirstIndex];
 	m_vecCells[FirstIndex] = m_SecClickCell;
-	m_vecCells[SecIndex]   = Temp;
+	m_vecCells[SecIndex] = Temp;
 
 }
 
@@ -86,7 +86,7 @@ void CBoard::FindMatchCellsAfterTwoClick()
 	// 여전히 m_vecCells 안에는 남아있게 된다.
 	DestroyCells();
 
-	// Board 위쪽에 새로운 Cell 생성
+	// 새로운 Cell 생성
 	CreateNewCellsAboveShownArea();
 
 	// todo : Match가 있었다면 Click Cell 정보를 초기화 해준다.
@@ -148,51 +148,14 @@ void CBoard::CreateNewCellsAboveShownArea()
 		for (int offset = 0; offset < m_vecColNewCellNums[col]; offset++)
 		{
 			int RowIndex = m_RowCount - 1 - offset;
-			int Index = RowIndex * m_ColCount + col;
 
-			CCell* Cell = CSceneManager::GetInst()->GetScene()->CreateGameObject<CCell>("Cell");
+			Vector3 WorldPos = Vector3(BoardStartPos.x + m_CellSize.x * col, TopYPos - m_CellSize.y * offset, 1.f);
 
-			// Owner 세팅 
-			Cell->m_Board = this;
+			int Type = rand() % (int)Cell_Type::End;
 
-			// Scene 세팅 
-			Cell->SetScene(m_Scene);
+			float NewYPos = TopYPos - m_CellSize.y * offset;
 
-			// x는 열, y는 행
-			float NewCellXPos = BoardStartPos.x + m_CellSize.x * col;
-			float NewCellYPos = TopYPos - m_CellSize.y * offset;
-			Cell->SetWorldPos(BoardStartPos.x + m_CellSize.x * col, TopYPos - m_CellSize.y * offset, 1.f);
-
-			// 크기 세팅 
-			Cell->SetWorldScale(Vector3(m_CellSize.x, m_CellSize.y, 1.f));
-
-			// Index 세팅 --> NewPosY도 세팅
-			Cell->SetIndexInfo(Index, RowIndex, col);
-
-			// Type 세팅
-			int Type = rand() % 5;
-			Cell->SetCellType((Cell_Type)Type);
-
-			// 투명도 세팅 ( 안보이게 하기 )
-			Cell->SetOpacity(0.1f);
-
-			// 안보인다는 멤버 변수 설정
-			Cell->SetShowEnable(false);
-
-			// 보여지는 영역 경계선 설정하기
-			Cell->SetShownAreaTopYPos(BoardStartPos.y + m_CellSize.y * m_VisualRowCount);
-
-			// WorldY Pos 세팅하기
-			Cell->SetWorldYPos(TopYPos - m_CellSize.y * offset);
-
-			// NewY Pos 세팅하기
-			Cell->SetNewDownPosY(TopYPos - m_CellSize.y * offset);
-
-			// 현재 Animation 으로 세팅하기
-			Cell->SetCurrentAnimation("Normal");
-
-			// vector 목록에 추가 
-			m_vecCells[Index] = Cell;
+			CreateSingleNewCell(RowIndex, col, WorldPos,NewYPos, (Cell_Type)Type, 0.1f, false);
 		}
 	}
 
@@ -213,6 +176,57 @@ void CBoard::CreateNewCellsAboveShownArea()
 	}
 }
 
+CCell* CBoard::CreateSingleNewCell(int RowIndex, int ColIndex, const Vector3& WorldPos, float NewYPos, 
+	Cell_Type Type, float Opacity, bool ShowEnable)
+{
+	int Index = RowIndex * m_ColCount + ColIndex;
+
+	CCell* Cell = CSceneManager::GetInst()->GetScene()->CreateGameObject<CCell>("Cell");
+
+	Vector3 BoardStartPos = GetWorldPos();
+
+	// Owner 세팅 
+	Cell->m_Board = this;
+
+	// Scene 세팅 
+	Cell->SetScene(m_Scene);
+
+	// x는 열, y는 행
+	Cell->SetWorldPos(WorldPos);
+
+	// 크기 세팅 
+	Cell->SetWorldScale(Vector3(m_CellSize.x, m_CellSize.y, 1.f));
+
+	// Index 세팅 --> NewPosY도 세팅
+	Cell->SetIndexInfo(Index, RowIndex, ColIndex);
+
+	// Type 세팅
+	Cell->SetCellType(Type);
+
+	// 투명도 세팅 ( 안보이게 하기 )
+	Cell->SetOpacity(Opacity);
+
+	// 안보인다는 멤버 변수 설정
+	Cell->SetShowEnable(ShowEnable);
+
+	// 보여지는 영역 경계선 설정하기
+	Cell->SetShownAreaTopYPos(BoardStartPos.y + m_CellSize.y * m_VisualRowCount);
+
+	// WorldY Pos 세팅하기
+	Cell->SetWorldYPos(WorldPos.y);
+
+	// NewY Pos 세팅하기
+	Cell->SetNewDownPosY(NewYPos);
+
+	// Normal 로 세팅
+	// Cell->SetCurrentAnimation("Normal");
+
+	// vector 목록에 추가 
+	m_vecCells[Index] = Cell;
+
+	return Cell;
+}
+
 void CBoard::DestroyCells()
 {
 	int CheckMaxIndex = m_VisualRowCount * m_ColCount;
@@ -220,32 +234,17 @@ void CBoard::DestroyCells()
 	for (int Index = 0; Index < m_TotCount / 2; Index++)
 	{
 		// 만약 Match 된 녀석이라면 
-		if (m_vecCellIsMatch[Index]) 
+		if (m_vecCellIsMatch[Index])
 		{
 			int RowIndex = Index / m_ColCount;
 			int ColIndex = Index % m_ColCount;
 
+			// 화면에서 제거해주고
+			m_vecCells[Index]->Destroy();
 
-			// Special 하게 Match가 된 녀석인지 확인
-
-			// Special Match 라면
-			// 해당 위치에 새롭게 Cell 생성
-			// 개수 1 증가 X
-			// 새롭게 생성된 녀석도, 아래 함수에서 새로운 위치를 할당받게 될 것이다.
-			if ((int)m_vecMatchState[Index] > (int)Match_State::NoMatch)
-			{
-				
-			}
-			// 그게 아니라면 그냥 사라지게 한 다음 , 개수 1 증가
-			else
-			{
-				// 화면에서 제거해주고
-				m_vecCells[Index]->Destroy();
-				
-				// 해당 Column 에서 생성한 새로운 Cell 개수를 +1 해준다.
-				// 해당 Column 에서 제거된 Cell의 개수를 지정하는 것이다.
-				m_vecColNewCellNums[ColIndex] += 1;
-			}
+			// 해당 Column 에서 생성한 새로운 Cell 개수를 +1 해준다.
+			// 해당 Column 에서 제거된 Cell의 개수를 지정하는 것이다.
+			m_vecColNewCellNums[ColIndex] += 1;
 		}
 	}
 
@@ -357,7 +356,7 @@ bool CBoard::FindMatchUpdate()
 	// 여전히 m_vecCells 안에는 남아있게 된다.
 	DestroyCells();
 
-	// Board 위쪽 새로운 Cell 생성
+	// 새로운 Cell 생성
 	CreateNewCellsAboveShownArea();
 
 	return Match;
@@ -409,12 +408,10 @@ bool CBoard::CheckMatchUpdate()
 		// 최종 결과
 		CellResult = (int)CellResult > (int)CellBagResult ? CellResult : CellBagResult;
 
-		/*
 		if ((int)CellResult > (int)Match_State::NoMatch)
 		{
 			m_vecMatchState[i] = CellResult;
 		}
-		*/
 
 		// 최종 결과 저장하기
 		// 이것은 특수 타입의 Cell 을 만들기 위함인데
@@ -447,57 +444,6 @@ bool CBoard::CheckCellsMoving()
 	return false;
 }
 
-void CBoard::CreateNewSpecialCellAtPos(Cell_Type Type, Match_State State, int Index)
-{
-	int RowIndex = Index / m_ColCount;
-	int ColIndex = Index % m_ColCount;
-
-	CCell* Cell = CSceneManager::GetInst()->GetScene()->CreateGameObject<CCell>("Cell");
-
-	// Owner 세팅 
-	Cell->m_Board = this;
-
-	// Scene 세팅 
-	Cell->SetScene(m_Scene);
-
-	Vector3 BoardStartPos = GetWorldPos();
-
-	// x는 열, y는 행
-	float NewCellXPos = BoardStartPos.x + m_CellSize.x * ColIndex;
-	float NewCellYPos = BoardStartPos.y + m_CellSize.y * ColIndex;
-	Cell->SetWorldPos(NewCellXPos, NewCellYPos, 1.f);
-
-	// 크기 세팅 
-	Cell->SetWorldScale(Vector3(m_CellSize.x, m_CellSize.y, 1.f));
-
-	// Index 세팅 --> NewPosY도 세팅
-	Cell->SetIndexInfo(Index, RowIndex, ColIndex);
-
-	// Type 세팅
-	Cell->SetCellType((Cell_Type)Type);
-
-	// Animation 결과 세팅하기 
-
-	// 투명도 세팅 ( 보이게 하기 )
-	Cell->SetOpacity(1.f);
-
-	// 안보인다는 멤버 변수 설정
-	Cell->SetShowEnable(false);
-
-	// 보여지는 영역 경계선 설정하기
-	Cell->SetShownAreaTopYPos(BoardStartPos.y + m_CellSize.y * m_VisualRowCount);
-
-	// WorldY Pos 세팅하기
-	Cell->SetWorldYPos(NewCellYPos);
-
-	// NewY Pos 세팅하기 --> 새롭게 생성되는 위치와 동일한 값으로 세팅
-	Cell->SetNewDownPosY(NewCellYPos);
-
-	// vector 목록에 추가 
-	m_vecCells[Index] = Cell;
-}
-
-
 void CBoard::AddClickCellMoveBackDone() // 정말로 클릭한 Cell 들의 이동이 끝날 때 실행하는 함수
 {
 	m_ClickCellsMoveDone += 1;
@@ -505,7 +451,7 @@ void CBoard::AddClickCellMoveBackDone() // 정말로 클릭한 Cell 들의 이동이 끝날 �
 	if (m_ClickCellsMoveDone >= 2)
 	{
 		m_ClickCellsMoveDone = 0;
-		
+
 		// 다시 마우스 클릭 상태를 되돌려서, 클릭이 가능하게 세팅한다.
 		m_MouseClick = Mouse_Click::None;
 
@@ -519,7 +465,7 @@ void CBoard::AddClickCellMoveBackDone() // 정말로 클릭한 Cell 들의 이동이 끝날 �
 
 		// 클릭한 Cell 들을 nullptr 처리한다
 		m_FirstClickCell = nullptr;
-		m_SecClickCell  = nullptr;
+		m_SecClickCell = nullptr;
 	}
 
 }
@@ -551,13 +497,13 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 
 	Match_State FCellResult;
 	Match_State FCellRowResult = Match_State::NoMatch;
-	Match_State FCellColResult   = Match_State::NoMatch;
-	Match_State FCellBagResult  = Match_State::NoMatch;
+	Match_State FCellColResult = Match_State::NoMatch;
+	Match_State FCellBagResult = Match_State::NoMatch;
 
 	Match_State SCellResult;
 	Match_State SCellRowResult = Match_State::NoMatch;
-	Match_State SCellColResult   = Match_State::NoMatch;
-	Match_State SCellBagResult  = Match_State::NoMatch;
+	Match_State SCellColResult = Match_State::NoMatch;
+	Match_State SCellBagResult = Match_State::NoMatch;
 
 	// 1번째 Click Cell에 대한 검사 먼저 하기
 	FCellRowResult = CheckRowMatch(FirstClickCell->GetRowIndex(), FirstClickCell->GetColIndex(), FirstClickCell->GetIndex());
@@ -626,8 +572,8 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index)
 	{
 		// 특정 길이에서의 Row Match 여부 
 		bool IsResultRowMatch = false;
-		
-		for (int StartRowOffset = 0; StartRowOffset <= CheckMatchNum - 1; StartRowOffset ++)
+
+		for (int StartRowOffset = 0; StartRowOffset <= CheckMatchNum - 1; StartRowOffset++)
 		{
 			bool IsPartRowMatch = true;
 
@@ -682,7 +628,7 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index)
 				IsResultRowMatch = true;
 
 				// For 문을 빠져나간다.
-				break; 
+				break;
 			}
 		}
 
@@ -1310,52 +1256,6 @@ bool CBoard::CheckBagCenterUpMatch(int RowIdx, int ColIdx, int Index)
 	return true;
 }
 
-void CBoard::CreateSingleCell(int RowIndex, int ColIndex, int Index, Vector3 CellSize, Cell_Type Type, 
-	float Opacity, bool ShowEnable, Match_State State)
-{
-	// 현재 Animation 으로 세팅하기
-	Cell->SetCurrentAnimation("Normal");
-
-	// vector 목록에 추가 
-	m_vecCells[Index] = Cell;
-
-	// CCell* Cell = m_Scene->CreateGameObject<CCell>("Cell");
-	CCell* Cell = CSceneManager::GetInst()->GetScene()->CreateGameObject<CCell>("Cell");
-
-	Vector3 BoardStartPos = GetWorldPos();
-
-	Cell->m_Board = this;
-	Cell->SetScene(m_Scene);
-
-	// x는 열, y는 행
-	float CellWorldYPos = BoardStartPos.y + m_CellSize.y * RowIndex;
-	Cell->SetWorldPos(BoardStartPos.x + m_CellSize.x * ColIndex, CellWorldYPos, 1.f);
-
-	// 크기 세팅
-	Cell->SetWorldScale(CellSize);
-
-	// Index 세팅 --> NewPosY도 세팅
-	Cell->SetIndexInfo(RowIndex * m_ColCount + ColIndex, RowIndex, ColIndex);
-
-	// 경계선 Y Pos 세팅하기
-	float ShownAreaTopYPos = BoardStartPos.y + m_CellSize.y * m_VisualRowCount;
-
-	Cell->SetShownAreaTopYPos(ShownAreaTopYPos);
-
-	// WorldY Pos 세팅하기
-	Cell->SetWorldYPos(BoardStartPos.y + m_CellSize.y * RowIndex);
-
-	// NewY Pos 세팅하기
-	Cell->SetNewDownPosY(BoardStartPos.y + m_CellSize.y * RowIndex);
-
-	// Current Animation은 기본으로
-	Cell->SetCurrentAnimation("Normal");
-
-	Cell->SetOpacity(Opacity);
-
-	m_vecCells[RowIndex * m_ColCount + ColIndex] = Cell;
-}
-
 bool CBoard::Init()
 {
 	if (!CGameObject::Init())
@@ -1389,14 +1289,11 @@ void CBoard::PostUpdate(float DeltaTime)
 
 bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float HeightRatio, const Vector3& LB)
 {
-
 	m_RowCount = CountRow * 2; // 보여지지 않는 영역까지 포함
 	m_ColCount = CountCol;
 	m_TotCount = m_RowCount * m_ColCount;
 	m_VisualRowCount = CountRow;
 	m_IndexOffset = m_ColCount * m_VisualRowCount;
-
-	SetWorldPos(LB);
 
 	// m_vecColNewCellNums : 각 열마다 몇개가 새로 생성되어야 하는가
 	m_vecColNewCellNums.resize(CountCol);
@@ -1428,8 +1325,8 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 
 	// 높이의 경우 2배로 세팅한다. --> 실제 화면에 보여지는 영역 + 위로 숨은 영역
 	// x,y : 열, 행
-	m_Static->SetWorldScale((float)(RS.Width * (WidthRatio / 100.f)), (float)(RS.Height * (HeightRatio/ 100.f)) * 2.f,  1.f);
-	
+	m_Static->SetWorldScale((float)(RS.Width * (WidthRatio / 100.f)), (float)(RS.Height * (HeightRatio / 100.f)) * 2.f, 1.f);
+
 
 	// Block, Cell 세팅
 	m_vecBlocks.resize(m_TotCount);
@@ -1440,59 +1337,35 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 
 	m_CellSize.x = CellSize.x;
 	m_CellSize.y = CellSize.y;
-	
+
 	for (int row = 0; row < m_RowCount; row++)
 	{
 		for (int col = 0; col < m_ColCount; col++)
 		{
-			// CCell* Cell = m_Scene->CreateGameObject<CCell>("Cell");
-			CCell* Cell = CSceneManager::GetInst()->GetScene()->CreateGameObject<CCell>("Cell");
-
-			Cell->m_Board = this;
-			Cell->SetScene(m_Scene);
-
-			// x는 열, y는 행
 			float CellWorldYPos = BoardStartPos.y + m_CellSize.y * row;
-			Cell->SetWorldPos(BoardStartPos.x + m_CellSize.x * col, CellWorldYPos, 1.f);
+			Vector3 WorldPos = Vector3(BoardStartPos.x + m_CellSize.x * col, CellWorldYPos, 1.f);
 
-			// 크기 세팅
-			Cell->SetWorldScale(CellSize);
+			float NewYPos = BoardStartPos.y + m_CellSize.y * row;
 
-			// Index 세팅 --> NewPosY도 세팅
-			Cell->SetIndexInfo(row * m_ColCount + col, row, col);
+			int Type = (int)(rand() % (int)Cell_Type::End);
 
-			// 경계선 Y Pos 세팅하기
-			float ShownAreaTopYPos = BoardStartPos.y + m_CellSize.y * m_VisualRowCount;
+			CCell* NewCell =  CreateSingleNewCell(row, col, WorldPos, NewYPos, (Cell_Type)Type, 1.f,true);
 
-			Cell->SetShownAreaTopYPos(ShownAreaTopYPos);
-
-			// WorldY Pos 세팅하기
-			Cell->SetWorldYPos(BoardStartPos.y + m_CellSize.y * row);
-
-			// NewY Pos 세팅하기
-			Cell->SetNewDownPosY(BoardStartPos.y + m_CellSize.y * row);
-
-			// Current Animation은 기본으로
-			Cell->SetCurrentAnimation("Normal");
-
-			// 안보이는 영역에 있을 경우, opacity 0으로 설정
-			if (CellWorldYPos >= ShownAreaTopYPos)
+			if (CellWorldYPos >= BoardStartPos.y + m_CellSize.y * m_VisualRowCount)
 			{
 				// Opacity 설정
 				// Cell->SetOpacity(0.0f);
-				Cell->SetOpacity(0.1f);
+				NewCell->SetOpacity(0.1f);
 
 				// 안보인다는 멤버 변수 설정
-				Cell->SetShowEnable(false);
+				NewCell->SetShowEnable(false);
 			}
-
-			m_vecCells[row * m_ColCount + col] = Cell;
 		}
 	}
 
 	// 한번 랜덤하게 섞기
 	ShuffleRandom();
-		
+
 	return true;
 }
 
