@@ -83,10 +83,12 @@ void CCell::GoDown(float DeltaTime)
 			if (CurYPos < m_ShownAreaTopYPos - m_ShownAreaOffset)
 			{
 				// 최종 남은 위치까지 알파값을 서서히 증가시킨다
-				m_Sprite->SetOpacity(((m_PosY - CurYPos) / GetWorldScale().y));
+				// 총 가야할 거리
+				float TotalDist = (m_ShownAreaTopYPos - m_ShownAreaOffset) - m_NewDownPosY;
+				float Dist = (m_ShownAreaTopYPos - m_ShownAreaOffset) - CurYPos;
+				m_Sprite->SetOpacity(Dist / TotalDist);
 
 				// 만약 최종 위치에 도달했다면
-				// 
 				if (CurYPos <= m_NewDownPosY + m_ShownAreaOffset)
 				{
 					m_IsShownEnable = true;
