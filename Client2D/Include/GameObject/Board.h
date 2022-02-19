@@ -74,15 +74,19 @@ private :
     bool CheckBagCenterLeftMatch(int RowIndex, int ColIndex, int Index);
     bool CheckBagCenterDownMatch(int RowIndex, int ColIndex, int Index);
     bool CheckBagCenterUpMatch(int RowIndex, int ColIndex, int Index);
+private : // Cell 생성
+    void CreateSingleCell();
+    void CreateNewCellsAboveShownArea();
+    void CreateNewSpecialCellAtPos(Cell_Type Type, Match_State State, int Index);
 private :
     void ClickCell(float DeltaTime);
     void ShuffleRandom();
     void FindMatchCellsAfterTwoClick(); // 2개 Cell 클릭 이후 실행하기
     void SetFindMatchCellsDone();
-    void CreateNewCells();
     void DestroyCells();
     bool FindMatchUpdate(); // 실시간으로 Match 여부 검사하기
     bool CheckMatchUpdate();
     bool CheckCellsMoving();
+private :
 };
 

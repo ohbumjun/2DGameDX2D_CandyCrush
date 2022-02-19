@@ -4,8 +4,8 @@
 #include "Board.h"
 
 CCell::CCell() :
-	m_MoveSpeed(300.f),
-	m_ShownAreaOffset(1.f),
+	m_MoveSpeed(400.f),
+	m_ShownAreaOffset(5.f),
 	m_IsShownEnable(true),
 	m_IsGoingBack(false),
 	m_IsSwitch(false)
@@ -52,8 +52,29 @@ void CCell::SetCellState(Cell_State State)
 
 }
 
-void CCell::SetCurrentAnimation(const std::string& Name)
+void CCell::SetCurrentAnimation(Match_State State)
 {
+	std::string Name = "";
+
+	switch (State)
+	{
+	case Match_State::NoMatch :
+		Name = "Normal";
+		break;
+	case Match_State::RowLine :
+		Name = "RowLine";
+		break;
+	case Match_State::ColLine :
+		Name = "ColLine";
+		break;
+	case Match_State::Bag:
+		Name = "Bag";
+		break;
+	case Match_State::MirrorBall:
+		Name = "MirrorBall";
+		break;
+	}
+
 	m_Sprite->GetAnimationInstance()->SetCurrentAnimation(Name);
 }
 
@@ -80,7 +101,7 @@ void CCell::GoDown(float DeltaTime)
 		// 만약 안보이는 위치였다가 보이는 위치로 들어가게 된다면
 		if (!m_IsShownEnable)
 		{
-			if (CurYPos < m_ShownAreaTopYPos - m_ShownAreaOffset)
+			if (CurYPos < m_ShownAreaTopYPos)
 			{
 				// 최종 남은 위치까지 알파값을 서서히 증가시킨다
 				// 총 가야할 거리
@@ -92,6 +113,7 @@ void CCell::GoDown(float DeltaTime)
 				if (CurYPos <= m_NewDownPosY + m_ShownAreaOffset)
 				{
 					m_IsShownEnable = true;
+					m_Sprite->SetOpacity(1.f);
 				}
 			}
 		}
@@ -99,7 +121,7 @@ void CCell::GoDown(float DeltaTime)
 		m_IsPlacedNew = false;
 
 		// 새로운 위치에 도달했다면 
-		if (CurYPos <= m_NewDownPosY)
+		if (CurYPos <= m_NewDownPosY + m_ShownAreaOffset)
 		{
 			Vector3 WorldPos = GetWorldPos();
 
