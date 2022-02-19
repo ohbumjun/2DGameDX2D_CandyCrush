@@ -708,7 +708,7 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 				if (IsClickCell)
 				{
 					if (CheckMatchNum == 4)
-						RowResultState = Match_State::RowLine;//
+						RowResultState = Match_State::RowLine;
 					else if (CheckMatchNum >= 5)
 						RowResultState = Match_State::MirrorBall;
 				}
