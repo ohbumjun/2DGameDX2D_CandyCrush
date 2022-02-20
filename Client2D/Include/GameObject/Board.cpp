@@ -606,8 +606,29 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	// 최종 결과
 	SCellResult = (int)SCellResult > (int)SCellBagResult ? SCellResult : SCellBagResult;
 
-	// State 세팅하기 
-	m_vecMatchState[SecClickCell->GetIndex()] = SCellResult;
+	// State 세팅하기
+	// 단 조건이 있다.
+	bool IsSCellResultValid = true;
+	if (SCellResult == FCellResult)
+	{
+		// 1) FCell, SCell 둘다 RowResult, 둘이 Type 이 동일하다면 --> 인접해서 맞춰진 것
+		if (SCellResult == Match_State::RowLine && FCellResult == Match_State::RowLine
+			&& SecClickCell->GetCellType() == FirstClickCell->GetCellType())
+		{
+			IsSCellResultValid = false;
+		}
+		// 2) 둘다 ColMatch + 둘이 Type이 동일하다면 --> 인접 
+		if (SCellResult == Match_State::ColLine && FCellResult == Match_State::ColLine
+			&& SecClickCell->GetCellType() == FirstClickCell->GetCellType())
+		{
+			IsSCellResultValid = false;
+		}
+	}
+
+	if (IsSCellResultValid)
+	{
+		m_vecMatchState[SecClickCell->GetIndex()] = SCellResult;
+	}
 
 	bool Result = (int)SCellResult > (int)Match_State::NoMatch || (int)FCellResult > (int)Match_State::NoMatch;
 
@@ -708,7 +729,7 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 				if (IsClickCell)
 				{
 					if (CheckMatchNum == 4)
-						RowResultState = Match_State::RowLine;//
+						RowResultState = Match_State::ColLine;// 세로 
 					else if (CheckMatchNum >= 5)
 						RowResultState = Match_State::MirrorBall;
 				}
@@ -718,7 +739,7 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 					if (CheckStartRow == RowIndex)
 					{
 						if (CheckMatchNum == 4)
-							RowResultState = Match_State::RowLine;
+							RowResultState = Match_State::ColLine;
 						else if (CheckMatchNum >= 5)
 							RowResultState = Match_State::MirrorBall;
 					}
@@ -831,7 +852,7 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 				if (IsClickCell)
 				{
 					if (CheckMatchNum == 4)
-						ColResultState = Match_State::ColLine;
+						ColResultState = Match_State::RowLine;
 					else if (CheckMatchNum >= 5)
 						ColResultState = Match_State::MirrorBall;
 				}
@@ -841,7 +862,7 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 					if (CheckStartCol == ColIndex)
 					{
 						if (CheckMatchNum == 4)
-							ColResultState = Match_State::ColLine;
+							ColResultState = Match_State::RowLine;
 						else if (CheckMatchNum >= 5)
 							ColResultState = Match_State::MirrorBall;
 					}
