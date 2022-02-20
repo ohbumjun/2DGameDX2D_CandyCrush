@@ -119,7 +119,7 @@ void CCell::GoDown(float DeltaTime)
 			}
 		}
 
-		m_IsPlacedNew = false;
+		// m_IsPlacedNew = false;
 
 		// 새로운 위치에 도달했다면 
 		if (CurYPos <= m_NewDownPosY + m_ShownAreaOffset)
@@ -134,9 +134,9 @@ void CCell::GoDown(float DeltaTime)
 			m_PosY = m_NewDownPosY;
 
 			// 해단 녀석에 대해서만, 이제 Board Update 에서 Match 여부를 조사하게 될 것이다.
-			if (!m_IsPlacedNew)
-				m_IsPlacedNew = true;
-
+			// NO !! 가만히 있었는데 옆에 놈이 와서 Match 되는 경우도 고려해야 하므로 --> 가만히 있던 녀석도 Match를 고려해야 한다.
+			// if (!m_IsPlacedNew)
+			//	m_IsPlacedNew = true;
 		}
 	}
 }

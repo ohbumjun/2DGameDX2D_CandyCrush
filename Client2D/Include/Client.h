@@ -34,3 +34,11 @@ enum Mouse_Click {
 	First,
 	Second
 };
+
+enum class Destroy_State {
+	None,
+	Horizontal,
+	Vertical,
+	Bag,
+	MirrorBall
+};

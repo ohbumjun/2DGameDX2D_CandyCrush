@@ -239,6 +239,7 @@ void CBoard::DestroyCells()
 {
 	int CheckMaxIndex = m_VisualRowCount * m_ColCount;
 
+	// 새로운 Type 세팅 및 Destroy
 	for (int Index = 0; Index < m_TotCount / 2; Index++)
 	{
 		// 만약 Match 된 녀석이라면 
@@ -247,18 +248,23 @@ void CBoard::DestroyCells()
 			int RowIndex = Index / m_ColCount;
 			int ColIndex = Index % m_ColCount;
 
+			// 만약 Destroy_State 라면 --> 즉, 현재 터뜨려야 할 녀석이 있다면
+			if ((int)m_vecDestroyState[Index] > (int)Destroy_State::None)
+			{
+				if (m_vecDestroyState[Index] == Destroy_State::Horizontal)
+				{
+					DestroyHorizontal(RowIndex);
+				}
+			}
+
 			// 해당 위치에서의 MatchState 를 확인해서
 			// Normal 보다 큰 녀석이면, 그냥 State 만 바꿔주고
-			if ((int)m_vecMatchState[Index] > (int)Match_State::Normal)
+			else if ((int)m_vecMatchState[Index] > (int)Match_State::Normal)
 			{
 				m_vecCells[Index]->SetCellState(ChangeMatchStateToCellState(m_vecMatchState[Index]));
-				// m_vecCells[Index]->SetCellState(Cell_State::MirrorBall);
-				// CCell* Cell =  (CCell*)m_Scene->FindGameObject(m_vecCells[Index]->GetName());
-				// Cell->SetCurrentAnimation("Bag");
-				// m_vecCells[Index]->SetCurrentAnimation("Bag");
 			}
 			// 그게 아니라면, 제거 이후, 해당 Col 에서의 제거개수 + 1 을 해주면 된다.
-			else
+			else 
 			{
 				// 화면에서 제거해주고
 				m_vecCells[Index]->Destroy();
@@ -920,6 +926,26 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 	return ColResultState;
 }
 
+// 가로 모두 제거
+bool CBoard::DestroyHorizontal(int RowIndex)
+{
+	for (int col = 0; col < m_ColCount; col++)
+	{
+		m_vecCells[RowIndex * m_ColCount + col]->Destroy();
+	}
+
+	return true;
+}
+
+// 세로 모두 제거
+bool CBoard::DestroyVertical(int ColIndex)
+{
+	for (int row = 0; row < m_VisualRowCount; row++)
+	{
+		m_vecCells[row * m_ColCount + ColIndex]->Destroy();
+	}
+}
+
 bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index)
 {
 	bool BoolRightDown = CheckBagRightDownMatch(RowIndex, ColIndex, Index);
@@ -1465,6 +1491,9 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 
 	// 각 Cell의 Match 여부
 	m_vecCellIsMatch.resize(m_TotCount / 2);
+
+	// 각 Cell 의 Destroy State
+	m_vecDestroyState.resize(m_TotCount / 2);
 
 	for (int i = 0; i < m_TotCount / 2; i++)
 	{

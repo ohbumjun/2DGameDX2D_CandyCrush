@@ -32,6 +32,8 @@ private:
     // 각 Cell 이 현재 Match인지 아닌지
     std::vector<bool> m_vecCellIsMatch;
     std::list<int> m_ListDestroyedCellIndex;
+    // 각 Cell 에서 Special 하게 터뜨리는 효과를 어떤 것을 적용할 것인가
+    std::vector<Destroy_State> m_vecDestroyState;
     // Cell 들이 이동중인가
     bool m_CellsMoving;
     // Mouse Click
@@ -67,6 +69,9 @@ private: // Check Match
     bool CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell);
     Match_State CheckRowMatch(int RowIndex, int ColIndex, int Index, bool IsClickCell);
     Match_State CheckColMatch(int RowIndex, int ColIndex, int Index, bool IsClickCell);
+private : // Destroy Method
+    bool DestroyHorizontal(int RowIndex);
+    bool DestroyVertical(int ColIndex);
 private:
     bool CheckBagMatch(int RowIndex, int ColIndex, int Index);
     bool CheckBagRightDownMatch(int RowIndex, int ColIndex, int Index);
