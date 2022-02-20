@@ -416,8 +416,16 @@ bool CBoard::CheckMatchUpdate()
 
 	for (int i = 0; i < CheckMaxIndex; i++)
 	{
-		if (m_vecCells[i]->IsPlacedNew() == false)
-			continue;
+		// 이 조건을 세팅해버리면, 가만히 있다가, 옆에 놈이 내려와서, 자기도 Match 가 되었는데
+		// 단순히 가만히 있었다는 이유로 Match 처리가 안되면 안되니까...?
+		// 1) 그런데 이 녀석들도 제거는 할텐데 ... ?
+		// - 이거 다시 하고, 제거 되는지만 확인해보자
+		// - 지금 확인할 것은, Special 로 바뀌는지 여부이다.
+		// - 그런데 다 바뀌는 것은 맞아 ?? 
+		// 2) 그 다음, 이거 주석 치고, 실행했더니, Match 인데도 안사라지는 놈들이 있다... 이건 뭐지 ?
+		 
+		// if (m_vecCells[i]->IsPlacedNew() == false)
+		//	continue;
 
 		RowIndex = m_vecCells[i]->GetRowIndex();
 		ColIndex = m_vecCells[i]->GetColIndex();
@@ -430,7 +438,7 @@ bool CBoard::CheckMatchUpdate()
 		CellResult = (int)CellColResult > (int)CellRowResult ? CellColResult : CellRowResult;
 
 		// Bag 조합 검사하기
-		CellBagResult = CheckBagMatch(RowIndex, ColIndex, i) ? Match_State::Bag : Match_State::NoMatch;
+		// CellBagResult = CheckBagMatch(RowIndex, ColIndex, i) ? Match_State::Bag : Match_State::NoMatch;
 
 		// 최종 결과
 		CellResult = (int)CellResult > (int)CellBagResult ? CellResult : CellBagResult;
@@ -571,7 +579,7 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	FCellResult = (int)FCellColResult > (int)FCellRowResult ? FCellColResult : FCellRowResult;
 
 	// Bag 조합 검사하기
-	FCellBagResult = CheckBagMatch(FirstClickCell->GetRowIndex(), FirstClickCell->GetColIndex(), FirstClickCell->GetIndex()) ? Match_State::Bag : Match_State::NoMatch;
+	// FCellBagResult = CheckBagMatch(FirstClickCell->GetRowIndex(), FirstClickCell->GetColIndex(), FirstClickCell->GetIndex()) ? Match_State::Bag : Match_State::NoMatch;
 
 	// 최종 결과
 	FCellResult = (int)FCellResult > (int)FCellBagResult ? FCellResult : FCellBagResult;
@@ -601,7 +609,7 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	SCellResult = (int)SCellColResult > (int)SCellRowResult ? SCellColResult : SCellRowResult;
 
 	// Bag 조합 검사하기
-	SCellBagResult = CheckBagMatch(SecClickCell->GetRowIndex(), SecClickCell->GetColIndex(), SecClickCell->GetIndex()) ? Match_State::Bag : Match_State::NoMatch;
+	// SCellBagResult = CheckBagMatch(SecClickCell->GetRowIndex(), SecClickCell->GetColIndex(), SecClickCell->GetIndex()) ? Match_State::Bag : Match_State::NoMatch;
 
 	// 최종 결과
 	SCellResult = (int)SCellResult > (int)SCellBagResult ? SCellResult : SCellBagResult;
@@ -629,6 +637,7 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	{
 		m_vecMatchState[SecClickCell->GetIndex()] = SCellResult;
 	}
+	m_vecMatchState[SecClickCell->GetIndex()] = SCellResult;
 
 	bool Result = (int)SCellResult > (int)Match_State::NoMatch || (int)FCellResult > (int)Match_State::NoMatch;
 
@@ -736,12 +745,22 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 				else
 				{
 					// 그게 아니라, 실시간 Update 중 Match 라면, 자신이 가장 아래에 있을 때만 Special 세팅을 해준다.
+					/*
+					if (CheckMatchNum == 4)
+						RowResultState = Match_State::ColLine;
+					// else if (CheckMatchNum >= 5)
+					//	RowResultState = Match_State::MirrorBall;
+					*/
 					if (CheckStartRow == RowIndex)
 					{
+						if (CheckMatchNum >= 4)
+							RowResultState = Match_State::ColLine;
+						/*
 						if (CheckMatchNum == 4)
 							RowResultState = Match_State::ColLine;
 						else if (CheckMatchNum >= 5)
 							RowResultState = Match_State::MirrorBall;
+							*/
 					}
 					// 그게 아니라면, 그냥 Normal Match 로 표시해준다
 					else
@@ -768,7 +787,7 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 // 가로 검사 ( 왼쪽 오른쪽 )
 Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool IsClickCell)
 {
-	Match_State ColResultState;
+	Match_State ColResultState = Match_State::NoMatch;
 
 	// 현재 검사하는 Cell의 Index
 	int CurIndex = -1;
@@ -858,13 +877,24 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 				}
 				else
 				{
+					/*
+					if (CheckMatchNum == 4)
+						ColResultState = Match_State::RowLine;
+					// else if (CheckMatchNum >= 5)
+					//	ColResultState = Match_State::MirrorBall;
+					*/
+
 					// 그게 아니라, 실시간 Update 중 Match 라면, 자신이 가장 아래에 있을 때만 Special 세팅을 해준다.
 					if (CheckStartCol == ColIndex)
 					{
+						if (CheckMatchNum >= 4)
+							ColResultState = Match_State::RowLine;
+						/*
 						if (CheckMatchNum == 4)
 							ColResultState = Match_State::RowLine;
 						else if (CheckMatchNum >= 5)
 							ColResultState = Match_State::MirrorBall;
+							*/
 					}
 					// 그게 아니라면, 그냥 Normal Match 로 표시해준다
 					else
@@ -1546,8 +1576,12 @@ void CBoard::ClickCell(float DeltaTime)
 		// 만약 첫번째 선택된 녀석과 같은 녀석이면 skip
 		int FirstCellIndex = m_FirstClickCell->GetIndex();
 		int SecCellIndex = (IndexY * m_ColCount + IndexX);
+
 		if ((IndexY * m_ColCount + IndexX) == m_FirstClickCell->GetIndex())
+		{
+			m_MouseClick = Mouse_Click::None;
 			return;
+		}
 
 		// 인접하지 않는다면 Skip
 		int FirstCellColIndex = m_FirstClickCell->GetColIndex();
@@ -1583,7 +1617,7 @@ void CBoard::ShuffleRandom()
 {
 	for (int i = 0; i < m_TotCount; i++)
 	{
-		int Type = (rand() + 12) % 5;
+		int Type = (rand() + 12) % Cell_Type::End;
 		m_vecCells[i]->SetCellType((Cell_Type)Type);
 	}
 }

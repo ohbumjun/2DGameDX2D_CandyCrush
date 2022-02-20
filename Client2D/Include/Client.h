@@ -4,8 +4,8 @@ enum Cell_Type {
 	Blue,
 	Red,
 	Orange,
-	Yellow,
-	Green,
+	// Yellow,
+	// Green,
 	End
 };
 
