@@ -27,9 +27,9 @@ void CCell::SetCellType(Cell_Type Type)
 		SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Red"));
 	if (Type == Cell_Type::Orange)
 		SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Orange"));
-	/*
 	if (Type == Cell_Type::Yellow)
 		SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Yellow"));
+	/*
 	if (Type == Cell_Type::Green)
 		SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Green"));
 		*/
