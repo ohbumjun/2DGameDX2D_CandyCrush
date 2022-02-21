@@ -31,7 +31,6 @@ private:
     std::vector<int> m_vecCellDownNums;
     // 각 Cell 이 현재 Match인지 아닌지
     std::vector<bool> m_vecCellIsMatch;
-    std::list<int> m_ListDestroyedCellIndex;
     // 각 Cell 에서 Special 하게 터뜨리는 효과를 어떤 것을 적용할 것인가
     std::vector<Destroy_State> m_vecDestroyState;
     // 해당 Cell 에 Special Cell 생성 이후, 다시 Match가 되어서 터뜨릴 때 어떤 방법을 터뜨릴 것인가

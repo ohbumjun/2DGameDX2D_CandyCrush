@@ -34,7 +34,13 @@ private :
     bool m_IsPlacedNew; // 새로운 위치로 이동한 녀석인지
     bool m_IsMoving;
     Vector3 m_ClickDestPos;
+private : // 현재 이미 Special 상태여서, 다음 Match 때 Special Destroy 와 관련된 변수
+    DestroyMark_State m_DestroyMarkState;
 public :
+    DestroyMark_State GetDestroyMarkState () const
+{
+        return m_DestroyMarkState;
+}
     bool IsMoving () const
 {
         return m_IsMoving;
@@ -93,6 +99,10 @@ public :
     void SetCellState(Match_State State);
     void SetCurrentAnimation(const std::string& Name);
 public :
+    void SetDestroyMarkState (DestroyMark_State State)
+{
+        m_DestroyMarkState = State;
+}
     void SetPlacedNew (bool New)
 {
         m_IsPlacedNew = New;

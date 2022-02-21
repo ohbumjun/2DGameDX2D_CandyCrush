@@ -262,7 +262,10 @@ void CBoard::DestroyCells()
 			else if ((int)m_vecMatchState[Index] > (int)Match_State::Normal)
 			{
 				m_vecCells[Index]->SetCellState(ChangeMatchStateToCellState(m_vecMatchState[Index]));
-				m_vecDestroyState[Index] = ChangeMatchStateToDestroyState(m_vecMatchState[Index]);
+
+
+				// m_vecDestroyMarkState[Index] = ChangeMatchStateToDestroyMarkState(m_vecMatchState[Index]);
+				m_vecCells[Index]->SetDestroyMarkState(ChangeMatchStateToDestroyMarkState(m_vecMatchState[Index]));
 			}
 			// 그게 아니라면, 제거 이후, 해당 Col 에서의 제거개수 + 1 을 해주면 된다.
 			else 
@@ -719,7 +722,7 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	{
 		m_vecMatchState[SecClickCell->GetIndex()] = SCellResult;
 	}
-	m_vecMatchState[SecClickCell->GetIndex()] = SCellResult;
+	// m_vecMatchState[SecClickCell->GetIndex()] = SCellResult;
 
 	bool Result = (int)SCellResult > (int)Match_State::NoMatch || (int)FCellResult > (int)Match_State::NoMatch;
 
@@ -946,13 +949,11 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 
 		if (IsLengthMatch)
 		{
-			// 기존에 Special 한 녀석이 있었는지를 검사해야 한다.
-			// Col Match 기준 --> 가장 왼쪽을 기준으로 검사를 시작할 것이다
-			// 여기에서 각 Cell 마다의 Destroy State 를 세팅할 것이다.
-			bool MarkStateFound = false;
-
-			if (CheckStartCol == ColIndex)
+			if (IsClickCell)
 			{
+				bool MarkStateFound = false;
+
+				// 1) Special Candy가 이미 만들어져 있는지 확인
 				for (int col = CheckStartCol; col <= CheckEndCol; col++)
 				{
 					int CurIndex = RowIndex * m_ColCount + col;
@@ -960,66 +961,130 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 					// 아래와 괄호에 들어오려면
 					// 1) 이전에 Match State 가 Special 로 되어서, Destroy_State 가 Setting  ( DestroyCells 함수)
 					// 2) 따라서 여기 걸린 것은, 이미 Special Candy 라는 의미
-					// 
-					if ((int)m_vecDestroyMarkState[CurIndex] > (int)DestroyMark_State::None)
+					// if ((int)m_vecDestroyMarkState[CurIndex] > (int)DestroyMark_State::None)
+					if ((int)m_vecCells[CurIndex]->GetDestroyMarkState() > (int)DestroyMark_State::None)
 					{
 						// 파괴 상태로 세팅하고 
-						m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecDestroyMarkState[CurIndex]);
+						// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecDestroyMarkState[CurIndex]);
+						m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
 
 						// Mark 찾았음 표시하고 
 						MarkStateFound = true;
 
 						// Destroy State 원상태
-						m_vecDestroyMarkState[CurIndex] = DestroyMark_State::None;
+						// m_vecDestroyMarkState[CurIndex] = DestroyMark_State::None;
+						m_vecCells[CurIndex][CurIndex].SetDestroyMarkState(DestroyMark_State::None);
 					}
 				}
-			}
-			
-			// Mark_State
 
-			// Special 파괴 효과 적용 X --> 새롭게 Special Candy를 만들어야 하는 것이라면 
-			if (MarkStateFound == false)
-			{
+				// 2) Match State 처리를 해준다.
 				if (CheckMatchNum == 3)
 					ColResultState = Match_State::Normal;
+				if (CheckMatchNum >= 4)
+					ColResultState = Match_State::RowLine;
+				// else if (CheckMatchNum >= 5)
+
+				// 3) 만약 Special Candy가 만들어져 있었다면
+				// - 새로운 Special Candy는 해당 위치에 만들어져서는 안된다.
+				// - 따라서 ColResultState 는 반드시 Normal로 세팅
+				if (MarkStateFound)
+				{
+					if ((int)ColResultState > (int)Match_State::Normal)
+						ColResultState = Match_State::Normal;
+				}
+				
+			}
+			// Click 해서 Match 된 Cell 이 아니라 실시간 Match Cell 이라면
+			else
+			{
+				bool MarkStateFound = false;
+
+				// 자신이 시작 Cell 이라면
+				if (CheckStartCol == ColIndex)
+				{
+
+					// 1) Special Candy가 이미 만들어져 있는지 확인
+					for (int col = CheckStartCol; col <= CheckEndCol; col++)
+					{
+						int CurIndex = RowIndex * m_ColCount + col;
+
+						// 아래와 괄호에 들어오려면
+						// 1) 이전에 Match State 가 Special 로 되어서, Destroy_State 가 Setting  ( DestroyCells 함수)
+						// 2) 따라서 여기 걸린 것은, 이미 Special Candy 라는 의미
+						// if ((int)m_vecDestroyMarkState[CurIndex] > (int)DestroyMark_State::None)
+						if ((int)m_vecCells[CurIndex]->GetDestroyMarkState() > (int)DestroyMark_State::None)
+						{
+							// 파괴 상태로 세팅하고 
+							m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
+
+							// Mark 찾았음 표시하고 
+							MarkStateFound = true;
+
+							// Destroy State 원상태
+							// m_vecDestroyMarkState[CurIndex] = DestroyMark_State::None;
+							m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
+						}
+					}
+				}
+				// 3개짜리 일때도 Special Destroy인 해야 하는것 아닌가 ?
+				if (CheckMatchNum == 3)
+					ColResultState = Match_State::Normal;
+
+				// 4개 이상이라면, Special Candy를 만들거나, Special Destroy 세팅을 해야 한다.
 				else if (CheckMatchNum >= 4)
 				{
-					if (IsClickCell)
+					// 자신이 시작 Cell 이라면
+					if (CheckStartCol == ColIndex)
 					{
+						/*
+						bool MarkStateFound = false;
+
+						// 1) Special Candy가 이미 만들어져 있는지 확인
+						for (int col = CheckStartCol; col <= CheckEndCol; col++)
+						{
+							int CurIndex = RowIndex * m_ColCount + col;
+
+							// 아래와 괄호에 들어오려면
+							// 1) 이전에 Match State 가 Special 로 되어서, Destroy_State 가 Setting  ( DestroyCells 함수)
+							// 2) 따라서 여기 걸린 것은, 이미 Special Candy 라는 의미
+							if ((int)m_vecDestroyMarkState[CurIndex] > (int)DestroyMark_State::None)
+							{
+								// 파괴 상태로 세팅하고 
+								m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecDestroyMarkState[CurIndex]);
+
+								// Mark 찾았음 표시하고 
+								MarkStateFound = true;
+
+								// Destroy State 원상태
+								m_vecDestroyMarkState[CurIndex] = DestroyMark_State::None;
+							}
+						}
+						*/
+
+						if (MarkStateFound)
+						{
+							// Special Candy를 생성하지 않는다.
+							ColResultState = Match_State::Normal;
+						}
+						else
+						{
+							if (CheckMatchNum == 3)
+								ColResultState = Match_State::Normal;
+							if (CheckMatchNum >= 4)
+								ColResultState = Match_State::RowLine;
+							// else if (CheckMatchNum >= 5)
+						}
+					}
+					// 아니라면, 그냥 여전히 Normal 로 세팅한다.
+					else
+					{
+						ColResultState = Match_State::Normal;
+						/*
 						if (CheckMatchNum == 4)
 							ColResultState = Match_State::RowLine;
 						else if (CheckMatchNum >= 5)
 							ColResultState = Match_State::MirrorBall;
-					}
-					else
-					{
-						/*
-						if (CheckMatchNum == 4)
-							ColResultState = Match_State::RowLine;
-						// else if (CheckMatchNum >= 5)
-						//	ColResultState = Match_State::MirrorBall;
-						*/
-
-						// 그게 아니라, 실시간 Update 중 Match 라면, 자신이 가장 아래에 있을 때만 Special 세팅을 해준다.
-						if (CheckStartCol == ColIndex)
-						{
-							if (CheckMatchNum >= 4)
-								ColResultState = Match_State::RowLine;
-							/*
-							if (CheckMatchNum == 4)
-								ColResultState = Match_State::RowLine;
-							else if (CheckMatchNum >= 5)
-								ColResultState = Match_State::MirrorBall;
-								*/
-
-							// Destroy_MarkState 처리를 해준다
-							m_vecDestroyMarkState[RowIndex * m_ColCount + CheckStartCol] = ChangeMatchStateToDestroyMarkState(ColResultState);
-						}
-						// 그게 아니라면, 그냥 Normal Match 로 표시해준다
-						else
-						{
-							ColResultState = Match_State::Normal;
-						}
+							*/
 					}
 				}
 			}
@@ -1073,7 +1138,8 @@ void CBoard::DestroySingleCell(int Index)
 	m_vecCells[Index]->Destroy();
 
 	// Destroy Mark State 초기화
-	m_vecDestroyMarkState[Index] = DestroyMark_State::None;
+	m_vecCells[Index]->SetDestroyMarkState(DestroyMark_State::None);
+	// m_vecDestroyMarkState[Index] = DestroyMark_State::None;
 
 	// 해당 Column 제거 개수 증가
 	m_vecColNewCellNums[Index % m_ColCount] += 1;
@@ -1629,7 +1695,7 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 	m_vecDestroyState.resize(m_TotCount / 2);
 
 	// 각 Cell의 MarkState
-	m_vecDestroyMarkState.resize(m_TotCount / 2);
+	// m_vecDestroyMarkState.resize(m_TotCount / 2);
 
 	for (int i = 0; i < m_TotCount / 2; i++)
 	{
