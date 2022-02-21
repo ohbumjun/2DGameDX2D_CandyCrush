@@ -42,3 +42,11 @@ enum class Destroy_State {
 	Bag,
 	MirrorBall
 };
+
+enum class DestroyMark_State {
+	None,
+	Horizontal,
+	Vertical,
+	Bag,
+	MirrorBall
+};

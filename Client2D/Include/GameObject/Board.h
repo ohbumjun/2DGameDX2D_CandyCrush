@@ -34,6 +34,8 @@ private:
     std::list<int> m_ListDestroyedCellIndex;
     // 각 Cell 에서 Special 하게 터뜨리는 효과를 어떤 것을 적용할 것인가
     std::vector<Destroy_State> m_vecDestroyState;
+    // 해당 Cell 에 Special Cell 생성 이후, 다시 Match가 되어서 터뜨릴 때 어떤 방법을 터뜨릴 것인가
+    std::vector<DestroyMark_State> m_vecDestroyMarkState;
     // Cell 들이 이동중인가
     bool m_CellsMoving;
     // Mouse Click
@@ -72,6 +74,7 @@ private: // Check Match
 private : // Destroy Method
     bool DestroyHorizontal(int RowIndex);
     bool DestroyVertical(int ColIndex);
+    void DestroySingleCell(int Index);
 private:
     bool CheckBagMatch(int RowIndex, int ColIndex, int Index);
     bool CheckBagRightDownMatch(int RowIndex, int ColIndex, int Index);
@@ -95,4 +98,7 @@ private:
     bool CheckCellsMoving();
 private : // Match State 를 그에 대응하는 Cell_State 로 바꿔주는 함수
     Cell_State ChangeMatchStateToCellState(Match_State State);
+    Destroy_State ChangeMatchStateToDestroyState(Match_State State);
+    Destroy_State ChangeDestroyMarkStateToDestroyState(DestroyMark_State State);
+    DestroyMark_State ChangeMatchStateToDestroyMarkState(Match_State State);
 };

@@ -262,16 +262,18 @@ void CBoard::DestroyCells()
 			else if ((int)m_vecMatchState[Index] > (int)Match_State::Normal)
 			{
 				m_vecCells[Index]->SetCellState(ChangeMatchStateToCellState(m_vecMatchState[Index]));
+				m_vecDestroyState[Index] = ChangeMatchStateToDestroyState(m_vecMatchState[Index]);
 			}
 			// 그게 아니라면, 제거 이후, 해당 Col 에서의 제거개수 + 1 을 해주면 된다.
 			else 
 			{
 				// 화면에서 제거해주고
-				m_vecCells[Index]->Destroy();
+				DestroySingleCell(Index);
+				// m_vecCells[Index]->Destroy();
 
 				// 해당 Column 에서 생성한 새로운 Cell 개수를 +1 해준다.
 				// 해당 Column 에서 제거된 Cell의 개수를 지정하는 것이다.
-				m_vecColNewCellNums[ColIndex] += 1;
+				// m_vecColNewCellNums[ColIndex] += 1;
 			}
 
 		}
@@ -345,6 +347,14 @@ void CBoard::DestroyCells()
 		}
 	}
 
+	// m_vecDestroyState 정보 초기화
+	int HalfTotalIndex = m_TotCount / 2;
+
+	for (int i = 0; i < HalfTotalIndex; i++)
+	{
+		m_vecDestroyState[i] = Destroy_State::None;
+	}
+
 	//m_vecCellDownNums 정보 초기화
 	for (int i = 0; i < m_TotCount; i++)
 	{
@@ -352,7 +362,7 @@ void CBoard::DestroyCells()
 	}
 
 	// Match 정보도 초기화 해준다
-	for (int i = 0; i < m_TotCount / 2; i++)
+	for (int i = 0; i < HalfTotalIndex; i++)
 	{
 		m_vecCellIsMatch[i] = false;
 	}
@@ -509,6 +519,72 @@ Cell_State CBoard::ChangeMatchStateToCellState(Match_State State)
 	}
 
 	return Cell_State::Normal;
+}
+
+Destroy_State CBoard::ChangeMatchStateToDestroyState(Match_State State)
+{
+	switch (State)
+	{
+	case Match_State::NoMatch:
+		return Destroy_State::None;
+
+	case Match_State::Normal:
+		return Destroy_State::None;
+
+	case Match_State::RowLine: // 가로 줄 
+		return Destroy_State::Horizontal;
+
+	case Match_State::ColLine: // 세로 줄
+		return Destroy_State::Vertical;
+
+	case Match_State::Bag:
+		return Destroy_State::Bag;
+
+	case Match_State::MirrorBall:
+		return Destroy_State::MirrorBall;
+	}
+
+	return Destroy_State::None;
+}
+
+Destroy_State CBoard::ChangeDestroyMarkStateToDestroyState(DestroyMark_State State)
+{
+	switch (State)
+	{
+	case DestroyMark_State::Horizontal: // 가로 줄 
+		return Destroy_State::Horizontal;
+
+	case DestroyMark_State::Vertical: // 세로 줄
+		return Destroy_State::Vertical;
+
+	case DestroyMark_State::Bag:
+		return Destroy_State::Bag;
+
+	case DestroyMark_State::MirrorBall:
+		return Destroy_State::MirrorBall;
+	}
+
+	return Destroy_State::None;
+}
+
+DestroyMark_State CBoard::ChangeMatchStateToDestroyMarkState(Match_State State)
+{
+	switch (State)
+	{
+	case Match_State::RowLine: // 가로 줄 
+		return DestroyMark_State::Horizontal;
+
+	case Match_State::ColLine: // 세로 줄
+		return DestroyMark_State::Vertical;
+
+	case Match_State::Bag:
+		return DestroyMark_State::Bag;
+
+	case Match_State::MirrorBall:
+		return DestroyMark_State::MirrorBall;
+	}
+
+	return DestroyMark_State::None;
 }
 
 void CBoard::AddClickCellMoveBackDone() // 정말로 클릭한 Cell 들의 이동이 끝날 때 실행하는 함수
@@ -870,46 +946,83 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 
 		if (IsLengthMatch)
 		{
-			if (CheckMatchNum == 3)
-				ColResultState = Match_State::Normal;
-			else if (CheckMatchNum >= 4)
-			{
-				if (IsClickCell)
-				{
-					if (CheckMatchNum == 4)
-						ColResultState = Match_State::RowLine;
-					else if (CheckMatchNum >= 5)
-						ColResultState = Match_State::MirrorBall;
-				}
-				else
-				{
-					/*
-					if (CheckMatchNum == 4)
-						ColResultState = Match_State::RowLine;
-					// else if (CheckMatchNum >= 5)
-					//	ColResultState = Match_State::MirrorBall;
-					*/
+			// 기존에 Special 한 녀석이 있었는지를 검사해야 한다.
+			// Col Match 기준 --> 가장 왼쪽을 기준으로 검사를 시작할 것이다
+			// 여기에서 각 Cell 마다의 Destroy State 를 세팅할 것이다.
+			bool MarkStateFound = false;
 
-					// 그게 아니라, 실시간 Update 중 Match 라면, 자신이 가장 아래에 있을 때만 Special 세팅을 해준다.
-					if (CheckStartCol == ColIndex)
+			if (CheckStartCol == ColIndex)
+			{
+				for (int col = CheckStartCol; col <= CheckEndCol; col++)
+				{
+					int CurIndex = RowIndex * m_ColCount + col;
+
+					// 아래와 괄호에 들어오려면
+					// 1) 이전에 Match State 가 Special 로 되어서, Destroy_State 가 Setting  ( DestroyCells 함수)
+					// 2) 따라서 여기 걸린 것은, 이미 Special Candy 라는 의미
+					// 
+					if ((int)m_vecDestroyMarkState[CurIndex] > (int)DestroyMark_State::None)
 					{
-						if (CheckMatchNum >= 4)
-							ColResultState = Match_State::RowLine;
-						/*
+						// 파괴 상태로 세팅하고 
+						m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecDestroyMarkState[CurIndex]);
+
+						// Mark 찾았음 표시하고 
+						MarkStateFound = true;
+
+						// Destroy State 원상태
+						m_vecDestroyMarkState[CurIndex] = DestroyMark_State::None;
+					}
+				}
+			}
+			
+			// Mark_State
+
+			// Special 파괴 효과 적용 X --> 새롭게 Special Candy를 만들어야 하는 것이라면 
+			if (MarkStateFound == false)
+			{
+				if (CheckMatchNum == 3)
+					ColResultState = Match_State::Normal;
+				else if (CheckMatchNum >= 4)
+				{
+					if (IsClickCell)
+					{
 						if (CheckMatchNum == 4)
 							ColResultState = Match_State::RowLine;
 						else if (CheckMatchNum >= 5)
 							ColResultState = Match_State::MirrorBall;
-							*/
 					}
-					// 그게 아니라면, 그냥 Normal Match 로 표시해준다
 					else
 					{
-						ColResultState = Match_State::Normal;
+						/*
+						if (CheckMatchNum == 4)
+							ColResultState = Match_State::RowLine;
+						// else if (CheckMatchNum >= 5)
+						//	ColResultState = Match_State::MirrorBall;
+						*/
+
+						// 그게 아니라, 실시간 Update 중 Match 라면, 자신이 가장 아래에 있을 때만 Special 세팅을 해준다.
+						if (CheckStartCol == ColIndex)
+						{
+							if (CheckMatchNum >= 4)
+								ColResultState = Match_State::RowLine;
+							/*
+							if (CheckMatchNum == 4)
+								ColResultState = Match_State::RowLine;
+							else if (CheckMatchNum >= 5)
+								ColResultState = Match_State::MirrorBall;
+								*/
+
+							// Destroy_MarkState 처리를 해준다
+							m_vecDestroyMarkState[RowIndex * m_ColCount + CheckStartCol] = ChangeMatchStateToDestroyMarkState(ColResultState);
+						}
+						// 그게 아니라면, 그냥 Normal Match 로 표시해준다
+						else
+						{
+							ColResultState = Match_State::Normal;
+						}
 					}
 				}
 			}
-
 
 			// 전체 Match 결과 true로 세팅
 			Match = true;
@@ -931,7 +1044,12 @@ bool CBoard::DestroyHorizontal(int RowIndex)
 {
 	for (int col = 0; col < m_ColCount; col++)
 	{
-		m_vecCells[RowIndex * m_ColCount + col]->Destroy();
+		DestroySingleCell(RowIndex * m_ColCount + col);
+		// m_vecCells[RowIndex * m_ColCount + col]->Destroy();
+		// m_vecColNewCellNums[col] += 1;
+
+		// Destroy Mark State 를 초기화
+
 	}
 
 	return true;
@@ -942,8 +1060,23 @@ bool CBoard::DestroyVertical(int ColIndex)
 {
 	for (int row = 0; row < m_VisualRowCount; row++)
 	{
+		// DestroySingleCell(row * m_ColCount + ColIndex);
 		m_vecCells[row * m_ColCount + ColIndex]->Destroy();
 	}
+
+	return false;
+}
+
+void CBoard::DestroySingleCell(int Index)
+{
+	// Destroy 처리 
+	m_vecCells[Index]->Destroy();
+
+	// Destroy Mark State 초기화
+	m_vecDestroyMarkState[Index] = DestroyMark_State::None;
+
+	// 해당 Column 제거 개수 증가
+	m_vecColNewCellNums[Index % m_ColCount] += 1;
 }
 
 bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index)
@@ -1494,6 +1627,9 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 
 	// 각 Cell 의 Destroy State
 	m_vecDestroyState.resize(m_TotCount / 2);
+
+	// 각 Cell의 MarkState
+	m_vecDestroyMarkState.resize(m_TotCount / 2);
 
 	for (int i = 0; i < m_TotCount / 2; i++)
 	{
