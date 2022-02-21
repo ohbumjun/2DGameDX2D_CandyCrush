@@ -257,7 +257,7 @@ void CBoard::DestroyCells()
 				}
 				else if (m_vecDestroyState[Index] == Destroy_State::Vertical)
 				{
-					DestroyVertical(RowIndex);
+					DestroyVertical(ColIndex);
 				}
 			}
 
