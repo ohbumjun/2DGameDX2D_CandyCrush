@@ -840,7 +840,7 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 
 						// Destroy State 원상태
 						// m_vecDestroyMarkState[CurIndex] = DestroyMark_State::None;
-						m_vecCells[CurIndex][CurIndex].SetDestroyMarkState(DestroyMark_State::None);
+						m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
 					}
 				}
 
@@ -867,13 +867,12 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 				bool MarkStateFound = false;
 
 				// 자신이 시작 Cell 이라면
-				if (CheckStartRow == ColIndex)
+				if (CheckStartRow == RowIndex)
 				{
-
 					// 1) Special Candy가 이미 만들어져 있는지 확인
-					for (int col = CheckStartRow; col <= CheckEndRow; col++)
+					for (int row = CheckStartRow; row <= CheckEndRow; row++)
 					{
-						int CurIndex = RowIndex * m_ColCount + col;
+						int CurIndex = row * m_ColCount + ColIndex;
 
 						// 아래와 괄호에 들어오려면
 						// 1) 이전에 Match State 가 Special 로 되어서, Destroy_State 가 Setting  ( DestroyCells 함수)
@@ -901,9 +900,8 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 				else if (CheckMatchNum >= 4)
 				{
 					// 자신이 시작 Cell 이라면
-					if (CheckStartRow == ColIndex)
+					if (CheckStartRow == RowIndex)
 					{
-
 						if (MarkStateFound)
 						{
 							// Special Candy를 생성하지 않는다.
@@ -911,8 +909,6 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 						}
 						else
 						{
-							if (CheckMatchNum == 3)
-								RowResultState = Match_State::Normal;
 							if (CheckMatchNum >= 4)
 								RowResultState = Match_State::ColLine;
 							// else if (CheckMatchNum >= 5)
@@ -1050,7 +1046,7 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 
 						// Destroy State 원상태
 						// m_vecDestroyMarkState[CurIndex] = DestroyMark_State::None;
-						m_vecCells[CurIndex][CurIndex].SetDestroyMarkState(DestroyMark_State::None);
+						m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
 					}
 				}
 
@@ -1113,7 +1109,6 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 					// 자신이 시작 Cell 이라면
 					if (CheckStartCol == ColIndex)
 					{
-
 						if (MarkStateFound)
 						{
 							// Special Candy를 생성하지 않는다.
@@ -1121,8 +1116,6 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 						}
 						else
 						{
-							if (CheckMatchNum == 3)
-								ColResultState = Match_State::Normal;
 							if (CheckMatchNum >= 4)
 								ColResultState = Match_State::RowLine;
 							// else if (CheckMatchNum >= 5)
@@ -1162,7 +1155,7 @@ bool CBoard::DestroyHorizontal(int RowIndex)
 {
 	for (int col = 0; col < m_ColCount; col++)
 	{
-		.. DestroySingleCell(RowIndex * m_ColCount + col);
+		DestroySingleCell(RowIndex * m_ColCount + col);
 		// m_vecCells[RowIndex * m_ColCount + col]->Destroy();
 		// m_vecColNewCellNums[col] += 1;
 
@@ -1178,8 +1171,7 @@ bool CBoard::DestroyVertical(int ColIndex)
 {
 	for (int row = 0; row < m_VisualRowCount; row++)
 	{
-		// DestroySingleCell(row * m_ColCount + ColIndex);
-		// DestroySingleCell(row * m_ColCount + ColIndex);
+		DestroySingleCell(row * m_ColCount + ColIndex);
 		// m_vecCells[row * m_ColCount + ColIndex]->Destroy();
 	}
 

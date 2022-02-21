@@ -22,7 +22,7 @@ bool CStartScene::Init()
 
 	CBoard* Board = m_Scene->CreateGameObject<CBoard>("Board");
 	SetPlayerObject(Board);
-	Board->CreateBoard(9, 9, 80, 80, Vector3(100.f, 100.f, 1.f));
+	Board->CreateBoard(11, 11, 80, 80, Vector3(100.f, 100.f, 1.f));
 
 	return true;
 }
