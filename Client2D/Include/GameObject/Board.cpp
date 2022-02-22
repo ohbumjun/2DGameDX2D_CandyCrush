@@ -249,19 +249,28 @@ void CBoard::DestroyCells()
 			int ColIndex = Index % m_ColCount;
 
 			// 만약 Destroy_State 라면 --> 즉, 현재 터뜨려야 할 녀석이 있다면
-			if ((int)m_vecDestroyState[Index] > (int)Destroy_State::None)
+			// if ((int)m_vecDestroyState[Index] > (int)Destroy_State::None)
+			if ((int)m_vecCells[Index]->GetDestroyState() > (int)Destroy_State::None)
 			{
-				if (m_vecDestroyState[Index] == Destroy_State::Horizontal)
+				// if (m_vecDestroyState[Index] == Destroy_State::Horizontal)
+				if (m_vecCells[Index]->GetDestroyState() == Destroy_State::Horizontal)
 				{
 					DestroyHorizontal(RowIndex);
 				}
-				else if (m_vecDestroyState[Index] == Destroy_State::Vertical)
+				// else if (m_vecDestroyState[Index] == Destroy_State::Vertical)
+				else if (m_vecCells[Index]->GetDestroyState() == Destroy_State::Vertical)
 				{
 					DestroyVertical(ColIndex);
 				}
-				else if (m_vecDestroyState[Index] == Destroy_State::Bag)
+				// else if (m_vecDestroyState[Index] == Destroy_State::Bag)
+				else if (m_vecCells[Index]->GetDestroyState() == Destroy_State::Bag)
 				{
-					DestroyBag(RowIndex, ColIndex);
+					DestroyBag(RowIndex, ColIndex, false);
+				}
+				// else if (m_vecDestroyState[Index] == Destroy_State::Bag)
+				else if (m_vecCells[Index]->GetDestroyState() == Destroy_State::BagAfter)
+				{
+					DestroyBag(RowIndex, ColIndex, true);
 				}
 			}
 
@@ -270,7 +279,6 @@ void CBoard::DestroyCells()
 			else if ((int)m_vecMatchState[Index] > (int)Match_State::Normal)
 			{
 				m_vecCells[Index]->SetCellState(ChangeMatchStateToCellState(m_vecMatchState[Index]));
-
 
 				// m_vecDestroyMarkState[Index] = ChangeMatchStateToDestroyMarkState(m_vecMatchState[Index]);
 				m_vecCells[Index]->SetDestroyMarkState(ChangeMatchStateToDestroyMarkState(m_vecMatchState[Index]));
@@ -363,7 +371,8 @@ void CBoard::DestroyCells()
 
 	for (int i = 0; i < HalfTotalIndex; i++)
 	{
-		m_vecDestroyState[i] = Destroy_State::None;
+		// m_vecDestroyState[i] = Destroy_State::None;
+		m_vecCells[i]->SetDestroyState(Destroy_State::None); 
 	}
 
 	//m_vecCellDownNums 정보 초기화
@@ -839,7 +848,8 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 					{
 						// 파괴 상태로 세팅하고 
 						// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecDestroyMarkState[CurIndex]);
-						m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
+						// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
+						m_vecCells[CurIndex]->SetDestroyState(ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState())); 
 
 						// Mark 찾았음 표시하고 
 						MarkStateFound = true;
@@ -887,7 +897,8 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 						if ((int)m_vecCells[CurIndex]->GetDestroyMarkState() > (int)DestroyMark_State::None)
 						{
 							// 파괴 상태로 세팅하고 
-							m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
+							// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
+							m_vecCells[CurIndex]->SetDestroyState(ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState()));
 
 							// Mark 찾았음 표시하고 
 							MarkStateFound = true;
@@ -1045,7 +1056,9 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 					{
 						// 파괴 상태로 세팅하고 
 						// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecDestroyMarkState[CurIndex]);
-						m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
+						// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
+						m_vecCells[CurIndex]->SetDestroyState(ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState()));
+
 
 						// Mark 찾았음 표시하고 
 						MarkStateFound = true;
@@ -1093,8 +1106,10 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 						// if ((int)m_vecDestroyMarkState[CurIndex] > (int)DestroyMark_State::None)
 						if ((int)m_vecCells[CurIndex]->GetDestroyMarkState() > (int)DestroyMark_State::None)
 						{
-							// 파괴 상태로 세팅하고 
-							m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
+							// 파괴 상태로 세팅하고
+							// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
+							m_vecCells[CurIndex]->SetDestroyState(ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState()));
+
 
 							// Mark 찾았음 표시하고 
 							MarkStateFound = true;
@@ -1184,7 +1199,7 @@ bool CBoard::DestroyVertical(int ColIndex)
 	return false;
 }
 
-bool CBoard::DestroyBag(int RowIndex, int ColIndex)
+bool CBoard::DestroyBag(int RowIndex, int ColIndex, bool IsAfterEffect)
 {
 	int StRowIndex = RowIndex - 1;
 
@@ -1200,9 +1215,26 @@ bool CBoard::DestroyBag(int RowIndex, int ColIndex)
 	{
 		for (int col = StColIndex; col <= ColIndex + 1; col++)
 		{
-			DestroySingleCell(RowIndex * m_ColCount + ColIndex);
+			// 봉지 자체가 막 만들어진 상태라면 해당 녀석은 Destroy X --> 아래 과정
+			if (!IsAfterEffect && row == RowIndex && col == ColIndex)
+			{
+				// IsAfter Effect가 False 인 경우, 막 봉지가 만들어진 것
+				// 해당 Index의 CellState 을 Notice로 바꿔준다. --> Animation Change를 위함이다.
+				// 그리고 Destroy State 는 BagAfter 이라고 하고
+				m_vecCells[RowIndex * m_ColCount + ColIndex]->SetCellState(Cell_State::Notice); // 떨림 효과 Animation 주기 위함
+
+				// m_vecCells[RowIndex * m_ColCount + ColIndex]->SetDestroyMarkState(De);
+			}
+			else
+			{
+				DestroySingleCell(row * m_ColCount + col);
+			}
 		}
 	}
+
+	// Destroy State 초기화 시에는, BagAfter는 초기화 하지 않으며
+	// Destroy Cells 에서는 BagAfter 이라면, DestroyBag 를 IsAfterEffect를 true로 주고 해당 함수 다시 실행
+	// 이때는 정상적으로 지워준다. 
 
 	return true;
 }
@@ -1242,7 +1274,6 @@ bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked
 	if (Result)
 	{
 		// 기존에 BagMatch가 있었어도 새로 만든다.
-
 
 	}
 
@@ -1785,7 +1816,7 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 	m_vecCellIsMatch.resize(m_TotCount / 2);
 
 	// 각 Cell 의 Destroy State
-	m_vecDestroyState.resize(m_TotCount / 2);
+	// m_vecDestroyState.resize(m_TotCount / 2);
 
 	// 각 Cell의 MarkState
 	// m_vecDestroyMarkState.resize(m_TotCount / 2);

@@ -83,7 +83,7 @@ private: // Check Match
 private : // Destroy Method
     bool DestroyHorizontal(int RowIndex);
     bool DestroyVertical(int ColIndex);
-    bool DestroyBag(int RowIndex, int ColIndex);
+    bool DestroyBag(int RowIndex, int ColIndex, bool IsAfterEffect);
     void DestroySingleCell(int Index);
 private:
     bool CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked);

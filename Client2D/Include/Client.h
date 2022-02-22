@@ -25,6 +25,7 @@ enum class Match_State {
 	RowLine,
 	ColLine,
 	Bag,
+	BagAfter,
 	MirrorBall,
 	End
 };
@@ -40,6 +41,7 @@ enum class Destroy_State {
 	Horizontal,
 	Vertical,
 	Bag,
+	BagAfter,
 	MirrorBall
 };
 

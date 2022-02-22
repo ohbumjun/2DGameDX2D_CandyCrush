@@ -36,7 +36,12 @@ private :
     Vector3 m_ClickDestPos;
 private : // 현재 이미 Special 상태여서, 다음 Match 때 Special Destroy 와 관련된 변수
     DestroyMark_State m_DestroyMarkState;
+    Destroy_State m_DestroyState;
 public :
+    Destroy_State GetDestroyState() const
+    {
+        return m_DestroyState;
+    }
     DestroyMark_State GetDestroyMarkState () const
 {
         return m_DestroyMarkState;
@@ -103,6 +108,10 @@ public :
 {
         m_DestroyMarkState = State;
 }
+    void SetDestroyState(Destroy_State State)
+    {
+        m_DestroyState = State;
+    }
     void SetPlacedNew (bool New)
 {
         m_IsPlacedNew = New;
