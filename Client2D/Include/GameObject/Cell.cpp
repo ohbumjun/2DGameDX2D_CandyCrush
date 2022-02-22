@@ -4,7 +4,7 @@
 #include "Board.h"
 
 CCell::CCell() :
-	m_MoveSpeed(100.f),
+	m_MoveSpeed(400.f),
 	m_ShownAreaOffset(5.f),
 	m_IsShownEnable(true),
 	m_IsGoingBack(false),
@@ -32,7 +32,7 @@ void CCell::SetCellType(Cell_Type Type)
 		SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Yellow"));
 	if (Type == Cell_Type::Green)
 		SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Green"));
-		*/
+	*/
 }
 
 void CCell::SetCellState(Cell_State State)
@@ -156,7 +156,7 @@ void CCell::SwitchMove(float DeltaTime)
 		{
 			MoveDist = m_ClickDestPos.x - WorldPos.x;
 
-			AddWorldPos(MoveDist * DeltaTime * 4.f, 0.f, 0.f);
+			AddWorldPos(MoveDist * DeltaTime * 12.f, 0.f, 0.f);
 
 			// Cell 이동 중 표시
 			m_Board->SetCellsMoving(true);
@@ -167,7 +167,7 @@ void CCell::SwitchMove(float DeltaTime)
 		{
 			MoveDist = m_ClickDestPos.y - WorldPos.y;
 
-			AddWorldPos(0.f, MoveDist * DeltaTime * 4.f, 0.f);
+			AddWorldPos(0.f, MoveDist * DeltaTime * 12.f, 0.f);
 
 			// Cell 이동 중 표시
 			m_Board->SetCellsMoving(true);

@@ -253,11 +253,15 @@ void CBoard::DestroyCells()
 			{
 				if (m_vecDestroyState[Index] == Destroy_State::Horizontal)
 				{
-					// DestroyHorizontal(RowIndex);
+					DestroyHorizontal(RowIndex);
 				}
 				else if (m_vecDestroyState[Index] == Destroy_State::Vertical)
 				{
-					// DestroyVertical(ColIndex);
+					DestroyVertical(ColIndex);
+				}
+				else if (m_vecDestroyState[Index] == Destroy_State::Bag)
+				{
+					DestroyBag(RowIndex, ColIndex);
 				}
 			}
 
@@ -461,7 +465,7 @@ bool CBoard::CheckMatchUpdate()
 		CellResult = (int)CellColResult > (int)CellRowResult ? CellColResult : CellRowResult;
 
 		// Bag 조합 검사하기
-		CellBagResult = CheckBagMatch(RowIndex, ColIndex, i) ? Match_State::Bag : Match_State::NoMatch;
+		CellBagResult = CheckBagMatch(RowIndex, ColIndex, i, false) ? Match_State::Bag : Match_State::NoMatch;
 
 		// 최종 결과
 		CellResult = (int)CellResult > (int)CellBagResult ? CellResult : CellBagResult;
@@ -668,7 +672,8 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	FCellResult = (int)FCellColResult > (int)FCellRowResult ? FCellColResult : FCellRowResult;
 
 	// Bag 조합 검사하기
-	FCellBagResult = CheckBagMatch(FirstClickCell->GetRowIndex(), FirstClickCell->GetColIndex(), FirstClickCell->GetIndex()) ? Match_State::Bag : Match_State::NoMatch;
+	FCellBagResult = CheckBagMatch(FirstClickCell->GetRowIndex(), 
+		FirstClickCell->GetColIndex(), FirstClickCell->GetIndex(), false) ? Match_State::Bag : Match_State::NoMatch;
 
 	// 최종 결과
 	FCellResult = (int)FCellResult > (int)FCellBagResult ? FCellResult : FCellBagResult;
@@ -698,7 +703,8 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	SCellResult = (int)SCellColResult > (int)SCellRowResult ? SCellColResult : SCellRowResult;
 
 	// Bag 조합 검사하기
-	SCellBagResult = CheckBagMatch(SecClickCell->GetRowIndex(), SecClickCell->GetColIndex(), SecClickCell->GetIndex()) ? Match_State::Bag : Match_State::NoMatch;
+	SCellBagResult = CheckBagMatch(SecClickCell->GetRowIndex(), 
+		SecClickCell->GetColIndex(), SecClickCell->GetIndex(), false) ? Match_State::Bag : Match_State::NoMatch;
 
 	// 최종 결과
 	SCellResult = (int)SCellResult > (int)SCellBagResult ? SCellResult : SCellBagResult;
@@ -1178,6 +1184,29 @@ bool CBoard::DestroyVertical(int ColIndex)
 	return false;
 }
 
+bool CBoard::DestroyBag(int RowIndex, int ColIndex)
+{
+	int StRowIndex = RowIndex - 1;
+
+	while (StRowIndex < 0)
+		StRowIndex += 1;
+
+	int StColIndex = ColIndex - 1;
+
+	while (StColIndex < 0)
+		StColIndex += 1;
+
+	for (int row = StRowIndex; row <= RowIndex + 1; row++)
+	{
+		for (int col = StColIndex; col <= ColIndex + 1; col++)
+		{
+			DestroySingleCell(RowIndex * m_ColCount + ColIndex);
+		}
+	}
+
+	return true;
+}
+
 void CBoard::DestroySingleCell(int Index)
 {
 	// 이미 Destroy 처리를 했다면 X
@@ -1195,7 +1224,7 @@ void CBoard::DestroySingleCell(int Index)
 	m_vecColNewCellNums[Index % m_ColCount] += 1;
 }
 
-bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index)
+bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked)
 {
 	bool BoolRightDown = CheckBagRightDownMatch(RowIndex, ColIndex, Index);
 	bool BoolRightUp = CheckBagRightUpMatch(RowIndex, ColIndex, Index);
@@ -1209,12 +1238,16 @@ bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index)
 	bool Result = BoolRightDown || BoolRightUp || BoolLeftDown || BoolLeftUp ||
 		BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
 
+	// Match가 있었다면 
 	if (Result)
 	{
-		Cell_Type InitType = m_vecCells[RowIndex + m_ColCount + ColIndex]->GetCellType();
-		Cell_Type SecondType = m_vecCells[Index]->GetCellType();
-		Result = true;
+		// 기존에 BagMatch가 있었어도 새로 만든다.
+
+
 	}
+
+	// Match 여부와 별개로, 여기서는 조합을 고려한다.
+	// 주변 4방향으로 인접한 녀석들이 있는지를 조사할 것이다.
 
 	return BoolRightDown || BoolRightUp || BoolLeftDown || BoolLeftUp ||
 		BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
