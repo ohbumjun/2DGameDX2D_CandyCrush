@@ -242,11 +242,22 @@ void CBoard::DestroyCells()
 	// 새로운 Type 세팅 및 Destroy
 	for (int Index = 0; Index < m_TotCount / 2; Index++)
 	{
+		// BagAfter 의 경우, 그냥 Match 여부와 관계없이 터뜨린다.
+		 if (m_vecCells[Index]->GetDestroyState() == Destroy_State::BagAfter)
+		{
+			 int RowIndex = m_vecCells[Index]->GetRowIndex();
+			 int ColIndex = m_vecCells[Index]->GetColIndex();
+		 	 DestroyBag(RowIndex, ColIndex, true);
+
+			// 이 녀석에 대해서는 더이상 Match 여부를 고려하지 않아도 되지 않을까 ?
+			 continue;
+		}
+
 		// 만약 Match 된 녀석이라면 
 		if (m_vecCellIsMatch[Index])
 		{
-			int RowIndex = Index / m_ColCount;
-			int ColIndex = Index % m_ColCount;
+			int RowIndex = m_vecCells[Index]->GetRowIndex();
+			int ColIndex   = m_vecCells[Index]->GetColIndex();
 
 			// 만약 Destroy_State 라면 --> 즉, 현재 터뜨려야 할 녀석이 있다면
 			// if ((int)m_vecDestroyState[Index] > (int)Destroy_State::None)
@@ -266,11 +277,6 @@ void CBoard::DestroyCells()
 				else if (m_vecCells[Index]->GetDestroyState() == Destroy_State::Bag)
 				{
 					DestroyBag(RowIndex, ColIndex, false);
-				}
-				// else if (m_vecDestroyState[Index] == Destroy_State::Bag)
-				else if (m_vecCells[Index]->GetDestroyState() == Destroy_State::BagAfter)
-				{
-					DestroyBag(RowIndex, ColIndex, true);
 				}
 			}
 
@@ -372,6 +378,8 @@ void CBoard::DestroyCells()
 	for (int i = 0; i < HalfTotalIndex; i++)
 	{
 		// m_vecDestroyState[i] = Destroy_State::None;
+		if (m_vecCells[i]->GetDestroyState() == Destroy_State::BagAfter)
+			continue;
 		m_vecCells[i]->SetDestroyState(Destroy_State::None); 
 	}
 
@@ -1223,7 +1231,7 @@ bool CBoard::DestroyBag(int RowIndex, int ColIndex, bool IsAfterEffect)
 				// 그리고 Destroy State 는 BagAfter 이라고 하고
 				m_vecCells[RowIndex * m_ColCount + ColIndex]->SetCellState(Cell_State::Notice); // 떨림 효과 Animation 주기 위함
 
-				// m_vecCells[RowIndex * m_ColCount + ColIndex]->SetDestroyMarkState(De);
+				m_vecCells[RowIndex * m_ColCount + ColIndex]->SetDestroyState(Destroy_State::BagAfter);
 			}
 			else
 			{
@@ -1234,7 +1242,10 @@ bool CBoard::DestroyBag(int RowIndex, int ColIndex, bool IsAfterEffect)
 
 	// Destroy State 초기화 시에는, BagAfter는 초기화 하지 않으며
 	// Destroy Cells 에서는 BagAfter 이라면, DestroyBag 를 IsAfterEffect를 true로 주고 해당 함수 다시 실행
-	// 이때는 정상적으로 지워준다. 
+	// 이때는 정상적으로 지워준다.
+
+	// 여기서, 다른 특수효과에 의해, BagAfter가 사라져 버리는 경우, 동작하지 않게 되는데
+	// 이는, 별도로 세팅을 해줘야 한다.
 
 	return true;
 }
