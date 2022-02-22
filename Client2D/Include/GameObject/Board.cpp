@@ -253,11 +253,11 @@ void CBoard::DestroyCells()
 			{
 				if (m_vecDestroyState[Index] == Destroy_State::Horizontal)
 				{
-					DestroyHorizontal(RowIndex);
+					// DestroyHorizontal(RowIndex);
 				}
 				else if (m_vecDestroyState[Index] == Destroy_State::Vertical)
 				{
-					DestroyVertical(ColIndex);
+					// DestroyVertical(ColIndex);
 				}
 			}
 
@@ -461,7 +461,7 @@ bool CBoard::CheckMatchUpdate()
 		CellResult = (int)CellColResult > (int)CellRowResult ? CellColResult : CellRowResult;
 
 		// Bag 조합 검사하기
-		// CellBagResult = CheckBagMatch(RowIndex, ColIndex, i) ? Match_State::Bag : Match_State::NoMatch;
+		CellBagResult = CheckBagMatch(RowIndex, ColIndex, i) ? Match_State::Bag : Match_State::NoMatch;
 
 		// 최종 결과
 		CellResult = (int)CellResult > (int)CellBagResult ? CellResult : CellBagResult;
@@ -668,7 +668,7 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	FCellResult = (int)FCellColResult > (int)FCellRowResult ? FCellColResult : FCellRowResult;
 
 	// Bag 조합 검사하기
-	// FCellBagResult = CheckBagMatch(FirstClickCell->GetRowIndex(), FirstClickCell->GetColIndex(), FirstClickCell->GetIndex()) ? Match_State::Bag : Match_State::NoMatch;
+	FCellBagResult = CheckBagMatch(FirstClickCell->GetRowIndex(), FirstClickCell->GetColIndex(), FirstClickCell->GetIndex()) ? Match_State::Bag : Match_State::NoMatch;
 
 	// 최종 결과
 	FCellResult = (int)FCellResult > (int)FCellBagResult ? FCellResult : FCellBagResult;
@@ -698,7 +698,7 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	SCellResult = (int)SCellColResult > (int)SCellRowResult ? SCellColResult : SCellRowResult;
 
 	// Bag 조합 검사하기
-	// SCellBagResult = CheckBagMatch(SecClickCell->GetRowIndex(), SecClickCell->GetColIndex(), SecClickCell->GetIndex()) ? Match_State::Bag : Match_State::NoMatch;
+	SCellBagResult = CheckBagMatch(SecClickCell->GetRowIndex(), SecClickCell->GetColIndex(), SecClickCell->GetIndex()) ? Match_State::Bag : Match_State::NoMatch;
 
 	// 최종 결과
 	SCellResult = (int)SCellResult > (int)SCellBagResult ? SCellResult : SCellBagResult;
@@ -1206,6 +1206,16 @@ bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index)
 	bool BoolCenterDown = CheckBagCenterDownMatch(RowIndex, ColIndex, Index);
 	bool BoolCenterUp = CheckBagCenterUpMatch(RowIndex, ColIndex, Index);
 
+	bool Result = BoolRightDown || BoolRightUp || BoolLeftDown || BoolLeftUp ||
+		BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
+
+	if (Result)
+	{
+		Cell_Type InitType = m_vecCells[RowIndex + m_ColCount + ColIndex]->GetCellType();
+		Cell_Type SecondType = m_vecCells[Index]->GetCellType();
+		Result = true;
+	}
+
 	return BoolRightDown || BoolRightUp || BoolLeftDown || BoolLeftUp ||
 		BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
 }
@@ -1220,7 +1230,7 @@ bool CBoard::CheckBagRightDownMatch(int RowIdx, int ColIdx, int Index)
 	if (RowIdx - 2 < 0)
 		return false;
 
-	Cell_Type InitType = m_vecCells[RowIdx + m_ColCount + ColIdx]->GetCellType();
+	Cell_Type InitType = m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType();
 
 	bool Match = true;
 
@@ -1276,7 +1286,7 @@ bool CBoard::CheckBagRightUpMatch(int RowIdx, int ColIdx, int Index)
 	if (RowIdx + 2 >= m_VisualRowCount)
 		return false;
 
-	Cell_Type InitType = m_vecCells[RowIdx + m_ColCount + ColIdx]->GetCellType();
+	Cell_Type InitType = m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType();
 
 	bool Match = true;
 
@@ -1332,7 +1342,7 @@ bool CBoard::CheckBagLeftDownMatch(int RowIdx, int ColIdx, int Index)
 	if (RowIdx - 2 < 0)
 		return false;
 
-	Cell_Type InitType = m_vecCells[RowIdx + m_ColCount + ColIdx]->GetCellType();
+	Cell_Type InitType = m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType();
 
 	bool Match = true;
 
@@ -1388,7 +1398,7 @@ bool CBoard::CheckBagLeftUpMatch(int RowIdx, int ColIdx, int Index)
 	if (RowIdx + 2 >= m_VisualRowCount)
 		return false;
 
-	Cell_Type InitType = m_vecCells[RowIdx + m_ColCount + ColIdx]->GetCellType();
+	Cell_Type InitType = m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType();
 
 	bool Match = true;
 
@@ -1448,7 +1458,7 @@ bool CBoard::CheckBagCenterRightMatch(int RowIdx, int ColIdx, int Index)
 	if (RowIdx - 1 < 0)
 		return false;
 
-	Cell_Type InitType = m_vecCells[RowIdx + m_ColCount + ColIdx]->GetCellType();
+	Cell_Type InitType = m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType();
 
 	bool Match = true;
 
@@ -1512,7 +1522,7 @@ bool CBoard::CheckBagCenterLeftMatch(int RowIdx, int ColIdx, int Index)
 	if (RowIdx - 1 < 0)
 		return false;
 
-	Cell_Type InitType = m_vecCells[RowIdx + m_ColCount + ColIdx]->GetCellType();
+	Cell_Type InitType = m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType();
 
 	bool Match = true;
 
@@ -1576,7 +1586,7 @@ bool CBoard::CheckBagCenterDownMatch(int RowIdx, int ColIdx, int Index)
 	if (ColIdx - 1 < 0)
 		return false;
 
-	Cell_Type InitType = m_vecCells[RowIdx + m_ColCount + ColIdx]->GetCellType();
+	Cell_Type InitType = m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType();
 
 	bool Match = true;
 
@@ -1640,7 +1650,7 @@ bool CBoard::CheckBagCenterUpMatch(int RowIdx, int ColIdx, int Index)
 	if (ColIdx - 1 < 0)
 		return false;
 
-	Cell_Type InitType = m_vecCells[RowIdx + m_ColCount + ColIdx]->GetCellType();
+	Cell_Type InitType = m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType();
 
 	bool Match = true;
 

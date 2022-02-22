@@ -27,27 +27,37 @@ private:
     Vector2 m_CellSize;
     std::array<int, 4> m_DRow;
     std::array<int, 4> m_DCol;
+
     // 새로운 Cell Index 세팅 --> 각 Cell이 몇개 내려가야 하는지
     std::vector<int> m_vecCellDownNums;
+
     // 각 Cell 이 현재 Match인지 아닌지
     std::vector<bool> m_vecCellIsMatch;
+
     // 각 Cell 에서 Special 하게 터뜨리는 효과를 어떤 것을 적용할 것인가
     std::vector<Destroy_State> m_vecDestroyState;
+
     // 해당 Cell 에 Special Cell 생성 이후, 다시 Match가 되어서 터뜨릴 때 어떤 방법을 터뜨릴 것인가
     std::vector<DestroyMark_State> m_vecDestroyMarkState;
+
     // Cell 들이 이동중인가
     bool m_CellsMoving;
+
     // Mouse Click
     Mouse_Click m_MouseClick;
     CCell* m_FirstClickCell;
     CCell* m_SecClickCell;
     int m_ClickCellsMoveDone;
+
     // Column별 새롭게 생성한 Cell 개수
     std::vector<int> m_vecColNewCellNums;
+
     // 각 Cell의 Match Type
     std::vector<Match_State> m_vecMatchState;
+
     // 실시간 Match Update 를 해야 하는가 --> Cell 들을 클릭해서 이동시킬 때 true로 세팅 --> 다 하고 나서 다시 false
     bool m_IsCheckUpdateNeeded;
+
 public:
     void SetCellsMoving(bool Moving)
     {
