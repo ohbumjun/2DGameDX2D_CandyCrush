@@ -1222,22 +1222,32 @@ bool CBoard::DestroyVertical(int ColIndex)
 
 bool CBoard::DestroyBag(int RowIndex, int ColIndex, bool IsAfterEffect)
 {
-	int StRowIndex = RowIndex - 1;
+	int StRowIndex   = RowIndex - 1;
+	int EndRowIndex = RowIndex + 1;
 
 	while (StRowIndex < 0)
 		StRowIndex += 1;
 
-	int StColIndex = ColIndex - 1;
+	while (EndRowIndex >= m_VisualRowCount)
+		EndRowIndex -= 1;
+
+	int StColIndex   = ColIndex - 1;
+	int EndColIndex = ColIndex + 1;
 
 	while (StColIndex < 0)
 		StColIndex += 1;
 
-	for (int row = StRowIndex; row <= RowIndex + 1; row++)
+	while (EndColIndex >= m_ColCount)
+		EndColIndex -= 1;
+
+	for (int row = StRowIndex; row <= EndRowIndex; row++)
 	{
-		for (int col = StColIndex; col <= ColIndex + 1; col++)
+		for (int col = StColIndex; col <= EndColIndex; col++)
 		{
 			// 봉지 자체가 막 만들어진 상태라면 해당 녀석은 Destroy X --> 아래 과정
-			if (!IsAfterEffect && row == RowIndex && col == ColIndex)
+			// if (!IsAfterEffect && row == RowIndex && col == ColIndex)
+			if (m_vecCells[row * m_ColCount + col]->GetCellState() == Cell_State::Bag 
+				&& row == RowIndex && col == ColIndex)
 			{
 				// IsAfter Effect가 False 인 경우, 막 봉지가 만들어진 것
 				// 해당 Index의 CellState 을 Notice로 바꿔준다. --> Animation Change를 위함이다.
@@ -1273,18 +1283,32 @@ void CBoard::DestroySingleCell(int RowIndex, int ColIndex)
 	int Index = RowIndex * m_ColCount + ColIndex;
 
 	// 이미 Destroy 처리를 했다면 X
+	/*
+	*/
 	if (!m_vecCells[Index]->IsActive())
 		return;
 
-	
-	// Destroy 처리 
+	// Destroy 처리
 	m_vecCells[Index]->Destroy();
 
-	// Destroy Mark State 초기화 
+	// Destroy Mark State 초기화
 	m_vecCells[Index]->SetDestroyMarkState(DestroyMark_State::None);
 
 	// 해당 Column 제거 개수 증가
-	m_vecColNewCellNums[Index % m_ColCount] += 1;
+	m_vecColNewCellNums[ColIndex] += 1;
+
+
+		// Bag Cell 과 그 외 Cell 의 Destroy 방식을 다르게 세팅한다.
+	/*
+	if (m_vecCells[RowIndex * m_ColCount + ColIndex]->GetCellState() == Cell_State::Bag)
+	{
+		DestroySingleBagCall(RowIndex, ColIndex);
+	}
+	else
+	{
+		DestroySingleNormalCall(RowIndex, ColIndex);
+	}
+	*/
 }
 
 void CBoard::DestroySingleNormalCall(int RowIndex, int ColIndex)
@@ -1881,7 +1905,7 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 	// 각 Cell의 MarkState
 	// m_vecDestroyMarkState.resize(m_TotCount / 2);
 
-	int MatchCellEndIdx = (int)m_TotCount * 0.5f;
+	int MatchCellEndIdx = (int)(m_TotCount * 0.5f);
 
 	for (int i = 0; i < MatchCellEndIdx; i++)
 	{
