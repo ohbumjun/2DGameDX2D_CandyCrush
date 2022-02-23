@@ -21,57 +21,80 @@ void CCell::SetCellType(Cell_Type Type)
 {
 	m_CellType = Type;
 
-	if (Type == Cell_Type::Blue)
-		SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Blue"));
-	if (Type == Cell_Type::Red)
-		SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Red"));
-	if (Type == Cell_Type::Orange)
-		SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Orange"));
-	/*
-	if (Type == Cell_Type::Yellow)
-		SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Yellow"));
-	if (Type == Cell_Type::Green)
-		SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Green"));
-	*/
+	switch (Type)
+	{
+		// if (Type == Cell_Type::Blue)
+		case Cell_Type::Blue :
+			SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Blue"));
+			break;
+		case Cell_Type::Red :
+			SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Red"));
+			break;
+		case Cell_Type::Orange :
+			SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Orange"));
+			break;
+		/*
+		if (Type == Cell_Type::Yellow)
+			SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Yellow"));
+		if (Type == Cell_Type::Green)
+			SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Green"));
+		*/
+	}
+
 }
 
 void CCell::SetCellState(Cell_State State)
 {
 	m_CellState = State;
 
-	if (State == Cell_State::Normal)
-		SetCurrentAnimation("Normal");
-	else if (State == Cell_State::RowLine)
-		SetCurrentAnimation("RowLine");
-	else if (State == Cell_State::ColLine)
-		SetCurrentAnimation("ColLine");
-	else if (State == Cell_State::Bag)
-		SetCurrentAnimation("Bag");
-	else if (State == Cell_State::Notice)
-		SetCurrentAnimation("Notice");
-	else if (State == Cell_State::MirrorBall)
-		SetCurrentAnimation("MirrorBall");
+	switch (State)
+	{
+		case Cell_State::Normal :
+			SetCurrentAnimation("Normal");
+			break;
+		case Cell_State::RowLine :
+			SetCurrentAnimation("RowLine");
+			break;
+		case Cell_State::ColLine :
+			SetCurrentAnimation("ColLine");
+			break;
+		case Cell_State::Bag :
+			SetCurrentAnimation("Bag");
+			break;
+		case Cell_State::Notice :
+			SetCurrentAnimation("Notice");
+			break;
+		case Cell_State::MirrorBall :
+			SetCurrentAnimation("MirrorBall");
+			break;
+	}
 }
 
 void CCell::SetCellState (Match_State State)
 {
-
-	// NoMatch, Normal 둘다 Cell_State 는 Normal 로 
-	if (State == Match_State::NoMatch)
-		SetCellState(Cell_State::Normal);
-	else if (State == Match_State::Normal)
-		SetCellState(Cell_State::Normal);
-	else if (State == Match_State::RowLine)
-		SetCellState(Cell_State::RowLine);
-	else if (State == Match_State::ColLine)
-		SetCellState(Cell_State::ColLine);
-	else if (State == Match_State::Bag)
-		SetCellState(Cell_State::Bag);
-	else if (State == Match_State::MirrorBall)
-		SetCellState(Cell_State::MirrorBall);
-
+	switch (State)
+	{
+		// NoMatch, Normal 둘다 Cell_State 는 Normal 로 
+		case Match_State::NoMatch :
+			SetCellState(Cell_State::Normal);
+			break;
+		case Match_State::Normal :
+			SetCellState(Cell_State::Normal);
+			break;
+		case Match_State::RowLine :
+			SetCellState(Cell_State::RowLine);
+			break;
+		case Match_State::ColLine :
+			SetCellState(Cell_State::ColLine);
+			break;
+		case Match_State::Bag :
+			SetCellState(Cell_State::Bag);
+			break;
+		case Match_State::MirrorBall :
+			SetCellState(Cell_State::MirrorBall);
+			break;
+	}
 	// Notice 는 Match_State 후보 목록에 존재하지 않는다.
-
 }
 
 

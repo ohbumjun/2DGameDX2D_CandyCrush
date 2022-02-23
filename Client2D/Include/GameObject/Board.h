@@ -84,7 +84,9 @@ private : // Destroy Method
     bool DestroyHorizontal(int RowIndex);
     bool DestroyVertical(int ColIndex);
     bool DestroyBag(int RowIndex, int ColIndex, bool IsAfterEffect);
-    void DestroySingleCell(int Index);
+    void DestroySingleCell(int RowIndex, int ColIndex);
+    void DestroySingleNormalCall(int RowIndex, int ColIndex);
+    void DestroySingleBagCall(int RowIndex, int ColIndex);
 private:
     bool CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked);
     bool CheckBagRightDownMatch(int RowIndex, int ColIndex, int Index);
@@ -95,6 +97,7 @@ private:
     bool CheckBagCenterLeftMatch(int RowIndex, int ColIndex, int Index);
     bool CheckBagCenterDownMatch(int RowIndex, int ColIndex, int Index);
     bool CheckBagCenterUpMatch(int RowIndex, int ColIndex, int Index);
+    void SetBagAfterState();
 private : // Create New Cell
     void CreateNewCellsAboveShownArea();
     CCell* CreateSingleNewCell(const std::string& Name, int RowIndex, int ColIndex, const Vector3& WorldPos, float NewYPos,

@@ -50,5 +50,6 @@ enum class DestroyMark_State {
 	Horizontal,
 	Vertical,
 	Bag,
+	BagAfter,
 	MirrorBall
 };
