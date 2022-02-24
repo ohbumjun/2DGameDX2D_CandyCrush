@@ -37,7 +37,12 @@ private :
 private : // 현재 이미 Special 상태여서, 다음 Match 때 Special Destroy 와 관련된 변수
     DestroyMark_State m_DestroyMarkState;
     Destroy_State m_DestroyState;
+    bool m_IsSpecialDestroyedBag;
 public :
+    bool IsSpecialDestroyedBag() const
+{
+        return m_IsSpecialDestroyedBag;
+}
     Destroy_State GetDestroyState() const
     {
         return m_DestroyState;
@@ -104,6 +109,11 @@ public :
     void SetCellState(Match_State State);
     void SetCurrentAnimation(const std::string& Name);
 public :
+
+    void SetSpecialDestroyedBag(bool Enable) 
+    {
+        m_IsSpecialDestroyedBag = Enable;
+    }
     void SetDestroyMarkState (DestroyMark_State State)
 {
         m_DestroyMarkState = State;

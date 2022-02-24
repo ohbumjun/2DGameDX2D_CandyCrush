@@ -244,6 +244,15 @@ void CBoard::DestroyCells()
 
 	for (int Index = 0; Index < DestroyTargetEndIdx; Index++)
 	{
+		if (m_vecCells[Index]->IsSpecialDestroyedBag())
+		{
+			m_vecCells[Index]->SetDestroyState(Destroy_State::BagAfter);
+			m_vecCells[Index]->SetSpecialDestroyedBag(false);
+		}
+	}
+
+	for (int Index = 0; Index < DestroyTargetEndIdx; Index++)
+	{
 		// BagAfter 의 경우, 그냥 Match 여부와 관계없이 터뜨린다.
 		 if (m_vecCells[Index]->GetDestroyState() == Destroy_State::BagAfter)
 		{
@@ -302,7 +311,6 @@ void CBoard::DestroyCells()
 				// 해당 Column 에서 제거된 Cell의 개수를 지정하는 것이다.
 				// m_vecColNewCellNums[ColIndex] += 1;
 			}
-
 		}
 	}
 
@@ -850,18 +858,6 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 				{
 					int CurIndex = row * m_ColCount + ColIndex;
 
-					/*
-					if (!IsAfterEffect && row == RowIndex && col == ColIndex)
-					{
-						// IsAfter Effect가 False 인 경우, 막 봉지가 만들어진 것
-						// 해당 Index의 CellState 을 Notice로 바꿔준다. --> Animation Change를 위함이다.
-						// 그리고 Destroy State 는 BagAfter 이라고 하고
-						m_vecCells[RowIndex * m_ColCount + ColIndex]->SetCellState(Cell_State::Notice); // 떨림 효과 Animation 주기 위함
-
-						m_vecCells[RowIndex * m_ColCount + ColIndex]->SetDestroyState(Destroy_State::BagAfter);
-					}
-					*/
-
 					// 아래와 괄호에 들어오려면
 					// 1) 이전에 Match State 가 Special 로 되어서, Destroy_State 가 Setting  ( DestroyCells 함수)
 					// 2) 따라서 여기 걸린 것은, 이미 Special Candy 라는 의미
@@ -957,12 +953,6 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 					else
 					{
 						RowResultState = Match_State::Normal;
-						/*
-						if (CheckMatchNum == 4)
-							ColResultState = Match_State::RowLine;
-						else if (CheckMatchNum >= 5)
-							ColResultState = Match_State::MirrorBall;
-							*/
 					}
 				}
 			}
@@ -1198,11 +1188,6 @@ bool CBoard::DestroyHorizontal(int RowIndex)
 	for (int col = 0; col < m_ColCount; col++)
 	{
 		DestroySingleCell(RowIndex, col);
-		// m_vecCells[RowIndex * m_ColCount + col]->Destroy();
-		// m_vecColNewCellNums[col] += 1;
-
-		// Destroy Mark State 를 초기화
-
 	}
 
 	return true;
@@ -1214,7 +1199,6 @@ bool CBoard::DestroyVertical(int ColIndex)
 	for (int row = 0; row < m_VisualRowCount; row++)
 	{
 		DestroySingleCell(row, ColIndex);
-		// m_vecCells[row * m_ColCount + ColIndex]->Destroy();
 	}
 
 	return false;
@@ -1246,6 +1230,7 @@ bool CBoard::DestroyBag(int RowIndex, int ColIndex, bool IsAfterEffect)
 		{
 			// 봉지 자체가 막 만들어진 상태라면 해당 녀석은 Destroy X --> 아래 과정
 			// if (!IsAfterEffect && row == RowIndex && col == ColIndex)
+			/*
 			if (m_vecCells[row * m_ColCount + col]->GetCellState() == Cell_State::Bag 
 				&& row == RowIndex && col == ColIndex)
 			{
@@ -1265,6 +1250,8 @@ bool CBoard::DestroyBag(int RowIndex, int ColIndex, bool IsAfterEffect)
 			{
 				DestroySingleCell(row, col);
 			}
+			*/
+			DestroySingleCell(row, col);
 		}
 	}
 
@@ -1284,7 +1271,6 @@ void CBoard::DestroySingleCell(int RowIndex, int ColIndex)
 
 	// 이미 Destroy 처리를 했다면 X
 	/*
-	*/
 	if (!m_vecCells[Index]->IsActive())
 		return;
 
@@ -1296,11 +1282,13 @@ void CBoard::DestroySingleCell(int RowIndex, int ColIndex)
 
 	// 해당 Column 제거 개수 증가
 	m_vecColNewCellNums[ColIndex] += 1;
+	*/
 
+	if (!m_vecCells[Index]->IsActive())
+		return;
 
-		// Bag Cell 과 그 외 Cell 의 Destroy 방식을 다르게 세팅한다.
-	/*
-	if (m_vecCells[RowIndex * m_ColCount + ColIndex]->GetCellState() == Cell_State::Bag)
+	// Bag Cell 과 그 외 Cell 의 Destroy 방식을 다르게 세팅한다.
+	if (m_vecCells[Index]->GetCellState() == Cell_State::Bag)
 	{
 		DestroySingleBagCall(RowIndex, ColIndex);
 	}
@@ -1308,6 +1296,7 @@ void CBoard::DestroySingleCell(int RowIndex, int ColIndex)
 	{
 		DestroySingleNormalCall(RowIndex, ColIndex);
 	}
+	/*
 	*/
 }
 
@@ -1332,9 +1321,17 @@ void CBoard::DestroySingleBagCall(int RowIndex, int ColIndex)
 
 	int Index = RowIndex * m_ColCount + ColIndex;
 
+	// m_vecMatchState[Index] = Match_State::Bag;
+
 	m_vecCells[Index]->SetCellState(Cell_State::Notice); // 떨림 효과 Animation 주기 위함
 
-	m_vecCells[Index]->SetDestroyState(Destroy_State::BagAfter);
+	// m_vecCells[Index]->SetDestroyState(Destroy_State::BagAfter);
+
+	m_vecCells[Index]->SetSpecialDestroyedBag(true);
+
+	/*
+	*/
+	
 }
 
 bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked)
@@ -1355,7 +1352,8 @@ bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked
 	if (Result)
 	{
 		// 기존에 BagMatch가 있었어도 새로 만든다.
-
+		Result = BoolRightDown || BoolRightUp || BoolLeftDown || BoolLeftUp ||
+			BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
 	}
 
 	// Match 여부와 별개로, 여기서는 조합을 고려한다.
@@ -1386,7 +1384,8 @@ bool CBoard::CheckBagRightDownMatch(int RowIdx, int ColIdx, int Index)
 	// 현재 Col 에서부터 오른쪽 2칸을 검사한다.
 	for (int col = ColIdx + 1; col <= ColIdx + 2; col++)
 	{
-		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType)
+		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType ||
+			m_vecMatchState[RowIdx * m_ColCount + col] == Match_State::Bag)
 		{
 			Match = false;
 			return false;
@@ -1397,7 +1396,8 @@ bool CBoard::CheckBagRightDownMatch(int RowIdx, int ColIdx, int Index)
 	// 아래 2개
 	for (int row = RowIdx - 1; row >= RowIdx - 2; row--)
 	{
-		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType)
+		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType ||
+			m_vecMatchState[row * m_ColCount + ColIdx] == Match_State::Bag)
 		{
 			Match = false;
 			return false;
@@ -1443,7 +1443,8 @@ bool CBoard::CheckBagRightUpMatch(int RowIdx, int ColIdx, int Index)
 	// && 현재 Col 에서부터 오른쪽 2칸을 검사한다.
 	for (int col = ColIdx + 1; col <= ColIdx + 2; col++)
 	{
-		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType)
+		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType ||
+			m_vecMatchState[RowIdx * m_ColCount + col] == Match_State::Bag)
 		{
 			Match = false;
 			return false;
@@ -1454,7 +1455,8 @@ bool CBoard::CheckBagRightUpMatch(int RowIdx, int ColIdx, int Index)
 	// 위 2개 Row 를 고려한다.
 	for (int row = RowIdx + 1; row <= RowIdx + 2; row++)
 	{
-		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType)
+		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType ||
+			m_vecMatchState[row * m_ColCount + ColIdx] == Match_State::Bag)
 		{
 			Match = false;
 			return false;
@@ -1499,7 +1501,8 @@ bool CBoard::CheckBagLeftDownMatch(int RowIdx, int ColIdx, int Index)
 	// && 현재 Col 에서부터 왼쪽 2칸을 검사한다.
 	for (int col = ColIdx - 1; col >= ColIdx - 2; col--)
 	{
-		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType)
+		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType ||
+			m_vecMatchState[RowIdx * m_ColCount + col] == Match_State::Bag)
 		{
 			Match = false;
 			return false;
@@ -1510,7 +1513,8 @@ bool CBoard::CheckBagLeftDownMatch(int RowIdx, int ColIdx, int Index)
 	// 아래 2개 Row 를 고려한다.
 	for (int row = RowIdx - 1; row >= RowIdx - 2; row--)
 	{
-		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType)
+		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType ||
+			m_vecMatchState[row * m_ColCount + ColIdx] == Match_State::Bag)
 		{
 			Match = false;
 			return false;
@@ -1555,7 +1559,8 @@ bool CBoard::CheckBagLeftUpMatch(int RowIdx, int ColIdx, int Index)
 	// && 현재 Col 에서부터 왼쪽 2칸을 검사한다.
 	for (int col = ColIdx - 1; col >= ColIdx - 2; col--)
 	{
-		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType)
+		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType ||
+			m_vecMatchState[RowIdx * m_ColCount + col] == Match_State::Bag)
 		{
 			Match = false;
 			return false;
@@ -1566,7 +1571,8 @@ bool CBoard::CheckBagLeftUpMatch(int RowIdx, int ColIdx, int Index)
 	// 위 2개 Row 를 고려한다.
 	for (int row = RowIdx + 1; row <= RowIdx + 2; row++)
 	{
-		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType)
+		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType ||
+			m_vecMatchState[row * m_ColCount + ColIdx] == Match_State::Bag)
 		{
 			Match = false;
 			return false;
@@ -1615,7 +1621,8 @@ bool CBoard::CheckBagCenterRightMatch(int RowIdx, int ColIdx, int Index)
 	// && 현재 Col 에서부터 오른쪽 2칸을 검사한다.
 	for (int col = ColIdx + 1; col <= ColIdx + 2; col++)
 	{
-		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType)
+		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType ||
+			m_vecMatchState[RowIdx * m_ColCount + col] == Match_State::Bag)
 		{
 			Match = false;
 			return false;
@@ -1624,14 +1631,16 @@ bool CBoard::CheckBagCenterRightMatch(int RowIdx, int ColIdx, int Index)
 	}
 
 	// 위 1개, 아래 1개 Row 를 고려한다.
-	if (m_vecCells[(RowIdx + 1) * m_ColCount + ColIdx]->GetCellType() != InitType)
+	if (m_vecCells[(RowIdx + 1) * m_ColCount + ColIdx]->GetCellType() != InitType ||
+		m_vecMatchState[(RowIdx + 1) * m_ColCount + ColIdx] == Match_State::Bag)
 	{
 		Match = false;
 		return false;
 	}
 	MatchIdxList.push_back((RowIdx + 1) * m_ColCount + ColIdx);
 
-	if (m_vecCells[(RowIdx - 1) * m_ColCount + ColIdx]->GetCellType() != InitType)
+	if (m_vecCells[(RowIdx - 1) * m_ColCount + ColIdx]->GetCellType() != InitType ||
+		m_vecMatchState[(RowIdx - 1) * m_ColCount + ColIdx] == Match_State::Bag)
 	{
 		Match = false;
 		return false;
@@ -1679,7 +1688,8 @@ bool CBoard::CheckBagCenterLeftMatch(int RowIdx, int ColIdx, int Index)
 	// && 현재 Col 에서부터 왼쪽 2칸을 검사한다.
 	for (int col = ColIdx - 1; col >= ColIdx - 2; col--)
 	{
-		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType)
+		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType ||
+			m_vecMatchState[RowIdx * m_ColCount + col] == Match_State::Bag)
 		{
 			Match = false;
 			return false;
@@ -1688,14 +1698,16 @@ bool CBoard::CheckBagCenterLeftMatch(int RowIdx, int ColIdx, int Index)
 	}
 
 	// 위 1개, 아래 1개 Row 를 고려한다.
-	if (m_vecCells[(RowIdx + 1) * m_ColCount + ColIdx]->GetCellType() != InitType)
+	if (m_vecCells[(RowIdx + 1) * m_ColCount + ColIdx]->GetCellType() != InitType ||
+		m_vecMatchState[(RowIdx + 1) * m_ColCount + ColIdx] == Match_State::Bag)
 	{
 		Match = false;
 		return false;
 	}
 	MatchIdxList.push_back((RowIdx + 1) * m_ColCount + ColIdx);
 
-	if (m_vecCells[(RowIdx - 1) * m_ColCount + ColIdx]->GetCellType() != InitType)
+	if (m_vecCells[(RowIdx - 1) * m_ColCount + ColIdx]->GetCellType() != InitType ||
+		m_vecMatchState[(RowIdx - 1) * m_ColCount + ColIdx] == Match_State::Bag)
 	{
 		Match = false;
 		return false;
@@ -1743,7 +1755,8 @@ bool CBoard::CheckBagCenterDownMatch(int RowIdx, int ColIdx, int Index)
 	// && 현재 Row 에서부터 아래 2칸을 검사한다.
 	for (int row = RowIdx - 1; row >= RowIdx - 2; row--)
 	{
-		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType)
+		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType ||
+			m_vecMatchState[row * m_ColCount + ColIdx] == Match_State::Bag)
 		{
 			Match = false;
 			return false;
@@ -1752,14 +1765,16 @@ bool CBoard::CheckBagCenterDownMatch(int RowIdx, int ColIdx, int Index)
 	}
 
 	// 왼쪽 1개, 오른쪽 1개 Row 를 고려한다.
-	if (m_vecCells[RowIdx * m_ColCount + (ColIdx - 1)]->GetCellType() != InitType)
+	if (m_vecCells[RowIdx * m_ColCount + (ColIdx - 1)]->GetCellType() != InitType ||
+		m_vecMatchState[RowIdx * m_ColCount + (ColIdx - 1)] == Match_State::Bag)
 	{
 		Match = false;
 		return false;
 	}
 	MatchIdxList.push_back(RowIdx * m_ColCount + (ColIdx - 1));
 
-	if (m_vecCells[RowIdx * m_ColCount + (ColIdx + 1)]->GetCellType() != InitType)
+	if (m_vecCells[RowIdx * m_ColCount + (ColIdx + 1)]->GetCellType() != InitType ||
+		m_vecMatchState[RowIdx * m_ColCount + (ColIdx + 1)] == Match_State::Bag)
 	{
 		Match = false;
 		return false;
@@ -1807,7 +1822,8 @@ bool CBoard::CheckBagCenterUpMatch(int RowIdx, int ColIdx, int Index)
 	// && 현재 Row 에서부터 위 2칸을 검사한다.
 	for (int row = RowIdx + 1; row <= RowIdx + 2; row++)
 	{
-		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType)
+		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType ||
+			m_vecMatchState[row * m_ColCount + ColIdx] == Match_State::Bag)
 		{
 			Match = false;
 			return false;
@@ -1816,14 +1832,16 @@ bool CBoard::CheckBagCenterUpMatch(int RowIdx, int ColIdx, int Index)
 	}
 
 	// 왼쪽 1개, 오른쪽 1개 Row 를 고려한다.
-	if (m_vecCells[RowIdx * m_ColCount + (ColIdx - 1)]->GetCellType() != InitType)
+	if (m_vecCells[RowIdx * m_ColCount + (ColIdx - 1)]->GetCellType() != InitType ||
+		m_vecMatchState[RowIdx * m_ColCount + (ColIdx - 1)] == Match_State::Bag)
 	{
 		Match = false;
 		return false;
 	}
 	MatchIdxList.push_back(RowIdx * m_ColCount + (ColIdx - 1));
 
-	if (m_vecCells[RowIdx * m_ColCount + (ColIdx + 1)]->GetCellType() != InitType)
+	if (m_vecCells[RowIdx * m_ColCount + (ColIdx + 1)]->GetCellType() != InitType ||
+		m_vecMatchState[RowIdx * m_ColCount + (ColIdx + 1)] == Match_State::Bag)
 	{
 		Match = false;
 		return false;
