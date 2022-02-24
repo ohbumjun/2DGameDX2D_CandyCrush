@@ -10,7 +10,8 @@ CCell::CCell() :
 	m_IsGoingBack(false),
 	m_IsSwitch(false),
 	m_IsSpecialDestroyedBag(false)
-{}
+{
+}
 
 CCell::CCell(const CCell& Player2D)
 {}

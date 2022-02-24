@@ -74,7 +74,8 @@ public: // Click
     void AddClickCellMoveBackDone();
     void SwitchClickCellsInfo();
     void ResetClickCellInfos();
-    void ClickCell(float DeltaTime); //
+    void ClickCell(float DeltaTime); 
+    void ChangeToMirrorBallCell(float DeltaTime); 
 private: // Check Match
     bool CheckMatchUpdate();
     bool CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell);
@@ -118,5 +119,5 @@ private : // Match State 를 그에 대응하는 Cell_State 로 바꿔주는 함수
     Destroy_State ChangeMatchStateToDestroyState(Match_State State);
     Destroy_State ChangeDestroyMarkStateToDestroyState(DestroyMark_State State);
     DestroyMark_State ChangeMatchStateToDestroyMarkState(Match_State State);
-    Cell_Type_Binary ChangeCellBinaryTypeToCellType(Cell_Type Type);
+    Cell_Type_Binary ChangeCellTypeToCellBinaryType(Cell_Type Type);
 };

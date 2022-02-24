@@ -27,6 +27,7 @@ bool CClientManager::Init(HINSTANCE hInst)
 
 	// Input Callback ¼¼ÆÃ
 	CInput::GetInst()->CreateKey("BoardCellClick", VK_LBUTTON);
+	CInput::GetInst()->CreateKey("ChangeToMirrorBall", VK_RBUTTON);
 
 	CSceneManager::GetInst()->SetCreateSceneModeFunction<CClientManager>(this, &CClientManager::CreateSceneMode);
 	CSceneManager::GetInst()->SetCreateObjectFunction<CClientManager>(this, &CClientManager::CreateObject);
