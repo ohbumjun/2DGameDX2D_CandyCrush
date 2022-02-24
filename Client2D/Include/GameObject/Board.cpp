@@ -258,6 +258,7 @@ void CBoard::DestroyCells()
 		{
 			 int RowIndex = m_vecCells[Index]->GetRowIndex();
 			 int ColIndex = m_vecCells[Index]->GetColIndex();
+
 		 	 DestroyBag(RowIndex, ColIndex, true);
 
 			// 이 녀석에 대해서는 더이상 Match 여부를 고려하지 않아도 되지 않을까 ?
@@ -1290,17 +1291,17 @@ void CBoard::DestroySingleCell(int RowIndex, int ColIndex)
 	// Bag Cell 과 그 외 Cell 의 Destroy 방식을 다르게 세팅한다.
 	if (m_vecCells[Index]->GetCellState() == Cell_State::Bag)
 	{
-		DestroySingleBagCall(RowIndex, ColIndex);
+		DestroySingleBagCell(RowIndex, ColIndex);
 	}
 	else
 	{
-		DestroySingleNormalCall(RowIndex, ColIndex);
+		DestroySingleNormalCell(RowIndex, ColIndex);
 	}
 	/*
 	*/
 }
 
-void CBoard::DestroySingleNormalCall(int RowIndex, int ColIndex)
+void CBoard::DestroySingleNormalCell(int RowIndex, int ColIndex)
 {
 	int Index = RowIndex * m_ColCount + ColIndex;
 
@@ -1315,19 +1316,37 @@ void CBoard::DestroySingleNormalCall(int RowIndex, int ColIndex)
 	m_vecColNewCellNums[ColIndex] += 1;
 }
 
-void CBoard::DestroySingleBagCall(int RowIndex, int ColIndex)
+void CBoard::DestroySingleBagCell(int RowIndex, int ColIndex)
 {
 	// Match 아닐때와 맞을 때를 구분해야 하는것인 아닌가 ?
 
 	int Index = RowIndex * m_ColCount + ColIndex;
 
-	// m_vecMatchState[Index] = Match_State::Bag;
+	// 현재 Cell State 은 Cell 로 계속 유지
 
-	m_vecCells[Index]->SetCellState(Cell_State::Notice); // 떨림 효과 Animation 주기 위함
+	// 1) 현재 봉지 상태 일 때는 -->
+	// - Notice 로 Animation 바꿔주고
+	// - 이후, 다음 Frame 에 터질 수 있도록, SpecialDestroyedBag 를 true로 줘서
+	// - Destroy Cells  함수에서 해당 Cell 에 대해 Destroy Bag 함수를 실행할 수 있게 세팅해야 한다.
+
+	// 2) 즉, 결과적으로 Destroy_State 가 Bag After 가 될 때만, 제거할 수 있어야 한다.
+
+	// 3) 단, 중복으로 Special Destroy 가 발생하여, 여기 함수에 , 같은 Cell 에 대해 2번 이상 들어올 수 있다.
+	if (m_vecCells[Index]->GetDestroyState() != Destroy_State::BagAfter)
+	{
+		if (m_vecCells[Index]->IsSpecialDestroyedBag() == false)
+		{
+			m_vecCells[Index]->SetCurrentAnimation("Notice");
+			m_vecCells[Index]->SetSpecialDestroyedBag(true);
+		}
+	}
+	else
+	{
+		DestroySingleNormalCell(RowIndex, ColIndex);
+	}
 
 	// m_vecCells[Index]->SetDestroyState(Destroy_State::BagAfter);
 
-	m_vecCells[Index]->SetSpecialDestroyedBag(true);
 
 	/*
 	*/
@@ -1348,7 +1367,7 @@ bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked
 	bool Result = BoolRightDown || BoolRightUp || BoolLeftDown || BoolLeftUp ||
 		BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
 
-	// Match가 있었다면 
+	// Match가 있었다면
 	if (Result)
 	{
 		// 기존에 BagMatch가 있었어도 새로 만든다.
@@ -1356,7 +1375,7 @@ bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked
 			BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
 	}
 
-	// Match 여부와 별개로, 여기서는 조합을 고려한다.
+	// todo :Match 여부와 별개로, 여기서는 조합을 고려한다.
 	// 주변 4방향으로 인접한 녀석들이 있는지를 조사할 것이다.
 
 	return BoolRightDown || BoolRightUp || BoolLeftDown || BoolLeftUp ||

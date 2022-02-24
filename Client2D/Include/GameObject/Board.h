@@ -85,8 +85,8 @@ private : // Destroy Method
     bool DestroyVertical(int ColIndex);
     bool DestroyBag(int RowIndex, int ColIndex, bool IsAfterEffect);
     void DestroySingleCell(int RowIndex, int ColIndex);
-    void DestroySingleNormalCall(int RowIndex, int ColIndex);
-    void DestroySingleBagCall(int RowIndex, int ColIndex);
+    void DestroySingleNormalCell(int RowIndex, int ColIndex);
+    void DestroySingleBagCell(int RowIndex, int ColIndex);
 private:
     bool CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked);
     bool CheckBagRightDownMatch(int RowIndex, int ColIndex, int Index);
