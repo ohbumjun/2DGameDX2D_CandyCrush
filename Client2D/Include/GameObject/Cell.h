@@ -15,6 +15,7 @@ private:
     virtual ~CCell();
 private:
     Cell_Type m_CellType;
+    Cell_Type m_MirrorBallDestroyType;
     Cell_State m_CellState;
     CSharedPtr<CSpriteComponent> m_Sprite;
     class CBoard* m_Board;
@@ -26,7 +27,7 @@ private:
     float m_ShownAreaOffset;
     float m_ShownAreaTopYPos;
     bool m_IsShownEnable;
-private :
+private:
     float m_PosY; // 아래 이동
     float m_NewDownPosY;
     bool m_IsSwitch; // 마우스 클릭
@@ -34,11 +35,15 @@ private :
     bool m_IsPlacedNew; // 새로운 위치로 이동한 녀석인지
     bool m_IsMoving;
     Vector3 m_ClickDestPos;
-private : // 현재 이미 Special 상태여서, 다음 Match 때 Special Destroy 와 관련된 변수
+private: // 현재 이미 Special 상태여서, 다음 Match 때 Special Destroy 와 관련된 변수
     DestroyMark_State m_DestroyMarkState;
     Destroy_State m_DestroyState;
     bool m_IsSpecialDestroyedBag;
-public :
+public:
+    Cell_Type GetMirrorBallDestroyType() const
+    {
+        return m_MirrorBallDestroyType;
+    }
     bool IsSpecialDestroyedBag() const
 {
         return m_IsSpecialDestroyedBag;
@@ -109,7 +114,10 @@ public :
     void SetCellState(Match_State State);
     void SetCurrentAnimation(const std::string& Name);
 public :
-
+    void SetMirrorBallDestroyType (Cell_Type Type)
+    {
+        m_MirrorBallDestroyType = Type;
+    }
     void SetSpecialDestroyedBag(bool Enable) 
     {
         m_IsSpecialDestroyedBag = Enable;

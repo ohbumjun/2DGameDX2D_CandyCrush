@@ -275,20 +275,20 @@ void CBoard::DestroyCells()
 			// if ((int)m_vecDestroyState[Index] > (int)Destroy_State::None)
 			if ((int)m_vecCells[Index]->GetDestroyState() > (int)Destroy_State::None)
 			{
-				// if (m_vecDestroyState[Index] == Destroy_State::Horizontal)
-				if (m_vecCells[Index]->GetDestroyState() == Destroy_State::Horizontal)
+				switch (m_vecCells[Index]->GetDestroyState())
 				{
+				case  Destroy_State::Horizontal :
 					DestroyHorizontal(RowIndex);
-				}
-				// else if (m_vecDestroyState[Index] == Destroy_State::Vertical)
-				else if (m_vecCells[Index]->GetDestroyState() == Destroy_State::Vertical)
-				{
+					break;
+				case  Destroy_State::Vertical:
 					DestroyVertical(ColIndex);
-				}
-				// else if (m_vecDestroyState[Index] == Destroy_State::Bag)
-				else if (m_vecCells[Index]->GetDestroyState() == Destroy_State::Bag)
-				{
+					break;
+				case Destroy_State::Bag :
 					DestroyBag(RowIndex, ColIndex, false);
+					break;
+				case Destroy_State::MirrorBall:
+					DestroyMirrorBall(RowIndex, ColIndex);
+					break;
 				}
 			}
 
@@ -665,17 +665,10 @@ void CBoard::ResetClickCellInfos()
 
 bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 {
-	// 일단 Normal 한 Match 만을 고려할 것이다.
 	if (!FirstClickCell || !SecClickCell)
 		return false;
 
-	// A. Sliding Window 개념 적용
-	// - 가장 큰 길이부터, 작은 길이로 가면서 조사하기
-	// - 단, 각 개수의 Match 에 대해, rowLine, ColLine, Mirror Ball 여부도 판단
-
-	// B. Bag 알고리즘은 또 따로 세팅하기
-	// - 여기서는 만약 Match가 된다면, A 파트에서 세팅해준
-	// Match 정보 초기화 해준다.... ? 위랑 아래랑도 동시에 가능한 것 아닌가 ?
+	// todo : 여기서 조합의 경우를 고려한다.
 
 	Match_State FCellResult;
 	Match_State FCellRowResult = Match_State::NoMatch;
@@ -724,10 +717,6 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	SCellColResult = CheckColMatch(SecClickCell->GetRowIndex(), 
 		SecClickCell->GetColIndex(), SecClickCell->GetIndex(), true);
 
-	// todo :  Row, Column을 다 확인한 이후
-	// Match_State에 따라서
-	// FirstClickCell, SecondCell 이 이동한 위치에 새로운 Ball Type을 세팅할지 결정한다.
-	// 최대 녀석으로 세팅한다.
 	SCellResult = (int)SCellColResult > (int)SCellRowResult ? SCellColResult : SCellRowResult;
 
 	// Bag 조합 검사하기
@@ -763,6 +752,36 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	// m_vecMatchState[SecClickCell->GetIndex()] = SCellResult;
 
 	bool Result = (int)SCellResult > (int)Match_State::NoMatch || (int)FCellResult > (int)Match_State::NoMatch;
+
+	// 만약 Match 가 존재하지 않는다면
+	// 여기는 조합에 해당하지 않는다. 위에서 조합을 체크했기 때문에
+	// 둘중 하나라도 
+	if (!Result)
+	{
+		// 둘중 하나라도 Mirror Ball 이 존재하는지 확인한다.
+		if (m_FirstClickCell->GetCellState() == Cell_State::MirrorBall)
+		{
+			Cell_Type NextCellType = m_SecClickCell->GetCellType();
+
+			// 해당 Type의 Cell 들을 모두 Destroy
+			m_vecCells[m_FirstClickCell->GetIndex()]->SetMirrorBallDestroyType(NextCellType);
+			m_vecCells[m_FirstClickCell->GetIndex()]->SetDestroyState(Destroy_State::MirrorBall);
+			m_vecCellIsMatch[m_FirstClickCell->GetIndex()] = true;
+
+			return true;
+		}
+		else if (m_SecClickCell->GetCellState() == Cell_State::MirrorBall)
+		{
+			Cell_Type NextCellType = m_FirstClickCell->GetCellType();
+
+			// 해당 Type의 Cell 들을 모두 Destroy
+			m_vecCells[m_SecClickCell->GetIndex()]->SetMirrorBallDestroyType(NextCellType);
+			m_vecCells[m_SecClickCell->GetIndex()]->SetDestroyState(Destroy_State::MirrorBall);
+			m_vecCellIsMatch[m_SecClickCell->GetIndex()] = true;
+
+			return true;
+		}
+	}
 
 	return Result;
 }
@@ -1270,6 +1289,35 @@ bool CBoard::DestroyBag(int RowIndex, int ColIndex, bool IsAfterEffect)
 	return true;
 }
 
+bool CBoard::DestroyMirrorBall (int RowIndex, int ColIndex)
+{
+	// 같은 색상의 Type을 모두 Destroy, 단, MirrorBall은 X
+	Cell_Type DestroyType = m_vecCells[RowIndex * m_ColCount + ColIndex]->GetMirrorBallDestroyType();
+
+	int Index = -1;
+
+	for (int row = 0; row < m_VisualRowCount; row++)
+	{
+		for (int col = 0; col < m_ColCount; col++)
+		{
+			Index = row * m_ColCount + col;
+
+			if (m_vecCells[Index]->GetCellType() == DestroyType)
+			{
+				if (m_vecCells[Index]->GetCellState() == Cell_State::MirrorBall)
+					continue;
+
+				DestroySingleCell(row, col);
+			}
+		}
+	}
+
+	// 자기 자신도 제거한다.
+	DestroySingleNormalCell(RowIndex, ColIndex);
+
+	return true;
+}
+
 void CBoard::DestroySingleCell(int RowIndex, int ColIndex)
 {
 	int Index = RowIndex * m_ColCount + ColIndex;
@@ -1348,13 +1396,6 @@ void CBoard::DestroySingleBagCell(int RowIndex, int ColIndex)
 	{
 		DestroySingleNormalCell(RowIndex, ColIndex);
 	}
-
-	// m_vecCells[Index]->SetDestroyState(Destroy_State::BagAfter);
-
-
-	/*
-	*/
-	
 }
 
 bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked)

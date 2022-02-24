@@ -84,6 +84,7 @@ private : // Destroy Method
     bool DestroyHorizontal(int RowIndex);
     bool DestroyVertical(int ColIndex);
     bool DestroyBag(int RowIndex, int ColIndex, bool IsAfterEffect);
+    bool DestroyMirrorBall(int RowIndex, int ColIndex);
     void DestroySingleCell(int RowIndex, int ColIndex);
     void DestroySingleNormalCell(int RowIndex, int ColIndex);
     void DestroySingleBagCell(int RowIndex, int ColIndex);
