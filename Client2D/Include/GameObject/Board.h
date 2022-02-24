@@ -74,7 +74,7 @@ public: // Click
     void AddClickCellMoveBackDone();
     void SwitchClickCellsInfo();
     void ResetClickCellInfos();
-    void ClickCell(float DeltaTime);
+    void ClickCell(float DeltaTime); //
 private: // Check Match
     bool CheckMatchUpdate();
     bool CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell);
