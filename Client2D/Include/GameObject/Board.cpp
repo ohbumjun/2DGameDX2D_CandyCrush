@@ -882,9 +882,10 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 				// 2) Match State 처리를 해준다.
 				if (CheckMatchNum == 3)
 					RowResultState = Match_State::Normal;
-				if (CheckMatchNum >= 4)
+				if (CheckMatchNum == 4)
 					RowResultState = Match_State::ColLine;
-				// else if (CheckMatchNum >= 5)
+				if (CheckMatchNum >= 5)
+					RowResultState = Match_State::MirrorBall;
 
 				// 3) 만약 Special Candy가 만들어져 있었다면
 				// - 새로운 Special Candy는 해당 위치에 만들어져서는 안된다.
@@ -945,9 +946,10 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 						}
 						else
 						{
-							if (CheckMatchNum >= 4)
+							if (CheckMatchNum == 4)
 								RowResultState = Match_State::ColLine;
-							// else if (CheckMatchNum >= 5)
+							if (CheckMatchNum >= 5)
+								RowResultState = Match_State::MirrorBall;
 						}
 					}
 					// 아니라면, 그냥 여전히 Normal 로 세팅한다.
@@ -1084,9 +1086,10 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 				// 2) Match State 처리를 해준다.
 				if (CheckMatchNum == 3)
 					ColResultState = Match_State::Normal;
-				if (CheckMatchNum >= 4)
+				if (CheckMatchNum == 4)
 					ColResultState = Match_State::RowLine;
-				// else if (CheckMatchNum >= 5)
+				if (CheckMatchNum >= 5)
+					ColResultState = Match_State::MirrorBall;
 
 				// 3) 만약 Special Candy가 만들어져 있었다면
 				// - 새로운 Special Candy는 해당 위치에 만들어져서는 안된다.
@@ -1149,9 +1152,10 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 						}
 						else
 						{
-							if (CheckMatchNum >= 4)
+							if (CheckMatchNum == 4)
 								ColResultState = Match_State::RowLine;
-							// else if (CheckMatchNum >= 5)
+							if (CheckMatchNum >= 5)
+								ColResultState = Match_State::MirrorBall;
 						}
 					}
 					// 아니라면, 그냥 여전히 Normal 로 세팅한다.
