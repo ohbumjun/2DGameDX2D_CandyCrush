@@ -88,6 +88,7 @@ private : // Destroy Method
     void DestroySingleCell(int RowIndex, int ColIndex);
     void DestroySingleNormalCell(int RowIndex, int ColIndex);
     void DestroySingleBagCell(int RowIndex, int ColIndex);
+    void DestroySingleMirrorBallCell(int RowIndex, int ColIndex);
 private : // MirrorBall Match
     void SetMirrorBallDestroyInfo(int Index, Cell_Type_Binary DestroyType);
 private: // BagMatch

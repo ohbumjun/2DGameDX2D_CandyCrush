@@ -641,10 +641,10 @@ Cell_Type_Binary CBoard::ChangeCellBinaryTypeToCellType(Cell_Type Type)
 	case Cell_Type::Orange:
 		return Cell_Type_Binary::Orange;
 
-
-		/*
 	case Cell_Type::Yellow:
 		return Cell_Type_Binary::Yellow;
+
+		/*
 	case Cell_Type::Green:
 		return Cell_Type_Binary::MirrorBall;
 		*/
@@ -867,6 +867,10 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 				// 첫번째와 나머지 녀석들이 같은지 체크한다 + Sliding Window 개념을 적용한다.
 				CurIndex = StRow * m_ColCount + ColIndex;
 
+				Cell_Type_Binary CurCellType = m_vecCells[CurIndex]->GetCellType();
+
+				bool Result = (int)(m_vecCells[CurIndex]->GetCellType()) & (int)(InitCellType);
+
 				// Mirror Ball일 경우, 어떤 Type이던 일치하게 세팅해야 한다. 따라서 MirrorBall은
 				// Type은 다르더라도 Match로 판단하게 한다.
 				if (((int)m_vecCells[CurIndex]->GetCellType() & (int)InitCellType) == false)
@@ -892,6 +896,8 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 						m_vecCellIsMatch[MatchedRow * m_ColCount + ColIndex] = true;
 				}
 
+				MatchedCellType = InitCellType;
+
 				IsResultRowMatch = true;
 
 				// For 문을 빠져나간다.
@@ -901,8 +907,6 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 
 		if (IsResultRowMatch)
 		{
-			MatchedCellType = m_vecCells[RowIndex * m_ColCount + ColIndex]->GetCellType();
-
 			if (IsClickCell)
 			{
 				bool MarkStateFound = false;
@@ -941,12 +945,12 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 				// 2) Match State 처리를 해준다.
 				if (CheckMatchNum == 3)
 					RowResultState = Match_State::Normal;
+				if (CheckMatchNum >= 4)
+					RowResultState = Match_State::MirrorBall;
+				/*
 				if (CheckMatchNum == 4)
 					RowResultState = Match_State::ColLine;
 				if (CheckMatchNum >= 5)
-					RowResultState = Match_State::MirrorBall;
-				/*
-				if (CheckMatchNum >= 4)
 					RowResultState = Match_State::MirrorBall;
 				*/
 
@@ -1016,12 +1020,12 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 						}
 						else
 						{
+							if (CheckMatchNum >= 4)
+								RowResultState = Match_State::MirrorBall;
+							/*
 							if (CheckMatchNum == 4)
 								RowResultState = Match_State::ColLine;
 							if (CheckMatchNum >= 5)
-								RowResultState = Match_State::MirrorBall;
-							/*
-							if (CheckMatchNum >= 4)
 								RowResultState = Match_State::MirrorBall;
 							*/
 						}
@@ -1104,6 +1108,10 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 			{
 				CurIndex = RowIndex * m_ColCount + StCol;
 
+				Cell_Type_Binary CurCellType = m_vecCells[CurIndex]->GetCellType();
+
+				bool Result = (int)(m_vecCells[CurIndex]->GetCellType()) & (int)(InitCellType);
+
 				if (((int)m_vecCells[CurIndex]->GetCellType() & (int)InitCellType) == false)
 				{
 					IsPartMatch = false;
@@ -1127,6 +1135,8 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 						m_vecCellIsMatch[RowIndex * m_ColCount + MatchedCol] = true;
 				}
 
+				MatchedCellType = InitCellType;
+
 				// 해당 길이에서의 match 여부를 true 로 세팅
 				IsLengthMatch = true;
 
@@ -1137,7 +1147,7 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 
 		if (IsLengthMatch)
 		{
-			MatchedCellType = m_vecCells[RowIndex * m_ColCount + ColIndex]->GetCellType();
+			// MatchedCellType = m_vecCells[RowIndex * m_ColCount + ColIndex]->GetCellType();
 
 			if (IsClickCell)
 			{
@@ -1177,12 +1187,12 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 				// 2) Match State 처리를 해준다.
 				if (CheckMatchNum == 3)
 					ColResultState = Match_State::Normal;
+				if (CheckMatchNum >= 4)
+					ColResultState = Match_State::MirrorBall;
+				/*
 				if (CheckMatchNum == 4)
 					ColResultState = Match_State::RowLine;
 				if (CheckMatchNum >= 5)
-					ColResultState = Match_State::MirrorBall;
-				/*
-				if (CheckMatchNum >= 4)
 					ColResultState = Match_State::MirrorBall;
 				*/
 
@@ -1252,12 +1262,12 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 						}
 						else
 						{
+							if (CheckMatchNum >= 4)
+								ColResultState = Match_State::MirrorBall;
+							/*
 							if (CheckMatchNum == 4)
 								ColResultState = Match_State::RowLine;
 							if (CheckMatchNum >= 5)
-								ColResultState = Match_State::MirrorBall;
-							/*
-							if (CheckMatchNum >= 4)
 								ColResultState = Match_State::MirrorBall;
 							*/
 						}
@@ -1387,7 +1397,9 @@ bool CBoard::DestroyMirrorBall (int RowIndex, int ColIndex)
 		{
 			Index = row * m_ColCount + col;
 
-			if ((int)(m_vecCells[Index]->GetCellType()) & (int)DestroyType)
+			Cell_Type_Binary CurCellType = m_vecCells[Index]->GetCellType();
+
+			if ((int)(CurCellType) & (int)DestroyType)
 			{
 				if (m_vecCells[Index]->GetCellState() == Cell_State::MirrorBall)
 					continue;
@@ -1427,6 +1439,10 @@ void CBoard::DestroySingleCell(int RowIndex, int ColIndex)
 
 	// Bag Cell 과 그 외 Cell 의 Destroy 방식을 다르게 세팅한다.
 	if (m_vecCells[Index]->GetCellState() == Cell_State::Bag)
+	{
+		DestroySingleBagCell(RowIndex, ColIndex);
+	}
+	else if (m_vecCells[Index]->GetCellState() == Cell_State::MirrorBall)
 	{
 		DestroySingleBagCell(RowIndex, ColIndex);
 	}
@@ -1482,6 +1498,9 @@ void CBoard::DestroySingleBagCell(int RowIndex, int ColIndex)
 		DestroySingleNormalCell(RowIndex, ColIndex);
 	}
 }
+
+void CBoard::DestroySingleMirrorBallCell(int RowIndex, int ColIndex)
+{}
 
 void CBoard::SetMirrorBallDestroyInfo(int Index, Cell_Type_Binary DestroyType)
 {
