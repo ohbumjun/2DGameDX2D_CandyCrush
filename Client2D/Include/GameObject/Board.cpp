@@ -869,7 +869,7 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 
 				// Mirror Ball일 경우, 어떤 Type이던 일치하게 세팅해야 한다. 따라서 MirrorBall은
 				// Type은 다르더라도 Match로 판단하게 한다.
-				if (!((int)m_vecCells[CurIndex]->GetCellType() & (int)InitCellType))
+				if (((int)m_vecCells[CurIndex]->GetCellType() & (int)InitCellType) == false)
 				{
 					IsPartRowMatch = false;
 					break;
@@ -1104,7 +1104,7 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 			{
 				CurIndex = RowIndex * m_ColCount + StCol;
 
-				if (!((int)m_vecCells[CurIndex]->GetCellType() & (int)InitCellType))
+				if (((int)m_vecCells[CurIndex]->GetCellType() & (int)InitCellType) == false)
 				{
 					IsPartMatch = false;
 					break;
