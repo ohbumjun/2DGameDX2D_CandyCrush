@@ -641,9 +641,9 @@ Cell_Type_Binary CBoard::ChangeCellBinaryTypeToCellType(Cell_Type Type)
 	case Cell_Type::Orange:
 		return Cell_Type_Binary::Orange;
 
-		/*
 	case Cell_Type::Yellow:
-		return Cell_Type_Binary::MirrorBall;
+		return Cell_Type_Binary::Yellow;
+		/*
 
 	case Cell_Type::Green:
 		return Cell_Type_Binary::MirrorBall;
@@ -870,7 +870,7 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 
 				// Mirror Ball일 경우, 어떤 Type이던 일치하게 세팅해야 한다. 따라서 MirrorBall은
 				// Type은 다르더라도 Match로 판단하게 한다.
-				if (m_vecCells[CurIndex]->GetCellType() != InitCellType &&
+				if (!((int)m_vecCells[CurIndex]->GetCellType() & (int)InitCellType) &&
 					m_vecCells[Index]->GetCellState() != Cell_State::MirrorBall)
 				{
 					IsPartRowMatch = false;
@@ -1082,7 +1082,7 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 			{
 				CurIndex = RowIndex * m_ColCount + StCol;
 
-				if (m_vecCells[CurIndex]->GetCellType() != InitCellType &&
+				if (!((int)m_vecCells[CurIndex]->GetCellType() & (int)InitCellType) &&
 					m_vecCells[Index]->GetCellState() != Cell_State::MirrorBall)
 				{
 					IsPartMatch = false;
