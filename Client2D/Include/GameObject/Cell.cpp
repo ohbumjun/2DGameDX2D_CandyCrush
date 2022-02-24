@@ -18,20 +18,20 @@ CCell::CCell(const CCell& Player2D)
 CCell::~CCell()
 {}
 
-void CCell::SetCellType(Cell_Type Type)
+void CCell::SetCellType(Cell_Type_Binary Type)
 {
 	m_CellType = Type;
 
 	switch (Type)
 	{
 		// if (Type == Cell_Type::Blue)
-		case Cell_Type::Blue :
+		case Cell_Type_Binary::Blue :
 			SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Blue"));
 			break;
-		case Cell_Type::Red :
+		case Cell_Type_Binary::Red :
 			SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Red"));
 			break;
-		case Cell_Type::Orange :
+		case Cell_Type_Binary::Orange :
 			SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Orange"));
 			break;
 		/*

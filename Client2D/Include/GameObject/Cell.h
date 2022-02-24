@@ -14,8 +14,8 @@ private:
     CCell(const CCell& Player2D);
     virtual ~CCell();
 private:
-    Cell_Type m_CellType;
-    Cell_Type m_MirrorBallDestroyType;
+    Cell_Type_Binary m_CellType;
+    Cell_Type_Binary m_MirrorBallDestroyType;
     Cell_State m_CellState;
     CSharedPtr<CSpriteComponent> m_Sprite;
     class CBoard* m_Board;
@@ -40,7 +40,7 @@ private: // 현재 이미 Special 상태여서, 다음 Match 때 Special Destroy 와 관련된 
     Destroy_State m_DestroyState;
     bool m_IsSpecialDestroyedBag;
 public:
-    Cell_Type GetMirrorBallDestroyType() const
+    Cell_Type_Binary GetMirrorBallDestroyType() const
     {
         return m_MirrorBallDestroyType;
     }
@@ -80,7 +80,7 @@ public:
 {
         return m_ClickDestPos;
 }
-    Cell_Type GetCellType() const
+    Cell_Type_Binary GetCellType() const
 {
         return m_CellType;
 }
@@ -109,12 +109,12 @@ public:
         return m_Sprite->GetAnimationInstance();
 }
 public :
-    void SetCellType(Cell_Type Type);
+    void SetCellType(Cell_Type_Binary Type);
     void SetCellState(Cell_State State);
     void SetCellState(Match_State State);
     void SetCurrentAnimation(const std::string& Name);
 public :
-    void SetMirrorBallDestroyType (Cell_Type Type)
+    void SetMirrorBallDestroyType (Cell_Type_Binary Type)
     {
         m_MirrorBallDestroyType = Type;
     }

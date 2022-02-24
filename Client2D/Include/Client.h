@@ -1,12 +1,21 @@
 #pragma once
 
-enum Cell_Type {
+enum class Cell_Type_Binary {
+	Blue = 0x1,
+	Red = 0x2,
+	Orange = 0x4,
+	// Yellow = 0x8,
+	// Green = 0x10,
+	All 
+};
+
+enum class Cell_Type {
 	Blue,
 	Red,
 	Orange,
-	// Yellow,
-	// Green,
-	End
+	// Yellow = 0x8,
+	// Green = 0x10,
+	End,
 };
 
 enum class Cell_State {

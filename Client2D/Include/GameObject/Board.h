@@ -88,7 +88,9 @@ private : // Destroy Method
     void DestroySingleCell(int RowIndex, int ColIndex);
     void DestroySingleNormalCell(int RowIndex, int ColIndex);
     void DestroySingleBagCell(int RowIndex, int ColIndex);
-private:
+private : // MirrorBall Match
+    void SetMirrorBallDestroyInfo(int Index, Cell_Type_Binary DestroyType);
+private: // BagMatch
     bool CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked);
     bool CheckBagRightDownMatch(int RowIndex, int ColIndex, int Index);
     bool CheckBagRightUpMatch(int RowIndex, int ColIndex, int Index);
@@ -102,7 +104,7 @@ private:
 private : // Create New Cell
     void CreateNewCellsAboveShownArea();
     CCell* CreateSingleNewCell(const std::string& Name, int RowIndex, int ColIndex, const Vector3& WorldPos, float NewYPos,
-        Cell_Type Type, float Opacity, bool ShowEnable, Cell_State State);
+        Cell_Type_Binary Type, float Opacity, bool ShowEnable, Cell_State State);
 private:
     void ShuffleRandom();
     void FindMatchCellsAfterTwoClick(); // 2개 Cell 클릭 이후 실행하기
@@ -115,4 +117,5 @@ private : // Match State 를 그에 대응하는 Cell_State 로 바꿔주는 함수
     Destroy_State ChangeMatchStateToDestroyState(Match_State State);
     Destroy_State ChangeDestroyMarkStateToDestroyState(DestroyMark_State State);
     DestroyMark_State ChangeMatchStateToDestroyMarkState(Match_State State);
+    Cell_Type_Binary ChangeCellBinaryTypeToCellType(Cell_Type Type);
 };
