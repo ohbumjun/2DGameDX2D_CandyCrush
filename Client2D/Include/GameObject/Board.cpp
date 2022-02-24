@@ -2175,7 +2175,7 @@ void CBoard::ClickCell(float DeltaTime)
 		// Cell 이동중 표시하기
 		m_CellsMoving = true;
 
-		// 실시간 CheckUpdate 표시하기
+		// 실시간 CheckUpdate 표시하기 //
 		m_IsCheckUpdateNeeded = true;
 	}
 }
