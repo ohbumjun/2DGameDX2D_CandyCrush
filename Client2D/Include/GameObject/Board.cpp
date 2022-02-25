@@ -323,7 +323,7 @@ void CBoard::DestroyBagAndRowLineComb(int RowIndex)
 	}
 }
 
-// 技肺 技临 
+// 技肺 技临 //
 void CBoard::DestroyBagAndColLineComb(int ColIndex)
 {
 	int LeftColIdx = ColIndex - 1;
