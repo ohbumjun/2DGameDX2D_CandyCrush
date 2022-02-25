@@ -97,7 +97,7 @@ private: // Combination
     void DestroyBagAndBagComb(CCell* FirstCell);
     bool CheckBagAndRowLineComb(CCell* FirstCell, CCell* SecondCell);//
     void DestroyBagAndRowLineComb(int RowIndex);
-    bool CheckBagAndColLineComb(CCell* FirstCell, CCell* SecondCell);
+    bool CheckBagAndColLineComb(CCell* FirstCell, CCell* SecondCell); //
     void DestroyBagAndColLineComb(int ColIndex);
 private : // MirrorBall Match
     void SetMirrorBallDestroyInfo(int Index, Cell_Type_Binary DestroyType);
