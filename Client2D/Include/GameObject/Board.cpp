@@ -247,18 +247,25 @@ bool CBoard::CheckCombination(CCell* FirstCell,CCell* SecondCell)
 
 	bool Result = false;
 
-	// 둘다 Bag 라면
+	// 봉지 + 봉지
 	Result = CheckBagAndBagComb(FirstCell, SecondCell);
 
 	if (Result)
 		return true;
 
+	// 봉지 + Line
 	Result = CheckBagAndRowLineComb(FirstCell, SecondCell);
 
 	if (Result)
 		return true;
 
 	Result = CheckBagAndColLineComb(FirstCell, SecondCell);
+
+	if (Result)
+		return true;
+
+	// Line + Line
+	Result = CheckLineAndLineComb(FirstCell, SecondCell);
 
 	if (Result)
 		return true;
@@ -271,26 +278,26 @@ bool CBoard::CheckBagAndBagComb(CCell* FirstCell, CCell* SecondCell)
 	if (FirstCell->GetCellState() == Cell_State::Bag &&
 		SecondCell->GetCellState() == Cell_State::Bag)
 	{
-		int TopRowIdx = FirstCell->GetRowIndex() + 1 > SecondCell->GetRowIndex() + 1 ?
-			FirstCell->GetRowIndex() + 1 : SecondCell->GetRowIndex() + 1;
+		int TopRowIdx = FirstCell->GetRowIndex() + 2 > SecondCell->GetRowIndex() + 2 ?
+			FirstCell->GetRowIndex() + 2 : SecondCell->GetRowIndex() + 2;
 
 		if (TopRowIdx >= m_VisualRowCount)
-			TopRowIdx = m_VisualRowCount - 1;
+			TopRowIdx = m_VisualRowCount - 2;
 
-		int BottomRowIdx = FirstCell->GetRowIndex() - 1 < SecondCell->GetRowIndex() - 1 ?
-			FirstCell->GetRowIndex() - 1 : SecondCell->GetRowIndex() - 1;
+		int BottomRowIdx = FirstCell->GetRowIndex() - 1 < SecondCell->GetRowIndex() - 2 ?
+			FirstCell->GetRowIndex() - 2 : SecondCell->GetRowIndex() - 2;
 
 		if (BottomRowIdx < 0)
 			BottomRowIdx = 0;
 
-		int LeftColIdx = FirstCell->GetColIndex() - 1 < SecondCell->GetColIndex() - 1 ?
-			FirstCell->GetColIndex() - 1 : SecondCell->GetColIndex() - 1;
+		int LeftColIdx = FirstCell->GetColIndex() - 2 < SecondCell->GetColIndex() - 2 ?
+			FirstCell->GetColIndex() - 2 : SecondCell->GetColIndex() - 2;
 
 		if (LeftColIdx < 0)
 			LeftColIdx = 0;
 
-		int RightColIdx = FirstCell->GetColIndex() + 1 > SecondCell->GetColIndex() + 1 ?
-			FirstCell->GetColIndex() + 1 : SecondCell->GetColIndex() + 1;
+		int RightColIdx = FirstCell->GetColIndex() + 2 > SecondCell->GetColIndex() + 2 ?
+			FirstCell->GetColIndex() + 2 : SecondCell->GetColIndex() + 2;
 
 		if (RightColIdx >= m_ColCount)
 			RightColIdx = m_ColCount - 1;
@@ -345,6 +352,9 @@ bool CBoard::CheckBagAndColLineComb(CCell* FirstCell, CCell* SecondCell)
 
 void CBoard::DestroyBagAndBagComb(CCell* Cell)
 {
+	if (!Cell->IsActive())
+		return;
+
 	for (int row = Cell->GetBagDestroyBottomIdx(); row <= Cell->GetBagDestroyTopIdx(); row++)
 	{
 		for (int col = Cell->GetBagDestroyLeftIdx(); col <= Cell->GetBagDestroyRightIdx(); col++)
@@ -357,30 +367,12 @@ void CBoard::DestroyBagAndBagComb(CCell* Cell)
 }
 
 // 가로 세줄 //
-void CBoard::DestroyBagAndRowLineComb(int RowIndex)
-{
-	int TopRowIdx = RowIndex + 1;
-
-	if (TopRowIdx >= m_VisualRowCount)
-		TopRowIdx = m_VisualRowCount - 1;
-
-	int BottomRowIdx = RowIndex - 1;
-
-	if (BottomRowIdx < 0)
-		BottomRowIdx = 0;
-
-	for (int row = BottomRowIdx; row <= TopRowIdx; row++)
-	{
-		for (int col = 0; col < m_ColCount; col++)
-		{
-			DestroySingleCell(row, col);
-		}
-	}
-}
-
 // 세로 세줄 //
-void CBoard::DestroyBagAndColLineComb(int ColIndex)
+void CBoard::DestroyBagLineComb(int RowIndex, int ColIndex)
 {
+	if (!m_vecCells[RowIndex * m_ColCount + ColIndex]->IsActive())
+		return;
+
 	int LeftColIdx = ColIndex - 1;
 
 	if (LeftColIdx < 0)
@@ -391,13 +383,95 @@ void CBoard::DestroyBagAndColLineComb(int ColIndex)
 	if (RightColIdx >= m_ColCount)
 		RightColIdx = m_ColCount - 1;
 
-	for (int row = 0; row < m_VisualRowCount; row++)
+	int TopRowIdx = RowIndex + 1;
+
+	if (TopRowIdx >= m_VisualRowCount)
+		TopRowIdx = m_VisualRowCount - 1;
+
+	int BottomRowIdx = RowIndex - 1;
+
+	if (BottomRowIdx < 0)
+		BottomRowIdx = 0;
+
+	// 가로 세줄 제거하기
+	for (int row = BottomRowIdx; row <= TopRowIdx; row++)
 	{
-		for (int col = LeftColIdx; col < RightColIdx; col++)
+		for (int col = 0; col < m_ColCount; col++)
 		{
 			DestroySingleCell(row, col);
 		}
 	}
+
+	// 세로 세줄 제거하기
+	for (int col = LeftColIdx; col <= RightColIdx; col++)
+	{
+		for (int row = 0; row < m_VisualRowCount; row++)
+		{
+			DestroySingleCell(row, col);
+		}
+	}
+}
+
+bool CBoard::CheckBagAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
+{
+	if (FirstCell->GetCellState() == Cell_State::Bag && SecondCell->GetCellState() == Cell_State::MirrorBall)
+	{
+		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndMirrorBall);
+
+		return true;
+	}
+	else if (FirstCell->GetCellState() == Cell_State::MirrorBall && SecondCell->GetCellState() == Cell_State::Bag)
+	{
+		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndMirrorBall);
+
+		return true;
+	}
+
+	return false;
+}
+
+bool CBoard::CheckLineAndLineComb(CCell* FirstCell, CCell* SecondCell)
+{
+	if (FirstCell->GetCellState() == Cell_State::RowLine && SecondCell->GetCellState() == Cell_State::ColLine)
+	{
+		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::Horizontal);
+		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::Vertical);
+
+		return true;
+	}
+	else if (FirstCell->GetCellState() == Cell_State::ColLine && SecondCell->GetCellState() == Cell_State::RowLine)
+	{
+		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::Vertical);
+		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::Horizontal);
+
+		return true;
+	}
+	if (FirstCell->GetCellState() == Cell_State::RowLine && SecondCell->GetCellState() == Cell_State::RowLine)
+	{
+		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::Horizontal);
+		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::Horizontal);
+
+		return true;
+	}
+	else if (FirstCell->GetCellState() == Cell_State::ColLine && SecondCell->GetCellState() == Cell_State::ColLine)
+	{
+		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::Vertical);
+		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::Vertical);
+
+		return true;
+	}
+
+	return false;
+}
+
+bool CBoard::CheckLineAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
+{
+	return true;
+}
+
+bool CBoard::CheckMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
+{
+	return true;
 }
 
 void CBoard::DestroyCells()
@@ -458,10 +532,10 @@ void CBoard::DestroyCells()
 					DestroyBagAndBagComb(m_vecCells[Index]);
 					break;
 				case Destroy_State::BagAndColLine:
-					DestroyMirrorBallEffect(RowIndex, ColIndex);
+					DestroyBagLineComb(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex());
 					break;
 				case Destroy_State::BagAndRowLine:
-					DestroyMirrorBallEffect(RowIndex, ColIndex);
+					DestroyBagLineComb(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex());
 					break;
 				}
 			}
@@ -487,6 +561,34 @@ void CBoard::DestroyCells()
 					DestroySingleCell(RowIndex, ColIndex);
 				}
 				*/
+			}
+		}
+		// Match가 아니라면,  --> 그래도 조합은 구성될 수 있다
+		else
+		{
+			int RowIndex = m_vecCells[Index]->GetRowIndex();
+			int ColIndex = m_vecCells[Index]->GetColIndex();
+
+			if ((int)m_vecCells[Index]->GetDestroyState() > (int)Destroy_State::None)
+			{
+				switch (m_vecCells[Index]->GetDestroyState())
+				{
+				case Destroy_State::BagAndBag:
+					DestroyBagAndBagComb(m_vecCells[Index]);
+					break;
+				case Destroy_State::BagAndColLine:
+					DestroyBagLineComb(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex());
+					break;
+				case Destroy_State::BagAndRowLine:
+					DestroyBagLineComb(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex());
+					break;
+				case  Destroy_State::Horizontal:
+					DestroyHorizontalEffect(RowIndex);
+					break;
+				case  Destroy_State::Vertical:
+					DestroyVerticalEffect(ColIndex);
+					break;
+				}
 			}
 		}
 	}
@@ -953,6 +1055,9 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 
 	// todo : 조합 여부도 확인한다.
 	bool CombinationResult = CheckCombination(FirstClickCell, SecClickCell);
+
+	if (CombinationResult)
+		return true;
 
 	// 만약 Match 가 존재하지 않는다면 , 조합도 없다면
 	// 여기는 조합에 해당하지 않는다. 위에서 조합을 체크했기 때문에

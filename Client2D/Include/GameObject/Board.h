@@ -96,9 +96,16 @@ private: // Combination
     bool CheckBagAndBagComb(CCell* FirstCell, CCell* SecondCell);
     void DestroyBagAndBagComb(CCell* FirstCell);
     bool CheckBagAndRowLineComb(CCell* FirstCell, CCell* SecondCell);//
-    void DestroyBagAndRowLineComb(int RowIndex);
     bool CheckBagAndColLineComb(CCell* FirstCell, CCell* SecondCell); //
-    void DestroyBagAndColLineComb(int ColIndex);
+    void DestroyBagLineComb(int RowIndex, int ColIndex);
+    // ºÀÁö + Mirror Ball
+    bool CheckBagAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
+    // ÁÙ¹«´Ì + ÁÙ¹«´Ì
+    bool CheckLineAndLineComb(CCell* FirstCell, CCell* SecondCell);
+    // ÁÙ¹«´Ì + Mirror Ball
+    bool CheckLineAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
+    // MirrorBall  + MirrorBall
+    bool CheckMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
 private : // MirrorBall Match
     void SetMirrorBallDestroyInfo(int Index, Cell_Type_Binary DestroyType);
 private: // BagMatch
