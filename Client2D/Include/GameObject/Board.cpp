@@ -301,7 +301,7 @@ void CBoard::DestroyBagAndBagComb(const CCell* FirstCell, const CCell* SecondCel
 
 }
 
-// 가로 세줄
+// 가로 세줄 //
 void CBoard::DestroyBagAndRowLineComb(int RowIndex)
 {
 	int TopRowIdx = RowIndex + 1;
