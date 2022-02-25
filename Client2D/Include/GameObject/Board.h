@@ -95,7 +95,7 @@ private: // Combination
     bool CheckCombination(CCell* FirstCell, CCell* SecondCell);
     bool CheckBagAndBagComb(CCell* FirstCell, CCell* SecondCell);
     void DestroyBagAndBagComb(CCell* FirstCell);
-    bool CheckBagAndRowLineComb(CCell* FirstCell, CCell* SecondCell);
+    bool CheckBagAndRowLineComb(CCell* FirstCell, CCell* SecondCell);//
     void DestroyBagAndRowLineComb(int RowIndex);
     bool CheckBagAndColLineComb(CCell* FirstCell, CCell* SecondCell);
     void DestroyBagAndColLineComb(int ColIndex);
