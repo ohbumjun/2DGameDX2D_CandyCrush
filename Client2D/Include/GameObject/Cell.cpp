@@ -4,17 +4,37 @@
 #include "Board.h"
 
 CCell::CCell() :
+	m_MoveSpeed(100.f),
+	m_ShownAreaOffset(5.f),
+	m_IsShownEnable(true),
+	m_IsGoingBack(false),
+	m_IsSwitch(false),
+	m_IsSpecialDestroyedBag(false),
+	m_IsBagAndBagFirstDestroyed(false),
+	m_IsBagCombToBeDestroyed(false),
+	m_BagCombDestroyLeftIdx(-1),
+	m_BagCombDestroyRightIdx(-1),
+	m_BagCombDestroyTopIdx(-1),
+	m_BagCombDestroyBottomIdx(-1)
+{
+}
+
+CCell::CCell(const CCell& Player2D) :
+	/*
 	m_MoveSpeed(400.f),
 	m_ShownAreaOffset(5.f),
 	m_IsShownEnable(true),
 	m_IsGoingBack(false),
 	m_IsSwitch(false),
-	m_IsSpecialDestroyedBag(false)
+	m_IsSpecialDestroyedBag(false),
+	m_IsBagAndBagDestroyed(false),
+	*/
+	m_BagCombDestroyLeftIdx(-1),
+	m_BagCombDestroyRightIdx(-1),
+	m_BagCombDestroyTopIdx(-1),
+	m_BagCombDestroyBottomIdx(-1)
 {
 }
-
-CCell::CCell(const CCell& Player2D)
-{}
 
 CCell::~CCell()
 {}
@@ -113,18 +133,18 @@ void CCell::SetCurrentAnimation(const std::string& Name)
 
 void CCell::SetDestroyBagIndexInfos(int TopIdx, int BottomIdx, int LeftIdx, int RightIdx)
 {
-	m_BagDestroyTopIdx = TopIdx;
-	m_BagDestroyBottomIdx = BottomIdx;
-	m_BagDestroyLeftIdx = LeftIdx;
-	m_BagDestroyRightIdx = RightIdx;
+	m_BagCombDestroyTopIdx = TopIdx;
+	m_BagCombDestroyBottomIdx = BottomIdx;
+	m_BagCombDestroyLeftIdx = LeftIdx;
+	m_BagCombDestroyRightIdx = RightIdx;
 }
 
 void CCell::ResetDestroyBagIndexInfos()
 {
-	m_BagDestroyTopIdx = -1;
-	m_BagDestroyBottomIdx = 1;
-	m_BagDestroyLeftIdx = 1;
-	m_BagDestroyRightIdx = 1;
+	m_BagCombDestroyTopIdx = -1;
+	m_BagCombDestroyBottomIdx = 1;
+	m_BagCombDestroyLeftIdx = 1;
+	m_BagCombDestroyRightIdx = 1;
 }
 
 void CCell::SetIndexInfo(int Index, int RowIndex, int ColIndex)

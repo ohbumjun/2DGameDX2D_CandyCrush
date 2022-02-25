@@ -84,12 +84,12 @@ private: // Check Match
 private : // Destroy Method
     bool DestroyHorizontalEffect(int RowIndex);
     bool DestroyVerticalEffect(int ColIndex);
-    bool DestroyBagEffect(int RowIndex, int ColIndex, bool IsAfterEffect);
+    bool DestroyBagEffect(int RowIndex, int ColIndex, bool IsAfterEffect, bool IsBagAndBagComb = false);
     bool DestroyMirrorBallEffect(int RowIndex, int ColIndex);
 private : // Single Destroy
     void DestroySingleCell(int RowIndex, int ColIndex);
     void DestroySingleNormalCell(int RowIndex, int ColIndex);
-    void DestroySingleBagCell(int RowIndex, int ColIndex);
+    void DestroySingleBagCell(int RowIndex, int ColIndex, bool IsBagAndBagComb = false);
     void DestroySingleMirrorBallCell(int RowIndex, int ColIndex);
 private: // Combination
     bool CheckCombination(CCell* FirstCell, CCell* SecondCell);

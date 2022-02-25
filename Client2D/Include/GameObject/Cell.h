@@ -24,10 +24,10 @@ private:
     int m_ColIndex;
     float m_MoveSpeed;
 private : // Bag Destroy 범위
-    int m_BagDestroyLeftIdx;
-    int m_BagDestroyRightIdx;
-    int m_BagDestroyTopIdx;
-    int m_BagDestroyBottomIdx;
+    int m_BagCombDestroyLeftIdx;
+    int m_BagCombDestroyRightIdx;
+    int m_BagCombDestroyTopIdx;
+    int m_BagCombDestroyBottomIdx;
 private:
     float m_ShownAreaOffset;
     float m_ShownAreaTopYPos;
@@ -44,7 +44,18 @@ private: // 현재 이미 Special 상태여서, 다음 Match 때 Special Destroy 와 관련된 
     DestroyMark_State m_DestroyMarkState;
     Destroy_State m_DestroyState;
     bool m_IsSpecialDestroyedBag;
+    bool m_IsBagAndBagFirstDestroyed;
+    bool m_IsBagCombToBeDestroyed; // Bag Combination로 파괴될 대상인가
+
 public:
+    bool IsBagCombToBeDestroyed() const
+    {
+        return m_IsBagCombToBeDestroyed;
+    }
+    bool IsBagAndBagFirstDestroyed () const
+    {
+        return m_IsBagAndBagFirstDestroyed;
+    }
     Cell_Type_Binary GetMirrorBallDestroyType() const
     {
         return m_MirrorBallDestroyType;
@@ -115,19 +126,19 @@ public:
 }
     int GetBagDestroyLeftIdx () const
     {
-        return m_BagDestroyLeftIdx;
+        return m_BagCombDestroyLeftIdx;
     }
     int GetBagDestroyRightIdx() const
     {
-        return m_BagDestroyRightIdx;
+        return m_BagCombDestroyRightIdx;
     }
     int GetBagDestroyTopIdx() const
     {
-        return m_BagDestroyTopIdx;
+        return m_BagCombDestroyTopIdx;
     }
     int GetBagDestroyBottomIdx() const
     {
-        return m_BagDestroyBottomIdx;
+        return m_BagCombDestroyBottomIdx;
     }
 public :
     void SetCellType(Cell_Type_Binary Type);
@@ -137,6 +148,14 @@ public :
     void SetDestroyBagIndexInfos(int TopIdx, int BottomIdx, int LeftIdx, int RightIdx);
     void ResetDestroyBagIndexInfos();
 public :
+    void SetIsBagCombToBeDestroyed(bool Destroyed) 
+    {
+        m_IsBagCombToBeDestroyed = Destroyed;
+    }
+    void SetIsBagAndBagDestroyed(bool Enable)
+{
+        m_IsBagAndBagFirstDestroyed = Enable;
+}
     void SetMirrorBallDestroyType (Cell_Type_Binary Type)
     {
         m_MirrorBallDestroyType = Type;

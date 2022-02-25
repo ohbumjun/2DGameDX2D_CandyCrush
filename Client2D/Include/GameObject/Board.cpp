@@ -304,9 +304,15 @@ bool CBoard::CheckBagAndBagComb(CCell* FirstCell, CCell* SecondCell)
 
 		// 첫번째 Cell의 Destroy State 을 세팅해주고
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndBag);
+		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndBag);
+
+		m_vecCells[FirstCell->GetIndex()]->SetIsBagCombToBeDestroyed(true);
+		m_vecCells[SecondCell->GetIndex()]->SetIsBagCombToBeDestroyed(true);
+		
 
 		// Bag Destroy 범위 정보를 세팅해준다.
-		m_vecCells[FirstCell->GetIndex()]->SetDestroyBagIndexInfos(TopRowIdx, BottomRowIdx, LeftColIdx, RightColIdx);
+		// m_vecCells[FirstCell->GetIndex()]->SetDestroyBagIndexInfos(TopRowIdx, BottomRowIdx, LeftColIdx, RightColIdx);
+		// m_vecCells[FirstCell->GetIndex()]->SetDestroyBagIndexInfos(TopRowIdx, BottomRowIdx, LeftColIdx, RightColIdx);
 
 		return true;
 	}
@@ -355,15 +361,46 @@ void CBoard::DestroyBagAndBagComb(CCell* Cell)
 	if (!Cell->IsActive())
 		return;
 
-	for (int row = Cell->GetBagDestroyBottomIdx(); row <= Cell->GetBagDestroyTopIdx(); row++)
+	// 터질 범위를 계산한다.
+	int BottomRowIdx = Cell->GetRowIndex() - 2;
+
+	if (BottomRowIdx < 0)
+		BottomRowIdx = 0;
+
+	int TopRowIdx = Cell->GetRowIndex() + 2;
+
+	if (TopRowIdx >= m_VisualRowCount)
+		TopRowIdx = m_VisualRowCount - 1;
+
+	int LeftColIdx = Cell->GetColIndex() - 2;
+
+	if (LeftColIdx < 0)
+		LeftColIdx = 0;
+
+	int RightColIdx = Cell->GetColIndex() + 2;
+
+	if (RightColIdx >= m_ColCount)
+		RightColIdx = m_ColCount - 1;
+
+	for (int row = BottomRowIdx; row <= TopRowIdx; row++)
 	{
-		for (int col = Cell->GetBagDestroyLeftIdx(); col <= Cell->GetBagDestroyRightIdx(); col++)
+		for (int col = LeftColIdx; col <= RightColIdx; col++)
 		{
-			DestroySingleCell(row, col);
+			if (row == Cell->GetRowIndex() && col == Cell->GetColIndex())
+			{
+				// 해당 Cell은 한번 더 특수효과 Destroy를 해야 한다. (즉, Notice Animation으로 바뀌고 나서도
+				// 한번 더 특수효과 Destroy Effect를 줘야 한다는 것이다 )
+				DestroySingleBagCell(row, col, true);
+			}
+			else
+			{
+				DestroySingleCell(row, col);
+			}
 		}
 	}
 
-	Cell->ResetDestroyBagIndexInfos();
+	// Cell->ResetDestroyBagIndexInfos();
+
 }
 
 // 가로 세줄 //
@@ -414,6 +451,7 @@ void CBoard::DestroyBagLineComb(int RowIndex, int ColIndex)
 
 bool CBoard::CheckBagAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 {
+	// 1) Bag 색상에 있는 녀석들
 	if (FirstCell->GetCellState() == Cell_State::Bag && SecondCell->GetCellState() == Cell_State::MirrorBall)
 	{
 		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndMirrorBall);
@@ -483,10 +521,24 @@ void CBoard::DestroyCells()
 
 	for (int Index = 0; Index < DestroyTargetEndIdx; Index++)
 	{
+		// Bag 는 한번 더 터뜨려야 한다.
 		if (m_vecCells[Index]->IsSpecialDestroyedBag())
 		{
-			m_vecCells[Index]->SetDestroyState(Destroy_State::BagAfter);
+			// 여기서 한번 더 분기점을 줘야 할 것 같다.
+			// BagAndBag Combination 폭발 이후, 같은 Combination 효과 대로 터뜨려야 할 지
+			if (m_vecCells[Index]->IsBagAndBagFirstDestroyed())
+			{
+				m_vecCells[Index]->SetDestroyState(Destroy_State::BagAndBag);
+				// m_vecCells[Index]->SetIsBagAndBagDestroyed(false);
+			}
+			// 아니면 그냥 일반 Bag Destroy 대로 터뜨려야 할지 
+			else
+			{
+				m_vecCells[Index]->SetDestroyState(Destroy_State::BagAfter);
+			}
+
 			m_vecCells[Index]->SetSpecialDestroyedBag(false);
+
 		}
 	}
 
@@ -554,13 +606,6 @@ void CBoard::DestroyCells()
 			{
 				// 화면에서 제거해주고
 				DestroySingleCell(RowIndex, ColIndex);
-
-				/*
-				if (m_vecCells[Index]->GetCellState() != Cell_State::MirrorBall)
-				{
-					DestroySingleCell(RowIndex, ColIndex);
-				}
-				*/
 			}
 		}
 		// Match가 아니라면,  --> 그래도 조합은 구성될 수 있다
@@ -1601,7 +1646,7 @@ bool CBoard::DestroyVerticalEffect(int ColIndex)
 	return false;
 }
 
-bool CBoard::DestroyBagEffect(int RowIndex, int ColIndex, bool IsAfterEffect)
+bool CBoard::DestroyBagEffect(int RowIndex, int ColIndex, bool IsAfterEffect, bool IsBagAndBagComb)
 {
 	int StRowIndex   = RowIndex - 1;
 	int EndRowIndex = RowIndex + 1;
@@ -1625,29 +1670,6 @@ bool CBoard::DestroyBagEffect(int RowIndex, int ColIndex, bool IsAfterEffect)
 	{
 		for (int col = StColIndex; col <= EndColIndex; col++)
 		{
-			// 봉지 자체가 막 만들어진 상태라면 해당 녀석은 Destroy X --> 아래 과정
-			// if (!IsAfterEffect && row == RowIndex && col == ColIndex)
-			/*
-			if (m_vecCells[row * m_ColCount + col]->GetCellState() == Cell_State::Bag 
-				&& row == RowIndex && col == ColIndex)
-			{
-				// IsAfter Effect가 False 인 경우, 막 봉지가 만들어진 것
-				// 해당 Index의 CellState 을 Notice로 바꿔준다. --> Animation Change를 위함이다.
-				// 그리고 Destroy State 는 BagAfter 이라고 하고
-				m_vecCells[RowIndex * m_ColCount + ColIndex]->SetCellState(Cell_State::Notice); // 떨림 효과 Animation 주기 위함
-
-				m_vecCells[RowIndex * m_ColCount + ColIndex]->SetDestroyState(Destroy_State::BagAfter);
-			}
-			// 다른 녀석중 하나가 봉지라면 
-			// else if ()
-			//{
-				
-			// }
-			else
-			{
-				DestroySingleCell(row, col);
-			}
-			*/
 			DestroySingleCell(row, col);
 		}
 	}
@@ -1723,6 +1745,14 @@ void CBoard::DestroySingleCell(int RowIndex, int ColIndex)
 	// Bag Cell 과 그 외 Cell 의 Destroy 방식을 다르게 세팅한다.
 	if (m_vecCells[Index]->GetCellState() == Cell_State::Bag)
 	{
+		// Bag And Bag 효과로 사라져야 할 대상이지만
+		// 나 자신이 아니라, 인접한 녀석이라면, 이 녀석은 여기서 Destroy 처리를 해주지 않는다.
+		// 왜냐하면 DestroySingleBagCell 함수는 자기 자신에 대해 직접 호출하게 할 것이기 때문이다.
+		bool Result = m_vecCells[Index]->IsBagCombToBeDestroyed();
+
+		if (m_vecCells[Index]->IsBagCombToBeDestroyed())
+			return;
+
 		DestroySingleBagCell(RowIndex, ColIndex);
 	}
 	else if (m_vecCells[Index]->GetCellState() == Cell_State::MirrorBall)
@@ -1752,7 +1782,7 @@ void CBoard::DestroySingleNormalCell(int RowIndex, int ColIndex)
 	m_vecColNewCellNums[ColIndex] += 1;
 }
 
-void CBoard::DestroySingleBagCell(int RowIndex, int ColIndex)
+void CBoard::DestroySingleBagCell(int RowIndex, int ColIndex, bool IsBagAndBagComb)
 {
 	// Match 아닐때와 맞을 때를 구분해야 하는것인 아닌가 ?
 
@@ -1768,12 +1798,56 @@ void CBoard::DestroySingleBagCell(int RowIndex, int ColIndex)
 	// 2) 즉, 결과적으로 Destroy_State 가 Bag After 가 될 때만, 제거할 수 있어야 한다.
 
 	// 3) 단, 중복으로 Special Destroy 가 발생하여, 여기 함수에 , 같은 Cell 에 대해 2번 이상 들어올 수 있다.
-	if (m_vecCells[Index]->GetDestroyState() != Destroy_State::BagAfter)
+	if (m_vecCells[Index]->GetDestroyState() != Destroy_State::BagAfter )
 	{
-		if (m_vecCells[Index]->IsSpecialDestroyedBag() == false)
+		// 일반 특수효과 --> Bag Destroy 효과를 준 이후, Bag After 형태로 바꿔야 할 때
+		if (m_vecCells[Index]->GetDestroyState() != Destroy_State::BagAndBag)
 		{
-			m_vecCells[Index]->SetCurrentAnimation("Notice");
-			m_vecCells[Index]->SetSpecialDestroyedBag(true);
+			if (m_vecCells[Index]->IsSpecialDestroyedBag() == false)
+			{
+				m_vecCells[Index]->SetCurrentAnimation("Notice");
+				m_vecCells[Index]->SetSpecialDestroyedBag(true);
+			}
+		}
+		else
+		{
+			// 여기서 한번 더 터뜨려야 하는 것인지
+			// 이미 한번 터진 것이라면 
+			bool Result =  m_vecCells[Index]->IsBagAndBagFirstDestroyed();
+			if (m_vecCells[Index]->IsBagAndBagFirstDestroyed())
+			{
+				// m_vecCells[Index]->SetIsBagAndBagDestroyed(false);
+				m_vecCells[Index]->ResetDestroyBagIndexInfos();
+				DestroySingleNormalCell(RowIndex, ColIndex);
+			}
+			// 아니면 최초로 BagAndBag 세팅을 해줘야 하는지를 판별해야 한다.
+			else
+			{
+				if (m_vecCells[Index]->IsSpecialDestroyedBag() == false)
+				{
+					m_vecCells[Index]->SetCurrentAnimation("Notice");
+					m_vecCells[Index]->SetSpecialDestroyedBag(true);
+					// 조합으로 바뀐 녀석은, 다시 한번 더 Destroy_State를 BagAndBag 로 해야 한다.
+					m_vecCells[Index]->SetIsBagAndBagDestroyed(true);
+				}
+			}
+			/*
+			}
+			*/
+
+			/*
+			if (m_vecCells[Index]->IsSpecialDestroyedBag() == false)
+			{
+				m_vecCells[Index]->SetCurrentAnimation("Notice");
+				m_vecCells[Index]->SetSpecialDestroyedBag(true);
+
+				if (IsBagAndBagComb)
+				{
+					// 조합으로 바뀐 녀석은, 다시 한번 더 Destroy_State를 BagAndBag 로 해야 한다.
+					m_vecCells[Index]->SetIsBagAndBagDestroyed(true);
+				}
+			}
+			*/
 		}
 	}
 	else
