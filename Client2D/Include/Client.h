@@ -51,7 +51,10 @@ enum class Destroy_State {
 	Vertical,
 	Bag,
 	BagAfter,
-	MirrorBall
+	MirrorBall,
+	BagAndBag,
+	BagAndColLine,
+	BagAndRowLine
 };
 
 enum class DestroyMark_State {

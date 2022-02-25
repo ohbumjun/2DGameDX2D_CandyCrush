@@ -23,6 +23,11 @@ private:
     int m_RowIndex;
     int m_ColIndex;
     float m_MoveSpeed;
+private : // Bag Destroy ¹üÀ§
+    int m_BagDestroyLeftIdx;
+    int m_BagDestroyRightIdx;
+    int m_BagDestroyTopIdx;
+    int m_BagDestroyBottomIdx;
 private:
     float m_ShownAreaOffset;
     float m_ShownAreaTopYPos;
@@ -108,11 +113,29 @@ public:
 {
         return m_Sprite->GetAnimationInstance();
 }
+    int GetBagDestroyLeftIdx () const
+    {
+        return m_BagDestroyLeftIdx;
+    }
+    int GetBagDestroyRightIdx() const
+    {
+        return m_BagDestroyRightIdx;
+    }
+    int GetBagDestroyTopIdx() const
+    {
+        return m_BagDestroyTopIdx;
+    }
+    int GetBagDestroyBottomIdx() const
+    {
+        return m_BagDestroyBottomIdx;
+    }
 public :
     void SetCellType(Cell_Type_Binary Type);
     void SetCellState(Cell_State State);
     void SetCellState(Match_State State);
     void SetCurrentAnimation(const std::string& Name);
+    void SetDestroyBagIndexInfos(int TopIdx, int BottomIdx, int LeftIdx, int RightIdx);
+    void ResetDestroyBagIndexInfos();
 public :
     void SetMirrorBallDestroyType (Cell_Type_Binary Type)
     {

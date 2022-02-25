@@ -78,18 +78,27 @@ public: // Click
     void ChangeToMirrorBallCell(float DeltaTime); 
 private: // Check Match
     bool CheckMatchUpdate();
-    bool CheckMatchAfterTwoClick(const CCell* FirstClickCell, const CCell* SecClickCell);
+    bool CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell);
     Match_State CheckRowMatch(int RowIndex, int ColIndex, int Index, bool IsClickCell);
     Match_State CheckColMatch(int RowIndex, int ColIndex, int Index, bool IsClickCell);
 private : // Destroy Method
-    bool DestroyHorizontal(int RowIndex);
-    bool DestroyVertical(int ColIndex);
-    bool DestroyBag(int RowIndex, int ColIndex, bool IsAfterEffect);
-    bool DestroyMirrorBall(int RowIndex, int ColIndex);
+    bool DestroyHorizontalEffect(int RowIndex);
+    bool DestroyVerticalEffect(int ColIndex);
+    bool DestroyBagEffect(int RowIndex, int ColIndex, bool IsAfterEffect);
+    bool DestroyMirrorBallEffect(int RowIndex, int ColIndex);
+private : // Single Destroy
     void DestroySingleCell(int RowIndex, int ColIndex);
     void DestroySingleNormalCell(int RowIndex, int ColIndex);
     void DestroySingleBagCell(int RowIndex, int ColIndex);
     void DestroySingleMirrorBallCell(int RowIndex, int ColIndex);
+private: // Combination
+    bool CheckCombination(CCell* FirstCell, CCell* SecondCell);
+    bool CheckBagAndBagComb(CCell* FirstCell, CCell* SecondCell);
+    void DestroyBagAndBagComb(CCell* FirstCell);
+    bool CheckBagAndRowLineComb(CCell* FirstCell, CCell* SecondCell);
+    void DestroyBagAndRowLineComb(int RowIndex);
+    bool CheckBagAndColLineComb(CCell* FirstCell, CCell* SecondCell);
+    void DestroyBagAndColLineComb(int ColIndex);
 private : // MirrorBall Match
     void SetMirrorBallDestroyInfo(int Index, Cell_Type_Binary DestroyType);
 private: // BagMatch
@@ -107,11 +116,6 @@ private : // Create New Cell
     void CreateNewCellsAboveShownArea();
     CCell* CreateSingleNewCell(const std::string& Name, int RowIndex, int ColIndex, const Vector3& WorldPos, float NewYPos,
         Cell_Type_Binary Type, float Opacity, bool ShowEnable, Cell_State State);
-private : // Combination
-    bool CheckCombination(const CCell* FirstCell, const CCell* SecondCell);
-    void DestroyBagAndBagComb(const CCell* FirstCell, const CCell* SecondCell);
-    void DestroyBagAndRowLineComb(int RowIndex);
-    void DestroyBagAndColLineComb(int ColIndex);
 private:
     void ShuffleRandom();
     void FindMatchCellsAfterTwoClick(); // 2개 Cell 클릭 이후 실행하기

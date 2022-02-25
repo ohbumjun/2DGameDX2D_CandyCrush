@@ -111,6 +111,22 @@ void CCell::SetCurrentAnimation(const std::string& Name)
 	m_Sprite->GetAnimationInstance()->SetCurrentAnimation(Name);
 }
 
+void CCell::SetDestroyBagIndexInfos(int TopIdx, int BottomIdx, int LeftIdx, int RightIdx)
+{
+	m_BagDestroyTopIdx = TopIdx;
+	m_BagDestroyBottomIdx = BottomIdx;
+	m_BagDestroyLeftIdx = LeftIdx;
+	m_BagDestroyRightIdx = RightIdx;
+}
+
+void CCell::ResetDestroyBagIndexInfos()
+{
+	m_BagDestroyTopIdx = -1;
+	m_BagDestroyBottomIdx = 1;
+	m_BagDestroyLeftIdx = 1;
+	m_BagDestroyRightIdx = 1;
+}
+
 void CCell::SetIndexInfo(int Index, int RowIndex, int ColIndex)
 {
 	m_Index = Index;
