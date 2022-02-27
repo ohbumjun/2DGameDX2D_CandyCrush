@@ -292,6 +292,9 @@ void CCell::Update(float DeltaTime)
 	GoDown(DeltaTime);
 
 	SwitchMove(DeltaTime);
+
+	if (m_IsMirrorBallOfBagMirrorBallComb)
+		AddRelativeRotation(0.f, 0.f, 100.f * DeltaTime);
 }
 
 void CCell::PostUpdate(float DeltaTime)

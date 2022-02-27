@@ -209,6 +209,9 @@ CCell* CBoard::CreateSingleNewCell(const std::string& Name, int RowIndex, int Co
 	// Index 세팅 --> NewPosY도 세팅
 	Cell->SetIndexInfo(Index, RowIndex, ColIndex);
 
+	// Pivot 세팅
+	Cell->SetPivot(0.5f, 0.5f, 0.f);
+
 	// Type 세팅
 	Cell->SetCellType(Type);
 
@@ -1031,8 +1034,7 @@ Cell_Type_Binary CBoard::ChangeCellTypeToCellBinaryType(Cell_Type Type)
 
 	case Cell_Type::Green:
 		return Cell_Type_Binary::Green;
-		/*
-		*/
+
 	}
 
 	return Cell_Type_Binary::All;
