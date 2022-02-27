@@ -96,14 +96,17 @@ private : // Single Destroy
     void DestroySingleMirrorBallCell(int RowIndex, int ColIndex);
 private: // Combination
     bool CheckCombination(CCell* FirstCell, CCell* SecondCell);
+    // ºÀÁö _ ºÀÁö
+    void ManageDestroyedBagInfo(int Index);
     bool CheckBagAndBagComb(CCell* FirstCell, CCell* SecondCell);
     void DestroyBagAndBagComb(CCell* FirstCell);
-    void ManageBagAndMirrorBallComb(int Index);
-    bool CheckBagAndRowLineComb(CCell* FirstCell, CCell* SecondCell);//
-    bool CheckBagAndColLineComb(CCell* FirstCell, CCell* SecondCell); //
+    // ºÀÁö + Line
     void DestroyBagLineComb(int RowIndex, int ColIndex);
+    bool CheckBagAndRowLineComb(CCell* FirstCell, CCell* SecondCell);//
+    bool CheckBagAndColLineComb(CCell* FirstCell, CCell* SecondCell);
     // ºÀÁö + Mirror Ball
     bool CheckBagAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
+    void ManageBagAndMirrorBallComb(int Index);
     // ÁÙ¹«´Ì + ÁÙ¹«´Ì
     bool CheckLineAndLineComb(CCell* FirstCell, CCell* SecondCell);
     // ÁÙ¹«´Ì + Mirror Ball

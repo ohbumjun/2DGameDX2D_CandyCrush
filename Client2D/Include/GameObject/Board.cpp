@@ -285,6 +285,28 @@ bool CBoard::CheckCombination(CCell* FirstCell,CCell* SecondCell)
 	return false;
 }
 
+void CBoard::ManageDestroyedBagInfo(int Index)
+{
+	// Bag 는 한번 더 터뜨려야 한다.
+	if (m_vecCells[Index]->IsSpecialDestroyedBag())
+	{
+		// 여기서 한번 더 분기점을 줘야 할 것 같다.
+		// BagAndBag Combination 폭발 이후, 같은 Combination 효과 대로 터뜨려야 할 지
+		if (m_vecCells[Index]->IsBagAndBagFirstDestroyed())
+		{
+			m_vecCells[Index]->SetDestroyState(Destroy_State::BagAndBag);
+			// m_vecCells[Index]->SetIsBagAndBagDestroyed(false);
+		}
+		// 아니면 그냥 일반 Bag Destroy 대로 터뜨려야 할지 
+		else
+		{
+			m_vecCells[Index]->SetDestroyState(Destroy_State::BagAfter);
+		}
+
+		m_vecCells[Index]->SetSpecialDestroyedBag(false);
+	}
+}
+
 bool CBoard::CheckBagAndBagComb(CCell* FirstCell, CCell* SecondCell)
 {
 	if (FirstCell->GetCellState() == Cell_State::Bag &&
@@ -556,6 +578,7 @@ void CBoard::DestroyCells()
 
 	for (int Index = 0; Index < DestroyTargetEndIdx; Index++)
 	{
+		/*
 		// Bag 는 한번 더 터뜨려야 한다.
 		if (m_vecCells[Index]->IsSpecialDestroyedBag())
 		{
@@ -574,6 +597,8 @@ void CBoard::DestroyCells()
 
 			m_vecCells[Index]->SetSpecialDestroyedBag(false);
 		}
+		*/
+		ManageDestroyedBagInfo(Index);
 
 		ManageBagAndMirrorBallComb(Index);
 	}
