@@ -90,6 +90,7 @@ private : // Destroy Method
     bool DestroyBagEffect(int RowIndex, int ColIndex, bool IsAfterEffect, bool IsBagAndBagComb = false);
     bool DestroyMirrorBallEffect(int RowIndex, int ColIndex);
 private : // Single Destroy
+    void JudgeCellDestroyType(int RowIndex, int ColIndex, int Index);
     void DestroySingleCell(int RowIndex, int ColIndex);
     void DestroySingleNormalCell(int RowIndex, int ColIndex);
     void DestroySingleBagCell(int RowIndex, int ColIndex, bool IsBagAndBagComb = false);
@@ -107,6 +108,7 @@ private: // Combination
     // ºÀÁö + Mirror Ball
     bool CheckBagAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
     void ManageBagAndMirrorBallComb(int Index);
+    void DestroyMirrorBallOfBagMirrorBallComb(int Index);
     // ÁÙ¹«´Ì + ÁÙ¹«´Ì
     bool CheckLineAndLineComb(CCell* FirstCell, CCell* SecondCell);
     // ÁÙ¹«´Ì + Mirror Ball

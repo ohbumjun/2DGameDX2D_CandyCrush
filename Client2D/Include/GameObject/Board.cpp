@@ -452,6 +452,23 @@ void CBoard::ManageBagAndMirrorBallComb(int Index)
 	}
 }
 
+void CBoard::DestroyMirrorBallOfBagMirrorBallComb(int Index)
+{
+	if (m_vecCells[Index]->IsMirrorBallOfBagMirrorBallComb() &&
+		m_vecCells[Index]->GetDestroyState() == Destroy_State::MirrorBall)
+	{
+		Cell_Type_Binary CellBType = ChangeCellTypeToCellBinaryType((Cell_Type)(rand() % (int)Cell_Type::End));
+
+		m_vecCells[Index]->SetMirrorBallDestroyType(CellBType);
+
+		// 한번 터뜨렸으니 Destroy State 정보 초기화
+		m_vecCells[Index]->SetDestroyState(Destroy_State::None);
+
+		DestroyMirrorBallEffect(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex());
+
+	}
+}
+
 // 가로 세줄 //
 // 세로 세줄 //
 void CBoard::DestroyBagLineComb(int RowIndex, int ColIndex)
@@ -619,6 +636,7 @@ void CBoard::DestroyCells()
 
 		// Mirror Ball + Bag 조합 중에서
 		// Mirror Ball 에 해당하는 녀석을 터뜨린다.
+		/*
 		if (m_vecCells[Index]->IsMirrorBallOfBagMirrorBallComb() && 
 			m_vecCells[Index]->GetDestroyState() == Destroy_State::MirrorBall)
 		{
@@ -632,6 +650,9 @@ void CBoard::DestroyCells()
 			DestroyMirrorBallEffect(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex());
 
 		}
+		 */
+		 DestroyMirrorBallOfBagMirrorBallComb(Index);
+		
 
 		// 만약 Match 된 녀석이라면 
 		if (m_vecCellIsMatch[Index])
@@ -643,6 +664,8 @@ void CBoard::DestroyCells()
 			// if ((int)m_vecDestroyState[Index] > (int)Destroy_State::None)
 			if ((int)m_vecCells[Index]->GetDestroyState() > (int)Destroy_State::None)
 			{
+				JudgeCellDestroyType(RowIndex, ColIndex, Index);
+			/*
 				switch (m_vecCells[Index]->GetDestroyState())
 				{
 				case  Destroy_State::Horizontal :
@@ -674,9 +697,8 @@ void CBoard::DestroyCells()
 						// m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndMirrorBall_Mirror);
 					}
 					break;
-
-
 				}
+			*/
 			}
 
 			// 해당 위치에서의 MatchState 를 확인해서
@@ -703,32 +725,7 @@ void CBoard::DestroyCells()
 
 			if ((int)m_vecCells[Index]->GetDestroyState() > (int)Destroy_State::None)
 			{
-				switch (m_vecCells[Index]->GetDestroyState())
-				{
-				case Destroy_State::BagAndBag:
-					DestroyBagAndBagComb(m_vecCells[Index]);
-					break;
-				case Destroy_State::BagAndColLine:
-					DestroyBagLineComb(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex());
-					break;
-				case Destroy_State::BagAndRowLine:
-					DestroyBagLineComb(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex());
-					break;
-				case  Destroy_State::Horizontal:
-					DestroyHorizontalEffect(RowIndex);
-					break;
-				case  Destroy_State::Vertical:
-					DestroyVerticalEffect(ColIndex);
-					break;
-				case Destroy_State::BagAndMirrorBall_Bag:
-					{
-						Cell_Type_Binary Type = m_vecCells[RowIndex * m_ColCount + ColIndex]->GetCellType();
-						m_vecCells[RowIndex * m_ColCount + ColIndex]->SetMirrorBallDestroyType(Type);
-						DestroyMirrorBallEffect(RowIndex, ColIndex);
-						// m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndMirrorBall_Mirror);
-					}
-					break;
-				}
+				JudgeCellDestroyType(RowIndex, ColIndex, Index);
 			}
 		}
 	}
@@ -1816,6 +1813,42 @@ bool CBoard::DestroyMirrorBallEffect (int RowIndex, int ColIndex)
 	DestroySingleNormalCell(RowIndex, ColIndex);
 
 	return true;
+}
+
+void CBoard::JudgeCellDestroyType(int RowIndex, int ColIndex, int Index)
+{
+	switch (m_vecCells[Index]->GetDestroyState())
+	{
+	case  Destroy_State::Horizontal:
+		DestroyHorizontalEffect(RowIndex);
+		break;
+	case  Destroy_State::Vertical:
+		DestroyVerticalEffect(ColIndex);
+		break;
+	case Destroy_State::Bag:
+		DestroyBagEffect(RowIndex, ColIndex, false);
+		break;
+	case Destroy_State::MirrorBall:
+		DestroyMirrorBallEffect(RowIndex, ColIndex);
+		break;
+	case Destroy_State::BagAndBag:
+		DestroyBagAndBagComb(m_vecCells[Index]);
+		break;
+	case Destroy_State::BagAndColLine:
+		DestroyBagLineComb(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex());
+		break;
+	case Destroy_State::BagAndRowLine:
+		DestroyBagLineComb(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex());
+		break;
+	case Destroy_State::BagAndMirrorBall_Bag:
+	{
+		Cell_Type_Binary Type = m_vecCells[RowIndex * m_ColCount + ColIndex]->GetCellType();
+		m_vecCells[RowIndex * m_ColCount + ColIndex]->SetMirrorBallDestroyType(Type);
+		DestroyMirrorBallEffect(RowIndex, ColIndex);
+		// m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndMirrorBall_Mirror);
+	}
+	break;
+	}
 }
 
 void CBoard::DestroySingleCell(int RowIndex, int ColIndex)
