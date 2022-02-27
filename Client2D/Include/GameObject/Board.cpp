@@ -2565,6 +2565,9 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 	m_CellSize.x = CellSize.x;
 	m_CellSize.y = CellSize.y;
 
+	// Mouse Offset 세팅하기
+	m_MousePosOffSet = Vector2(0.5f, 0.5f) * m_CellSize;
+
 	for (int row = 0; row < m_RowCount; row++)
 	{
 		for (int col = 0; col < m_ColCount; col++)
@@ -2612,7 +2615,7 @@ void CBoard::ClickCell(float DeltaTime)
 
 	Vector2 MouseWorldPos = CInput::GetInst()->GetMouseWorld2DPos();
 
-	Vector2 ConvertPos = MouseWorldPos - Vector2(GetWorldPos().x, GetWorldPos().y);
+	Vector2 ConvertPos = MouseWorldPos - Vector2(GetWorldPos().x, GetWorldPos().y) + m_MousePosOffSet;
 
 	int IndexX = (int)(ConvertPos.x / m_CellSize.x);
 	int IndexY = (int)(ConvertPos.y / m_CellSize.y);

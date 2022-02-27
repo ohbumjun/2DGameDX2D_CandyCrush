@@ -58,6 +58,9 @@ private:
     // 실시간 Match Update 를 해야 하는가 --> Cell 들을 클릭해서 이동시킬 때 true로 세팅 --> 다 하고 나서 다시 false
     bool m_IsCheckUpdateNeeded;
 
+	// Cell 의 Pivot 을 고려해서, Mouse 위치에 더해줘야할 OffSet
+    Vector2 m_MousePosOffSet;
+
 public:
     void SetCellsMoving(bool Moving)
     {
