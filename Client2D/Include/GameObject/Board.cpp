@@ -411,8 +411,23 @@ void CBoard::DestroyBagAndBagComb(CCell* Cell)
 		}
 	}
 
-	// Cell->ResetDestroyBagIndexInfos();
+}
 
+void CBoard::ManageBagAndMirrorBallComb(int Index)
+{
+	// Mirror Ball + Bag 조합 중에서
+	// Mirror Ball 에 해당하는 녀석 
+	if (m_vecCells[Index]->GetDestroyState() == Destroy_State::BagAndMirrorBall_Mirror)
+	{
+		m_vecCells[Index]->SetIsMirrorBallOfBagMirrorBallComb(true);
+	}
+
+	// 위의 코드 실행 , 바로 다음 Frame에 같은 Cell에 대해 아래의 코드에 걸릴 것이다.
+	else if (m_vecCells[Index]->IsMirrorBallOfBagMirrorBallComb() &&
+		m_vecCells[Index]->GetDestroyState() == Destroy_State::None)
+	{
+		m_vecCells[Index]->SetDestroyState(Destroy_State::MirrorBall);
+	}
 }
 
 // 가로 세줄 //
@@ -560,19 +575,7 @@ void CBoard::DestroyCells()
 			m_vecCells[Index]->SetSpecialDestroyedBag(false);
 		}
 
-		// Mirror Ball + Bag 조합 중에서
-		// Mirror Ball 에 해당하는 녀석 
-		if (m_vecCells[Index]->GetDestroyState() == Destroy_State::BagAndMirrorBall_Mirror)
-		{
-			m_vecCells[Index]->SetIsMirrorBallOfBagMirrorBallComb(true);
-		}
-
-		// 위의 코드 실행 , 바로 다음 Frame에 같은 Cell에 대해 아래의 코드에 걸릴 것이다.
-		else if (m_vecCells[Index]->IsMirrorBallOfBagMirrorBallComb() && 
-			m_vecCells[Index]->GetDestroyState() == Destroy_State::None)
-		{
-			m_vecCells[Index]->SetDestroyState(Destroy_State::MirrorBall);
-		}
+		ManageBagAndMirrorBallComb(Index);
 	}
 
 	for (int Index = 0; Index < DestroyTargetEndIdx; Index++)
@@ -1336,8 +1339,7 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 					RowResultState = Match_State::Normal;
 				if (CheckMatchNum == 4)
 				{
-				//	RowResultState = Match_State::ColLine;
-					RowResultState = Match_State::Bag;
+					RowResultState = Match_State::ColLine;
 				}
 				if (CheckMatchNum >= 5)
 					RowResultState = Match_State::MirrorBall;
@@ -1414,8 +1416,7 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 						{
 							if (CheckMatchNum == 4)
 							{
-								//	RowResultState = Match_State::ColLine;
-								RowResultState = Match_State::Bag;
+								RowResultState = Match_State::ColLine;
 							}
 							if (CheckMatchNum >= 5)
 								RowResultState = Match_State::MirrorBall;
@@ -1582,12 +1583,12 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 				// 2) Match State 처리를 해준다.
 				if (CheckMatchNum == 3)
 					ColResultState = Match_State::Normal;
-				if (CheckMatchNum >= 4)
-					ColResultState = Match_State::MirrorBall;
-				/*
 				if (CheckMatchNum == 4)
 					ColResultState = Match_State::RowLine;
 				if (CheckMatchNum >= 5)
+					ColResultState = Match_State::MirrorBall;
+				/*
+				if (CheckMatchNum >= 4)
 					ColResultState = Match_State::MirrorBall;
 				*/
 
@@ -1657,12 +1658,12 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 						}
 						else
 						{
-							if (CheckMatchNum >= 4)
-								ColResultState = Match_State::MirrorBall;
-							/*
 							if (CheckMatchNum == 4)
 								ColResultState = Match_State::RowLine;
 							if (CheckMatchNum >= 5)
+								ColResultState = Match_State::MirrorBall;
+							/*
+							if (CheckMatchNum >= 4)
 								ColResultState = Match_State::MirrorBall;
 							*/
 						}
