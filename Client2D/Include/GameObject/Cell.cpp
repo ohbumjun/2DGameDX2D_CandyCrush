@@ -4,7 +4,7 @@
 #include "Board.h"
 
 CCell::CCell() :
-	m_MoveSpeed(100.f),
+	m_MoveSpeed(200.f),
 	m_ShownAreaOffset(5.f),
 	m_IsShownEnable(true),
 	m_IsGoingBack(false),
@@ -12,6 +12,7 @@ CCell::CCell() :
 	m_IsSpecialDestroyedBag(false),
 	m_IsBagAndBagFirstDestroyed(false),
 	m_IsBagCombToBeDestroyed(false),
+	m_IsMirrorBallOfBagMirrorBallComb(false),
 	m_BagCombDestroyLeftIdx(-1),
 	m_BagCombDestroyRightIdx(-1),
 	m_BagCombDestroyTopIdx(-1),
@@ -57,6 +58,9 @@ void CCell::SetCellType(Cell_Type_Binary Type)
 			break;
 		case Cell_Type_Binary::Yellow:
 			SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Yellow"));
+			break;
+		case Cell_Type_Binary::Green:
+			SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Green"));
 			break;
 		/*
 		if (Type == Cell_Type::Green)

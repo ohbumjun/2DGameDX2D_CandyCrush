@@ -46,8 +46,29 @@ private: // 현재 이미 Special 상태여서, 다음 Match 때 Special Destroy 와 관련된 
     bool m_IsSpecialDestroyedBag;
     bool m_IsBagAndBagFirstDestroyed;
     bool m_IsBagCombToBeDestroyed; // Bag Combination로 파괴될 대상인가
-
+    bool m_IsMirrorBallOfBagMirrorBallComb;
 public:
+    void SetCellType(Cell_Type_Binary Type);
+    void SetCellState(Cell_State State);
+    void SetCellState(Match_State State);
+    void SetCurrentAnimation(const std::string& Name);
+    void SetDestroyBagIndexInfos(int TopIdx, int BottomIdx, int LeftIdx, int RightIdx);
+    void ResetDestroyBagIndexInfos();
+public:
+private:
+    void SetIndexInfo(int Index, int RowIndex, int ColIndex);
+    void GoDown(float DeltaTime);
+    void SwitchMove(float DeltaTime);
+public:
+    virtual bool Init() override;
+    virtual void Update(float DeltaTime) override;
+    virtual void PostUpdate(float DeltaTime) override;
+// Getter 
+public:
+    bool IsMirrorBallOfBagMirrorBallComb() const
+    {
+        return m_IsMirrorBallOfBagMirrorBallComb;
+    }
     bool IsBagCombToBeDestroyed() const
     {
         return m_IsBagCombToBeDestroyed;
@@ -140,14 +161,12 @@ public:
     {
         return m_BagCombDestroyBottomIdx;
     }
+	// Setter
 public :
-    void SetCellType(Cell_Type_Binary Type);
-    void SetCellState(Cell_State State);
-    void SetCellState(Match_State State);
-    void SetCurrentAnimation(const std::string& Name);
-    void SetDestroyBagIndexInfos(int TopIdx, int BottomIdx, int LeftIdx, int RightIdx);
-    void ResetDestroyBagIndexInfos();
-public :
+    void SetIsMirrorBallOfBagMirrorBallComb(bool Enable)
+    {
+        m_IsMirrorBallOfBagMirrorBallComb = true;
+    }
     void SetIsBagCombToBeDestroyed(bool Destroyed) 
     {
         m_IsBagCombToBeDestroyed = Destroyed;
@@ -224,14 +243,6 @@ public :
 {
         m_Sprite->SetOpacity(Opacity);
 }
-private:
-    void SetIndexInfo(int Index, int RowIndex, int ColIndex);
-    void GoDown(float DeltaTime);
-    void SwitchMove(float DeltaTime);
-public:
-    virtual bool Init() override;
-    virtual void Update(float DeltaTime) override;
-    virtual void PostUpdate(float DeltaTime) override;
 };
 
 

@@ -5,8 +5,8 @@ enum class Cell_Type_Binary {
 	Red = 0x2,
 	Orange = 0x4,
 	Yellow = 0x8,
-	// Green = 0x10,
-	All = Blue | Red | Orange | Yellow
+	Green = 0x10,
+	All = Blue | Red | Orange | Yellow | Green
 };
 
 enum class Cell_Type {
@@ -14,7 +14,7 @@ enum class Cell_Type {
 	Red,
 	Orange,
 	Yellow,
-	// Green = 0x10,
+	Green,
 	End,
 };
 
@@ -55,7 +55,8 @@ enum class Destroy_State {
 	BagAndBag,
 	BagAndColLine,
 	BagAndRowLine,
-	BagAndMirrorBall,
+	BagAndMirrorBall_Bag, // 1st 파괴 : 해당 Ball 의 색상을 모두 제거하고 사라진다.
+	BagAndMirrorBall_Mirror, // 2nd 파괴 : 해당 MirrorBall의 색상을 모두 제거하고 사라진다.
 	RowLineAndColLine,
 	LineAndMirrorBall,
 };
