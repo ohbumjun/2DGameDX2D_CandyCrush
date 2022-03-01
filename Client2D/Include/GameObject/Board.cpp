@@ -681,7 +681,7 @@ bool CBoard::CheckMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCel
 		return true;
 	}
 
-	return true;
+	return false;
 }
 
 bool CBoard::DestroyMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
@@ -1605,34 +1605,54 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 				// 자신이 시작 Cell 이라면
 				if (CheckStartRow == RowIndex)
 				{
+					// 1) Match 이면서 + 조합이 되는지 확인한다.
+					bool CombinationFound = false;
 
-					// 1) Special Candy가 이미 만들어져 있는지 확인
-					for (int row = CheckStartRow; row <= CheckEndRow; row++)
+					// 2개씩 비교 한다 + 여러 개의 조합이 겹치는 경우는 우선 건너 뛴다. ( 그럴 확률이 매우 적으므로 )
+					for (int row = CheckStartRow; row < CheckEndRow; row++)
 					{
 						int CurIndex = row * m_ColCount + ColIndex;
+						int NxtIndex = (row + 1) * m_ColCount + ColIndex;
 
-						// 아래와 괄호에 들어오려면
-						// 1) 이전에 Match State 가 Special 로 되어서, Destroy_State 가 Setting  ( DestroyCells 함수)
-						// 2) 따라서 여기 걸린 것은, 이미 Special Candy 라는 의미
-						// if ((int)m_vecDestroyMarkState[CurIndex] > (int)DestroyMark_State::None)
-						if ((int)m_vecCells[CurIndex]->GetDestroyMarkState() > (int)DestroyMark_State::None)
+						// CheckCombination 함수를 통해서 곧바로 Destroy State 가 세팅될 것이다.
+						if (CheckCombination(m_vecCells[CurIndex], m_vecCells[NxtIndex]))
 						{
-							// 파괴 상태로 세팅하고 
-							// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
-							m_vecCells[CurIndex]->SetDestroyState(ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState()));
-
-							// MirrorBall 일 경우,
-							if (m_vecCells[CurIndex]->GetDestroyMarkState() == DestroyMark_State::MirrorBall)
-							{
-								SetMirrorBallDestroyInfo(CurIndex, MatchedCellType);
-							}
-
-							// Mark 찾았음 표시하고 
 							MarkStateFound = true;
+							CombinationFound = true;
+							break;
+						}
+					}
 
-							// Destroy State 원상태
-							// m_vecDestroyMarkState[CurIndex] = DestroyMark_State::None;
-							m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
+					// 1) Special Candy가 이미 만들어져 있는지 확인
+					if (CombinationFound == false)
+					{
+						for (int row = CheckStartRow; row <= CheckEndRow; row++)
+						{
+							int CurIndex = row * m_ColCount + ColIndex;
+
+							// 아래와 괄호에 들어오려면
+							// 1) 이전에 Match State 가 Special 로 되어서, Destroy_State 가 Setting  ( DestroyCells 함수)
+							// 2) 따라서 여기 걸린 것은, 이미 Special Candy 라는 의미
+							// if ((int)m_vecDestroyMarkState[CurIndex] > (int)DestroyMark_State::None)
+							if ((int)m_vecCells[CurIndex]->GetDestroyMarkState() > (int)DestroyMark_State::None)
+							{
+								// 파괴 상태로 세팅하고 
+								// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
+								m_vecCells[CurIndex]->SetDestroyState(ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState()));
+
+								// MirrorBall 일 경우,
+								if (m_vecCells[CurIndex]->GetDestroyMarkState() == DestroyMark_State::MirrorBall)
+								{
+									SetMirrorBallDestroyInfo(CurIndex, MatchedCellType);
+								}
+
+								// Mark 찾았음 표시하고 
+								MarkStateFound = true;
+
+								// Destroy State 원상태
+								// m_vecDestroyMarkState[CurIndex] = DestroyMark_State::None;
+								m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
+							}
 						}
 					}
 				}
@@ -1872,33 +1892,54 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 				if (CheckStartCol == ColIndex)
 				{
 
-					// 1) Special Candy가 이미 만들어져 있는지 확인
-					for (int col = CheckStartCol; col <= CheckEndCol; col++)
+					// 1) Match 이면서 + 조합이 되는지 확인한다.
+					bool CombinationFound = false;
+
+					// 2개씩 비교 한다 + 여러 개의 조합이 겹치는 경우는 우선 건너 뛴다. ( 그럴 확률이 매우 적으므로 )
+					for (int col = CheckStartCol; col < CheckEndCol; col++)
 					{
 						int CurIndex = RowIndex * m_ColCount + col;
+						int NxtIndex = RowIndex * m_ColCount + (col + 1);
 
-						// 아래와 괄호에 들어오려면
-						// 1) 이전에 Match State 가 Special 로 되어서, Destroy_State 가 Setting  ( DestroyCells 함수)
-						// 2) 따라서 여기 걸린 것은, 이미 Special Candy 라는 의미
-						// if ((int)m_vecDestroyMarkState[CurIndex] > (int)DestroyMark_State::None)
-						if ((int)m_vecCells[CurIndex]->GetDestroyMarkState() > (int)DestroyMark_State::None)
+						// CheckCombination 함수를 통해서 곧바로 Destroy State 가 세팅될 것이다.
+						if (CheckCombination(m_vecCells[CurIndex], m_vecCells[NxtIndex]))
 						{
-							// 파괴 상태로 세팅하고
-							// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
-							m_vecCells[CurIndex]->SetDestroyState(ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState()));
-
-							// MirrorBall 일 경우,
-							if (m_vecCells[CurIndex]->GetDestroyMarkState() == DestroyMark_State::MirrorBall)
-							{
-								SetMirrorBallDestroyInfo(CurIndex, MatchedCellType);
-							}
-
-							// Mark 찾았음 표시하고 
 							MarkStateFound = true;
+							CombinationFound = true;
+							break;
+						}
+					}
 
-							// Destroy State 원상태
-							// m_vecDestroyMarkState[CurIndex] = DestroyMark_State::None;
-							m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
+					// 2) Special Candy가 이미 만들어져 있는지 확인
+					if (CombinationFound)
+					{
+						for (int col = CheckStartCol; col <= CheckEndCol; col++)
+						{
+							int CurIndex = RowIndex * m_ColCount + col;
+
+							// 아래와 괄호에 들어오려면
+							// 1) 이전에 Match State 가 Special 로 되어서, Destroy_State 가 Setting  ( DestroyCells 함수)
+							// 2) 따라서 여기 걸린 것은, 이미 Special Candy 라는 의미
+							// if ((int)m_vecDestroyMarkState[CurIndex] > (int)DestroyMark_State::None)
+							if ((int)m_vecCells[CurIndex]->GetDestroyMarkState() > (int)DestroyMark_State::None)
+							{
+								// 파괴 상태로 세팅하고
+								// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
+								m_vecCells[CurIndex]->SetDestroyState(ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState()));
+
+								// MirrorBall 일 경우,
+								if (m_vecCells[CurIndex]->GetDestroyMarkState() == DestroyMark_State::MirrorBall)
+								{
+									SetMirrorBallDestroyInfo(CurIndex, MatchedCellType);
+								}
+
+								// Mark 찾았음 표시하고 
+								MarkStateFound = true;
+
+								// Destroy State 원상태
+								// m_vecDestroyMarkState[CurIndex] = DestroyMark_State::None;
+								m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
+							}
 						}
 					}
 				}
