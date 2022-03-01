@@ -309,9 +309,13 @@ void CCell::Update(float DeltaTime)
 	}
 	*/
 
+	// Line ++ MirrorBall
 	DecreaseOpacityAndDestroyLineMirrorBallComb(DeltaTime);
-
 	ChangeStateSameColorWithLineMirrorBallComb(DeltaTime);
+
+	// MirrorBall + MirrorBall
+	ApplyDoubleMirrorBallCombEffect(DeltaTime);
+	SequentiallyDestroyCellByDoubleMirrorBallCombEffect(DeltaTime);
 
 	if (m_IsMirrorBallOfBagMirrorBallComb)
 		AddRelativeRotation(0.f, 0.f, 100.f * DeltaTime);
@@ -403,33 +407,28 @@ void CCell::ApplyDoubleMirrorBallCombEffect(float DeltaTime)
 {
 	if (m_IsDoubleMirrorBallComb)
 	{
-		if (m_IsLineOfLineMirrorBallComb)
+		// Board 상에서 추가적인 작업이 일어나지 않도록
+		// m_IsMoving 를 true로 세팅한다.
+		m_IsMoving = true;
+
+		float NewOpacity = m_Sprite->GetMaterial()->GetOpacity() - DeltaTime;
+
+		m_Sprite->SetOpacity(NewOpacity);
+
+		// 이때는 해당 Cell이 사라지고, 자기와 같은 Type의 Cell 들을 특수 State 로 바꿔야 한다. 
+		if (NewOpacity < 0.f)
 		{
-			// Board 상에서 추가적인 작업이 일어나지 않도록
-			// m_IsMoving 를 true로 세팅한다.
-			m_IsMoving = true;
+			m_IsMoving = false;
 
-			float NewOpacity = m_Sprite->GetMaterial()->GetOpacity() - DeltaTime;
+			// Board의 콜백 함수 호출
+			m_Board->TriggerDoubleMirrorBallCombEffect(m_RowIndex, m_ColIndex, m_Index);
 
-			m_Sprite->SetOpacity(NewOpacity);
+			// Match State를 true로 만들어준다 --> 그러면 Board의 DestroyCells 함수에서 해당 Cell을 지워줄 것이다.
+			m_Board->SetMatchStateTrue(m_Index);
 
-			// 이때는 해당 Cell이 사라지고, 자기와 같은 Type의 Cell 들을 특수 State 로 바꿔야 한다. 
-			if (NewOpacity < 0.f)
-			{
-				m_IsMoving = false;
-
-				// Board의 콜백 함수 호출
-				if (m_CellState != Cell_State::MirrorBall)
-				{
-					m_Board->TriggerLineAndMirrorBallCombEffect(m_RowIndex, m_ColIndex, m_Index);
-				}
-
-				// Match State를 true로 만들어준다 --> 그러면 Board의 DestroyCells 함수에서 해당 Cell을 지워줄 것이다.
-				m_Board->SetMatchStateTrue(m_Index);
-
-				m_IsLineOfLineMirrorBallComb = false;
-			}
+			m_IsDoubleMirrorBallComb = false;
 		}
+
 	}
 }
 
@@ -437,6 +436,28 @@ void CCell::SequentiallyDestroyCellByDoubleMirrorBallCombEffect(float DeltaTime)
 {
 	if (m_IsDoubleMirrorBallCombEffectApplied)
 	{
-		
+		m_IsMoving = true;
+
+		// 이미 Opacity가 0보다 낮다면 return ?
+		if (m_SequentialDestroyTime >= 0.f)
+		{
+			m_SequentialDestroyTime -= DeltaTime;
+			return;
+		}
+
+		// 계속 투명도를 감소 시킨다.
+		float NewOpacity = m_Sprite->GetMaterial()->GetOpacity() - DeltaTime;
+
+		m_Sprite->AddOpacity(DeltaTime * -1.f);
+
+		if (NewOpacity < 0.f)
+		{
+			m_IsSameColorWithMirrorBallLineCombOpacityZero = true;
+
+			// 자신의 상태를 바꾼다.
+			int Random = rand() % 2;
+
+			m_Board->SetMatchStateTrue(m_Index);
+		}
 	}
 }

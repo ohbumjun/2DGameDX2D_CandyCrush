@@ -96,28 +96,29 @@ private : // Single Destroy
     void DestroySingleBagCell(int RowIndex, int ColIndex, bool IsBagAndBagComb = false);
     void DestroySingleMirrorBallCell(int RowIndex, int ColIndex);
 private: // Combination
+    void CompareCombination(int FirstCellIdx, int SecCellIdx);
     bool CheckCombination(CCell* FirstCell, CCell* SecondCell);
-    // 봉지 + 봉지
+    // 봉지 + 봉지 --> 주변 2개 터진다 + 2번 연속으로 
     void ManageDestroyedBagInfo(int Index);
     bool CheckBagAndBagComb(CCell* FirstCell, CCell* SecondCell);
     void DestroyBagAndBagComb(CCell* FirstCell);
-    // 봉지 + Line
+    // 봉지 + 줄무늬 --> 좌우 상하로 3줄씩 없애준다.
     void DestroyBagLineComb(int RowIndex, int ColIndex);
     bool CheckBagAndRowLineComb(CCell* FirstCell, CCell* SecondCell);//
     bool CheckBagAndColLineComb(CCell* FirstCell, CCell* SecondCell);
-    // 봉지 + Mirror Ball
+    // 봉지 + Mirror Ball --> 해당 봉지 Type 의 Cell 들 모두 제거 + 이후 2번째에는 MirrorBall에 의해 Random Cell 모두 제거
     bool CheckBagAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
     void ManageBagAndMirrorBallComb(int Index);
     void DestroyMirrorBallOfBagMirrorBallComb(int Index);
-    // 줄무늬 + 줄무늬
+    // 줄무늬 + 줄무늬 --> 가로 + 세로로 1줄씩  제거해준다.
     bool CheckLineAndLineComb(CCell* FirstCell, CCell* SecondCell);
-    // 줄무늬 + Mirror Ball
+    // 줄무늬 + Mirror Ball --> 해당 색상의 모든 Cell 들을 Horizontal 혹은 Vertical 로 바꾼다음, 그에 맞게 다 터뜨린다.
     bool CheckLineAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
     bool DestroyLineAndMirrorBallComb(int RowIndex, int ColIndex, int Index);
 public :
     void TriggerLineAndMirrorBallCombEffect(int OriginRowIdx, int OriginColIdx, int OriginIdx);
 private :
-    // MirrorBall  + MirrorBall
+    // MirrorBall  + MirrorBall --> 화면 상의 모든 Cell 들을 제거 한다.
     bool CheckMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
     bool DestroyMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
 public :

@@ -13,6 +13,13 @@ private:
     CCell();
     CCell(const CCell& Player2D);
     virtual ~CCell();
+
+    // 2개씩 Cell 들을 비교하면서 + 조합인지 확인
+    // 바로 CheckCombination 함수로 DestroyState 를 세팅해버리고
+    // 이후, 각 개개인 Cell 에 대한 특수 효과 적용은 건너 뛰는 것
+    // 어떻게 건너 뛸 것인가
+    // bool 변수를 중간에 하나 더 주면 될 것 같다.
+
 private:
     Cell_Type_Binary m_CellType;
     Cell_Type_Binary m_MirrorBallDestroyType;
@@ -55,6 +62,7 @@ private : // 특수 효과
     // MirrorBall + Line
     bool m_IsDoubleMirrorBallComb;
     bool m_IsDoubleMirrorBallCombEffectApplied;
+    float m_SequentialDestroyTime;
 public:
     void SetCellType(Cell_Type_Binary Type);
     void SetCellState(Cell_State State);
@@ -190,6 +198,10 @@ public:
     }
 	// Setter
 public :
+    void SetSequentialDestroyTime (float Time)
+    {
+        m_SequentialDestroyTime = Time;
+    }
 	void SetDoubleMirrorBallCombEffectApplied(bool Enable)
     {
         m_IsDoubleMirrorBallCombEffectApplied = Enable;

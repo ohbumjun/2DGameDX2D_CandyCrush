@@ -72,3 +72,18 @@ enum class DestroyMark_State {
 	BagAfter,
 	MirrorBall
 };
+
+enum class Comb_Priority {
+	// ÁÙ¹«´Ì + ÁÙ¹«´Ì
+	LineAndLine,
+	// ºÀÁö + ÁÙ¹«´Ì
+	BagAndLine,
+	// ºÀÁö + ºÀÁö
+	BagAndBag,
+	// ºÀÁö + MirrorBall
+	MirrorBallAndBag,
+	// ÁÙ¹«´Ì + MirrorBall
+	MirrorBallAndLine,
+	// MirrorBall + MirrorBall
+	MirrorBallAndMirrorBall
+};
