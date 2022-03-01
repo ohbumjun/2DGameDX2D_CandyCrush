@@ -58,7 +58,8 @@ enum class Destroy_State {
 	BagAndMirrorBall_Bag, // 1st 파괴 : 해당 Ball 의 색상을 모두 제거하고 사라진다.
 	BagAndMirrorBall_Mirror, // 2nd 파괴 : 해당 MirrorBall의 색상을 모두 제거하고 사라진다.
 	RowLineAndColLine,
-	LineAndMirrorBall,
+	LineAndMirrorBall_Line,
+	LineAndMirrorBall_Mirror
 };
 
 enum class DestroyMark_State {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameInfo.h"
+#include "Timer.h"
 
 class CEngine {
 
@@ -34,6 +35,19 @@ public :
 	Resolution GetResolution() const
 {
 		return m_RS;
+}
+	float GetDeltaTime () const
+{
+		return m_Timer->Update();;
+}
+public :
+	void Pause()
+{
+		m_Play = false;
+}
+	void Resume()
+{
+		m_Play = true;
 }
 private :
 	bool Update(float DeltaTime);

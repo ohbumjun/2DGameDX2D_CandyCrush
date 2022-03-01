@@ -1,6 +1,5 @@
 #include "Engine.h"
 #include "Device.h"
-#include "Timer.h"
 #include "Input.h"
 #include "PathManager.h"
 #include "Render/DepthStencilState.h"
@@ -115,6 +114,9 @@ void CEngine::Logic()
 
 	// Timer
 	float DeltaTime = m_Timer->Update();
+
+	if (!m_Play)
+		DeltaTime = 0.f;
 
 	// Input
 	CInput::GetInst()->Update(DeltaTime);

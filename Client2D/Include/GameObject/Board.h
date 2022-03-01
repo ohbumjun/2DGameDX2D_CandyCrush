@@ -97,7 +97,7 @@ private : // Single Destroy
     void DestroySingleMirrorBallCell(int RowIndex, int ColIndex);
 private: // Combination
     bool CheckCombination(CCell* FirstCell, CCell* SecondCell);
-    // 봉지 _ 봉지
+    // 봉지 + 봉지
     void ManageDestroyedBagInfo(int Index);
     bool CheckBagAndBagComb(CCell* FirstCell, CCell* SecondCell);
     void DestroyBagAndBagComb(CCell* FirstCell);
@@ -113,6 +113,8 @@ private: // Combination
     bool CheckLineAndLineComb(CCell* FirstCell, CCell* SecondCell);
     // 줄무늬 + Mirror Ball
     bool CheckLineAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
+    bool ManageLineAndMirrorBallComb(int RowIndex, int ColIndex, int Index);
+    bool DestroyLineAndMirrorBallComb(int RowIndex, int ColIndex, int Index);
     // MirrorBall  + MirrorBall
     bool CheckMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
 private : // MirrorBall Match
@@ -137,6 +139,7 @@ private:
     void FindMatchCellsAfterTwoClick(); // 2개 Cell 클릭 이후 실행하기
     void SetFindMatchCellsDone();
     void DestroyCells();
+    void SetNewPosOfCells();
     bool FindMatchUpdate(); // 실시간으로 Match 여부 검사하기
     bool CheckCellsMoving();
 private : // Match State 를 그에 대응하는 Cell_State 로 바꿔주는 함수
