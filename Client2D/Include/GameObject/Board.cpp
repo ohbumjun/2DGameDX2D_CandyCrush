@@ -675,6 +675,8 @@ bool CBoard::CheckMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCel
 		return true;
 	}
 
+	//
+
 	return true;
 }
 
