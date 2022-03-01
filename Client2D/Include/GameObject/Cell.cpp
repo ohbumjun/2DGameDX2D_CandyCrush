@@ -14,6 +14,7 @@ CCell::CCell() :
 	m_IsBagCombToBeDestroyed(false),
 	m_IsMirrorBallOfBagMirrorBallComb(false),
 	m_IsSameColorWithMirrorBallLineComb(false),
+	m_IsSameColorWithMirrorBallLineCombOpacityZero(false),
 	m_IsLineOfLineMirrorBallComb(false),
 	m_BagCombDestroyLeftIdx(-1),
 	m_BagCombDestroyRightIdx(-1),
@@ -306,7 +307,9 @@ void CCell::Update(float DeltaTime)
 	}
 	*/
 
-	DecreaseOpacityAndDestroy(DeltaTime);
+	DecreaseOpacityAndDestroyLineMirrorBallComb(DeltaTime);
+
+	ChangeStateSameColorWithLineMirrorBallComb(DeltaTime);
 
 	if (m_IsMirrorBallOfBagMirrorBallComb)
 		AddRelativeRotation(0.f, 0.f, 100.f * DeltaTime);
@@ -325,7 +328,7 @@ void CCell::ChangeOpacityAndStateOfMirrorBallLineComb(float DeltaTime)
 	}
 }
 
-void CCell::DecreaseOpacityAndDestroy(float DeltaTime)
+void CCell::DecreaseOpacityAndDestroyLineMirrorBallComb(float DeltaTime)
 {
 	if (m_IsLineOfLineMirrorBallComb)
 	{
@@ -333,7 +336,7 @@ void CCell::DecreaseOpacityAndDestroy(float DeltaTime)
 		// m_IsMoving 를 true로 세팅한다.
 		m_IsMoving = true;
 
-		float NewOpacity = m_Sprite->GetMaterial()->GetOpacity() - DeltaTime / 2.f;
+		float NewOpacity = m_Sprite->GetMaterial()->GetOpacity() - DeltaTime;
 
 		m_Sprite->SetOpacity(NewOpacity);
 
@@ -342,7 +345,62 @@ void CCell::DecreaseOpacityAndDestroy(float DeltaTime)
 		{
 			m_IsMoving = false;
 
-			Destroy();
+			// Board의 콜백 함수 호출
+			if (m_CellState != Cell_State::MirrorBall)
+			{
+				m_Board->TriggerLineAndMirrorBallCombEffect(m_RowIndex, m_ColIndex, m_Index);
+			}
+
+			// Match State를 true로 만들어준다 --> 그러면 Board의 DestroyCells 함수에서 해당 Cell을 지워줄 것이다.
+			m_Board->SetMatchStateTrue(m_Index);
+
+			m_IsLineOfLineMirrorBallComb = false;
+		}
+	}
+}
+
+void CCell::ChangeStateSameColorWithLineMirrorBallComb(float DeltaTime)
+{
+	if (m_IsSameColorWithMirrorBallLineComb)
+	{
+		m_IsMoving = true;
+
+		// 계속 투명도를 감소 시킨다.
+		if (!m_IsSameColorWithMirrorBallLineCombOpacityZero)
+		{
+			float NewOpacity = m_Sprite->GetMaterial()->GetOpacity() - DeltaTime ;
+
+			m_Sprite->AddOpacity(DeltaTime * -1.f);
+
+			if (NewOpacity < 0.f)
+			{
+				m_IsSameColorWithMirrorBallLineCombOpacityZero = true;
+
+				// 자신의 상태를 바꾼다.
+				int Random = rand() % 2;
+
+				SetCellState(Random == 0 ? Cell_State::ColLine : Cell_State::RowLine);
+
+				// SetDestroyMarkState(Random == 0 ? DestroyMark_State::LineMirrorBallComb_Vertical : DestroyMark_State::LineMirrorBallComb_Horizontal);
+
+				// SetDestroyMarkState(ChangeMatchStateToDestroyMarkState(m_vecMatchState[Index]));
+			}
+		}
+		// 계속 투명도를 올린다
+		else
+		{
+			m_Sprite->GetMaterial()->AddOpacity(DeltaTime);
+
+			float CurrentOpacity = m_Sprite->GetMaterial()->GetOpacity() + DeltaTime;
+
+			if (CurrentOpacity >= 1.f)
+			{
+				m_IsMoving = false;
+
+				m_IsSameColorWithMirrorBallLineComb = false;
+
+				SetDestroyState(GetCellState() == Cell_State::ColLine ? Destroy_State::Vertical : Destroy_State::Horizontal);
+			}
 		}
 	}
 }

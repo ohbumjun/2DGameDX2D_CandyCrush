@@ -115,6 +115,9 @@ private: // Combination
     bool CheckLineAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
     bool ManageLineAndMirrorBallComb(int RowIndex, int ColIndex, int Index);
     bool DestroyLineAndMirrorBallComb(int RowIndex, int ColIndex, int Index);
+public :
+    void TriggerLineAndMirrorBallCombEffect(int OriginRowIdx, int OriginColIdx, int OriginIdx);
+private :
     // MirrorBall  + MirrorBall
     bool CheckMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
 private : // MirrorBall Match
@@ -143,6 +146,8 @@ private:
     void SetNewIndexOfCells();
     bool FindMatchUpdate(); // 실시간으로 Match 여부 검사하기
     bool CheckCellsMoving();
+public :
+    void SetMatchStateTrue(int Index);
 private : // Match State 를 그에 대응하는 Cell_State 로 바꿔주는 함수
     Cell_State ChangeMatchStateToCellState(Match_State State);
     Destroy_State ChangeMatchStateToDestroyState(Match_State State);

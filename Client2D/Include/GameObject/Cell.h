@@ -50,6 +50,7 @@ private: // 현재 이미 Special 상태여서, 다음 Match 때 Special Destroy 와 관련된 
     bool m_IsLineOfLineMirrorBallComb; // 점점 자신의 Opacity를 줄여나가다가 사라지게 한다.
 private : // 특수 효과
     bool m_IsSameColorWithMirrorBallLineComb;
+    bool m_IsSameColorWithMirrorBallLineCombOpacityZero;
 public:
     void SetCellType(Cell_Type_Binary Type);
     void SetCellState(Cell_State State);
@@ -68,7 +69,8 @@ public:
     virtual void PostUpdate(float DeltaTime) override;
 private : // 특수 효과
     void ChangeOpacityAndStateOfMirrorBallLineComb(float DeltaTime);
-    void DecreaseOpacityAndDestroy(float DeltaTime);
+    void DecreaseOpacityAndDestroyLineMirrorBallComb(float DeltaTime);
+    void ChangeStateSameColorWithLineMirrorBallComb(float DeltaTime);
 // Getter 
 public:
     bool IsLineOfLineMirrorBallComb () const

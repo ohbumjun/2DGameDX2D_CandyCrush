@@ -696,6 +696,27 @@ bool CBoard::DestroyLineAndMirrorBallComb(int RowIndex, int ColIndex, int LineIn
 	return true;
 }
 
+void CBoard::TriggerLineAndMirrorBallCombEffect(int OriginRowIdx, int OriginColIdx, int OriginIdx)
+{
+	Cell_Type_Binary CellType = m_vecCells[OriginIdx]->GetCellType();
+
+	for (int row = 0; row < m_VisualRowCount; row++)
+	{
+		for (int col = 0; col < m_ColCount; col++)
+		{
+			if (row == OriginRowIdx && col == OriginColIdx)
+				continue;
+			
+			if (m_vecCells[row * m_ColCount + col]->GetCellType() == CellType &&
+				m_vecCells[row * m_ColCount + col]->GetCellState() != Cell_State::MirrorBall)
+			{
+				// 특수 효과 적용하기
+				m_vecCells[row * m_ColCount + col]->SetSameColorWithMirrorBallLineComb(true);
+			}
+		}
+	}
+}
+
 bool CBoard::CheckMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 {
 	return true;
@@ -1114,6 +1135,11 @@ bool CBoard::CheckCellsMoving()
 	}
 
 	return false;
+}
+
+void CBoard::SetMatchStateTrue(int Index)
+{
+	m_vecCellIsMatch[Index] = true;
 }
 
 Cell_State CBoard::ChangeMatchStateToCellState(Match_State State)

@@ -47,6 +47,7 @@ enum Mouse_Click {
 
 enum class Destroy_State {
 	None,
+	Normal,
 	Horizontal,
 	Vertical,
 	Bag,
