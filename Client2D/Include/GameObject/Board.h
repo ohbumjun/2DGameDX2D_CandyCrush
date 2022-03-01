@@ -140,6 +140,7 @@ private:
     void SetFindMatchCellsDone();
     void DestroyCells();
     void SetNewPosOfCells();
+    void SetNewIndexOfCells();
     bool FindMatchUpdate(); // 실시간으로 Match 여부 검사하기
     bool CheckCellsMoving();
 private : // Match State 를 그에 대응하는 Cell_State 로 바꿔주는 함수

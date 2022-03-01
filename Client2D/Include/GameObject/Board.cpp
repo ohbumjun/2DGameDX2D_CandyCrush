@@ -893,28 +893,8 @@ void CBoard::DestroyCells()
 
 	// todo : 움직인 Cell 새로운 Index 세팅
 	// 여기서 실제로 새로운 Index를 세팅할 것이다.
-	int TargetIndex = -1;
-	int NewChangedIndex = -1;
-	for (int row = 0; row < m_RowCount; row++)
-	{
-		for (int col = 0; col < m_ColCount; col++)
-		{
-			// 내려올 Cell
-			TargetIndex = row * m_ColCount + col;
+	SetNewIndexOfCells();
 
-			// 만약 해당 Cell 이 내려갈 개수가 없다면 Skip
-			if (m_vecCellDownNums[TargetIndex] == 0)
-				continue;
-
-			int NRow = (row - m_vecCellDownNums[TargetIndex]);
-
-			NewChangedIndex = NRow * m_ColCount + col;
-
-			m_vecCells[TargetIndex]->SetIndexInfo(TargetIndex, NRow, col);
-
-			m_vecCells[NewChangedIndex] = m_vecCells[TargetIndex];
-		}
-	}
 
 	// m_vecDestroyState 정보 초기화
 	int HalfTotalIndex = (int)(m_TotCount * 0.5f);
@@ -989,6 +969,32 @@ void CBoard::SetNewPosOfCells()
 				// 내려갈 Idx 증가시켜주기
 				m_vecCellDownNums[ChangeTargetIndex] += 1;
 			}
+		}
+	}
+}
+
+void CBoard::SetNewIndexOfCells()
+{
+	int TargetIndex = -1;
+	int NewChangedIndex = -1;
+	for (int row = 0; row < m_RowCount; row++)
+	{
+		for (int col = 0; col < m_ColCount; col++)
+		{
+			// 내려올 Cell
+			TargetIndex = row * m_ColCount + col;
+
+			// 만약 해당 Cell 이 내려갈 개수가 없다면 Skip
+			if (m_vecCellDownNums[TargetIndex] == 0)
+				continue;
+
+			int NRow = (row - m_vecCellDownNums[TargetIndex]);
+
+			NewChangedIndex = NRow * m_ColCount + col;
+
+			m_vecCells[TargetIndex]->SetIndexInfo(TargetIndex, NRow, col);
+
+			m_vecCells[NewChangedIndex] = m_vecCells[TargetIndex];
 		}
 	}
 }
