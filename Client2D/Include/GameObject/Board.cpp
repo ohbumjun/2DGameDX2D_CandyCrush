@@ -675,7 +675,12 @@ bool CBoard::CheckMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCel
 		return true;
 	}
 
-	//
+	/// <summary>
+	/// /
+	/// </summary>
+	/// <param name="FirstCell"></param>
+	/// <param name="SecondCell"></param>
+	/// <returns></returns>
 
 	return true;
 }
