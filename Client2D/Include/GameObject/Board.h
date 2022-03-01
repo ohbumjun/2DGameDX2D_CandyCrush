@@ -113,7 +113,6 @@ private: // Combination
     bool CheckLineAndLineComb(CCell* FirstCell, CCell* SecondCell);
     // ÁÙ¹«´Ì + Mirror Ball
     bool CheckLineAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
-    bool ManageLineAndMirrorBallComb(int RowIndex, int ColIndex, int Index);
     bool DestroyLineAndMirrorBallComb(int RowIndex, int ColIndex, int Index);
 public :
     void TriggerLineAndMirrorBallCombEffect(int OriginRowIdx, int OriginColIdx, int OriginIdx);
