@@ -15,7 +15,9 @@ CCell::CCell() :
 	m_IsMirrorBallOfBagMirrorBallComb(false),
 	m_IsSameColorWithMirrorBallLineComb(false),
 	m_IsSameColorWithMirrorBallLineCombOpacityZero(false),
+	m_IsDoubleMirrorBallComb(false),
 	m_IsLineOfLineMirrorBallComb(false),
+	m_IsDoubleMirrorBallCombEffectApplied(false),
 	m_BagCombDestroyLeftIdx(-1),
 	m_BagCombDestroyRightIdx(-1),
 	m_BagCombDestroyTopIdx(-1),
@@ -320,14 +322,6 @@ void CCell::PostUpdate(float DeltaTime)
 	CGameObject::PostUpdate(DeltaTime);
 }
 
-void CCell::ChangeOpacityAndStateOfMirrorBallLineComb(float DeltaTime)
-{
-	if (m_IsSameColorWithMirrorBallLineComb)
-	{
-		
-	}
-}
-
 void CCell::DecreaseOpacityAndDestroyLineMirrorBallComb(float DeltaTime)
 {
 	if (m_IsLineOfLineMirrorBallComb)
@@ -402,5 +396,47 @@ void CCell::ChangeStateSameColorWithLineMirrorBallComb(float DeltaTime)
 				SetDestroyState(GetCellState() == Cell_State::ColLine ? Destroy_State::Vertical : Destroy_State::Horizontal);
 			}
 		}
+	}
+}
+
+void CCell::ApplyDoubleMirrorBallCombEffect(float DeltaTime)
+{
+	if (m_IsDoubleMirrorBallComb)
+	{
+		if (m_IsLineOfLineMirrorBallComb)
+		{
+			// Board 상에서 추가적인 작업이 일어나지 않도록
+			// m_IsMoving 를 true로 세팅한다.
+			m_IsMoving = true;
+
+			float NewOpacity = m_Sprite->GetMaterial()->GetOpacity() - DeltaTime;
+
+			m_Sprite->SetOpacity(NewOpacity);
+
+			// 이때는 해당 Cell이 사라지고, 자기와 같은 Type의 Cell 들을 특수 State 로 바꿔야 한다. 
+			if (NewOpacity < 0.f)
+			{
+				m_IsMoving = false;
+
+				// Board의 콜백 함수 호출
+				if (m_CellState != Cell_State::MirrorBall)
+				{
+					m_Board->TriggerLineAndMirrorBallCombEffect(m_RowIndex, m_ColIndex, m_Index);
+				}
+
+				// Match State를 true로 만들어준다 --> 그러면 Board의 DestroyCells 함수에서 해당 Cell을 지워줄 것이다.
+				m_Board->SetMatchStateTrue(m_Index);
+
+				m_IsLineOfLineMirrorBallComb = false;
+			}
+		}
+	}
+}
+
+void CCell::SequentiallyDestroyCellByDoubleMirrorBallCombEffect(float DeltaTime)
+{
+	if (m_IsDoubleMirrorBallCombEffectApplied)
+	{
+		
 	}
 }

@@ -666,15 +666,34 @@ bool CBoard::CheckMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCel
 	// 1) Bag 색상에 있는 녀석들
 	if (FirstCell->GetCellState() == Cell_State::MirrorBall && SecondCell->GetCellState() == Cell_State::MirrorBall)
 	{
-		// 1. 이렇게 세팅된 녀석을 발견하면
-		// - 주변에 MirrorBall 인 녀석을 찾는다.
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::MirrorBallAndMirrorBall);
 		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::MirrorBallAndMirrorBall);
+
+		m_vecCells[FirstCell->GetIndex()]->SetIsDoubleMirrorBallComb(true);
+		m_vecCells[SecondCell->GetIndex()]->SetIsDoubleMirrorBallComb(true);
 
 		return true;
 	}
 
 	return true;
+}
+
+bool CBoard::DestroyMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
+{
+	for (int row = 0; row < m_VisualRowCount; row++)
+	{
+		for (int col = 0; col < m_ColCount; col++)
+		{
+			// 특수 효과 적용하기
+			m_vecCells[row * m_ColCount + col]->SetDoubleMirrorBallCombEffectApplied(true);
+		}
+	}
+	return true;
+}
+
+void CBoard::TriggerDoubleMirrorBallCombEffect(int OriginRowIdx, int OriginColIdx, int OriginIdx)
+{
+	
 }
 
 void CBoard::DestroyCells()
@@ -1998,6 +2017,9 @@ void CBoard::JudgeCellDestroyType(int RowIndex, int ColIndex, int Index)
 		break;
 	case Destroy_State::LineAndMirrorBall_Line:
 		DestroyLineAndMirrorBallComb(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex(), Index);
+		break;
+	case Destroy_State::MirrorBallAndMirrorBall :
+		DestroyBagLineComb(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex());
 		break;
 	}
 }

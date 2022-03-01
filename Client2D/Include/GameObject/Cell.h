@@ -47,10 +47,14 @@ private: // 현재 이미 Special 상태여서, 다음 Match 때 Special Destroy 와 관련된 
     bool m_IsBagAndBagFirstDestroyed;
     bool m_IsBagCombToBeDestroyed; // Bag Combination로 파괴될 대상인가
     bool m_IsMirrorBallOfBagMirrorBallComb;
-    bool m_IsLineOfLineMirrorBallComb; // 점점 자신의 Opacity를 줄여나가다가 사라지게 한다.
 private : // 특수 효과
+    // MirrorBall + Line
+    bool m_IsLineOfLineMirrorBallComb; // 점점 자신의 Opacity를 줄여나가다가 사라지게 한다.
     bool m_IsSameColorWithMirrorBallLineComb;
     bool m_IsSameColorWithMirrorBallLineCombOpacityZero;
+    // MirrorBall + Line
+    bool m_IsDoubleMirrorBallComb;
+    bool m_IsDoubleMirrorBallCombEffectApplied;
 public:
     void SetCellType(Cell_Type_Binary Type);
     void SetCellState(Cell_State State);
@@ -68,11 +72,18 @@ public:
     virtual void Update(float DeltaTime) override;
     virtual void PostUpdate(float DeltaTime) override;
 private : // 특수 효과
-    void ChangeOpacityAndStateOfMirrorBallLineComb(float DeltaTime);
+    // MirrorBall + Line
     void DecreaseOpacityAndDestroyLineMirrorBallComb(float DeltaTime);
     void ChangeStateSameColorWithLineMirrorBallComb(float DeltaTime);
+    // MirrorBall + MirrorBall
+    void ApplyDoubleMirrorBallCombEffect(float DeltaTime);
+    void SequentiallyDestroyCellByDoubleMirrorBallCombEffect(float DeltaTime);
 // Getter 
 public:
+    bool IsDoubleMirrorBallComb () const
+    {
+        return m_IsDoubleMirrorBallComb;
+    }
     bool IsLineOfLineMirrorBallComb () const
     {
         return m_IsLineOfLineMirrorBallComb;
@@ -179,6 +190,14 @@ public:
     }
 	// Setter
 public :
+	void SetDoubleMirrorBallCombEffectApplied(bool Enable)
+    {
+        m_IsDoubleMirrorBallCombEffectApplied = Enable;
+    }
+    void SetIsDoubleMirrorBallComb(bool Enable)
+    {
+        m_IsDoubleMirrorBallComb = Enable;
+    }
     void SetIsLineOfLineMirrorBallComb(bool Enable) 
     {
         m_IsLineOfLineMirrorBallComb = Enable;

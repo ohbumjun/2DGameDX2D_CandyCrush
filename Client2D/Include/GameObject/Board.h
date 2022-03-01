@@ -119,6 +119,9 @@ public :
 private :
     // MirrorBall  + MirrorBall
     bool CheckMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
+    bool DestroyMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
+public :
+    void TriggerDoubleMirrorBallCombEffect(int OriginRowIdx, int OriginColIdx, int OriginIdx);
 private : // MirrorBall Match
     void SetMirrorBallDestroyInfo(int Index, Cell_Type_Binary DestroyType);
 private: // BagMatch
