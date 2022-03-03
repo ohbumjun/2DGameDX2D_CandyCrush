@@ -101,22 +101,28 @@ bool CRenderManager::Init()
 	Layer->LayerPriority = 0;
 	m_RenderLayerList.push_back(Layer);
 
+	// Board
+	Layer = new RenderLayer;
+	Layer->Name = "Board";
+	Layer->LayerPriority = 1;
+	m_RenderLayerList.push_back(Layer);
+
 	// 모든 Scene Component 들은, 생성시 Default 를 m_LayerName으로 들고 있을 것이다
 	// SceneComponent 입장에서는 PrevRender 에서 m_Render가 true 이면 AddRenderList를 통해 들어온다
 	// Default 라는 이름의 m_LayerName을 가진 SceneComponent 들은, 지금 세팅한 Default Layer 에 들어오게 된다.
 	Layer = new RenderLayer;
 	Layer->Name = "Default";
-	Layer->LayerPriority = 1;
-	m_RenderLayerList.push_back(Layer);
-
-	Layer = new RenderLayer;
-	Layer->Name = "Block";
 	Layer->LayerPriority = 2;
 	m_RenderLayerList.push_back(Layer);
 
 	Layer = new RenderLayer;
-	Layer->Name = "Cell";
+	Layer->Name = "Block";
 	Layer->LayerPriority = 3;
+	m_RenderLayerList.push_back(Layer);
+
+	Layer = new RenderLayer;
+	Layer->Name = "Cell";
+	Layer->LayerPriority = 4;
 	m_RenderLayerList.push_back(Layer);
 
 	// Screen Widget 들을 위한 Layer 만들기

@@ -30,6 +30,10 @@ public :
 {
 		return m_PlayAnimation;
 }
+	int GetAnimationCount () const
+{
+		return (int)m_mapAnimationSequence2DData.size();
+}
 	size_t GetFrameCount() const
 {
 		return m_CurrentAnimation->GetSequence2D()->GetFrameCount();

@@ -5,8 +5,9 @@ enum class Cell_Type_Binary {
 	Red = 0x2,
 	Orange = 0x4,
 	Yellow = 0x8,
-	Green = 0x10,
-	All = Blue | Red | Orange | Yellow | Green
+	//Green = 0x10,
+	//All = Blue | Red | Orange | Yellow | Green
+	All = Blue | Red | Orange | Yellow
 };
 
 enum class Cell_Type {
@@ -14,7 +15,7 @@ enum class Cell_Type {
 	Red,
 	Orange,
 	Yellow,
-	Green,
+	// Green,
 	End,
 };
 

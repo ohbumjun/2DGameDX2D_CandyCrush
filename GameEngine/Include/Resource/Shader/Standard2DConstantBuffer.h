@@ -14,7 +14,12 @@ private :
 public :
     void SetAnimEnable(bool Enable)
 {
-        m_BufferData.AnimationEnable = Enable ? 1 : 0;
+    if (Enable)
+        m_BufferData.AnimationEnable = 1;
+    else
+        m_BufferData.AnimationEnable = 0;
+
+	// m_BufferData.AnimationEnable = Enable ? 1 : 0;
 }
     virtual bool Init() override;
     virtual void UpdateCBuffer() override;

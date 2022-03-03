@@ -1,10 +1,9 @@
 #pragma once
 
-#include <array>
-
 #include "GameObject/GameObject.h"
 #include "Block.h"
 #include "Cell.h"
+#include "Component/SpriteComponent.h"
 #include "Component/StaticMeshComponent.h"
 
 class CBoard :
@@ -16,7 +15,8 @@ private:
     virtual ~CBoard() override;
 private:
     // 별다른 Animation이 없을 것이므로 Static Mesh로 세팅
-    CSharedPtr<CStaticMeshComponent> m_Static;
+    CSharedPtr<CStaticMeshComponent> m_Sprite;
+    CSharedPtr<CSpriteComponent> m_BoardBackGround;
     std::vector<CSharedPtr<CCell>> m_vecCells;
     std::vector<CSharedPtr<CBlock>> m_vecBlocks;
     int m_TotCount;

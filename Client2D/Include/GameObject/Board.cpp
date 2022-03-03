@@ -286,10 +286,12 @@ bool CBoard::CheckCombination(CCell* FirstCell,CCell* SecondCell)
 		return true;
 
 	// MirrorBall + MirrorBall
+	/*
 	Result = CheckMirrorBallAndMirrorBallComb(FirstCell, SecondCell);
 
 	if (Result)
 		return true;
+		*/
 
 
 	return false;
@@ -319,8 +321,8 @@ void CBoard::ManageDestroyedBagInfo(int Index)
 
 bool CBoard::CheckBagAndBagComb(CCell* FirstCell, CCell* SecondCell)
 {
-	if (FirstCell->GetCellState() == Cell_State::Bag &&
-		SecondCell->GetCellState() == Cell_State::Bag)
+	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::Bag &&
+		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::Bag)
 	{
 		int TopRowIdx = FirstCell->GetRowIndex() + 2 > SecondCell->GetRowIndex() + 2 ?
 			FirstCell->GetRowIndex() + 2 : SecondCell->GetRowIndex() + 2;
@@ -366,13 +368,15 @@ bool CBoard::CheckBagAndBagComb(CCell* FirstCell, CCell* SecondCell)
 
 bool CBoard::CheckBagAndRowLineComb(CCell* FirstCell, CCell* SecondCell)
 {
-	if (FirstCell->GetCellState() == Cell_State::Bag && SecondCell->GetCellState() == Cell_State::RowLine)
+	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::Bag &&
+		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::RowLine)
 	{
 		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndRowLine);
 
 		return true;
 	}
-	else if (FirstCell->GetCellState() == Cell_State::RowLine && SecondCell->GetCellState() == Cell_State::Bag)
+	else if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::RowLine && 
+		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::Bag)
 	{
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndRowLine);
 
@@ -384,13 +388,15 @@ bool CBoard::CheckBagAndRowLineComb(CCell* FirstCell, CCell* SecondCell)
 
 bool CBoard::CheckBagAndColLineComb(CCell* FirstCell, CCell* SecondCell)
 {
-	if (FirstCell->GetCellState() == Cell_State::Bag && SecondCell->GetCellState() == Cell_State::ColLine)
+	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::Bag &&
+		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::ColLine)
 	{
 		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndColLine);
 
 		return true;
 	}
-	else if (FirstCell->GetCellState() == Cell_State::ColLine && SecondCell->GetCellState() == Cell_State::Bag)
+	else if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::ColLine &&
+		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::Bag)
 	{
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndColLine);
 
@@ -528,7 +534,8 @@ void CBoard::DestroyBagLineComb(int RowIndex, int ColIndex)
 bool CBoard::CheckBagAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 {
 	// 1) Bag 색상에 있는 녀석들
-	if (FirstCell->GetCellState() == Cell_State::Bag && SecondCell->GetCellState() == Cell_State::MirrorBall)
+	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::Bag && 
+		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall)
 	{
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndMirrorBall_Bag);
 
@@ -541,7 +548,8 @@ bool CBoard::CheckBagAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 
 		return true;
 	}
-	else if (FirstCell->GetCellState() == Cell_State::MirrorBall && SecondCell->GetCellState() == Cell_State::Bag)
+	else if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall && 
+		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::Bag)
 	{
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndMirrorBall_Mirror);
 		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndMirrorBall_Bag);
@@ -554,28 +562,32 @@ bool CBoard::CheckBagAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 
 bool CBoard::CheckLineAndLineComb(CCell* FirstCell, CCell* SecondCell)
 {
-	if (FirstCell->GetCellState() == Cell_State::RowLine && SecondCell->GetCellState() == Cell_State::ColLine)
+	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::RowLine && 
+		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::ColLine)
 	{
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::Horizontal);
 		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::Vertical);
 
 		return true;
 	}
-	else if (FirstCell->GetCellState() == Cell_State::ColLine && SecondCell->GetCellState() == Cell_State::RowLine)
+	else if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::ColLine &&
+		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::RowLine)
 	{
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::Vertical);
 		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::Horizontal);
 
 		return true;
 	}
-	if (FirstCell->GetCellState() == Cell_State::RowLine && SecondCell->GetCellState() == Cell_State::RowLine)
+	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::RowLine &&
+		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::RowLine)
 	{
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::Horizontal);
 		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::Horizontal);
 
 		return true;
 	}
-	else if (FirstCell->GetCellState() == Cell_State::ColLine && SecondCell->GetCellState() == Cell_State::ColLine)
+	else if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::ColLine &&
+		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::ColLine)
 	{
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::Vertical);
 		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::Vertical);
@@ -589,8 +601,9 @@ bool CBoard::CheckLineAndLineComb(CCell* FirstCell, CCell* SecondCell)
 bool CBoard::CheckLineAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 {
 	// 1) Bag 색상에 있는 녀석들
-	if (FirstCell->GetCellState() == Cell_State::MirrorBall && 
-		(SecondCell->GetCellState() == Cell_State::RowLine || SecondCell->GetCellState() == Cell_State::ColLine))
+	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall &&
+		(m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::RowLine || 
+			m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::ColLine))
 	{
 		// 1. 이렇게 세팅된 녀석을 발견하면
 		// - 주변에 MirrorBall 인 녀석을 찾는다.
@@ -599,8 +612,9 @@ bool CBoard::CheckLineAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 
 		return true;
 	}
-	if (SecondCell->GetCellState() == Cell_State::MirrorBall &&
-		(FirstCell->GetCellState() == Cell_State::RowLine || FirstCell->GetCellState() == Cell_State::ColLine))
+	if (m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall &&
+		(m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::RowLine || 
+			m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::ColLine))
 	{
 		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::LineAndMirrorBall_Line);
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::LineAndMirrorBall_Mirror);
@@ -670,7 +684,8 @@ void CBoard::TriggerLineAndMirrorBallCombEffect(int OriginRowIdx, int OriginColI
 bool CBoard::CheckMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 {
 	// 1) Bag 색상에 있는 녀석들
-	if (FirstCell->GetCellState() == Cell_State::MirrorBall && SecondCell->GetCellState() == Cell_State::MirrorBall)
+	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall && 
+		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall)
 	{
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::MirrorBallAndMirrorBall);
 		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::MirrorBallAndMirrorBall);
@@ -1015,7 +1030,8 @@ void CBoard::SetNewIndexOfCells()
 
 			NewChangedIndex = NRow * m_ColCount + col;
 
-			m_vecCells[TargetIndex]->SetIndexInfo(TargetIndex, NRow, col);
+			// m_vecCells[TargetIndex]->SetIndexInfo(TargetIndex, NRow, col);
+			m_vecCells[TargetIndex]->SetIndexInfo(NewChangedIndex, NRow, col);
 
 			m_vecCells[NewChangedIndex] = m_vecCells[TargetIndex];
 		}
@@ -1251,10 +1267,10 @@ Cell_Type_Binary CBoard::ChangeCellTypeToCellBinaryType(Cell_Type Type)
 
 	case Cell_Type::Yellow:
 		return Cell_Type_Binary::Yellow;
-
+		/*
 	case Cell_Type::Green:
 		return Cell_Type_Binary::Green;
-
+		*/
 	}
 
 	return Cell_Type_Binary::All;
@@ -1534,6 +1550,14 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 					{
 						MarkStateFound = true;
 						CombinationFound = true;
+
+						// 아래의 코드를 해주는 이유는 , 현재 Match Set 에서는 조합으로 세팅되었는데
+						// ex) 세로 줄
+						// 같은 위치, 가로 줄에서 Match가 되었다는 이유로,
+						// Special Cell 들에 대해  다시 Destroy 상태를 바꿔버릴 수도 있으므로
+						m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
+						m_vecCells[NxtIndex]->SetDestroyMarkState(DestroyMark_State::None);
+
 						break;
 					}
 				}
@@ -1619,6 +1643,15 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 						{
 							MarkStateFound = true;
 							CombinationFound = true;
+
+							// 아래의 코드를 해주는 이유는 , 현재 Match Set 에서는 조합으로 세팅되었는데
+							// ex) 세로 줄
+							// 같은 위치, 가로 줄에서 Match가 되었다는 이유로,
+							// Special Cell 들에 대해  다시 Destroy 상태를 바꿔버릴 수도 있으므로
+							m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
+							m_vecCells[NxtIndex]->SetDestroyMarkState(DestroyMark_State::None);
+
+
 							break;
 						}
 					}
@@ -1822,6 +1855,15 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 					{
 						MarkStateFound = true;
 						CombinationFound = true;
+
+
+						// 아래의 코드를 해주는 이유는 , 현재 Match Set 에서는 조합으로 세팅되었는데
+						// ex) 세로 줄
+						// 같은 위치, 가로 줄에서 Match가 되었다는 이유로,
+						// Special Cell 들에 대해  다시 Destroy 상태를 바꿔버릴 수도 있으므로
+						m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
+						m_vecCells[NxtIndex]->SetDestroyMarkState(DestroyMark_State::None);
+
 						break;
 					}
 				}
@@ -1906,12 +1948,21 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 						{
 							MarkStateFound = true;
 							CombinationFound = true;
+
+
+							// 아래의 코드를 해주는 이유는 , 현재 Match Set 에서는 조합으로 세팅되었는데
+							// ex) 세로 줄
+							// 같은 위치, 가로 줄에서 Match가 되었다는 이유로,
+							// Special Cell 들에 대해  다시 Destroy 상태를 바꿔버릴 수도 있으므로
+							m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
+							m_vecCells[NxtIndex]->SetDestroyMarkState(DestroyMark_State::None);
+
 							break;
 						}
 					}
 
 					// 2) Special Candy가 이미 만들어져 있는지 확인
-					if (CombinationFound)
+					if (CombinationFound == false)
 					{
 						for (int col = CheckStartCol; col <= CheckEndCol; col++)
 						{
@@ -2125,6 +2176,7 @@ void CBoard::JudgeCellDestroyType(int RowIndex, int ColIndex, int Index)
 			Cell_Type_Binary Type = m_vecCells[RowIndex * m_ColCount + ColIndex]->GetCellType();
 			m_vecCells[RowIndex * m_ColCount + ColIndex]->SetMirrorBallDestroyType(Type);
 			DestroyMirrorBallEffect(RowIndex, ColIndex);
+			break;
 			// m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndMirrorBall_Mirror);
 		}
 		break;
@@ -2132,7 +2184,7 @@ void CBoard::JudgeCellDestroyType(int RowIndex, int ColIndex, int Index)
 		DestroyLineAndMirrorBallComb(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex(), Index);
 		break;
 	case Destroy_State::MirrorBallAndMirrorBall :
-		DestroyBagLineComb(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex());
+		DestroyMirrorBallOfBagMirrorBallComb(Index);
 		break;
 	}
 }
@@ -2825,9 +2877,28 @@ bool CBoard::Init()
 	if (!CGameObject::Init())
 		return false;
 
+	// Component 세팅
+	m_Sprite = CreateComponent<CStaticMeshComponent>("BoardComponent");
+
+	SetRootComponent(m_Sprite);
+
+	m_BoardBackGround = CreateComponent<CSpriteComponent>("BoardBackComponent");
+	m_BoardBackGround->SetTexture(0, 0, (int)Buffer_Shader_Type::Graphic, "BoardBack", TEXT("CandyCrush/BoardImage.png"));
+	m_BoardBackGround->SetWorldScale(100.f, 100.f, 1.f);
+	m_BoardBackGround->SetLayerName("Board");
+	m_BoardBackGround->GetMaterial()->SetRenderState("AlphaBlend");
+	m_BoardBackGround->SetOpacity(0.8f);
+	m_BoardBackGround->SetBaseColor(1.f, 1.f, 1.f, 1.f);
+
+	m_Sprite->AddChild(m_BoardBackGround);
+
+	// 이미지 세팅
+
+
 	// Input Callback 세팅
 	CInput::GetInst()->SetKeyCallback("BoardCellClick", Key_State::Key_Down, this, 
 		&CBoard::ClickCell);
+
 	CInput::GetInst()->SetKeyCallback("ChangeToMirrorBall", Key_State::Key_Down, this,
 		&CBoard::ChangeToMirrorBallCell);
 
@@ -2888,20 +2959,16 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 		m_vecCellIsMatch[i] = false;
 	}
 
-	// Component 세팅
-	m_Static = CreateComponent<CStaticMeshComponent>("BoardComponent");
-	SetRootComponent(m_Static);
-
 	// 시작점 세팅
-	m_Static->SetWorldPos(LB);
-	m_Static->SetBaseColor(1.f, 0.f, 0.f, 1.f);
+	m_Sprite->SetWorldPos(LB);
 
 	// 너비 , 높이 세팅
 	Resolution RS = CEngine::GetInst()->GetResolution();
 
 	// 높이의 경우 2배로 세팅한다. --> 실제 화면에 보여지는 영역 + 위로 숨은 영역
 	// x,y : 열, 행
-	m_Static->SetWorldScale((float)(RS.Width * (WidthRatio / 100.f)), (float)(RS.Height * (HeightRatio / 100.f)) * 2.f, 1.f);
+	m_Sprite->SetWorldScale((float)(RS.Width * (WidthRatio / 100.f)), (float)(RS.Height * (HeightRatio / 100.f)) * 2.f, 1.f);
+	m_BoardBackGround->SetWorldScale((float)(RS.Height * (WidthRatio / 100.f)), (float)(RS.Height * (HeightRatio / 100.f)), 1.f);
 
 	// Block, Cell 세팅
 	m_vecBlocks.resize(m_TotCount);

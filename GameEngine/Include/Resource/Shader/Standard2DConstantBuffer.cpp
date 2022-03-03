@@ -18,7 +18,6 @@ bool CStandard2DConstantBuffer::Init()
 
 void CStandard2DConstantBuffer::UpdateCBuffer()
 {
-	m_BufferData.AnimationEnable = 1;
 	m_Buffer->UpdateBuffer(&m_BufferData);
 }
 
