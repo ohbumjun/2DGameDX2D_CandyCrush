@@ -3,6 +3,7 @@
 #include "Scene/SceneResource.h"
 #include "../GameObject/Player2D.h"
 #include "../GameObject/Board.h"
+#include "Engine.h"
 
 CStartScene::CStartScene()
 {}
@@ -20,9 +21,12 @@ bool CStartScene::Init()
 	// CPlayer2D* Player2D = m_Scene->CreateGameObject<CPlayer2D>("Player");
 	// SetPlayerObject(Player2D);
 
+	Resolution RS = CEngine::GetInst()->GetResolution();
+
 	CBoard* Board = m_Scene->CreateGameObject<CBoard>("Board");
 	SetPlayerObject(Board);
-	Board->CreateBoard(10, 10, 80, 80, Vector3(100.f, 100.f, 1.f));
+	Board->CreateBoard(8, 6, 60, 80, 
+		Vector3((float)RS.Width * 0.2f, (float)RS.Height * 0.15f, 1.f));
 
 	return true;
 }

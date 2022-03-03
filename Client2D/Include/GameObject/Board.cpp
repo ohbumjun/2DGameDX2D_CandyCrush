@@ -2887,7 +2887,7 @@ bool CBoard::Init()
 	m_BoardBackGround->SetWorldScale(100.f, 100.f, 1.f);
 	m_BoardBackGround->SetLayerName("Board");
 	m_BoardBackGround->GetMaterial()->SetRenderState("AlphaBlend");
-	m_BoardBackGround->SetOpacity(0.8f);
+	m_BoardBackGround->SetOpacity(0.5f);
 	m_BoardBackGround->SetBaseColor(1.f, 1.f, 1.f, 1.f);
 
 	m_Sprite->AddChild(m_BoardBackGround);
@@ -2968,7 +2968,6 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 	// 높이의 경우 2배로 세팅한다. --> 실제 화면에 보여지는 영역 + 위로 숨은 영역
 	// x,y : 열, 행
 	m_Sprite->SetWorldScale((float)(RS.Width * (WidthRatio / 100.f)), (float)(RS.Height * (HeightRatio / 100.f)) * 2.f, 1.f);
-	m_BoardBackGround->SetWorldScale((float)(RS.Height * (WidthRatio / 100.f)), (float)(RS.Height * (HeightRatio / 100.f)), 1.f);
 
 	// Block, Cell 세팅
 	m_vecBlocks.resize(m_TotCount);
@@ -2979,6 +2978,14 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 
 	m_CellSize.x = CellSize.x;
 	m_CellSize.y = CellSize.y;
+
+	// BackGround Pos, Scale 조정하기
+	Vector3 BoardWorldScale = m_Sprite->GetWorldScale();
+	Vector3 BoardImaeScale = Vector3(BoardWorldScale.x + CellSize.x * 2.f , BoardWorldScale.y * 0.5f + CellSize.y * 2.f, BoardWorldScale.z);
+
+	m_BoardBackGround->SetWorldScale(BoardImaeScale);
+	m_BoardBackGround->SetRelativePos(Vector3(CellSize.x * -1.f, CellSize.y * -1.f, 1.f));
+	m_BoardBackGround->AddWorldPos(Vector3(CellSize.x * -0.5f, CellSize.y * - 0.5f, 0.f));
 
 	// Mouse Offset 세팅하기
 	m_MousePosOffSet = Vector2(0.5f, 0.5f) * m_CellSize;
