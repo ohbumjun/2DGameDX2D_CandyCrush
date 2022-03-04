@@ -141,6 +141,9 @@
     <Filter Include="03. Scene\05. CameraManager">
       <UniqueIdentifier>{f0911dbf-ce2b-448c-a36e-11912a327615}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\02. Shader\02. ShaderClass\04. PosMesh">
+      <UniqueIdentifier>{df50968f-cd35-4f19-84dd-8b0263500968}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -336,6 +339,9 @@
     <ClInclude Include="Scene\CameraManager.h">
       <Filter>03. Scene\05. CameraManager</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Shader\PosMeshShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\04. PosMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -520,6 +526,9 @@
     </ClCompile>
     <ClCompile Include="Scene\CameraManager.cpp">
       <Filter>03. Scene\05. CameraManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\PosMeshShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\04. PosMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
