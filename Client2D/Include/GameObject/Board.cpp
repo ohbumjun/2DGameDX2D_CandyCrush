@@ -2970,7 +2970,6 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 	m_Sprite->SetWorldScale((float)(RS.Width * (WidthRatio / 100.f)), (float)(RS.Height * (HeightRatio / 100.f)) * 2.f, 1.f);
 
 	// Block, Cell 세팅
-	m_vecBlocks.resize(m_TotCount);
 	m_vecCells.resize(m_TotCount);
 
 	Vector3 BoardStartPos = LB;
@@ -3025,6 +3024,47 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 
 	// 한번 랜덤하게 섞기
 	ShuffleRandom();
+
+	// Block 만들기 -------------------------------------------------------------------
+	m_vecBlocks.resize((int)(m_TotCount * 0.5f));
+
+	for (int row = 0; row < m_VisualRowCount; row++)
+	{
+		for (int col = 0; col < m_ColCount; col++)
+		{
+			float CellWorldYPos = BoardStartPos.y + m_CellSize.y * row;
+
+			Vector3 WorldPos = Vector3(BoardStartPos.x + m_CellSize.x * col, CellWorldYPos, 1.f);
+
+			int Index = row * m_ColCount + col;
+
+			CBlock* Block = CSceneManager::GetInst()->GetScene()->CreateGameObject<CBlock>("Block" + std::to_string(Index));
+
+			Vector3 BoardStartPos = GetWorldPos();
+
+			// Owner 세팅 
+			Block->m_Board = this;
+
+			// Scene 세팅 
+			Block->SetScene(m_Scene);
+
+			// x는 열, y는 행
+			Block->SetWorldPos(WorldPos);
+
+			// 크기 세팅 
+			Block->SetWorldScale(Vector3(m_CellSize.x, m_CellSize.y, 1.f));
+
+			// Index 세팅 --> NewPosY도 세팅
+			Block->SetIndexInfo(Index, row, col);
+
+			// Pivot 세팅
+			Block->SetPivot(0.5f, 0.5f, 0.f);
+
+			// vector 목록에 추가 
+			m_vecBlocks[Index] = Block;
+
+		}
+	}
 
 	return true;
 }

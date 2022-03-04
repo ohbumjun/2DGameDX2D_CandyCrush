@@ -1,13 +1,25 @@
 #include "Block.h"
+#include "Component/StaticMeshComponent.h"
 
 CBlock::CBlock()
-{}
+{
+	SetTypeID<CBlock>();
+}
 
 CBlock::CBlock(const CBlock& Block) : CGameObject(Block)
-{}
+{
+	m_StaticComponent = (CStaticMeshComponent*)FindComponent("BlockStatic");
+}
 
 CBlock::~CBlock()
 {}
+
+void CBlock::SetIndexInfo(int Index, int RowIndex, int ColIndex)
+{
+	m_Index       = Index;
+	m_RowIndex = RowIndex;
+	m_ColIndex   = ColIndex;
+}
 
 bool CBlock::Init()
 {
@@ -15,13 +27,19 @@ bool CBlock::Init()
 		return false;
 
 	// Static Mesh Component
-	m_Static = CreateComponent<CStaticMeshComponent>("BlockStatic");
+	m_StaticComponent = CreateComponent<CStaticMeshComponent>("BlockStatic");
 
-	SetRootComponent(m_Static);
+	SetRootComponent(m_StaticComponent);
 
-	m_Static->SetLayerName("Block");
+	m_StaticComponent->SetLayerName("Block");
 
-	m_Static->SetMesh("FrameRect");
+	m_StaticComponent->SetMesh("FrameRect");
+
+	m_StaticComponent->GetMaterial()->SetShader("PosMeshShader");
+
+	m_StaticComponent->SetBaseColor(1.f, 1.f, 1.f, 1.f);
+
+	SetMeshSize(1.f, 1.f, 0.f);
 
 	return true;
 }

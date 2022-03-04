@@ -16,6 +16,11 @@ protected :
     CSharedPtr<CStaticMesh> m_StaticMesh;
     CSharedPtr<CMaterial> m_Material;
 public :
+	CMaterial* GetMaterial () const
+{
+		return m_Material;
+}
+public :
     void SetMesh(const std::string& Name);
     void SetMesh(class CStaticMesh* Mesh);
     void SetMaterial(const std::string& Name);

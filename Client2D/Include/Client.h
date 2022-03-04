@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 enum class Cell_Type_Binary {
 	Blue = 0x1,
 	Red = 0x2,

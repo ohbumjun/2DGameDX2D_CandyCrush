@@ -6,6 +6,7 @@
 
 class CBlock :  public CGameObject
 {
+	friend class CScene;
 	friend class CBoard;
 protected :
 	CBlock();
@@ -13,7 +14,13 @@ protected :
 	~CBlock();
 private :
 	CSharedPtr<CSpriteComponent> m_Sprite;
-	CSharedPtr<CStaticMeshComponent> m_Static;
+	CSharedPtr<CStaticMeshComponent> m_StaticComponent;
+	class CBoard* m_Board;
+	int m_Index;
+	int m_RowIndex;
+	int m_ColIndex;
+public :
+	void SetIndexInfo(int Index, int RowIndex, int ColIndex);
 public :
 	virtual bool Init() override;
 	virtual void Update(float DeltaTime) override;
