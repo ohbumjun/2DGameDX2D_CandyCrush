@@ -13,28 +13,36 @@ protected :
 	CBlock(const CBlock& Block);
 	~CBlock();
 private :
-	CSharedPtr<CSpriteComponent> m_Sprite;
+	CSharedPtr<CSpriteComponent> m_SpriteComponent;
 	CSharedPtr<CStaticMeshComponent> m_StaticComponent;
 	class CBoard* m_Board;
 private :
-	bool m_ClickedBlock;
+	bool m_IsStopBlock;
 	int m_Index;
 	int m_RowIndex;
 	int m_ColIndex;
 public :
-	bool IsClicked() const
-{
-		return m_ClickedBlock;
-}
+	bool IsStopBlock() const
+	{
+		return m_IsStopBlock;
+	}
+	CSpriteComponent* GetSpriteComponent () const
+	{
+		return m_SpriteComponent;
+	}
 public :
+	void SetOpacity (float Opacity)
+	{
+		m_StaticComponent->SetOpacity(Opacity);
+	}
 	void SetBaseColor(float r, float g, float b, float a)
-{
+	{
 		m_StaticComponent->SetBaseColor(r, g, b, a);
-}
-	void SetClickEnable(bool Enable)
-{
-		m_ClickedBlock = Enable;
-}
+	}
+	void SetStopEnable(bool Enable)
+	{
+		m_IsStopBlock = Enable;
+	}
 	void SetIndexInfo(int Index, int RowIndex, int ColIndex);
 public :
 	virtual bool Init() override;

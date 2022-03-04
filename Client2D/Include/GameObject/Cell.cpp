@@ -64,10 +64,10 @@ void CCell::SetCellType(Cell_Type_Binary Type)
 		case Cell_Type_Binary::Yellow:
 			SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Yellow"));
 			break;
-		/*
 		case Cell_Type_Binary::Green:
 			SetAnimationInstance(CResourceManager::GetInst()->FindAnimationInstance("Green"));
 			break;
+		/*
 		*/
 	}
 

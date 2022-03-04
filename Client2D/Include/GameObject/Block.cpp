@@ -1,8 +1,9 @@
 #include "Block.h"
+#include "Board.h"
 #include "Component/StaticMeshComponent.h"
 
 CBlock::CBlock() :
-	m_ClickedBlock(false)
+	m_IsStopBlock(false)
 {
 	SetTypeID<CBlock>();
 }
@@ -42,9 +43,22 @@ bool CBlock::Init()
 
 	m_StaticComponent->SetBaseColor(1.f, 1.f, 1.f, 1.f);
 
-	m_StaticComponent->SetOpacity(0.7f);
+	m_StaticComponent->SetOpacity(0.1f);
 
 	SetMeshSize(1.f, 1.f, 0.f);
+
+	// Sprite Component
+	m_SpriteComponent = CreateComponent<CSpriteComponent>("BlockSprite");
+
+	m_StaticComponent->AddChild(m_SpriteComponent);
+
+	m_SpriteComponent->SetLayerName("Block");
+
+	m_SpriteComponent->SetTexture(0, 0, (int)Buffer_Shader_Type::Pixel, "StopBlock", TEXT("CandyCrush/Block.png"));
+
+	m_SpriteComponent->GetMaterial()->SetRenderState("AlphaBlend");
+
+	m_SpriteComponent->SetPivot(0.5f, 0.5f, 0.f);
 
 	return true;
 }

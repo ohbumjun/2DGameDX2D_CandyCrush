@@ -1267,9 +1267,10 @@ Cell_Type_Binary CBoard::ChangeCellTypeToCellBinaryType(Cell_Type Type)
 
 	case Cell_Type::Yellow:
 		return Cell_Type_Binary::Yellow;
-		/*
+
 	case Cell_Type::Green:
 		return Cell_Type_Binary::Green;
+		/*
 		*/
 	}
 
@@ -3066,6 +3067,11 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 			// Pivot 세팅
 			Block->SetPivot(0.5f, 0.5f, 0.f);
 
+			// Block Sprite 크기 , 위치 세팅
+			Block->GetSpriteComponent()->SetWorldPos(WorldPos);
+
+			Block->GetSpriteComponent()->SetWorldScale(Vector3(m_CellSize.x * 0.9f, m_CellSize.y * 0.9f, 1.f));
+
 			// vector 목록에 추가 
 			m_vecBlocks[Index] = Block;
 
@@ -3073,6 +3079,24 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 	}
 
 	return true;
+}
+
+void CBoard::SetClickBlockInfo(int Index)
+{
+	m_ClickedBlock = m_vecBlocks[Index];
+	m_ClickedBlock->SetOpacity(8.f);
+	m_ClickedBlock->SetBaseColor(0.f, 0.7f, 1.f, 1.f);
+}
+
+void CBoard::ResetClickBlockInfo()
+{
+	if (!m_ClickedBlock)
+		return;
+
+	m_ClickedBlock->SetOpacity(0.f);
+	m_ClickedBlock->SetBaseColor(1.f, 1.f, 1.f, 1.f);
+
+	m_ClickedBlock = nullptr;
 }
 
 void CBoard::ClickCell(float DeltaTime)
@@ -3112,8 +3136,7 @@ void CBoard::ClickCell(float DeltaTime)
 		m_MouseClick = Mouse_Click::First;
 
 		// 클릭한 Board 의 Static Mesh Component 색상을 바꿔준다.
-		m_ClickedBlock = m_vecBlocks[IndexY * m_ColCount + IndexX];
-		m_ClickedBlock->SetBaseColor(1.f, 1.f, 1.f, 1.f);
+		SetClickBlockInfo(IndexY * m_ColCount + IndexX);
 
 	}
 	// 두번째 Cell 선택
@@ -3126,6 +3149,9 @@ void CBoard::ClickCell(float DeltaTime)
 		if ((IndexY * m_ColCount + IndexX) == m_FirstClickCell->GetIndex())
 		{
 			m_MouseClick = Mouse_Click::None;
+
+			ResetClickBlockInfo();
+
 			return;
 		}
 
@@ -3135,8 +3161,14 @@ void CBoard::ClickCell(float DeltaTime)
 		if (std::abs(m_FirstClickCell->GetColIndex() - IndexX) + std::abs(m_FirstClickCell->GetRowIndex() - IndexY) > 1)
 		{
 			m_MouseClick = Mouse_Click::None;
+
+			ResetClickBlockInfo();
+
 			return;
 		}
+
+		// Block 은 원 상태로
+		ResetClickBlockInfo();
 
 		m_SecClickCell = m_vecCells[IndexY * m_ColCount + IndexX];
 

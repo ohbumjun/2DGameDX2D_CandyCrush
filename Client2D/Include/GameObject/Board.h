@@ -64,7 +64,11 @@ private:
 
 	// Cell 의 Pivot 을 고려해서, Mouse 위치에 더해줘야할 OffSet
     Vector2 m_MousePosOffSet;
-
+public :
+    Vector2 GetCellSize () const
+{
+        return m_CellSize;
+}
 public:
     void SetCellsMoving(bool Moving)
     {
@@ -76,6 +80,9 @@ public:
     virtual void PostUpdate(float DeltaTime) override;
 public :
     bool CreateBoard(int CountRow, int CountCol, float WidthRatio, float HeightRatio, const Vector3& LB);
+public :
+    void SetClickBlockInfo(int Index);
+    void ResetClickBlockInfo();
 public: // Click
     void AddClickCellMoveDone();
     void AddClickCellMoveBackDone();
