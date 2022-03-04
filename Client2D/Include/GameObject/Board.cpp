@@ -3049,10 +3049,16 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 			Block->SetScene(m_Scene);
 
 			// x는 열, y는 행
+			Vector3 BlockWorldPos = Vector3(
+				WorldPos.x + m_CellSize.x * 0.1f, 
+				WorldPos.y + m_CellSize.y * 0.1f, 
+				0.f);
 			Block->SetWorldPos(WorldPos);
+			// Block->SetWorldPos(BlockWorldPos);
 
 			// 크기 세팅 
-			Block->SetWorldScale(Vector3(m_CellSize.x, m_CellSize.y, 1.f));
+			// Block->SetWorldScale(Vector3(m_CellSize.x, m_CellSize.y, 1.f));
+			Block->SetWorldScale(Vector3(m_CellSize.x * 0.9f, m_CellSize.y * 0.9f, 1.f));
 
 			// Index 세팅 --> NewPosY도 세팅
 			Block->SetIndexInfo(Index, row, col);
@@ -3104,6 +3110,11 @@ void CBoard::ClickCell(float DeltaTime)
 	{
 		m_FirstClickCell = m_vecCells[IndexY * m_ColCount + IndexX];
 		m_MouseClick = Mouse_Click::First;
+
+		// 클릭한 Board 의 Static Mesh Component 색상을 바꿔준다.
+		m_ClickedBlock = m_vecBlocks[IndexY * m_ColCount + IndexX];
+		m_ClickedBlock->SetBaseColor(1.f, 1.f, 1.f, 1.f);
+
 	}
 	// 두번째 Cell 선택
 	else if (m_MouseClick == Mouse_Click::First)

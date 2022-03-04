@@ -19,6 +19,10 @@ private:
     CSharedPtr<CSpriteComponent> m_BoardBackGround;
     std::vector<CSharedPtr<CCell>> m_vecCells;
     std::vector<CSharedPtr<CBlock>> m_vecBlocks;
+
+    // Click µÈ Block
+    CBlock* m_ClickedBlock;
+
     int m_TotCount;
     int m_RowCount;
     int m_ColCount;

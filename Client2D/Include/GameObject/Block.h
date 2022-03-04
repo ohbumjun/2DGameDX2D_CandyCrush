@@ -16,10 +16,25 @@ private :
 	CSharedPtr<CSpriteComponent> m_Sprite;
 	CSharedPtr<CStaticMeshComponent> m_StaticComponent;
 	class CBoard* m_Board;
+private :
+	bool m_ClickedBlock;
 	int m_Index;
 	int m_RowIndex;
 	int m_ColIndex;
 public :
+	bool IsClicked() const
+{
+		return m_ClickedBlock;
+}
+public :
+	void SetBaseColor(float r, float g, float b, float a)
+{
+		m_StaticComponent->SetBaseColor(r, g, b, a);
+}
+	void SetClickEnable(bool Enable)
+{
+		m_ClickedBlock = Enable;
+}
 	void SetIndexInfo(int Index, int RowIndex, int ColIndex);
 public :
 	virtual bool Init() override;

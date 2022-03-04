@@ -1,7 +1,8 @@
 #include "Block.h"
 #include "Component/StaticMeshComponent.h"
 
-CBlock::CBlock()
+CBlock::CBlock() :
+	m_ClickedBlock(false)
 {
 	SetTypeID<CBlock>();
 }
@@ -37,7 +38,11 @@ bool CBlock::Init()
 
 	m_StaticComponent->GetMaterial()->SetShader("PosMeshShader");
 
+	m_StaticComponent->GetMaterial()->SetRenderState("AlphaBlend");
+
 	m_StaticComponent->SetBaseColor(1.f, 1.f, 1.f, 1.f);
+
+	m_StaticComponent->SetOpacity(0.7f);
 
 	SetMeshSize(1.f, 1.f, 0.f);
 
