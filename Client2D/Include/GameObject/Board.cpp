@@ -2873,6 +2873,174 @@ bool CBoard::CheckBagCenterUpMatch(int RowIdx, int ColIdx, int Index)
 void CBoard::SetBagAfterState()
 {}
 
+void CBoard::CheckAI()
+{}
+
+void CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx, 
+	int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs)
+{
+	// Match 된 Idx 정보들을 담을 배열 --> 이것은 그냥 외부에서 얻어온다.
+	
+	// MatchedIdxs.reserve(m_VisualRowCount);
+
+	int NewPosIndex = NewRowIdx * m_ColCount + NewColIdx;
+
+	int MinCheckLength = 3, MaxCheckLength = m_VisualRowCount;
+
+	int CheckStartRow = -1, CheckEndRow = -1, CurIndex = -1;
+
+	// 새로운 위치에서의 Row Match 여부를 살핀다
+	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
+	{
+		// 특정 길이에서의 Row Match 여부 
+		bool IsPartRowMatch = false;
+
+		for (int StartRowOffset = 0; StartRowOffset <= CheckMatchNum - 1; StartRowOffset++)
+		{
+			bool IsRowMatch = true;
+
+			// 현재 ClickCell 이 포함된 Row 범위에 대해서만 조사할 것이다.
+			// 아래 범위에서, 위로 올라가면서 검사 시작 Row 를 설정해줄 것이다.
+			CheckStartRow = (NewRowIdx + StartRowOffset) - (CheckMatchNum - 1);
+
+			// 아래로 범위가 벗어난 경우
+			if (CheckStartRow < 0)
+			{
+				IsRowMatch = false;
+				continue;
+			}
+
+			// 위로 범위가 벗어난 경우
+			CheckEndRow = CheckStartRow + (CheckMatchNum - 1);
+
+			if (CheckEndRow >= m_VisualRowCount)
+			{
+				IsRowMatch = false;
+				// 어차피 여기예 계속 걸릴 것이므로 ( 왜냐하면, CheckEndRow는 계속 증가 ) --> continue 가 아니라 break 세팅
+				break;
+			}
+
+			Cell_Type_Binary InitCellType = m_vecCells[CheckStartRow * m_ColCount + NewColIdx]->GetCellType();
+
+			for (int StRow = CheckStartRow + 1; StRow <= CheckEndRow; StRow++)
+			{
+				CurIndex = StRow * m_ColCount + NewColIdx;
+
+				Cell_Type_Binary CurCellType = m_vecCells[CurIndex]->GetCellType();
+
+				bool Result = (int)(m_vecCells[CurIndex]->GetCellType()) & (int)(InitCellType);
+
+				if (((int)m_vecCells[CurIndex]->GetCellType() & (int)InitCellType) == false)
+				{
+					IsRowMatch = false;
+					break;
+				}
+
+				// 최초 Cell이 MirrorBall 일 때는 중간 중간 Cell Type을 Update 해줘야 한다.
+				if (InitCellType == Cell_Type_Binary::All)
+				{
+					InitCellType = m_vecCells[CurIndex]->GetCellType();
+				}
+			}
+
+			// 만약 해당 Row(세로)가 Match 라면, 해당 Idx 들을 MatchIdxs Vector에 넣어주고 return;
+			// 그리고 함수를 종료한다.
+			if (IsRowMatch)
+			{
+				for (int row = CheckStartRow; row <= CheckEndRow; row++)
+				{
+					MatchedIdxs.push_back(row * m_ColCount + NewColIdx);
+				}
+				return;
+			}
+		}
+	}
+}
+
+void CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx, 
+	int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs)
+{
+	// 최소 3개까지 조사, 최대 조사 개수는 Row // Col 여부에 따라 달라지게 될 것이다.
+	int MinCheckLength = 3, MaxCheckLength = m_ColCount;
+
+	int CheckStartCol = -1, CheckEndCol = -1, CurIndex = -1;;
+
+	// 최대 --> 최소 길이 순으로 조사하기
+	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
+	{
+		bool IsPartMatch = false;
+
+		for (int StartColOffset = 0; StartColOffset <= CheckMatchNum - 1; StartColOffset++)
+		{
+			bool IsMatch = true;
+
+			// 현재 ClickCell 이 포함된 Row 범위에 대해서만 조사할 것이다.
+			CheckStartCol = (NewColIdx + StartColOffset) - (CheckMatchNum - 1);
+
+			// 아래로 범위가 벗어난 경우
+			if (CheckStartCol < 0)
+			{
+				IsMatch = false;
+				continue;
+			}
+
+			// 오른쪽으로 범위가 벗어난 경우
+			CheckEndCol = CheckStartCol + (CheckMatchNum - 1);
+
+			if (CheckEndCol >= m_ColCount)
+			{
+				IsMatch = false;
+				// continue;
+				// 여기 걸리면 이후에도 여기 계속 걸린다.
+				// 어차피 CheckEndCol 는 계속 증가하기 때문이다.
+				break;
+			}
+
+			Cell_Type_Binary InitCellType = m_vecCells[NewRowIdx * m_ColCount + CheckStartCol]->GetCellType();
+
+			// 해당 길이로 왼쪽 --> 오른쪽 순서로 조사한다.
+			for (int StCol = CheckStartCol + 1; StCol <= CheckEndCol; StCol++)
+			{
+				CurIndex = NewRowIdx * m_ColCount + StCol;
+
+				Cell_Type_Binary CurCellType = m_vecCells[CurIndex]->GetCellType();
+
+				bool Result = (int)(m_vecCells[CurIndex]->GetCellType()) & (int)(InitCellType);
+
+				if (((int)m_vecCells[CurIndex]->GetCellType() & (int)InitCellType) == false)
+				{
+					IsMatch = false;
+					break;
+				}
+
+				// 최초 Cell이 MirrorBall 일 때는 중간 중간 Cell Type을 Update 해줘야 한다.
+				if (InitCellType == Cell_Type_Binary::All)
+				{
+					InitCellType = m_vecCells[CurIndex]->GetCellType();
+				}
+			}
+
+			// 만약 해당 Row (세로)가 Match 라면, 해당 Cell 들을 Match 상태로 바꿔준다.
+			if (IsMatch)
+			{
+				for (int col = CheckStartCol; col <= CheckEndCol; col++)
+				{
+					MatchedIdxs.push_back(NewRowIdx * m_ColCount + col);
+				}
+				return;
+			}
+		}
+	}
+}
+
+void CBoard::CheckAIBagMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
+	std::vector<int>& MatchedIdxs)
+{
+	// 모든 방향에 대한 조사를 한 이후 ,
+	// 중복 까지 제거해서
+	// 그 다음에 Return 할 것이다.
+}
+
 bool CBoard::Init()
 {
 	if (!CGameObject::Init())
@@ -3220,7 +3388,7 @@ void CBoard::ChangeToMirrorBallCell(float DeltaTime)
 }
 
 
-void CBoard::ShuffleRandom()
+void CBoard::ShuffleRandom(std::vector<CSharedPtr<CCell>>& VecCells)
 {
 	for (int i = 0; i < m_TotCount; i++)
 	{

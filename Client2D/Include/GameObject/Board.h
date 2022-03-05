@@ -147,12 +147,20 @@ private: // BagMatch
     bool CheckBagCenterDownMatch(int RowIndex, int ColIndex, int Index);
     bool CheckBagCenterUpMatch(int RowIndex, int ColIndex, int Index);
     void SetBagAfterState();
+private : // AI
+    void CheckAI();
+    void CheckAIRowMatch(int OriginRowIdx, int OriginColIdx, 
+        int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs);
+    void CheckAIColMatch(int OriginRowIdx, int OriginColIdx, 
+        int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs);
+    void CheckAIBagMatch(int OriginRowIdx, int OriginColIdx,
+        int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs);
 private : // Create New Cell
     void CreateNewCellsAboveShownArea();
     CCell* CreateSingleNewCell(const std::string& Name, int RowIndex, int ColIndex, const Vector3& WorldPos, float NewYPos,
         Cell_Type_Binary Type, float Opacity, bool ShowEnable, Cell_State State);
 private:
-    void ShuffleRandom();
+    void ShuffleRandom(std::vector<CSharedPtr<CCell>>& vecCells);
     void FindMatchCellsAfterTwoClick(); // 2개 Cell 클릭 이후 실행하기
     void SetFindMatchCellsDone();
     void DestroyCells();
