@@ -152,7 +152,7 @@ private : // AI
     void CheckAIRowMatch(int OriginRowIdx, int OriginColIdx, 
         int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs);
     void CheckAIColMatch(int OriginRowIdx, int OriginColIdx, 
-        int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs);
+        int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs); //
     void CheckAIBagMatch(int OriginRowIdx, int OriginColIdx,
         int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs);
 private : // Create New Cell
