@@ -149,7 +149,7 @@ private: // BagMatch
     void SetBagAfterState();
 private : // AI
     void CheckAI();
-    int CalculateAICombScore(CCell* FirstCell, CCell* SecondCell);
+    int CalculateAICombScore(CCell* FirstCell, CCell* SecondCell); //
     int CalculateAISpecialCellScore(CCell* FirstCell);
     // Match 여부와 Score 를 리턴한다.
     std::pair<int, bool>CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
