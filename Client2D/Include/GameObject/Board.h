@@ -138,24 +138,24 @@ private : // MirrorBall Match
     void SetMirrorBallDestroyInfo(int Index, Cell_Type_Binary DestroyType);
 private: // BagMatch
     bool CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked);
-    bool CheckBagRightDownMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
-    bool CheckBagRightUpMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
-    bool CheckBagLeftDownMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
-    bool CheckBagLeftUpMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
-    bool CheckBagCenterRightMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
-    bool CheckBagCenterLeftMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
-    bool CheckBagCenterDownMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
-    bool CheckBagCenterUpMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
+    std::pair<int, bool> CheckBagRightDownMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
+    std::pair<int, bool> CheckBagRightUpMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
+    std::pair<int, bool> CheckBagLeftDownMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
+    std::pair<int, bool> CheckBagLeftUpMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
+    std::pair<int, bool> CheckBagCenterRightMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
+    std::pair<int, bool> CheckBagCenterLeftMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
+    std::pair<int, bool> CheckBagCenterDownMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
+    std::pair<int, bool> CheckBagCenterUpMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
     void SetBagAfterState();
 private : // AI
     void CheckAI();
-    int CalculateAICombScore(CCell* FirstCell, CCell* SecondCell); //
-    int CalculateAISpecialCellScore(CCell* FirstCell);
+    int CalculateAICombScore(CCell* FirstCell, CCell* SecondCell); 
+    int CalculateAISpecialCellScore(CCell* FirstCell); 
     // Match 여부와 Score 를 리턴한다.
     std::pair<int, bool>CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
         int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs);
     std::pair<int, bool> CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
-        int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs); //
+        int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs); 
     std::pair<int, bool> CheckAIBagMatch(int OriginRowIdx, int OriginColIdx,
         int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs);
 private : // Create New Cell
