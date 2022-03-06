@@ -2343,14 +2343,19 @@ void CBoard::SetMirrorBallDestroyInfo(int Index, Cell_Type_Binary DestroyType)
 
 bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked)
 {
-	bool BoolRightDown = CheckBagRightDownMatch(RowIndex, ColIndex, Index);
-	bool BoolRightUp = CheckBagRightUpMatch(RowIndex, ColIndex, Index);
-	bool BoolLeftDown = CheckBagLeftDownMatch(RowIndex, ColIndex, Index);
-	bool BoolLeftUp = CheckBagLeftUpMatch(RowIndex, ColIndex, Index);
-	bool BoolCenterRight = CheckBagCenterRightMatch(RowIndex, ColIndex, Index);
-	bool BoolCenterLeft = CheckBagCenterLeftMatch(RowIndex, ColIndex, Index);
-	bool BoolCenterDown = CheckBagCenterDownMatch(RowIndex, ColIndex, Index);
-	bool BoolCenterUp = CheckBagCenterUpMatch(RowIndex, ColIndex, Index);
+	// Match가 이루어진 Idx 정보들을 담는 배열
+	std::vector<int> MatchIdxList;
+	MatchIdxList.reserve(10);
+
+	// bool BoolRightDown = CheckBagRightDownMatch(RowIndex, ColIndex, Index);
+	bool BoolRightDown = CheckBagRightDownMatch(RowIndex, ColIndex, Index, MatchIdxList);
+	bool BoolRightUp = CheckBagRightUpMatch(RowIndex, ColIndex, Index, MatchIdxList);
+	bool BoolLeftDown = CheckBagLeftDownMatch(RowIndex, ColIndex, Index, MatchIdxList);
+	bool BoolLeftUp = CheckBagLeftUpMatch(RowIndex, ColIndex, Index, MatchIdxList);
+	bool BoolCenterRight = CheckBagCenterRightMatch(RowIndex, ColIndex, Index, MatchIdxList);
+	bool BoolCenterLeft = CheckBagCenterLeftMatch(RowIndex, ColIndex, Index, MatchIdxList);
+	bool BoolCenterDown = CheckBagCenterDownMatch(RowIndex, ColIndex, Index, MatchIdxList);
+	bool BoolCenterUp = CheckBagCenterUpMatch(RowIndex, ColIndex, Index, MatchIdxList);
 
 	bool Result = BoolRightDown || BoolRightUp || BoolLeftDown || BoolLeftUp ||
 		BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
@@ -2370,8 +2375,13 @@ bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked
 		BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
 }
 
-bool CBoard::CheckBagRightDownMatch(int RowIdx, int ColIdx, int Index)
+bool CBoard::CheckBagRightDownMatch(int RowIdx, int ColIdx, int Index, std::vector<int>& MatchIdxList)
 {
+	// Match가 이루어진 Idx 정보들을 담는 배열
+	// std::vector<int> MatchIdxList;
+	// MatchIdxList.reserve(6);
+	MatchIdxList.clear();
+
 	// 오른쪽 3개를 검사해야 하는데 범위를 벗어났다면 X
 	if (ColIdx + 2 >= m_ColCount)
 		return false;
@@ -2384,9 +2394,6 @@ bool CBoard::CheckBagRightDownMatch(int RowIdx, int ColIdx, int Index)
 
 	bool Match = true;
 
-	// Match가 이루어진 Idx 정보들을 담는 배열
-	std::vector<int> MatchIdxList;
-	MatchIdxList.reserve(6);
 
 	// 현재 Col 에서부터 오른쪽 2칸을 검사한다.
 	for (int col = ColIdx + 1; col <= ColIdx + 2; col++)
@@ -2412,7 +2419,7 @@ bool CBoard::CheckBagRightDownMatch(int RowIdx, int ColIdx, int Index)
 		MatchIdxList.push_back(row * m_ColCount + ColIdx);
 	}
 
-	// 만약 모드 맞았다면
+	// 만약 모두 맞았다면
 	if (Match)
 	{
 		size_t Size = MatchIdxList.size();
@@ -2427,8 +2434,9 @@ bool CBoard::CheckBagRightDownMatch(int RowIdx, int ColIdx, int Index)
 	return true;
 }
 
-bool CBoard::CheckBagRightUpMatch(int RowIdx, int ColIdx, int Index)
+bool CBoard::CheckBagRightUpMatch(int RowIdx, int ColIdx, int Index, std::vector<int>& MatchIdxList)
 {
+	MatchIdxList.clear();
 
 	// 오른쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
 	if (ColIdx + 2 >= m_ColCount)
@@ -2443,8 +2451,8 @@ bool CBoard::CheckBagRightUpMatch(int RowIdx, int ColIdx, int Index)
 	bool Match = true;
 
 	// Match가 이루어진 Idx 정보들을 담는 배열
-	std::vector<int> MatchIdxList;
-	MatchIdxList.reserve(6);
+	// std::vector<int> MatchIdxList;
+	// MatchIdxList.reserve(6);
 
 	// 현재 Row 
 	// && 현재 Col 에서부터 오른쪽 2칸을 검사한다.
@@ -2486,8 +2494,10 @@ bool CBoard::CheckBagRightUpMatch(int RowIdx, int ColIdx, int Index)
 	return true;
 }
 
-bool CBoard::CheckBagLeftDownMatch(int RowIdx, int ColIdx, int Index)
+bool CBoard::CheckBagLeftDownMatch(int RowIdx, int ColIdx, int Index, std::vector<int>& MatchIdxList)
 {
+	MatchIdxList.clear();
+
 	// 왼쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
 	if (ColIdx - 2 < 0)
 		return false;
@@ -2501,8 +2511,8 @@ bool CBoard::CheckBagLeftDownMatch(int RowIdx, int ColIdx, int Index)
 	bool Match = true;
 
 	// Match가 이루어진 Idx 정보들을 담는 배열
-	std::vector<int> MatchIdxList;
-	MatchIdxList.reserve(6);
+	// std::vector<int> MatchIdxList;
+	// MatchIdxList.reserve(6);
 
 	// 현재 Row 
 	// && 현재 Col 에서부터 왼쪽 2칸을 검사한다.
@@ -2544,8 +2554,10 @@ bool CBoard::CheckBagLeftDownMatch(int RowIdx, int ColIdx, int Index)
 	return true;
 }
 
-bool CBoard::CheckBagLeftUpMatch(int RowIdx, int ColIdx, int Index)
+bool CBoard::CheckBagLeftUpMatch(int RowIdx, int ColIdx, int Index, std::vector<int>& MatchIdxList)
 {
+	MatchIdxList.clear();
+
 	// 왼쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
 	if (ColIdx - 2 < 0)
 		return false;
@@ -2559,8 +2571,8 @@ bool CBoard::CheckBagLeftUpMatch(int RowIdx, int ColIdx, int Index)
 	bool Match = true;
 
 	// Match가 이루어진 Idx 정보들을 담는 배열
-	std::vector<int> MatchIdxList;
-	MatchIdxList.reserve(6);
+	// std::vector<int> MatchIdxList;
+	// MatchIdxList.reserve(6);
 
 	// 현재 Row 
 	// && 현재 Col 에서부터 왼쪽 2칸을 검사한다.
@@ -2602,8 +2614,10 @@ bool CBoard::CheckBagLeftUpMatch(int RowIdx, int ColIdx, int Index)
 	return true;
 }
 
-bool CBoard::CheckBagCenterRightMatch(int RowIdx, int ColIdx, int Index)
+bool CBoard::CheckBagCenterRightMatch(int RowIdx, int ColIdx, int Index, std::vector<int>& MatchIdxList)
 {
+	MatchIdxList.clear();
+
 	// 오른쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
 	if (ColIdx + 2 >= m_ColCount)
 		return false;
@@ -2621,8 +2635,8 @@ bool CBoard::CheckBagCenterRightMatch(int RowIdx, int ColIdx, int Index)
 	bool Match = true;
 
 	// Match가 이루어진 Idx 정보들을 담는 배열
-	std::vector<int> MatchIdxList;
-	MatchIdxList.reserve(6);
+	// std::vector<int> MatchIdxList;
+	// MatchIdxList.reserve(6);
 
 	// 현재 Row 
 	// && 현재 Col 에서부터 오른쪽 2칸을 검사한다.
@@ -2669,8 +2683,10 @@ bool CBoard::CheckBagCenterRightMatch(int RowIdx, int ColIdx, int Index)
 	return true;
 }
 
-bool CBoard::CheckBagCenterLeftMatch(int RowIdx, int ColIdx, int Index)
+bool CBoard::CheckBagCenterLeftMatch(int RowIdx, int ColIdx, int Index, std::vector<int>& MatchIdxList)
 {
+	MatchIdxList.clear();
+
 	// 왼쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
 	if (ColIdx - 2 < 0)
 		return false;
@@ -2688,8 +2704,8 @@ bool CBoard::CheckBagCenterLeftMatch(int RowIdx, int ColIdx, int Index)
 	bool Match = true;
 
 	// Match가 이루어진 Idx 정보들을 담는 배열
-	std::vector<int> MatchIdxList;
-	MatchIdxList.reserve(6);
+	// std::vector<int> MatchIdxList;
+	// MatchIdxList.reserve(6);
 
 	// 현재 Row 
 	// && 현재 Col 에서부터 왼쪽 2칸을 검사한다.
@@ -2736,8 +2752,10 @@ bool CBoard::CheckBagCenterLeftMatch(int RowIdx, int ColIdx, int Index)
 	return true;
 }
 
-bool CBoard::CheckBagCenterDownMatch(int RowIdx, int ColIdx, int Index)
+bool CBoard::CheckBagCenterDownMatch(int RowIdx, int ColIdx, int Index, std::vector<int>& MatchIdxList)
 {
+	MatchIdxList.clear();
+
 	// 아래 2개를 검사해야 하는데 범위를 벗어났다면 X
 	if (RowIdx - 2 < 0)
 		return false;
@@ -2755,8 +2773,8 @@ bool CBoard::CheckBagCenterDownMatch(int RowIdx, int ColIdx, int Index)
 	bool Match = true;
 
 	// Match가 이루어진 Idx 정보들을 담는 배열
-	std::vector<int> MatchIdxList;
-	MatchIdxList.reserve(6);
+	// std::vector<int> MatchIdxList;
+	// MatchIdxList.reserve(6);
 
 	// 현재 Row 
 	// && 현재 Row 에서부터 아래 2칸을 검사한다.
@@ -2803,8 +2821,10 @@ bool CBoard::CheckBagCenterDownMatch(int RowIdx, int ColIdx, int Index)
 	return true;
 }
 
-bool CBoard::CheckBagCenterUpMatch(int RowIdx, int ColIdx, int Index)
+bool CBoard::CheckBagCenterUpMatch(int RowIdx, int ColIdx, int Index, std::vector<int>& MatchIdxList)
 {
+	MatchIdxList.clear();
+
 	// 위 2개를 검사해야 하는데 범위를 벗어났다면 X
 	if (RowIdx + 2 >= m_VisualRowCount)
 		return false;
@@ -2822,8 +2842,8 @@ bool CBoard::CheckBagCenterUpMatch(int RowIdx, int ColIdx, int Index)
 	bool Match = true;
 
 	// Match가 이루어진 Idx 정보들을 담는 배열
-	std::vector<int> MatchIdxList;
-	MatchIdxList.reserve(6);
+	// std::vector<int> MatchIdxList;
+	// MatchIdxList.reserve(6);
 
 	// 현재 Row 
 	// && 현재 Row 에서부터 위 2칸을 검사한다.
@@ -2876,18 +2896,89 @@ void CBoard::SetBagAfterState()
 void CBoard::CheckAI()
 {}
 
-void CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx, 
-	int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs)
+int CBoard::CalculateAICombScore(CCell* FirstCell, CCell* SecondCell)
+{
+	/*
+	줄무늬 + 줄무늬 => 20
+	봉지 + 줄무늬 ==> 30
+	봉지 + 봉지 ==> 40
+	봉지 + MirrorBall ==> 50
+	MirrorBall + 줄무늬 ==> 60
+	MirrorBall + MirrorBall ==> 70
+	 */
+
+	// 줄무늬 + 줄무늬 
+	if ((FirstCell->GetCellState() == Cell_State::RowLine || FirstCell->GetCellState() == Cell_State::ColLine) ||
+		(SecondCell->GetCellState() == Cell_State::RowLine || SecondCell->GetCellState() == Cell_State::ColLine))
+		return 20;
+
+	// 봉지 + 줄무늬 
+	if ((FirstCell->GetCellState() == Cell_State::RowLine || FirstCell->GetCellState() == Cell_State::ColLine) ||
+		SecondCell->GetCellState() == Cell_State::Bag)
+		return 30;
+	if ((SecondCell->GetCellState() == Cell_State::RowLine || SecondCell->GetCellState() == Cell_State::ColLine) ||
+		FirstCell->GetCellState() == Cell_State::Bag)
+		return 30;
+
+	// 봉지 + 봉지 
+	if (FirstCell->GetCellState() == Cell_State::Bag ||
+		SecondCell->GetCellState() == Cell_State::Bag)
+		return 40;
+
+	// 봉지 + MirrorBall
+	if (FirstCell->GetCellState() == Cell_State::Bag ||
+		SecondCell->GetCellState() == Cell_State::MirrorBall)
+		return 50;
+	if (SecondCell->GetCellState() == Cell_State::Bag ||
+		FirstCell->GetCellState() == Cell_State::MirrorBall)
+		return 50;
+
+	// MirrorBall + 줄무늬 
+	if ((FirstCell->GetCellState() == Cell_State::RowLine || FirstCell->GetCellState() == Cell_State::ColLine) ||
+		SecondCell->GetCellState() == Cell_State::MirrorBall)
+		return 30;
+	if ((SecondCell->GetCellState() == Cell_State::RowLine || SecondCell->GetCellState() == Cell_State::ColLine) ||
+		FirstCell->GetCellState() == Cell_State::MirrorBall)
+		return 60;
+
+	// MirrorBall + MirrorBall 
+	if (FirstCell->GetCellState() == Cell_State::MirrorBall ||
+		SecondCell->GetCellState() == Cell_State::MirrorBall)
+		return 70;
+}
+
+int CBoard::CalculateAISpecialCellScore(CCell* Cell)
+{
+	switch (Cell->GetCellState())
+	{
+	case Cell_State::ColLine :
+	case Cell_State::RowLine :
+		return 5;
+
+	case Cell_State::Bag :
+		return 6;
+
+	case Cell_State::MirrorBall :
+		return 7;
+	}
+
+	return  0;
+}
+
+std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
+							 int NewRowIdx, int    NewColIdx, std::vector<int>& MatchedIdxs)
 {
 	// Match 된 Idx 정보들을 담을 배열 --> 이것은 그냥 외부에서 얻어온다.
 	
 	// MatchedIdxs.reserve(m_VisualRowCount);
 
-	int NewPosIndex = NewRowIdx * m_ColCount + NewColIdx;
+	// int NewPosIndex = NewRowIdx * m_ColCount + NewColIdx;
 
 	int MinCheckLength = 3, MaxCheckLength = m_VisualRowCount;
 
-	int CheckStartRow = -1, CheckEndRow = -1, CurIndex = -1;
+	int CheckStartRow = -1, CheckEndRow = -1;
+
+	int CurIndex = -1, NxtIndex = -1;
 
 	// 새로운 위치에서의 Row Match 여부를 살핀다
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
@@ -2920,9 +3011,15 @@ void CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 				break;
 			}
 
+			// todo : 1순위 = 조합
+			// todo : 2순위 = Single Special Cell
+			// todo : 3순위 = 그냥 Match Only
+
+			int PartRowMatchScore = 0;
+
 			Cell_Type_Binary InitCellType = m_vecCells[CheckStartRow * m_ColCount + NewColIdx]->GetCellType();
 
-			for (int StRow = CheckStartRow + 1; StRow <= CheckEndRow; StRow++)
+			for (int StRow = CheckStartRow; StRow <= CheckEndRow; StRow++)
 			{
 				CurIndex = StRow * m_ColCount + NewColIdx;
 
@@ -2941,6 +3038,39 @@ void CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 				{
 					InitCellType = m_vecCells[CurIndex]->GetCellType();
 				}
+
+				bool IsTwoCombination = false;
+
+				int TempCombScore = 0;
+
+				// 1) 다음 녀석과 조합 여부
+				if (StRow <= CheckEndRow - 1)
+				{
+					NxtIndex = (StRow + 1) * m_ColCount + NewColIdx;
+
+					if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal && 
+						(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
+					{
+						int CurrentCombScore = CalculateAICombScore(m_vecCells[CurIndex], m_vecCells[NxtIndex]);
+
+						if (CurrentCombScore > TempCombScore)
+						{
+							PartRowMatchScore -= TempCombScore;
+							PartRowMatchScore += CurrentCombScore;
+							TempCombScore = CurrentCombScore;
+						}
+
+						// PartRowMatchScore += CalculateAICombScore(m_vecCells[CurIndex], m_vecCells[NxtIndex]);
+
+						IsTwoCombination = true;
+					}
+				}
+
+				// 2) Special 여부
+				if (IsTwoCombination == false)
+				{
+					PartRowMatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
+				}
 			}
 
 			// 만약 해당 Row(세로)가 Match 라면, 해당 Idx 들을 MatchIdxs Vector에 넣어주고 return;
@@ -2951,19 +3081,27 @@ void CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 				{
 					MatchedIdxs.push_back(row * m_ColCount + NewColIdx);
 				}
-				return;
+
+				PartRowMatchScore += CheckMatchNum;
+
+				// 점수도 같이 return 해줘야 하는가 ?
+				return std::make_pair(PartRowMatchScore, true);
 			}
 		}
 	}
+
+	return std::make_pair(0, false);
 }
 
-void CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx, 
+std::pair<int, bool> CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 	int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs)
 {
 	// 최소 3개까지 조사, 최대 조사 개수는 Row // Col 여부에 따라 달라지게 될 것이다.
 	int MinCheckLength = 3, MaxCheckLength = m_ColCount;
 
-	int CheckStartCol = -1, CheckEndCol = -1, CurIndex = -1;;
+	int CheckStartCol = -1, CheckEndCol = -1;
+
+	int CurIndex = -1, NxtIndex = -1;
 
 	// 최대 --> 최소 길이 순으로 조사하기
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
@@ -2972,7 +3110,7 @@ void CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 
 		for (int StartColOffset = 0; StartColOffset <= CheckMatchNum - 1; StartColOffset++)
 		{
-			bool IsMatch = true;
+			bool IsColMatch = true;
 
 			// 현재 ClickCell 이 포함된 Row 범위에 대해서만 조사할 것이다.
 			CheckStartCol = (NewColIdx + StartColOffset) - (CheckMatchNum - 1);
@@ -2980,7 +3118,7 @@ void CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 			// 아래로 범위가 벗어난 경우
 			if (CheckStartCol < 0)
 			{
-				IsMatch = false;
+				IsColMatch = false;
 				continue;
 			}
 
@@ -2989,12 +3127,14 @@ void CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 
 			if (CheckEndCol >= m_ColCount)
 			{
-				IsMatch = false;
+				IsColMatch = false;
 				// continue;
 				// 여기 걸리면 이후에도 여기 계속 걸린다.
 				// 어차피 CheckEndCol 는 계속 증가하기 때문이다.
 				break;
 			}
+
+			int PartColMatchScore = 0;
 
 			Cell_Type_Binary InitCellType = m_vecCells[NewRowIdx * m_ColCount + CheckStartCol]->GetCellType();
 
@@ -3009,7 +3149,7 @@ void CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 
 				if (((int)m_vecCells[CurIndex]->GetCellType() & (int)InitCellType) == false)
 				{
-					IsMatch = false;
+					IsColMatch = false;
 					break;
 				}
 
@@ -3018,27 +3158,144 @@ void CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 				{
 					InitCellType = m_vecCells[CurIndex]->GetCellType();
 				}
+
+				bool IsTwoCombination = false;
+
+				int TempCombScore = 0;
+
+				// 1) 다음 녀석과의 조합 여부
+				if (StCol <= CheckEndCol - 1)
+				{
+					NxtIndex = NewRowIdx * m_ColCount + (StCol + 1);
+
+					if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal &&
+						(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
+					{
+						int CurrentCombScore = CalculateAICombScore(m_vecCells[CurIndex], m_vecCells[NxtIndex]);
+
+						if (CurrentCombScore > TempCombScore)
+						{
+							PartColMatchScore -= TempCombScore;
+							PartColMatchScore += CurrentCombScore;
+							TempCombScore = CurrentCombScore;
+						}
+
+						IsTwoCombination = true;
+					}
+				}
+
+				// 조합이 존재하지 않았다면
+				// 각 Cell의 Special 여부를 조사한다.
+				if (IsTwoCombination == false)
+				{
+					PartColMatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
+				}
 			}
 
 			// 만약 해당 Row (세로)가 Match 라면, 해당 Cell 들을 Match 상태로 바꿔준다.
-			if (IsMatch)
+			if (IsColMatch)
 			{
 				for (int col = CheckStartCol; col <= CheckEndCol; col++)
 				{
 					MatchedIdxs.push_back(NewRowIdx * m_ColCount + col);
 				}
-				return;
+
+				PartColMatchScore += CheckMatchNum;
+
+				return std::make_pair(PartColMatchScore, true);
 			}
 		}
 	}
+
+	return std::make_pair(0, false);
 }
 
-void CBoard::CheckAIBagMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
+std::pair<int, bool> CBoard::CheckAIBagMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
 	std::vector<int>& MatchedIdxs)
 {
 	// 모든 방향에 대한 조사를 한 이후 ,
 	// 중복 까지 제거해서
 	// 그 다음에 Return 할 것이다.
+
+	std::vector<int> TempMatchIdxList;
+	TempMatchIdxList.reserve(m_ColCount);
+
+	int Index = NewRowIdx * m_ColCount + NewColIdx;
+
+	bool BoolRightDown = CheckBagRightDownMatch(NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+
+	if (BoolRightDown)
+	{
+		for (const auto& elem : TempMatchIdxList)
+			MatchedIdxs.push_back(elem);
+	}
+
+	bool BoolRightUp = CheckBagRightUpMatch(NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+
+	if (BoolRightUp)
+	{
+		for (const auto& elem : TempMatchIdxList)
+			MatchedIdxs.push_back(elem);
+	}
+
+	bool BoolLeftDown = CheckBagLeftDownMatch(NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+
+	if (BoolLeftDown)
+	{
+		for (const auto& elem : TempMatchIdxList)
+			MatchedIdxs.push_back(elem);
+	}
+
+	bool BoolLeftUp = CheckBagLeftUpMatch(NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+
+	if (BoolLeftUp)
+	{
+		for (const auto& elem : TempMatchIdxList)
+			MatchedIdxs.push_back(elem);
+	}
+
+	bool BoolCenterRight = CheckBagCenterRightMatch(NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+
+	if (BoolCenterRight)
+	{
+		for (const auto& elem : TempMatchIdxList)
+			MatchedIdxs.push_back(elem);
+	}
+
+	bool BoolCenterLeft = CheckBagCenterLeftMatch(NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+
+	if (BoolCenterLeft)
+	{
+		for (const auto& elem : TempMatchIdxList)
+			MatchedIdxs.push_back(elem);
+	}
+
+	bool BoolCenterDown = CheckBagCenterDownMatch(NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+
+	if (BoolCenterDown)
+	{
+		for (const auto& elem : TempMatchIdxList)
+			MatchedIdxs.push_back(elem);
+	}
+
+	bool BoolCenterUp = CheckBagCenterUpMatch(NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+
+	if (BoolCenterUp)
+	{
+		for (const auto& elem : TempMatchIdxList)
+			MatchedIdxs.push_back(elem);
+	}
+
+	bool Result = BoolRightDown || BoolRightUp || BoolLeftDown || BoolLeftUp ||
+		BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
+
+	// todo :Match 여부와 별개로, 여기서는 조합을 고려한다.
+	// 주변 4방향으로 인접한 녀석들이 있는지를 조사할 것이다.
+
+	// return BoolRightDown || BoolRightUp || BoolLeftDown || BoolLeftUp ||
+	//	BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
+
+	return std::make_pair(0, false);
 }
 
 bool CBoard::Init()
@@ -3192,7 +3449,7 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 	}
 
 	// 한번 랜덤하게 섞기
-	ShuffleRandom();
+	ShuffleRandom(m_vecCells);
 
 	// Block 만들기 -------------------------------------------------------------------
 	m_vecBlocks.resize((int)(m_TotCount * 0.5f));

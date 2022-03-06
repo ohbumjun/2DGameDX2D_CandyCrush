@@ -90,3 +90,5 @@ enum class Comb_Priority {
 	// MirrorBall + MirrorBall
 	MirrorBallAndMirrorBall
 };
+
+// 인공지능 점수 계산을 위한 점수대 마련 ?
