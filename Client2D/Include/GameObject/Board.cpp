@@ -3949,7 +3949,8 @@ bool CBoard::CheckAIAndPossibleMatch()
 		for (size_t i = 0; i < Size; i++)
 		{
 			// m_vecCells[vecFinalMatchedIdxs[i]]->SetCurrentAnimation("Notice");
-			m_vecCells[vecFinalMatchedIdxs[i]]->SetOpacity(0.5f);
+			// m_vecCells[vecFinalMatchedIdxs[i]]->SetOpacity(0.5f);
+			m_vecCells[vecFinalMatchedIdxs[i]]->SetPossibleNoticeMatch();
 		}
 	}
 	else
@@ -3959,7 +3960,8 @@ bool CBoard::CheckAIAndPossibleMatch()
 		for (size_t i = 0; i < Size; i++)
 		{
 			// m_vecCells[vecCombMatchIdx[i]]->SetCurrentAnimation("Notice");
-			m_vecCells[vecCombMatchIdx[i]]->SetOpacity(0.5f);
+			// m_vecCells[vecCombMatchIdx[i]]->SetOpacity(0.5f);
+			m_vecCells[vecCombMatchIdx[i]]->SetPossibleNoticeMatch();
 		}
 	}
 
@@ -4476,6 +4478,20 @@ NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 	return std::make_pair(0, false);
 }
 
+void CBoard::ResetAINoticeState()
+{
+	for (int row = 0; row < m_VisualRowCount; row++)
+	{
+		for (int col = 0; col < m_ColCount; col++)
+		{
+			if (m_vecCells[row * m_ColCount + col]->IsPossibleMatch())
+			{
+				m_vecCells[row * m_ColCount + col]->ResetPossibleNoticeMatch();
+			}
+		}
+	}
+}
+
 bool CBoard::Init()
 {
 	if (!CGameObject::Init())
@@ -4774,6 +4790,9 @@ void CBoard::ClickCell(float DeltaTime)
 
 		// Block 은 원 상태로
 		ResetClickBlockInfo();
+
+		// AI 로 체크된 Notice 도 원상태로
+		ResetAINoticeState();
 
 		m_SecClickCell = m_vecCells[IndexY * m_ColCount + IndexX];
 

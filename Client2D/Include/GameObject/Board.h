@@ -168,7 +168,8 @@ private : // AI
         int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs); 
     std::pair<int, bool> CheckAIBagMatch(int OriginRowIdx, int OriginColIdx,
         int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs);
-private : // Create New Cell
+    void ResetAINoticeState();
+ private: // Create New Cell
     void CreateNewCellsAboveShownArea();
     CCell* CreateSingleNewCell(const std::string& Name, int RowIndex, int ColIndex, const Vector3& WorldPos, float NewYPos,
         Cell_Type_Binary Type, float Opacity, bool ShowEnable, Cell_State State);

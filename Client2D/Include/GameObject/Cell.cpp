@@ -21,7 +21,9 @@ CCell::CCell() :
 	m_BagCombDestroyLeftIdx(-1),
 	m_BagCombDestroyRightIdx(-1),
 	m_BagCombDestroyTopIdx(-1),
-	m_BagCombDestroyBottomIdx(-1)
+	m_BagCombDestroyBottomIdx(-1),
+	m_IsPossibleMatch(false),
+	m_IsNoticeToggleUp(false)
 {
 }
 
@@ -270,6 +272,34 @@ void CCell::SwitchMove(float DeltaTime)
 	}
 }
 
+void CCell::ApplyNoticeEffect(float DeltaTime)
+{
+	if (!m_IsPossibleMatch)
+		return;
+
+	// 위로 올라가는 상태
+	if (m_IsNoticeToggleUp)
+	{
+		AddWorldPos(Vector3(0.f, 1.f, 0.f) * DeltaTime * 20.f);
+
+		float WorldPosY = GetWorldPos().y;
+
+		if (GetWorldPos().y >= m_NoticePosY - 1.f)
+		{
+			m_IsNoticeToggleUp = false;
+		}
+	}
+	else
+	{
+		AddWorldPos(Vector3(0.f, -1.f, 0.f) * DeltaTime * 20.f);
+
+		if (GetWorldPos().y <= m_OriginPosY + 1.f)
+		{
+			m_IsNoticeToggleUp = true;
+		}
+	}
+}
+
 bool CCell::Init()
 {
 	if (!CGameObject::Init())
@@ -306,6 +336,8 @@ void CCell::Update(float DeltaTime)
 		}
 	}
 	*/
+
+	ApplyNoticeEffect(DeltaTime);
 
 	// Line ++ MirrorBall
 	DecreaseOpacityAndDestroyLineMirrorBallComb(DeltaTime);

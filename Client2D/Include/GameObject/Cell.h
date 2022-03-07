@@ -54,6 +54,11 @@ private: // 현재 이미 Special 상태여서, 다음 Match 때 Special Destroy 와 관련된 
     bool m_IsBagAndBagFirstDestroyed;
     bool m_IsBagCombToBeDestroyed; // Bag Combination로 파괴될 대상인가
     bool m_IsMirrorBallOfBagMirrorBallComb;
+private : // Notice 효과
+    bool m_IsPossibleMatch;
+    float m_OriginPosY;
+    float m_NoticePosY;
+    bool m_IsNoticeToggleUp;
 private : // 특수 효과
     // MirrorBall + Line
     bool m_IsLineOfLineMirrorBallComb; // 점점 자신의 Opacity를 줄여나가다가 사라지게 한다.
@@ -75,6 +80,7 @@ private:
     void SetIndexInfo(int Index, int RowIndex, int ColIndex);
     void GoDown(float DeltaTime);
     void SwitchMove(float DeltaTime);
+    void ApplyNoticeEffect(float DeltaTime);
 public:
     virtual bool Init() override;
     virtual void Update(float DeltaTime) override;
@@ -88,6 +94,10 @@ private : // 특수 효과
     void SequentiallyDestroyCellByDoubleMirrorBallCombEffect(float DeltaTime);
 // Getter 
 public:
+    bool IsPossibleMatch () const
+    {
+        return m_IsPossibleMatch;
+    }
     bool IsDoubleMirrorBallComb () const
     {
         return m_IsDoubleMirrorBallComb;
@@ -198,6 +208,21 @@ public:
     }
 	// Setter
 public :
+    void SetPossibleNoticeMatch ()
+    {
+        if (m_IsPossibleMatch)
+            return;
+
+        m_IsPossibleMatch = true;
+        m_OriginPosY = GetWorldPos().y;
+        m_NoticePosY = m_OriginPosY + 10.f;
+        m_IsNoticeToggleUp = true;
+    }
+    void ResetPossibleNoticeMatch()
+    {
+        m_IsPossibleMatch = false;
+        m_IsNoticeToggleUp = false;
+    }
     void SetSequentialDestroyTime (float Time)
     {
         m_SequentialDestroyTime = Time;
