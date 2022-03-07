@@ -59,6 +59,7 @@ private : // Notice 효과
     float m_OriginPosY;
     float m_NoticePosY;
     bool m_IsNoticeToggleUp;
+    float m_ToggleMoveDist;
 private : // 특수 효과
     // MirrorBall + Line
     bool m_IsLineOfLineMirrorBallComb; // 점점 자신의 Opacity를 줄여나가다가 사라지게 한다.
@@ -214,14 +215,18 @@ public :
             return;
 
         m_IsPossibleMatch = true;
-        m_OriginPosY = GetWorldPos().y;
-        m_NoticePosY = m_OriginPosY + 10.f;
+
         m_IsNoticeToggleUp = true;
     }
     void ResetPossibleNoticeMatch()
     {
         m_IsPossibleMatch = false;
+
         m_IsNoticeToggleUp = false;
+
+        m_IsMoving = false;
+
+        SetWorldPos(GetWorldPos().x, m_OriginPosY, GetWorldPos().z);
     }
     void SetSequentialDestroyTime (float Time)
     {

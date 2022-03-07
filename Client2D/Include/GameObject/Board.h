@@ -48,6 +48,9 @@ private:
     // Cell 들이 이동중인가
     bool m_CellsMoving;
 
+    // AI Check는 딱 한번만 하게 하기 위함이다
+    bool m_IsAIChecked;
+
     // Mouse Click
     Mouse_Click m_MouseClick;
     CCell* m_FirstClickCell;

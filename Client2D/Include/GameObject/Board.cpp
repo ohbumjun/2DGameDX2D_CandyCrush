@@ -14,7 +14,8 @@ CBoard::CBoard() :
 	m_ClickCellsMoveDone(0),
 	m_DRow{ -1, 1, 0, 0 },
 	m_DCol{ 0, 0, 1, -1 },
-	m_IsCheckUpdateNeeded(false)
+	m_IsCheckUpdateNeeded(false),
+	m_IsAIChecked(false)
 {
 }
 
@@ -3773,6 +3774,11 @@ bool CBoard::CheckMatchExist()
 
 bool CBoard::CheckAIAndPossibleMatch()
 {
+	// 현재 Frame 상에서 이미 AI Check가 완료되었다면 X
+	if (m_IsAIChecked)
+		return false;
+
+	// 이미 Match가 존재한다면 X
 	if (m_IsMatchExist)
 		return false;
 
@@ -3783,6 +3789,8 @@ bool CBoard::CheckAIAndPossibleMatch()
 	// 현재 이동시킨 Cell 을 처리중이라면
 	if (m_FirstClickCell || m_SecClickCell)
 		return false;
+
+	m_IsAIChecked = true;
 
 	bool Match = true;
 
@@ -4534,7 +4542,15 @@ void CBoard::Update(float DeltaTime)
 {
 	CGameObject::Update(DeltaTime);
 
+	bool PrevFrameCellMoving = m_CellsMoving;
+
 	m_CellsMoving = CheckCellsMoving();
+
+	// 이전 Frame 까지는 움직이고 있다가, 이번에 멈춘 것 --> 새로 AI Check 해야할 상황
+	if (PrevFrameCellMoving == true && m_CellsMoving == false)
+	{
+		m_IsAIChecked = false;
+	}
 
 	// CreateNewCells();
 

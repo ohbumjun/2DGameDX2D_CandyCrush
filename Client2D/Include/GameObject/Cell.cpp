@@ -23,7 +23,8 @@ CCell::CCell() :
 	m_BagCombDestroyTopIdx(-1),
 	m_BagCombDestroyBottomIdx(-1),
 	m_IsPossibleMatch(false),
-	m_IsNoticeToggleUp(false)
+	m_IsNoticeToggleUp(false),
+	m_ToggleMoveDist(7.f)
 {
 }
 
@@ -224,7 +225,7 @@ void CCell::SwitchMove(float DeltaTime)
 	{
 		Vector3 WorldPos = GetWorldPos();
 
-		float MoveDist = -1.f;
+		float MoveDist = -1,f;
 
 		// 가로 이동
 		if (m_ClickDestPos.x != WorldPos.x)
@@ -277,10 +278,13 @@ void CCell::ApplyNoticeEffect(float DeltaTime)
 	if (!m_IsPossibleMatch)
 		return;
 
+	m_OriginPosY = m_NewDownPosY;
+	m_NoticePosY = m_NewDownPosY + m_ToggleMoveDist;
+
 	// 위로 올라가는 상태
 	if (m_IsNoticeToggleUp)
 	{
-		AddWorldPos(Vector3(0.f, 1.f, 0.f) * DeltaTime * 20.f);
+		AddWorldPos(Vector3(0.f, 1.f, 0.f) * DeltaTime * m_ToggleMoveDist * 1.5f);
 
 		float WorldPosY = GetWorldPos().y;
 
@@ -291,7 +295,7 @@ void CCell::ApplyNoticeEffect(float DeltaTime)
 	}
 	else
 	{
-		AddWorldPos(Vector3(0.f, -1.f, 0.f) * DeltaTime * 20.f);
+		AddWorldPos(Vector3(0.f, -1.f, 0.f) * DeltaTime * m_ToggleMoveDist * 1.5);
 
 		if (GetWorldPos().y <= m_OriginPosY + 1.f)
 		{
@@ -337,8 +341,6 @@ void CCell::Update(float DeltaTime)
 	}
 	*/
 
-	ApplyNoticeEffect(DeltaTime);
-
 	// Line ++ MirrorBall
 	DecreaseOpacityAndDestroyLineMirrorBallComb(DeltaTime);
 	ChangeStateSameColorWithLineMirrorBallComb(DeltaTime);
@@ -349,6 +351,8 @@ void CCell::Update(float DeltaTime)
 
 	if (m_IsMirrorBallOfBagMirrorBallComb)
 		AddRelativeRotation(0.f, 0.f, 100.f * DeltaTime);
+
+	ApplyNoticeEffect(DeltaTime);
 }
 
 void CCell::PostUpdate(float DeltaTime)
