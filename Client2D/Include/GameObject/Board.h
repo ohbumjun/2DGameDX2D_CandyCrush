@@ -163,7 +163,7 @@ private: // BagMatch
     void SetBagAfterState();
 private : // AI
     bool CheckMatchExist();
-    bool CheckAIAndPossibleMatch();
+    bool CheckAIAndPossibleMatch(float DeltaTime);
     int CalculateAICombScore(CCell* FirstCell, CCell* SecondCell); 
     int CalculateAISpecialCellScore(CCell* FirstCell); 
     // Match 여부와 Score 를 리턴한다.

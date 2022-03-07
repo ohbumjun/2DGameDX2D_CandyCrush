@@ -3774,8 +3774,15 @@ bool CBoard::CheckMatchExist()
 	return false;
 }
 
-bool CBoard::CheckAIAndPossibleMatch()
+bool CBoard::CheckAIAndPossibleMatch(float DeltaTime)
 {
+	if (m_AICheckDelayTime > 0.f)
+	{
+		m_AICheckDelayTime -= DeltaTime;
+
+		return false;
+	}
+
 	// 현재 Frame 상에서 이미 AI Check가 완료되었다면 X
 	if (m_IsAIChecked)
 		return false;
@@ -4552,13 +4559,15 @@ void CBoard::Update(float DeltaTime)
 	if (PrevFrameCellMoving == true && m_CellsMoving == false)
 	{
 		m_IsAIChecked = false;
+
+		m_AICheckDelayTime = m_AICheckDelayTimeMax;
 	}
 
 	// CreateNewCells();
 
 	FindMatchUpdate();
 
-	CheckAIAndPossibleMatch();
+	CheckAIAndPossibleMatch(DeltaTime);
 }
 
 void CBoard::PostUpdate(float DeltaTime)

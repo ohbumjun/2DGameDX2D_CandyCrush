@@ -225,7 +225,7 @@ void CCell::SwitchMove(float DeltaTime)
 	{
 		Vector3 WorldPos = GetWorldPos();
 
-		float MoveDist = -1,f;
+		float MoveDist = -1.f;
 
 		// 가로 이동
 		if (m_ClickDestPos.x != WorldPos.x)
