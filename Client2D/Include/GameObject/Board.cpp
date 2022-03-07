@@ -2351,21 +2351,21 @@ bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked
 
 	// bool BoolRightDown = CheckBagRightDownMatch(RowIndex, ColIndex, Index);
 	std::pair<int, bool> BoolRightDown = CheckBagRightDownMatch(RowIndex, ColIndex,
-		RowIndex, ColIndex, Index, MatchIdxList);
+		RowIndex, ColIndex, Index, MatchIdxList, false);
 	std::pair<int, bool> BoolRightUp = CheckBagRightUpMatch(RowIndex, ColIndex,
-		RowIndex, ColIndex, Index, MatchIdxList);
+		RowIndex, ColIndex, Index, MatchIdxList, false);
 	std::pair<int, bool> BoolLeftDown = CheckBagLeftDownMatch(RowIndex, ColIndex,
-		RowIndex, ColIndex, Index, MatchIdxList);
+		RowIndex, ColIndex, Index, MatchIdxList, false);
 	std::pair<int, bool> BoolLeftUp = CheckBagLeftUpMatch(RowIndex, ColIndex,
-		RowIndex, ColIndex, Index, MatchIdxList);
+		RowIndex, ColIndex, Index, MatchIdxList, false);
 	std::pair<int, bool> BoolCenterRight = CheckBagCenterRightMatch(RowIndex, ColIndex,
-		RowIndex, ColIndex, Index, MatchIdxList);
+		RowIndex, ColIndex, Index, MatchIdxList, false);
 	std::pair<int, bool> BoolCenterLeft = CheckBagCenterLeftMatch(RowIndex, ColIndex,
-		RowIndex, ColIndex, Index, MatchIdxList);
+		RowIndex, ColIndex, Index, MatchIdxList, false);
 	std::pair<int, bool> BoolCenterDown = CheckBagCenterDownMatch(RowIndex, ColIndex,
-		RowIndex, ColIndex, Index, MatchIdxList);
+		RowIndex, ColIndex, Index, MatchIdxList, false);
 	std::pair<int, bool> BoolCenterUp = CheckBagCenterUpMatch(RowIndex, ColIndex,
-		RowIndex, ColIndex, Index, MatchIdxList);
+		RowIndex, ColIndex, Index, MatchIdxList, false);
 
 	bool Result = BoolRightDown.second || BoolRightUp.second || BoolLeftDown.second || BoolLeftUp.second ||
 		BoolCenterRight.second || BoolCenterLeft.second || BoolCenterDown.second || BoolCenterUp.second;
@@ -2386,7 +2386,7 @@ bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked
 }
 
 std::pair<int, bool> CBoard::CheckBagRightDownMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
-	int Index, std::vector<int>& MatchIdxList)
+	int Index, std::vector<int>& MatchIdxList, bool IsAI)
 {
 	// Match가 이루어진 Idx 정보들을 담는 배열
 	// std::vector<int> MatchIdxList;
@@ -2506,13 +2506,17 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int OriginRowIdx, int Origin
 	// 만약 모두 맞았다면
 	if (IsAllMatch)
 	{
-		size_t Size = MatchIdxList.size();
-
-		for (size_t i = 0; i < Size; i++)
+		if (!IsAI)
 		{
-			if (!m_vecCellIsMatch[MatchIdxList[i]])
-				m_vecCellIsMatch[MatchIdxList[i]] = true;
+			size_t Size = MatchIdxList.size();
+
+			for (size_t i = 0; i < Size; i++)
+			{
+				if (!m_vecCellIsMatch[MatchIdxList[i]])
+					m_vecCellIsMatch[MatchIdxList[i]] = true;
+			}
 		}
+
 
 		return std::make_pair(MatchScore, true);
 	}
@@ -2521,7 +2525,7 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int OriginRowIdx, int Origin
 }
 
 std::pair<int, bool> CBoard::CheckBagRightUpMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
-	int Index, std::vector<int>& MatchIdxList)
+	int Index, std::vector<int>& MatchIdxList, bool IsAI)
 {
 	MatchIdxList.clear();
 
@@ -2635,14 +2639,16 @@ std::pair<int, bool> CBoard::CheckBagRightUpMatch(int OriginRowIdx, int OriginCo
 	// 만약 모드 맞았다면
 	if (IsAllMatch)
 	{
-		size_t Size = MatchIdxList.size();
-
-		for (size_t i = 0; i < Size; i++)
+		if (!IsAI)
 		{
-			if (!m_vecCellIsMatch[MatchIdxList[i]])
-				m_vecCellIsMatch[MatchIdxList[i]] = true;
-		}
+			size_t Size = MatchIdxList.size();
 
+			for (size_t i = 0; i < Size; i++)
+			{
+				if (!m_vecCellIsMatch[MatchIdxList[i]])
+					m_vecCellIsMatch[MatchIdxList[i]] = true;
+			}
+		}
 		return std::make_pair(MatchScore, true);
 	}
 
@@ -2650,7 +2656,7 @@ std::pair<int, bool> CBoard::CheckBagRightUpMatch(int OriginRowIdx, int OriginCo
 }
 
 std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
-	int Index, std::vector<int>& MatchIdxList)
+	int Index, std::vector<int>& MatchIdxList, bool IsAI)
 {
 	MatchIdxList.clear();
 
@@ -2764,12 +2770,15 @@ std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int OriginRowIdx, int OriginC
 	// 만약 모드 맞았다면
 	if (IsAllMatch)
 	{
-		size_t Size = MatchIdxList.size();
-
-		for (size_t i = 0; i < Size; i++)
+		if (!IsAI)
 		{
-			if (!m_vecCellIsMatch[MatchIdxList[i]])
-				m_vecCellIsMatch[MatchIdxList[i]] = true;
+			size_t Size = MatchIdxList.size();
+
+			for (size_t i = 0; i < Size; i++)
+			{
+				if (!m_vecCellIsMatch[MatchIdxList[i]])
+					m_vecCellIsMatch[MatchIdxList[i]] = true;
+			}
 		}
 
 		return std::make_pair(MatchScore, true);
@@ -2779,7 +2788,7 @@ std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int OriginRowIdx, int OriginC
 }
 
 std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
-	int Index, std::vector<int>& MatchIdxList)
+	int Index, std::vector<int>& MatchIdxList, bool IsAI)
 {
 	MatchIdxList.clear();
 
@@ -2892,12 +2901,15 @@ std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int OriginRowIdx, int OriginCol
 	// 만약 모드 맞았다면
 	if (IsAllMatch)
 	{
-		size_t Size = MatchIdxList.size();
-
-		for (size_t i = 0; i < Size; i++)
+		if (!IsAI)
 		{
-			if (!m_vecCellIsMatch[MatchIdxList[i]])
-				m_vecCellIsMatch[MatchIdxList[i]] = true;
+			size_t Size = MatchIdxList.size();
+
+			for (size_t i = 0; i < Size; i++)
+			{
+				if (!m_vecCellIsMatch[MatchIdxList[i]])
+					m_vecCellIsMatch[MatchIdxList[i]] = true;
+			}
 		}
 
 		return std::make_pair(MatchScore, true);
@@ -2907,7 +2919,7 @@ std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int OriginRowIdx, int OriginCol
 }
 
 std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
-	int Index, std::vector<int>& MatchIdxList)
+	int Index, std::vector<int>& MatchIdxList, bool IsAI)
 {
 	MatchIdxList.clear();
 
@@ -3044,12 +3056,15 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int OriginRowIdx, int Orig
 	// 만약 모드 맞았다면
 	if (IsAllMatch)
 	{
-		size_t Size = MatchIdxList.size();
-
-		for (size_t i = 0; i < Size; i++)
+		if (!IsAI)
 		{
-			if (!m_vecCellIsMatch[MatchIdxList[i]])
-				m_vecCellIsMatch[MatchIdxList[i]] = true;
+			size_t Size = MatchIdxList.size();
+
+			for (size_t i = 0; i < Size; i++)
+			{
+				if (!m_vecCellIsMatch[MatchIdxList[i]])
+					m_vecCellIsMatch[MatchIdxList[i]] = true;
+			}
 		}
 
 		return std::make_pair(MatchScore, true);
@@ -3059,7 +3074,7 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int OriginRowIdx, int Orig
 }
 
 std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
-	int Index, std::vector<int>& MatchIdxList)
+	int Index, std::vector<int>& MatchIdxList, bool IsAI)
 {
 	MatchIdxList.clear();
 
@@ -3197,12 +3212,15 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int OriginRowIdx, int Origi
 	// 만약 모드 맞았다면
 	if (IsAllMatch)
 	{
-		size_t Size = MatchIdxList.size();
-
-		for (size_t i = 0; i < Size; i++)
+		if (!IsAI)
 		{
-			if (!m_vecCellIsMatch[MatchIdxList[i]])
-				m_vecCellIsMatch[MatchIdxList[i]] = true;
+			size_t Size = MatchIdxList.size();
+
+			for (size_t i = 0; i < Size; i++)
+			{
+				if (!m_vecCellIsMatch[MatchIdxList[i]])
+					m_vecCellIsMatch[MatchIdxList[i]] = true;
+			}
 		}
 
 		return std::make_pair(MatchScore, true);
@@ -3212,7 +3230,7 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int OriginRowIdx, int Origi
 }
 
 std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
-	int Index, std::vector<int>& MatchIdxList)
+	int Index, std::vector<int>& MatchIdxList, bool IsAI)
 {
 	MatchIdxList.clear();
 
@@ -3354,12 +3372,15 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int OriginRowIdx, int Origi
 	// 만약 모드 맞았다면
 	if (IsAllMatch)
 	{
-		size_t Size = MatchIdxList.size();
-
-		for (size_t i = 0; i < Size; i++)
+		if (!IsAI)
 		{
-			if (!m_vecCellIsMatch[MatchIdxList[i]])
-				m_vecCellIsMatch[MatchIdxList[i]] = true;
+			size_t Size = MatchIdxList.size();
+
+			for (size_t i = 0; i < Size; i++)
+			{
+				if (!m_vecCellIsMatch[MatchIdxList[i]])
+					m_vecCellIsMatch[MatchIdxList[i]] = true;
+			}
 		}
 
 		return std::make_pair(MatchScore, true);
@@ -3369,7 +3390,7 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int OriginRowIdx, int Origi
 }
 
 std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
-	int Index, std::vector<int>& MatchIdxList)
+	int Index, std::vector<int>& MatchIdxList, bool IsAI)
 {
 	MatchIdxList.clear();
 
@@ -3507,12 +3528,15 @@ std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int OriginRowIdx, int OriginC
 	// 만약 모드 맞았다면
 	if (IsAllMatch)
 	{
-		size_t Size = MatchIdxList.size();
-
-		for (size_t i = 0; i < Size; i++)
+		if (!IsAI)
 		{
-			if (!m_vecCellIsMatch[MatchIdxList[i]])
-				m_vecCellIsMatch[MatchIdxList[i]] = true;
+			size_t Size = MatchIdxList.size();
+
+			for (size_t i = 0; i < Size; i++)
+			{
+				if (!m_vecCellIsMatch[MatchIdxList[i]])
+					m_vecCellIsMatch[MatchIdxList[i]] = true;
+			}
 		}
 
 		return std::make_pair(MatchScore, true);
@@ -4078,7 +4102,7 @@ std::pair<int, bool> CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 						MatchIdx = OriginRowIdx * m_ColCount + col;
 					}
 
-					MatchedIdxs.push_back(NewRowIdx * m_ColCount + col);
+					MatchedIdxs.push_back(MatchIdx);
 				}
 
 				PartColMatchScore += CheckMatchNum;
@@ -4111,7 +4135,7 @@ std::pair<int, bool> CBoard::CheckAIBagMatch(int OriginRowIdx, int OriginColIdx,
 	int Index = NewRowIdx * m_ColCount + NewColIdx;
 
 	std::pair<int, bool> BoolRightDown = CheckBagRightDownMatch(OriginRowIdx, OriginColIdx,
-		NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolRightDown.second)
 	{
@@ -4123,7 +4147,7 @@ std::pair<int, bool> CBoard::CheckAIBagMatch(int OriginRowIdx, int OriginColIdx,
 	}
 
 	std::pair<int, bool> BoolRightUp = CheckBagRightUpMatch(OriginRowIdx, OriginColIdx, 
-		NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolRightUp.second)
 	{
@@ -4138,7 +4162,7 @@ std::pair<int, bool> CBoard::CheckAIBagMatch(int OriginRowIdx, int OriginColIdx,
 	}
 
 	std::pair<int, bool> BoolLeftDown = CheckBagLeftDownMatch(OriginRowIdx, OriginColIdx, 
-		NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolLeftDown.second)
 	{
@@ -4153,7 +4177,7 @@ std::pair<int, bool> CBoard::CheckAIBagMatch(int OriginRowIdx, int OriginColIdx,
 	}
 
 	std::pair<int, bool> BoolLeftUp = CheckBagLeftUpMatch(OriginRowIdx, OriginColIdx, 
-		NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolLeftUp.second)
 	{
@@ -4168,7 +4192,7 @@ std::pair<int, bool> CBoard::CheckAIBagMatch(int OriginRowIdx, int OriginColIdx,
 	}
 
 	std::pair<int, bool> BoolCenterRight = CheckBagCenterRightMatch(OriginRowIdx, OriginColIdx, 
-		NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolCenterRight.second)
 	{
@@ -4183,7 +4207,7 @@ std::pair<int, bool> CBoard::CheckAIBagMatch(int OriginRowIdx, int OriginColIdx,
 	}
 
 	std::pair<int, bool> BoolCenterLeft = CheckBagCenterLeftMatch(OriginRowIdx, OriginColIdx, 
-NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolCenterLeft.second)
 	{
@@ -4198,7 +4222,7 @@ NewRowIdx, NewColIdx, Index, TempMatchIdxList);
 	}
 
 	std::pair<int, bool> BoolCenterDown = CheckBagCenterDownMatch(OriginRowIdx, OriginColIdx, 
-NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolCenterDown.second)
 	{
@@ -4213,7 +4237,7 @@ NewRowIdx, NewColIdx, Index, TempMatchIdxList);
 	}
 
 	std::pair<int, bool> BoolCenterUp = CheckBagCenterUpMatch(OriginRowIdx, OriginColIdx, 
-NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolCenterUp.second)
 	{

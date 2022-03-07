@@ -4,7 +4,7 @@
 #include "Board.h"
 
 CCell::CCell() :
-	m_MoveSpeed(50.f),
+	m_MoveSpeed(300.f),
 	m_ShownAreaOffset(5.f),
 	m_IsShownEnable(true),
 	m_IsGoingBack(false),
