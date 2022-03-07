@@ -1053,6 +1053,8 @@ bool CBoard::FindMatchUpdate()
 	// Match 되는 녀석들이 있는지 확인한다.
 	Match = CheckMatchUpdate();
 
+	m_IsMatchExist = CheckMatchExist();
+
 	// todo : Scene에서 제거하기
 	// 해당 위치의 Cell 사라지게 하기
 	// 이렇게 하면 Scene 내에서는 지워져서 Render는 안되지만
@@ -2348,34 +2350,43 @@ bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked
 	MatchIdxList.reserve(10);
 
 	// bool BoolRightDown = CheckBagRightDownMatch(RowIndex, ColIndex, Index);
-	bool BoolRightDown = CheckBagRightDownMatch(RowIndex, ColIndex, Index, MatchIdxList);
-	bool BoolRightUp = CheckBagRightUpMatch(RowIndex, ColIndex, Index, MatchIdxList);
-	bool BoolLeftDown = CheckBagLeftDownMatch(RowIndex, ColIndex, Index, MatchIdxList);
-	bool BoolLeftUp = CheckBagLeftUpMatch(RowIndex, ColIndex, Index, MatchIdxList);
-	bool BoolCenterRight = CheckBagCenterRightMatch(RowIndex, ColIndex, Index, MatchIdxList);
-	bool BoolCenterLeft = CheckBagCenterLeftMatch(RowIndex, ColIndex, Index, MatchIdxList);
-	bool BoolCenterDown = CheckBagCenterDownMatch(RowIndex, ColIndex, Index, MatchIdxList);
-	bool BoolCenterUp = CheckBagCenterUpMatch(RowIndex, ColIndex, Index, MatchIdxList);
+	std::pair<int, bool> BoolRightDown = CheckBagRightDownMatch(RowIndex, ColIndex,
+		RowIndex, ColIndex, Index, MatchIdxList);
+	std::pair<int, bool> BoolRightUp = CheckBagRightUpMatch(RowIndex, ColIndex,
+		RowIndex, ColIndex, Index, MatchIdxList);
+	std::pair<int, bool> BoolLeftDown = CheckBagLeftDownMatch(RowIndex, ColIndex,
+		RowIndex, ColIndex, Index, MatchIdxList);
+	std::pair<int, bool> BoolLeftUp = CheckBagLeftUpMatch(RowIndex, ColIndex,
+		RowIndex, ColIndex, Index, MatchIdxList);
+	std::pair<int, bool> BoolCenterRight = CheckBagCenterRightMatch(RowIndex, ColIndex,
+		RowIndex, ColIndex, Index, MatchIdxList);
+	std::pair<int, bool> BoolCenterLeft = CheckBagCenterLeftMatch(RowIndex, ColIndex,
+		RowIndex, ColIndex, Index, MatchIdxList);
+	std::pair<int, bool> BoolCenterDown = CheckBagCenterDownMatch(RowIndex, ColIndex,
+		RowIndex, ColIndex, Index, MatchIdxList);
+	std::pair<int, bool> BoolCenterUp = CheckBagCenterUpMatch(RowIndex, ColIndex,
+		RowIndex, ColIndex, Index, MatchIdxList);
 
-	bool Result = BoolRightDown || BoolRightUp || BoolLeftDown || BoolLeftUp ||
-		BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
+	bool Result = BoolRightDown.second || BoolRightUp.second || BoolLeftDown.second || BoolLeftUp.second ||
+		BoolCenterRight.second || BoolCenterLeft.second || BoolCenterDown.second || BoolCenterUp.second;
 
 	// Match가 있었다면
 	if (Result)
 	{
 		// 기존에 BagMatch가 있었어도 새로 만든다.
-		Result = BoolRightDown || BoolRightUp || BoolLeftDown || BoolLeftUp ||
-			BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
+		Result = BoolRightDown.second || BoolRightUp.second || BoolLeftDown.second || BoolLeftUp.second ||
+			BoolCenterRight.second || BoolCenterLeft.second || BoolCenterDown.second || BoolCenterUp.second;
 	}
 
 	// todo :Match 여부와 별개로, 여기서는 조합을 고려한다.
 	// 주변 4방향으로 인접한 녀석들이 있는지를 조사할 것이다.
 
-	return BoolRightDown || BoolRightUp || BoolLeftDown || BoolLeftUp ||
-		BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
+	return BoolRightDown.second || BoolRightUp.second || BoolLeftDown.second || BoolLeftUp.second ||
+		BoolCenterRight.second || BoolCenterLeft.second || BoolCenterDown.second || BoolCenterUp.second;
 }
 
-std::pair<int, bool> CBoard::CheckBagRightDownMatch(int RowIdx, int ColIdx, int Index, std::vector<int>& MatchIdxList)
+std::pair<int, bool> CBoard::CheckBagRightDownMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
+	int Index, std::vector<int>& MatchIdxList)
 {
 	// Match가 이루어진 Idx 정보들을 담는 배열
 	// std::vector<int> MatchIdxList;
@@ -2384,14 +2395,14 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int RowIdx, int ColIdx, int 
 
 
 	// 오른쪽 3개를 검사해야 하는데 범위를 벗어났다면 X
-	if (ColIdx + 2 >= m_ColCount)
+	if (NewColIdx + 2 >= m_ColCount)
 		return std::make_pair(0, false);
 
 	// 아래 2개를 검사해야 하는데 범위를 벗어났다면 X
-	if (RowIdx - 2 < 0)
+	if (NewRowIdx - 2 < 0)
 		return std::make_pair(0, false);
 
-	Cell_Type_Binary InitType = m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType();
+	Cell_Type_Binary InitType = m_vecCells[NewRowIdx * m_ColCount + NewColIdx]->GetCellType();
 
 	bool IsAllMatch = true;
 
@@ -2401,18 +2412,18 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int RowIdx, int ColIdx, int 
 	int MatchScore = 5;
 
 	int NxtIndex = -1;
-	int CurIndex = RowIdx * m_ColCount + ColIdx;
+	int CurIndex = NewRowIdx * m_ColCount + NewColIdx;
 
 	bool IsTwoCombination = false;
 
 	// 현재 Col 에서부터 오른쪽 2칸을 검사한다.
-	for (int col = ColIdx; col <= ColIdx + 2; col++)
+	for (int col = NewColIdx; col <= NewColIdx + 2; col++)
 	{
 		// 왜 Match_State 가 Bag 라면 역시 Return을 해주는 것일까 ?
 		// 왜냐하면, 이미 Bag 라는 Special 조합이 있던 곳에
 		// 새로운 Bag Special Cell 을 만들고 싶지 않기 때문이다.
-		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType ||
-			m_vecMatchState[RowIdx * m_ColCount + col] == Match_State::Bag)
+		if (m_vecCells[NewRowIdx * m_ColCount + col]->GetCellType() != InitType ||
+			m_vecMatchState[NewRowIdx * m_ColCount + col] == Match_State::Bag)
 		{
 			IsAllMatch = false;
 			return std::make_pair(0, false);
@@ -2421,9 +2432,9 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int RowIdx, int ColIdx, int 
 		IsTwoCombination = false;
 
 		// 1) 조합 점수 검사
-		if (col < ColIdx + 2)
+		if (col < NewColIdx + 2)
 		{
-			NxtIndex = RowIdx * m_CellsMoving + (col + 1);
+			NxtIndex = NewRowIdx * m_CellsMoving + (col + 1);
 
 			if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal &&
 				(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
@@ -2447,14 +2458,14 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int RowIdx, int ColIdx, int 
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
 		}
 
-		MatchIdxList.push_back(RowIdx * m_ColCount + col);
+		MatchIdxList.push_back(NewRowIdx * m_ColCount + col);
 	}
 
 	// 아래 2개
-	for (int row = RowIdx; row >= RowIdx - 2; row--)
+	for (int row = NewRowIdx; row >= NewRowIdx - 2; row--)
 	{
-		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType ||
-			m_vecMatchState[row * m_ColCount + ColIdx] == Match_State::Bag)
+		if (m_vecCells[row * m_ColCount + NewColIdx]->GetCellType() != InitType ||
+			m_vecMatchState[row * m_ColCount + NewColIdx] == Match_State::Bag)
 		{
 			IsAllMatch = false;
 			return std::make_pair(0, false);
@@ -2463,9 +2474,9 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int RowIdx, int ColIdx, int 
 		IsTwoCombination = false;
 
 		// 1) 조합 점수 검사
-		if (row > RowIdx - 2)
+		if (row > NewRowIdx - 2)
 		{
-			NxtIndex = (row - 1) * m_CellsMoving + ColIdx;
+			NxtIndex = (row - 1) * m_CellsMoving + NewColIdx;
 
 			if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal &&
 				(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
@@ -2489,7 +2500,7 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int RowIdx, int ColIdx, int 
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
 		}
 
-		MatchIdxList.push_back(row * m_ColCount + ColIdx);
+		MatchIdxList.push_back(row * m_ColCount + NewColIdx);
 	}
 
 	// 만약 모두 맞았다면
@@ -2509,19 +2520,20 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int RowIdx, int ColIdx, int 
 	return std::make_pair(0, false);
 }
 
-std::pair<int, bool> CBoard::CheckBagRightUpMatch(int RowIdx, int ColIdx, int Index, std::vector<int>& MatchIdxList)
+std::pair<int, bool> CBoard::CheckBagRightUpMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
+	int Index, std::vector<int>& MatchIdxList)
 {
 	MatchIdxList.clear();
 
 	// 오른쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
-	if (ColIdx + 2 >= m_ColCount)
+	if (NewColIdx + 2 >= m_ColCount)
 		return std::make_pair(0, false);
 
 	// 위 2개를 검사해야 하는데 범위를 벗어났다면 X
-	if (RowIdx + 2 >= m_VisualRowCount)
+	if (NewRowIdx + 2 >= m_VisualRowCount)
 		return std::make_pair(0, false);
 
-	Cell_Type_Binary InitType = m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType();
+	Cell_Type_Binary InitType = m_vecCells[NewRowIdx * m_ColCount + NewColIdx]->GetCellType();
 
 	bool IsAllMatch = true;
 
@@ -2531,16 +2543,16 @@ std::pair<int, bool> CBoard::CheckBagRightUpMatch(int RowIdx, int ColIdx, int In
 	int MatchScore = 5;
 
 	int NxtIndex = -1;
-	int CurIndex = RowIdx * m_ColCount + ColIdx;
+	int CurIndex = NewRowIdx * m_ColCount + NewColIdx;
 
 	bool IsTwoCombination = false;
 
 	// 현재 Row 
 	// && 현재 Col 에서부터 오른쪽 2칸을 검사한다.
-	for (int col = ColIdx; col <= ColIdx + 2; col++)
+	for (int col = NewColIdx; col <= NewColIdx + 2; col++)
 	{
-		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType ||
-			m_vecMatchState[RowIdx * m_ColCount + col] == Match_State::Bag)
+		if (m_vecCells[NewRowIdx * m_ColCount + col]->GetCellType() != InitType ||
+			m_vecMatchState[NewRowIdx * m_ColCount + col] == Match_State::Bag)
 		{
 			IsAllMatch = false;
 			return std::make_pair(0, false);
@@ -2549,9 +2561,9 @@ std::pair<int, bool> CBoard::CheckBagRightUpMatch(int RowIdx, int ColIdx, int In
 		IsTwoCombination = false;
 
 		// 1) 조합 점수 검사
-		if (col < ColIdx + 2)
+		if (col < NewColIdx + 2)
 		{
-			NxtIndex = RowIdx * m_CellsMoving + (col + 1);
+			NxtIndex = NewRowIdx * m_CellsMoving + (col + 1);
 
 			if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal &&
 				(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
@@ -2575,14 +2587,14 @@ std::pair<int, bool> CBoard::CheckBagRightUpMatch(int RowIdx, int ColIdx, int In
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
 		}
 
-		MatchIdxList.push_back(RowIdx * m_ColCount + col);
+		MatchIdxList.push_back(NewRowIdx * m_ColCount + col);
 	}
 
 	// 위 2개 Row 를 고려한다.
-	for (int row = RowIdx; row <= RowIdx + 2; row++)
+	for (int row = NewRowIdx; row <= NewRowIdx + 2; row++)
 	{
-		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType ||
-			m_vecMatchState[row * m_ColCount + ColIdx] == Match_State::Bag)
+		if (m_vecCells[row * m_ColCount + NewColIdx]->GetCellType() != InitType ||
+			m_vecMatchState[row * m_ColCount + NewColIdx] == Match_State::Bag)
 		{
 			IsAllMatch = false;
 			return std::make_pair(0, false);
@@ -2591,9 +2603,9 @@ std::pair<int, bool> CBoard::CheckBagRightUpMatch(int RowIdx, int ColIdx, int In
 		IsTwoCombination = false;
 
 		// 1) 조합 점수 검사
-		if (row < RowIdx + 2)
+		if (row < NewRowIdx + 2)
 		{
-			NxtIndex = (row + 1) * m_CellsMoving + ColIdx;
+			NxtIndex = (row + 1) * m_CellsMoving + NewColIdx;
 
 			if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal &&
 				(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
@@ -2617,7 +2629,7 @@ std::pair<int, bool> CBoard::CheckBagRightUpMatch(int RowIdx, int ColIdx, int In
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
 		}
 
-		MatchIdxList.push_back(row * m_ColCount + ColIdx);
+		MatchIdxList.push_back(row * m_ColCount + NewColIdx);
 	}
 
 	// 만약 모드 맞았다면
@@ -2637,19 +2649,20 @@ std::pair<int, bool> CBoard::CheckBagRightUpMatch(int RowIdx, int ColIdx, int In
 	return std::make_pair(0, false);
 }
 
-std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int RowIdx, int ColIdx, int Index, std::vector<int>& MatchIdxList)
+std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
+	int Index, std::vector<int>& MatchIdxList)
 {
 	MatchIdxList.clear();
 
 	// 왼쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
-	if (ColIdx - 2 < 0)
+	if (NewColIdx - 2 < 0)
 		return std::make_pair(0, false);
 
 	// 아래 2개를 검사해야 하는데 범위를 벗어났다면 X
-	if (RowIdx - 2 < 0)
+	if (NewRowIdx - 2 < 0)
 		return std::make_pair(0, false);
 
-	Cell_Type_Binary InitType = m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType();
+	Cell_Type_Binary InitType = m_vecCells[NewRowIdx * m_ColCount + NewColIdx]->GetCellType();
 
 	bool IsAllMatch = true;
 
@@ -2659,16 +2672,16 @@ std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int RowIdx, int ColIdx, int I
 	int MatchScore = 5;
 
 	int NxtIndex = -1;
-	int CurIndex = RowIdx * m_ColCount + ColIdx;
+	int CurIndex = NewRowIdx * m_ColCount + NewColIdx;
 
 	bool IsTwoCombination = false;
 
 	// 현재 Row 
 	// && 현재 Col 에서부터 왼쪽 2칸을 검사한다.
-	for (int col = ColIdx; col >= ColIdx - 2; col--)
+	for (int col = NewColIdx; col >= NewColIdx - 2; col--)
 	{
-		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType ||
-			m_vecMatchState[RowIdx * m_ColCount + col] == Match_State::Bag)
+		if (m_vecCells[NewRowIdx * m_ColCount + col]->GetCellType() != InitType ||
+			m_vecMatchState[NewRowIdx * m_ColCount + col] == Match_State::Bag)
 		{
 			IsAllMatch = false;
 			return std::make_pair(0, false);
@@ -2677,9 +2690,9 @@ std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int RowIdx, int ColIdx, int I
 		IsTwoCombination = false;
 
 		// 1) 조합 점수 조사
-		if (col > ColIdx - 2)
+		if (col > NewColIdx - 2)
 		{
-			NxtIndex = RowIdx * m_CellsMoving + (col - 1);
+			NxtIndex = NewRowIdx * m_CellsMoving + (col - 1);
 
 			if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal &&
 				(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
@@ -2703,14 +2716,14 @@ std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int RowIdx, int ColIdx, int I
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
 		}
 
-		MatchIdxList.push_back(RowIdx * m_ColCount + col);
+		MatchIdxList.push_back(NewRowIdx * m_ColCount + col);
 	}
 
 	// 아래 2개 Row 를 고려한다.
-	for (int row = RowIdx; row >= RowIdx - 2; row--)
+	for (int row = NewRowIdx; row >= NewRowIdx - 2; row--)
 	{
-		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType ||
-			m_vecMatchState[row * m_ColCount + ColIdx] == Match_State::Bag)
+		if (m_vecCells[row * m_ColCount + NewColIdx]->GetCellType() != InitType ||
+			m_vecMatchState[row * m_ColCount + NewColIdx] == Match_State::Bag)
 		{
 			IsAllMatch = false;
 			return std::make_pair(0, false);
@@ -2719,9 +2732,9 @@ std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int RowIdx, int ColIdx, int I
 		IsTwoCombination = false;
 
 		// 1) 조합 점수 검사
-		if (row > RowIdx - 2)
+		if (row > NewRowIdx - 2)
 		{
-			NxtIndex = (row - 1) * m_CellsMoving + ColIdx;
+			NxtIndex = (row - 1) * m_CellsMoving + NewColIdx;
 
 			if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal &&
 				(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
@@ -2745,7 +2758,7 @@ std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int RowIdx, int ColIdx, int I
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
 		}
 
-		MatchIdxList.push_back(row * m_ColCount + ColIdx);
+		MatchIdxList.push_back(row * m_ColCount + NewColIdx);
 	}
 
 	// 만약 모드 맞았다면
@@ -2765,19 +2778,20 @@ std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int RowIdx, int ColIdx, int I
 	return std::make_pair(0, false);
 }
 
-std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int RowIdx, int ColIdx, int Index, std::vector<int>& MatchIdxList)
+std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
+	int Index, std::vector<int>& MatchIdxList)
 {
 	MatchIdxList.clear();
 
 	// 왼쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
-	if (ColIdx - 2 < 0)
+	if (NewColIdx - 2 < 0)
 		return std::make_pair(0, false);
 
 	// 위 2개를 검사해야 하는데 범위를 벗어났다면 X
-	if (RowIdx + 2 >= m_VisualRowCount)
+	if (NewRowIdx + 2 >= m_VisualRowCount)
 		return std::make_pair(0, false);
 
-	Cell_Type_Binary InitType = m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType();
+	Cell_Type_Binary InitType = m_vecCells[NewRowIdx * m_ColCount + NewColIdx]->GetCellType();
 
 	bool IsAllMatch = true;
 
@@ -2786,16 +2800,16 @@ std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int RowIdx, int ColIdx, int Ind
 	int MatchScore = 5;
 
 	int NxtIndex = -1;
-	int CurIndex = RowIdx * m_ColCount + ColIdx;
+	int CurIndex = NewRowIdx * m_ColCount + NewColIdx;
 
 	bool IsTwoCombination = false;
 
 	// 현재 Row 
 	// && 현재 Col 에서부터 왼쪽 2칸을 검사한다.
-	for (int col = ColIdx; col >= ColIdx - 2; col--)
+	for (int col = NewColIdx; col >= NewColIdx - 2; col--)
 	{
-		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType ||
-			m_vecMatchState[RowIdx * m_ColCount + col] == Match_State::Bag)
+		if (m_vecCells[NewRowIdx * m_ColCount + col]->GetCellType() != InitType ||
+			m_vecMatchState[NewRowIdx * m_ColCount + col] == Match_State::Bag)
 		{
 			IsAllMatch = false;
 			return std::make_pair(0, false);
@@ -2804,9 +2818,9 @@ std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int RowIdx, int ColIdx, int Ind
 		IsTwoCombination = false;
 
 		// 1) 조합 점수 검사
-		if (col > ColIdx - 2)
+		if (col > NewColIdx - 2)
 		{
-			NxtIndex = RowIdx * m_CellsMoving + (col - 1);
+			NxtIndex = NewRowIdx * m_CellsMoving + (col - 1);
 
 			if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal &&
 				(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
@@ -2830,14 +2844,14 @@ std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int RowIdx, int ColIdx, int Ind
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
 		}
 
-		MatchIdxList.push_back(RowIdx * m_ColCount + col);
+		MatchIdxList.push_back(NewRowIdx * m_ColCount + col);
 	}
 
 	// 위 2개 Row 를 고려한다.
-	for (int row = RowIdx; row <= RowIdx + 2; row++)
+	for (int row = NewRowIdx; row <= NewRowIdx + 2; row++)
 	{
-		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType ||
-			m_vecMatchState[row * m_ColCount + ColIdx] == Match_State::Bag)
+		if (m_vecCells[row * m_ColCount + NewColIdx]->GetCellType() != InitType ||
+			m_vecMatchState[row * m_ColCount + NewColIdx] == Match_State::Bag)
 		{
 			IsAllMatch = false;
 			return std::make_pair(0, false);
@@ -2846,9 +2860,9 @@ std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int RowIdx, int ColIdx, int Ind
 		IsTwoCombination = false;
 
 		// 1) 조합 점수 검사
-		if (row < RowIdx + 2)
+		if (row < NewRowIdx + 2)
 		{
-			NxtIndex = (row + 1) * m_CellsMoving + ColIdx;
+			NxtIndex = (row + 1) * m_CellsMoving + NewColIdx;
 
 			if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal &&
 				(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
@@ -2872,7 +2886,7 @@ std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int RowIdx, int ColIdx, int Ind
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
 		}
 
-		MatchIdxList.push_back(row * m_ColCount + ColIdx);
+		MatchIdxList.push_back(row * m_ColCount + NewColIdx);
 	}
 
 	// 만약 모드 맞았다면
@@ -2892,23 +2906,24 @@ std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int RowIdx, int ColIdx, int Ind
 	return std::make_pair(0, false);
 }
 
-std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int RowIdx, int ColIdx, int Index, std::vector<int>& MatchIdxList)
+std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
+	int Index, std::vector<int>& MatchIdxList)
 {
 	MatchIdxList.clear();
 
 	// 오른쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
-	if (ColIdx + 2 >= m_ColCount)
+	if (NewColIdx + 2 >= m_ColCount)
 		return std::make_pair(0, false);
 
 	// 위 1개를 검사해야 하는데 범위를 벗어났다면 X
-	if (RowIdx + 1 >= m_VisualRowCount)
+	if (NewRowIdx + 1 >= m_VisualRowCount)
 		return std::make_pair(0, false);
 
 	// 아래 1개를 검사해야 하는데 범위를 벗어났다면 X
-	if (RowIdx - 1 < 0)
+	if (NewRowIdx - 1 < 0)
 		return std::make_pair(0, false);
 
-	Cell_Type_Binary InitType = m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType();
+	Cell_Type_Binary InitType = m_vecCells[NewRowIdx * m_ColCount + NewColIdx]->GetCellType();
 
 	bool IsAllMatch = true;
 
@@ -2917,16 +2932,16 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int RowIdx, int ColIdx, in
 	int MatchScore = 5;
 
 	int NxtIndex = -1;
-	int CurIndex = RowIdx * m_ColCount + ColIdx;
+	int CurIndex = NewRowIdx * m_ColCount + NewColIdx;
 
 	bool IsTwoCombination = false;
 
 	// 현재 Row 
 	// && 현재 Col 에서부터 오른쪽 2칸을 검사한다.
-	for (int col = ColIdx; col <= ColIdx + 2; col++)
+	for (int col = NewColIdx; col <= NewColIdx + 2; col++)
 	{
-		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType ||
-			m_vecMatchState[RowIdx * m_ColCount + col] == Match_State::Bag)
+		if (m_vecCells[NewRowIdx * m_ColCount + col]->GetCellType() != InitType ||
+			m_vecMatchState[NewRowIdx * m_ColCount + col] == Match_State::Bag)
 		{
 			IsAllMatch = false;
 			return std::make_pair(0, false);
@@ -2935,9 +2950,9 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int RowIdx, int ColIdx, in
 		IsTwoCombination = false;
 
 		// 1) 조합 점수 검사
-		if (col < ColIdx + 2)
+		if (col < NewColIdx + 2)
 		{
-			NxtIndex = RowIdx * m_CellsMoving + (col + 1);
+			NxtIndex = NewRowIdx * m_CellsMoving + (col + 1);
 
 			if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal &&
 				(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
@@ -2961,11 +2976,11 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int RowIdx, int ColIdx, in
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
 		}
 
-		MatchIdxList.push_back(RowIdx * m_ColCount + col);
+		MatchIdxList.push_back(NewRowIdx * m_ColCount + col);
 	}
 
 	// 위 1개, 아래 1개 Row 를 고려한다.
-	NxtIndex = (RowIdx + 1) * m_CellsMoving + ColIdx;
+	NxtIndex = (NewRowIdx + 1) * m_CellsMoving + NewColIdx;
 
 	if (m_vecCells[NxtIndex]->GetCellType() != InitType ||
 		m_vecMatchState[NxtIndex] == Match_State::Bag)
@@ -2993,10 +3008,10 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int RowIdx, int ColIdx, in
 		MatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
 	}
 
-	MatchIdxList.push_back((RowIdx + 1) * m_ColCount + ColIdx);
+	MatchIdxList.push_back((NewRowIdx + 1) * m_ColCount + NewColIdx);
 
 	// 아래를 검사한다.
-	NxtIndex = (RowIdx - 1) * m_CellsMoving + ColIdx;
+	NxtIndex = (NewRowIdx - 1) * m_CellsMoving + NewColIdx;
 
 	if (m_vecCells[NxtIndex]->GetCellType() != InitType ||
 		m_vecMatchState[NxtIndex] == Match_State::Bag)
@@ -3024,7 +3039,7 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int RowIdx, int ColIdx, in
 		MatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
 	}
 
-	MatchIdxList.push_back((RowIdx - 1) * m_ColCount + ColIdx);
+	MatchIdxList.push_back((NewRowIdx - 1) * m_ColCount + NewColIdx);
 
 	// 만약 모드 맞았다면
 	if (IsAllMatch)
@@ -3043,23 +3058,24 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int RowIdx, int ColIdx, in
 	return std::make_pair(0, false);
 }
 
-std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int RowIdx, int ColIdx, int Index, std::vector<int>& MatchIdxList)
+std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
+	int Index, std::vector<int>& MatchIdxList)
 {
 	MatchIdxList.clear();
 
 	// 왼쪽 2개를 검사해야 하는데 범위를 벗어났다면 X
-	if (ColIdx - 2 < 0)
+	if (NewColIdx - 2 < 0)
 		return std::make_pair(0, false);
 
 	// 위 1개를 검사해야 하는데 범위를 벗어났다면 X
-	if (RowIdx + 1 >= m_VisualRowCount)
+	if (NewRowIdx + 1 >= m_VisualRowCount)
 		return std::make_pair(0, false);
 
 	// 아래 1개를 검사해야 하는데 범위를 벗어났다면 X
-	if (RowIdx - 1 < 0)
+	if (NewRowIdx - 1 < 0)
 		return std::make_pair(0, false);
 
-	Cell_Type_Binary InitType = m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType();
+	Cell_Type_Binary InitType = m_vecCells[NewRowIdx * m_ColCount + NewColIdx]->GetCellType();
 
 	bool IsAllMatch = true;
 
@@ -3069,25 +3085,25 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int RowIdx, int ColIdx, int
 
 	int NxtIndex = -1;
 
-	int CurIndex = RowIdx * m_ColCount + ColIdx;
+	int CurIndex = NewRowIdx * m_ColCount + NewColIdx;
 
 	bool IsTwoCombination = false;
 
 	// 현재 Row 
 	// && 현재 Col 에서부터 왼쪽 2칸을 검사한다.
-	for (int col = ColIdx; col >= ColIdx - 2; col--)
+	for (int col = NewColIdx; col >= NewColIdx - 2; col--)
 	{
-		if (m_vecCells[RowIdx * m_ColCount + col]->GetCellType() != InitType ||
-			m_vecMatchState[RowIdx * m_ColCount + col] == Match_State::Bag)
+		if (m_vecCells[NewRowIdx * m_ColCount + col]->GetCellType() != InitType ||
+			m_vecMatchState[NewRowIdx * m_ColCount + col] == Match_State::Bag)
 		{
 			IsAllMatch = false;
 			return std::make_pair(0, false);
 		}
 
 		// 1) 조합 점수 검사
-		if (col > ColIdx - 2)
+		if (col > NewColIdx - 2)
 		{
-			NxtIndex = RowIdx * m_CellsMoving + (col - 1);
+			NxtIndex = NewRowIdx * m_CellsMoving + (col - 1);
 
 			if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal &&
 				(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
@@ -3111,12 +3127,12 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int RowIdx, int ColIdx, int
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
 		}
 
-		MatchIdxList.push_back(RowIdx * m_ColCount + col);
+		MatchIdxList.push_back(NewRowIdx * m_ColCount + col);
 	}
 
 	// 위 1개, 아래 1개 Row 를 고려한다.
 	// 위를 고려한다.
-	NxtIndex = (RowIdx + 1) * m_CellsMoving + ColIdx;
+	NxtIndex = (NewRowIdx + 1) * m_CellsMoving + NewColIdx;
 
 	if (m_vecCells[NxtIndex]->GetCellType() != InitType ||
 		m_vecMatchState[NxtIndex] == Match_State::Bag)
@@ -3148,7 +3164,7 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int RowIdx, int ColIdx, int
 
 
 	// 아래를 고려한다.
-	NxtIndex = (RowIdx - 1) * m_CellsMoving + ColIdx;
+	NxtIndex = (NewRowIdx - 1) * m_CellsMoving + NewColIdx;
 
 	if (m_vecCells[NxtIndex]->GetCellType() != InitType ||
 		m_vecMatchState[NxtIndex] == Match_State::Bag)
@@ -3176,7 +3192,7 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int RowIdx, int ColIdx, int
 		MatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
 	}
 
-	MatchIdxList.push_back((RowIdx - 1) * m_ColCount + ColIdx);
+	MatchIdxList.push_back((NewRowIdx - 1) * m_ColCount + NewColIdx);
 
 	// 만약 모드 맞았다면
 	if (IsAllMatch)
@@ -3195,23 +3211,24 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int RowIdx, int ColIdx, int
 	return std::make_pair(0, false);
 }
 
-std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int RowIdx, int ColIdx, int Index, std::vector<int>& MatchIdxList)
+std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
+	int Index, std::vector<int>& MatchIdxList)
 {
 	MatchIdxList.clear();
 
 	// 아래 2개를 검사해야 하는데 범위를 벗어났다면 X
-	if (RowIdx - 2 < 0)
+	if (NewRowIdx - 2 < 0)
 		return std::make_pair(0, false);
 
 	// 왼쪽 1개를 검사해야 하는데 범위를 벗어났다면 X
-	if (ColIdx + 1 >= m_ColCount)
+	if (NewColIdx + 1 >= m_ColCount)
 		return std::make_pair(0, false);
 
 	// 오른쪽 1개를 검사해야 하는데 범위를 벗어났다면 X
-	if (ColIdx - 1 < 0)
+	if (NewColIdx - 1 < 0)
 		return std::make_pair(0, false);
 
-	Cell_Type_Binary InitType = m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType();
+	Cell_Type_Binary InitType = m_vecCells[NewRowIdx * m_ColCount + NewColIdx]->GetCellType();
 
 	bool IsAllMatch = true;
 
@@ -3220,7 +3237,7 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int RowIdx, int ColIdx, int
 	int MatchScore = 5;
 
 	int NxtIndex = -1;
-	int CurIndex = RowIdx * m_ColCount + ColIdx;
+	int CurIndex = NewRowIdx * m_ColCount + NewColIdx;
 
 	bool IsTwoCombination = false;
 
@@ -3230,10 +3247,10 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int RowIdx, int ColIdx, int
 
 	// 현재 Row 
 	// && 현재 Row 에서부터 아래 2칸을 검사한다.
-	for (int row = RowIdx; row >= RowIdx - 2; row--)
+	for (int row = NewRowIdx; row >= NewRowIdx - 2; row--)
 	{
-		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType ||
-			m_vecMatchState[row * m_ColCount + ColIdx] == Match_State::Bag)
+		if (m_vecCells[row * m_ColCount + NewColIdx]->GetCellType() != InitType ||
+			m_vecMatchState[row * m_ColCount + NewColIdx] == Match_State::Bag)
 		{
 			IsAllMatch = false;
 
@@ -3242,9 +3259,9 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int RowIdx, int ColIdx, int
 
 
 		// 1) 조합 점수 검사
-		if (row > RowIdx - 2)
+		if (row > NewRowIdx - 2)
 		{
-			NxtIndex = (row - 1) * m_CellsMoving + ColIdx;
+			NxtIndex = (row - 1) * m_CellsMoving + NewColIdx;
 
 			if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal &&
 				(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
@@ -3268,12 +3285,12 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int RowIdx, int ColIdx, int
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
 		}
 
-		MatchIdxList.push_back(row * m_ColCount + ColIdx);
+		MatchIdxList.push_back(row * m_ColCount + NewColIdx);
 	}
 
 	// 왼쪽 1개, 오른쪽 1개 Row 를 고려한다.
 	// 왼쪽을 고려한다.
-	NxtIndex = RowIdx * m_CellsMoving + (ColIdx - 1);
+	NxtIndex = NewRowIdx * m_CellsMoving + (NewColIdx - 1);
 
 	if (m_vecCells[NxtIndex]->GetCellType() != InitType ||
 		m_vecMatchState[NxtIndex] == Match_State::Bag)
@@ -3304,7 +3321,7 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int RowIdx, int ColIdx, int
 	MatchIdxList.push_back(NxtIndex);
 
 	// 오른쪽을 고려한다.
-	NxtIndex = RowIdx * m_CellsMoving + (ColIdx + 1);
+	NxtIndex = NewRowIdx * m_CellsMoving + (NewColIdx + 1);
 
 	if (m_vecCells[NxtIndex]->GetCellType() != InitType ||
 		m_vecMatchState[NxtIndex] == Match_State::Bag)
@@ -3351,23 +3368,24 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int RowIdx, int ColIdx, int
 	return std::make_pair(0, false);
 }
 
-std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int RowIdx, int ColIdx, int Index, std::vector<int>& MatchIdxList)
+std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
+	int Index, std::vector<int>& MatchIdxList)
 {
 	MatchIdxList.clear();
 
 	// 위 2개를 검사해야 하는데 범위를 벗어났다면 X
-	if (RowIdx + 2 >= m_VisualRowCount)
+	if (NewRowIdx + 2 >= m_VisualRowCount)
 		return std::make_pair(0, false);
 
 	// 왼쪽 1개를 검사해야 하는데 범위를 벗어났다면 X
-	if (ColIdx + 1 >= m_ColCount)
+	if (NewColIdx + 1 >= m_ColCount)
 		return std::make_pair(0, false);
 
 	// 오른쪽 1개를 검사해야 하는데 범위를 벗어났다면 X
-	if (ColIdx - 1 < 0)
+	if (NewColIdx - 1 < 0)
 		return std::make_pair(0, false);
 
-	Cell_Type_Binary InitType = m_vecCells[RowIdx * m_ColCount + ColIdx]->GetCellType();
+	Cell_Type_Binary InitType = m_vecCells[NewRowIdx * m_ColCount + NewColIdx]->GetCellType();
 
 	bool IsAllMatch = true;
 
@@ -3376,16 +3394,16 @@ std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int RowIdx, int ColIdx, int I
 	int MatchScore = 5;
 
 	int NxtIndex = -1;
-	int CurIndex = RowIdx * m_ColCount + ColIdx;
+	int CurIndex = NewRowIdx * m_ColCount + NewColIdx;
 
 	bool IsTwoCombination = false;
 
 	// 현재 Row 
 	// && 현재 Row 에서부터 위 2칸을 검사한다.
-	for (int row = RowIdx; row <= RowIdx + 2; row++)
+	for (int row = NewRowIdx; row <= NewRowIdx + 2; row++)
 	{
-		if (m_vecCells[row * m_ColCount + ColIdx]->GetCellType() != InitType ||
-			m_vecMatchState[row * m_ColCount + ColIdx] == Match_State::Bag)
+		if (m_vecCells[row * m_ColCount + NewColIdx]->GetCellType() != InitType ||
+			m_vecMatchState[row * m_ColCount + NewColIdx] == Match_State::Bag)
 		{
 			IsAllMatch = false;
 			return std::make_pair(0, false);
@@ -3394,9 +3412,9 @@ std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int RowIdx, int ColIdx, int I
 		IsTwoCombination = false;
 
 		// 1) 조합 점수 검사
-		if (row < RowIdx + 2)
+		if (row < NewRowIdx + 2)
 		{
-			NxtIndex = (row + 1) * m_CellsMoving + ColIdx;
+			NxtIndex = (row + 1) * m_CellsMoving + NewColIdx;
 
 			if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal &&
 				(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
@@ -3420,12 +3438,12 @@ std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int RowIdx, int ColIdx, int I
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
 		}
 
-		MatchIdxList.push_back(row * m_ColCount + ColIdx);
+		MatchIdxList.push_back(row * m_ColCount + NewColIdx);
 	}
 
 	// 왼쪽 1개, 오른쪽 1개 Row 를 고려한다.
 	// 왼쪽 1개를 고려한다.
-	NxtIndex = RowIdx * m_ColCount + (ColIdx - 1);
+	NxtIndex = NewRowIdx * m_ColCount + (NewColIdx - 1);
 
 	if (m_vecCells[NxtIndex]->GetCellType() != InitType ||
 		m_vecMatchState[NxtIndex] == Match_State::Bag)
@@ -3456,7 +3474,7 @@ std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int RowIdx, int ColIdx, int I
 	MatchIdxList.push_back(NxtIndex);
 
 	// 오른쪽 1개를 고려한다.
-	NxtIndex = RowIdx * m_ColCount + (ColIdx + 1);
+	NxtIndex = NewRowIdx * m_ColCount + (NewColIdx + 1);
 
 	if (m_vecCells[NxtIndex]->GetCellType() != InitType ||
 		m_vecMatchState[NxtIndex] == Match_State::Bag)
@@ -3506,8 +3524,214 @@ std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int RowIdx, int ColIdx, int I
 void CBoard::SetBagAfterState()
 {}
 
-void CBoard::CheckAI()
-{}
+bool CBoard::CheckMatchExist()
+{
+	for (int row = 0; row < m_VisualRowCount; row++)
+	{
+		for (int col = 0; col < m_ColCount; col++)
+		{
+			if (m_vecCellIsMatch[row * m_ColCount + col])
+				return true;
+		}
+	}
+
+	return false;
+}
+
+bool CBoard::CheckAIAndPossibleMatch()
+{
+	if (m_IsMatchExist)
+		return false;
+
+	// Cell 들이 움직이지 않고 있을 때만 검사한다
+	if (m_CellsMoving)
+		return false;
+
+	// 현재 이동시킨 Cell 을 처리중이라면
+	if (m_FirstClickCell || m_SecClickCell)
+		return false;
+
+	bool Match = true;
+
+	int PossibleMatchExist = false;
+
+	int TotalMatchMaxScore = 0;
+
+	std::vector<int> vecFinalMatchedIdxs;
+	vecFinalMatchedIdxs.reserve(10);
+
+	// 1) Match 여부 검사
+	// - Row, Col, BagMatch 각각에서는 Match 여부, Score, MatchIdx 를 return 받는다.
+	// 아니, 차례대로 MatchIdx 를 담을 vector는 & 로 넘겨주고, 그 단에서 vector 에 넣어주게 하고
+	// 각 함수의 실행이 끝날 때마다 점수를 비교하여, 더 높은 녀석들로 해당 vector를 채워준다.
+	// 그렇게 해서, Match 일 때의 점수 구하고
+	// 각 cell 에 대해 4방향 이동
+	int nRow = -1, nCol = -1;
+	
+	for (int row = 0; row < m_VisualRowCount; row++)
+	{
+		for (int col = 0; col < m_ColCount; col++)
+		{
+			for (int k = 0; k < 4; k++)
+			{
+				nRow = row + m_DRow[k];
+				nCol   = col + m_DCol[k];
+
+				// 범위 제한
+				if (nRow < 0 || nRow >= m_VisualRowCount || nCol < 0 || nCol >= m_ColCount)
+					continue;
+
+				std::vector<int> PartMatchedIdxs;
+
+				std::vector<int> TempMatchedIdxs;
+				TempMatchedIdxs.reserve(10);
+
+				int TempMaxScore = 0;
+
+				bool PartMatch = false;
+
+				// 1) Row Match
+				// 사실상 row, col 애들이 nRow, nCol 으로 가서, Match 여부를 검사하게 되는 것이므로 
+				// std::pair<int, bool> RowMatchResult = CheckAIRowMatch(nRow,nCol, row, col, TempMatchedIdxs);
+				std::pair<int, bool> RowMatchResult = CheckAIRowMatch(row,col,nRow,nCol, TempMatchedIdxs);
+
+				if (RowMatchResult.second == true)
+				{
+					TempMaxScore = RowMatchResult.first;
+
+					PartMatchedIdxs = TempMatchedIdxs;
+
+					PartMatch = true;
+				}
+
+				// 2) Col Match
+				// std::pair<int, bool> ColMatchResult = CheckAIColMatch(nRow, nCol, row, col, TempMatchedIdxs);
+				std::pair<int, bool> ColMatchResult = CheckAIColMatch(row, col, nRow, nCol, TempMatchedIdxs);
+
+				if (ColMatchResult.second == true)
+				{
+					if (TempMaxScore < ColMatchResult.first)
+					{
+						TempMaxScore = ColMatchResult.first;
+
+						PartMatchedIdxs = TempMatchedIdxs;
+					}
+
+					PartMatch = true;
+				}
+
+				// 3) BagMatch 
+				// std::pair<int, bool> BagMatchResult = CheckAIBagMatch(nRow, nCol, row, col, TempMatchedIdxs);
+				std::pair<int, bool> BagMatchResult = CheckAIBagMatch(row, col, nRow, nCol, TempMatchedIdxs);
+
+				if (BagMatchResult.second == true)
+				{
+					if (TempMaxScore < BagMatchResult.first)
+					{
+						TempMaxScore = BagMatchResult.first;
+
+						PartMatchedIdxs = TempMatchedIdxs;
+					}
+
+					PartMatch = true;
+				}
+
+				if (PartMatch)
+				{
+					PossibleMatchExist = true;
+
+					// Max Score 도 갱신한다.
+					if (TotalMatchMaxScore < TempMaxScore)
+					{
+						TotalMatchMaxScore = TempMaxScore;
+
+						vecFinalMatchedIdxs = PartMatchedIdxs;
+					}
+				}
+			}
+		}
+	}
+
+	// 2) Match 없을 때 검사 (인접 조합)
+	bool  TotalCombExist = false;
+
+	int TotalCombMaxScore = 0;
+
+	int CurIndex = -1, NxtIndex = -1;
+
+	std::vector<int> vecCombMatchIdx;
+	vecCombMatchIdx.reserve(2);
+
+	for (int row = 0; row < m_VisualRowCount; row++)
+	{
+		for (int col = 0; col < m_ColCount; col++)
+		{
+			for (int k = 0; k < 4; k++)
+			{
+				nRow = row + m_DRow[k];
+				nCol  = col + m_DCol[k];
+
+				// 범위 제한
+				if (nRow < 0 || nRow >= m_VisualRowCount || nCol < 0 || nCol >= m_ColCount)
+					continue;
+
+				CurIndex = row * m_ColCount + col;
+				NxtIndex = nRow * m_ColCount + nCol;
+
+				if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal &&
+					(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
+				{
+					TotalCombExist = true;
+
+					int CurrentCombScore = CalculateAICombScore(m_vecCells[CurIndex], m_vecCells[NxtIndex]);
+
+					if (TotalCombMaxScore < CurrentCombScore)
+					{
+						TotalCombMaxScore = CurrentCombScore;
+
+						vecCombMatchIdx = std::vector<int>{ CurIndex , NxtIndex};
+					}
+				}
+			}
+		}
+	}
+
+	// 이러한 로직을 모든 Cell 에 대해 진행한다.
+
+	// 만약, 이럼에도 불구하고, 모든 경우에 대해
+	// - 즉, Match도 없고
+	// - 인접 조합도 없으면
+	// false를 리턴해서
+	// 다시 Suffle이 일어나게 한다.
+	if (!TotalCombExist && !PossibleMatchExist)
+		return false;
+
+	// 그게 아니라면,
+	// Match 와 Comb 의 점수를 비교하고
+	// 더 높은 점수의 Match Idx 들을 Notice Animation 으로 바꿔준다
+	if (TotalCombMaxScore <= TotalMatchMaxScore)
+	{
+		size_t Size = vecFinalMatchedIdxs.size();
+
+		for (size_t i = 0; i < Size; i++)
+		{
+			// m_vecCells[vecFinalMatchedIdxs[i]]->SetCurrentAnimation("Notice");
+			m_vecCells[vecFinalMatchedIdxs[i]]->SetOpacity(0.5f);
+		}
+	}
+	else
+	{
+		size_t Size = vecCombMatchIdx.size();
+
+		for (size_t i = 0; i < Size; i++)
+		{
+			// m_vecCells[vecCombMatchIdx[i]]->SetCurrentAnimation("Notice");
+			m_vecCells[vecCombMatchIdx[i]]->SetOpacity(0.5f);
+		}
+	}
+
+	return true;
+}
 
 int CBoard::CalculateAICombScore(CCell* FirstCell, CCell* SecondCell)
 {
@@ -3584,6 +3808,7 @@ std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 							 int NewRowIdx, int    NewColIdx, std::vector<int>& MatchedIdxs)
 {
 	// Match 된 Idx 정보들을 담을 배열 --> 이것은 그냥 외부에서 얻어온다.
+	MatchedIdxs.clear();
 	
 	// MatchedIdxs.reserve(m_VisualRowCount);
 
@@ -3634,9 +3859,19 @@ std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 
 			Cell_Type_Binary InitCellType = m_vecCells[CheckStartRow * m_ColCount + NewColIdx]->GetCellType();
 
+			if (CheckStartRow == OriginRowIdx)
+			{
+				InitCellType = m_vecCells[CheckStartRow * m_ColCount + OriginColIdx]->GetCellType();
+			}
+
 			for (int StRow = CheckStartRow; StRow <= CheckEndRow; StRow++)
 			{
 				CurIndex = StRow * m_ColCount + NewColIdx;
+
+				if (StRow == OriginRowIdx)
+				{
+					CurIndex = StRow * m_ColCount + OriginColIdx;
+				}
 
 				Cell_Type_Binary CurCellType = m_vecCells[CurIndex]->GetCellType();
 
@@ -3662,6 +3897,11 @@ std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 				if (StRow <= CheckEndRow - 1)
 				{
 					NxtIndex = (StRow + 1) * m_ColCount + NewColIdx;
+
+					if (StRow + 1 == OriginRowIdx)
+					{
+						NxtIndex = (StRow + 1) * m_ColCount + OriginColIdx;
+					}
 
 					if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal && 
 						(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
@@ -3694,7 +3934,14 @@ std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 			{
 				for (int row = CheckStartRow; row <= CheckEndRow; row++)
 				{
-					MatchedIdxs.push_back(row * m_ColCount + NewColIdx);
+					int MatchIdx = row * m_ColCount + NewColIdx;
+
+					if (row == OriginRowIdx)
+					{
+						MatchIdx = row * m_ColCount + OriginColIdx;
+					}
+					
+					MatchedIdxs.push_back(MatchIdx);
 				}
 
 				PartRowMatchScore += CheckMatchNum;
@@ -3711,6 +3958,8 @@ std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 std::pair<int, bool> CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 	int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs)
 {
+	MatchedIdxs.clear();
+
 	// 최소 3개까지 조사, 최대 조사 개수는 Row // Col 여부에 따라 달라지게 될 것이다.
 	int MinCheckLength = 3, MaxCheckLength = m_ColCount;
 
@@ -3758,6 +4007,11 @@ std::pair<int, bool> CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 			{
 				CurIndex = NewRowIdx * m_ColCount + StCol;
 
+				if (StCol == OriginColIdx)
+				{
+					CurIndex = OriginRowIdx* m_ColCount + StCol;
+				}
+
 				Cell_Type_Binary CurCellType = m_vecCells[CurIndex]->GetCellType();
 
 				bool Result = (int)(m_vecCells[CurIndex]->GetCellType()) & (int)(InitCellType);
@@ -3782,6 +4036,11 @@ std::pair<int, bool> CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 				if (StCol <= CheckEndCol - 1)
 				{
 					NxtIndex = NewRowIdx * m_ColCount + (StCol + 1);
+
+					if (StCol + 1 == OriginColIdx)
+					{
+						NxtIndex = OriginRowIdx * m_ColCount + (StCol + 1);
+					}
 
 					if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal &&
 						(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
@@ -3812,6 +4071,13 @@ std::pair<int, bool> CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 			{
 				for (int col = CheckStartCol; col <= CheckEndCol; col++)
 				{
+					int MatchIdx = NewRowIdx * m_ColCount + col;
+
+					if (col == OriginColIdx)
+					{
+						MatchIdx = OriginRowIdx * m_ColCount + col;
+					}
+
 					MatchedIdxs.push_back(NewRowIdx * m_ColCount + col);
 				}
 
@@ -3835,80 +4101,144 @@ std::pair<int, bool> CBoard::CheckAIBagMatch(int OriginRowIdx, int OriginColIdx,
 	std::vector<int> TempMatchIdxList;
 	TempMatchIdxList.reserve(m_ColCount);
 
+	std::vector<int> FinalMatchIdxList;
+	FinalMatchIdxList.reserve(m_ColCount);
+
+	int TempMatchMaxScore = 0;
+
+	int FinalMatch = false;
+
 	int Index = NewRowIdx * m_ColCount + NewColIdx;
 
-	bool BoolRightDown = CheckBagRightDownMatch(NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+	std::pair<int, bool> BoolRightDown = CheckBagRightDownMatch(OriginRowIdx, OriginColIdx,
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList);
 
-	if (BoolRightDown)
+	if (BoolRightDown.second)
 	{
-		for (const auto& elem : TempMatchIdxList)
-			MatchedIdxs.push_back(elem);
+		FinalMatchIdxList = TempMatchIdxList;
+
+		FinalMatch = true;
+
+		TempMatchMaxScore = BoolRightDown.first;
 	}
 
-	bool BoolRightUp = CheckBagRightUpMatch(NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+	std::pair<int, bool> BoolRightUp = CheckBagRightUpMatch(OriginRowIdx, OriginColIdx, 
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList);
 
-	if (BoolRightUp)
+	if (BoolRightUp.second)
 	{
-		for (const auto& elem : TempMatchIdxList)
-			MatchedIdxs.push_back(elem);
+		if (TempMatchMaxScore < BoolRightUp.first)
+		{
+			TempMatchMaxScore = BoolRightUp.first;
+
+			FinalMatchIdxList = TempMatchIdxList;
+		}
+
+		FinalMatch = true;
 	}
 
-	bool BoolLeftDown = CheckBagLeftDownMatch(NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+	std::pair<int, bool> BoolLeftDown = CheckBagLeftDownMatch(OriginRowIdx, OriginColIdx, 
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList);
 
-	if (BoolLeftDown)
+	if (BoolLeftDown.second)
 	{
-		for (const auto& elem : TempMatchIdxList)
-			MatchedIdxs.push_back(elem);
+		if (TempMatchMaxScore < BoolLeftDown.first)
+		{
+			TempMatchMaxScore = BoolLeftDown.first;
+
+			FinalMatchIdxList = TempMatchIdxList;
+		}
+
+		FinalMatch = true;
 	}
 
-	bool BoolLeftUp = CheckBagLeftUpMatch(NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+	std::pair<int, bool> BoolLeftUp = CheckBagLeftUpMatch(OriginRowIdx, OriginColIdx, 
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList);
 
-	if (BoolLeftUp)
+	if (BoolLeftUp.second)
 	{
-		for (const auto& elem : TempMatchIdxList)
-			MatchedIdxs.push_back(elem);
+		if (TempMatchMaxScore < BoolLeftUp.first)
+		{
+			TempMatchMaxScore = BoolLeftUp.first;
+
+			FinalMatchIdxList = TempMatchIdxList;
+		}
+
+		FinalMatch = true;
 	}
 
-	bool BoolCenterRight = CheckBagCenterRightMatch(NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+	std::pair<int, bool> BoolCenterRight = CheckBagCenterRightMatch(OriginRowIdx, OriginColIdx, 
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList);
 
-	if (BoolCenterRight)
+	if (BoolCenterRight.second)
 	{
-		for (const auto& elem : TempMatchIdxList)
-			MatchedIdxs.push_back(elem);
+		if (TempMatchMaxScore < BoolCenterRight.first)
+		{
+			TempMatchMaxScore = BoolCenterRight.first;
+
+			FinalMatchIdxList = TempMatchIdxList;
+		}
+
+		FinalMatch = true;
 	}
 
-	bool BoolCenterLeft = CheckBagCenterLeftMatch(NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+	std::pair<int, bool> BoolCenterLeft = CheckBagCenterLeftMatch(OriginRowIdx, OriginColIdx, 
+NewRowIdx, NewColIdx, Index, TempMatchIdxList);
 
-	if (BoolCenterLeft)
+	if (BoolCenterLeft.second)
 	{
-		for (const auto& elem : TempMatchIdxList)
-			MatchedIdxs.push_back(elem);
+		if (TempMatchMaxScore < BoolCenterLeft.first)
+		{
+			TempMatchMaxScore = BoolCenterLeft.first;
+
+			FinalMatchIdxList = TempMatchIdxList;
+		}
+
+		FinalMatch = true;
 	}
 
-	bool BoolCenterDown = CheckBagCenterDownMatch(NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+	std::pair<int, bool> BoolCenterDown = CheckBagCenterDownMatch(OriginRowIdx, OriginColIdx, 
+NewRowIdx, NewColIdx, Index, TempMatchIdxList);
 
-	if (BoolCenterDown)
+	if (BoolCenterDown.second)
 	{
-		for (const auto& elem : TempMatchIdxList)
-			MatchedIdxs.push_back(elem);
+		if (TempMatchMaxScore < BoolCenterDown.first)
+		{
+			TempMatchMaxScore = BoolCenterDown.first;
+
+			FinalMatchIdxList = TempMatchIdxList;
+		}
+
+		FinalMatch = true;
 	}
 
-	bool BoolCenterUp = CheckBagCenterUpMatch(NewRowIdx, NewColIdx, Index, TempMatchIdxList);
+	std::pair<int, bool> BoolCenterUp = CheckBagCenterUpMatch(OriginRowIdx, OriginColIdx, 
+NewRowIdx, NewColIdx, Index, TempMatchIdxList);
 
-	if (BoolCenterUp)
+	if (BoolCenterUp.second)
 	{
-		for (const auto& elem : TempMatchIdxList)
-			MatchedIdxs.push_back(elem);
+		if (TempMatchMaxScore < BoolCenterUp.first)
+		{
+			TempMatchMaxScore = BoolCenterUp.first;
+
+			FinalMatchIdxList = TempMatchIdxList;
+		}
+
+		FinalMatch = true;
 	}
 
-	bool Result = BoolRightDown || BoolRightUp || BoolLeftDown || BoolLeftUp ||
-		BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
+	/*
+	bool Result = BoolRightDown.second || BoolRightUp.second || BoolLeftDown.second || BoolLeftUp.second ||
+		BoolCenterRight.second || BoolCenterLeft.second || BoolCenterDown.second || BoolCenterUp.second;
+	*/
 
-	// todo :Match 여부와 별개로, 여기서는 조합을 고려한다.
-	// 주변 4방향으로 인접한 녀석들이 있는지를 조사할 것이다.
+	if (FinalMatch)
+	{
+		MatchedIdxs = FinalMatchIdxList;
 
-	// return BoolRightDown || BoolRightUp || BoolLeftDown || BoolLeftUp ||
-	//	BoolCenterRight || BoolCenterLeft || BoolCenterDown || BoolCenterUp;
+		return std::make_pair(TempMatchMaxScore, true);
+	}
+
 
 	return std::make_pair(0, false);
 }
@@ -3960,6 +4290,8 @@ void CBoard::Update(float DeltaTime)
 	// CreateNewCells();
 
 	FindMatchUpdate();
+
+	CheckAIAndPossibleMatch();
 }
 
 void CBoard::PostUpdate(float DeltaTime)

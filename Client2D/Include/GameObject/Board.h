@@ -37,6 +37,7 @@ private:
 
     // 각 Cell 이 현재 Match인지 아닌지
     std::vector<bool> m_vecCellIsMatch;
+    bool m_IsMatchExist;
 
     // 각 Cell 에서 Special 하게 터뜨리는 효과를 어떤 것을 적용할 것인가
     std::vector<Destroy_State> m_vecDestroyState;
@@ -138,17 +139,26 @@ private : // MirrorBall Match
     void SetMirrorBallDestroyInfo(int Index, Cell_Type_Binary DestroyType);
 private: // BagMatch
     bool CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked);
-    std::pair<int, bool> CheckBagRightDownMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
-    std::pair<int, bool> CheckBagRightUpMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
-    std::pair<int, bool> CheckBagLeftDownMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
-    std::pair<int, bool> CheckBagLeftUpMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
-    std::pair<int, bool> CheckBagCenterRightMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
-    std::pair<int, bool> CheckBagCenterLeftMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
-    std::pair<int, bool> CheckBagCenterDownMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
-    std::pair<int, bool> CheckBagCenterUpMatch(int RowIndex, int ColIndex, int Index, std::vector<int>& MatchIdxList);
+    std::pair<int, bool> CheckBagRightDownMatch(int OriginRowIndex, int OriginColIndex,
+        int NewRowIndex, int NewColIndex, int Index, std::vector<int>& MatchIdxList);
+    std::pair<int, bool> CheckBagRightUpMatch(int OriginRowIndex, int OriginColIndex,
+		int NewRowIndex, int NewColIndex, int Index, std::vector<int>& MatchIdxList);
+    std::pair<int, bool> CheckBagLeftDownMatch(int OriginRowIndex, int OriginColIndex,
+        int NewRowIndex, int NewColIndex, int Index, std::vector<int>& MatchIdxList);
+    std::pair<int, bool> CheckBagLeftUpMatch(int OriginRowIndex, int OriginColIndex,
+        int NewRowIndex, int NewColIndex, int Index, std::vector<int>& MatchIdxList);
+    std::pair<int, bool> CheckBagCenterRightMatch(int OriginRowIndex, int OriginColIndex,
+        int NewRowIndex, int NewColIndex, int Index, std::vector<int>& MatchIdxList);
+    std::pair<int, bool> CheckBagCenterLeftMatch(int OriginRowIndex, int OriginColIndex,
+        int NewRowIndex, int NewColIndex, int Index, std::vector<int>& MatchIdxList);
+    std::pair<int, bool> CheckBagCenterDownMatch(int OriginRowIndex, int OriginColIndex,
+        int NewRowIndex, int NewColIndex, int Index, std::vector<int>& MatchIdxList);
+    std::pair<int, bool> CheckBagCenterUpMatch(int OriginRowIndex, int OriginColIndex,
+        int NewRowIndex, int NewColIndex, int Index, std::vector<int>& MatchIdxList);
     void SetBagAfterState();
 private : // AI
-    void CheckAI();
+    bool CheckMatchExist();
+    bool CheckAIAndPossibleMatch();
     int CalculateAICombScore(CCell* FirstCell, CCell* SecondCell); 
     int CalculateAISpecialCellScore(CCell* FirstCell); 
     // Match 여부와 Score 를 리턴한다.
