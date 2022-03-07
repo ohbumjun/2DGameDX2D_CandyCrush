@@ -4783,7 +4783,7 @@ void CBoard::ClickCell(float DeltaTime)
 		{
 			m_MouseClick = Mouse_Click::None;
 
-			ResetClickBlockInfo();
+			ResetClickBlockInfo(); //
 
 			return;
 		}
