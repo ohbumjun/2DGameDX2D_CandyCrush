@@ -50,6 +50,8 @@ private:
 
     // AI Check는 딱 한번만 하게 하기 위함이다
     bool m_IsAIChecked;
+    float m_AICheckDelayTime;
+    float m_AICheckDelayTimeMax;
 
     // Mouse Click
     Mouse_Click m_MouseClick;

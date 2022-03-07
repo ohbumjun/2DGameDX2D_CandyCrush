@@ -15,7 +15,9 @@ CBoard::CBoard() :
 	m_DRow{ -1, 1, 0, 0 },
 	m_DCol{ 0, 0, 1, -1 },
 	m_IsCheckUpdateNeeded(false),
-	m_IsAIChecked(false)
+	m_IsAIChecked(false),
+	m_AICheckDelayTime(3.f),
+	m_AICheckDelayTimeMax(3.f)
 {
 }
 
@@ -1041,7 +1043,7 @@ void CBoard::SetNewIndexOfCells()
 
 bool CBoard::FindMatchUpdate()
 {
-	bool Match = true;
+	bool Match = true; //
 
 	// Cell 들이 움직이지 않고 있을 때만 검사한다
 	if (m_CellsMoving)
