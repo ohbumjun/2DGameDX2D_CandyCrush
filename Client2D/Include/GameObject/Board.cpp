@@ -5258,10 +5258,6 @@ void CBoard::ShuffleRandom(std::vector<CSharedPtr<CCell>>& VecCells)
 	{
 		Cell_Type_Binary CellBType = ChangeCellTypeToCellBinaryType((Cell_Type)(rand() % (int)Cell_Type::End));
 
-		// int Type = (int)(rand() % (int)Cell_Type::End);
-		// int Type = (rand() + 12) % Cell_Type::End;
-
-		// m_vecCells[i]->SetCellType((Cell_Type)Type);
 		m_vecCells[i]->SetCellType(CellBType);
 	}
 
@@ -5274,13 +5270,12 @@ void CBoard::ShuffleRandom(std::vector<CSharedPtr<CCell>>& VecCells)
 		{
 			Cell_Type_Binary CellBType = ChangeCellTypeToCellBinaryType((Cell_Type)(rand() % (int)Cell_Type::End));
 
-			// int Type = (int)(rand() % (int)Cell_Type::End);
-			// int Type = (rand() + 12) % Cell_Type::End;
-
-			// m_vecCells[i]->SetCellType((Cell_Type)Type);
 			m_vecCells[i]->SetCellType(CellBType);
 		}
 	}
+
+	// 관련 변수 초기화
+	m_IsAIChecked = false;
 
 	m_CellsMoving = false;
 }
