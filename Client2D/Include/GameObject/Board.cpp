@@ -243,55 +243,479 @@ CCell* CBoard::CreateSingleNewCell(const std::string& Name, int RowIndex, int Co
 	return Cell;
 }
 
-bool CBoard::IsMatchExistForCells(std::vector<CSharedPtr<CCell>>& vecCells)
+bool CBoard::IsRowMatch(int RowIndex, int ColIndex, int Index)
+{
+	// 최소 3개까지 조사, 최대 조사 개수는 Row // Col 여부에 따라 달라지게 될 것이다.
+	int MinCheckLength = 3, MaxCheckLength = m_VisualRowCount;
+
+	// Index : 현재 검사하는 Cell의 Index
+	int CurIndex = -1;
+
+	int CheckStartRow = -1, CheckEndRow = -1;
+
+	// Match 결과
+	bool Match = false;
+
+	// 최대 --> 최소 길이 순으로 조사하기
+	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
+	{
+		for (int StartRowOffset = 0; StartRowOffset <= CheckMatchNum - 1; StartRowOffset++)
+		{
+			bool IsPartRowMatch = true;
+
+			// 현재 ClickCell 이 포함된 Row 범위에 대해서만 조사할 것이다.
+			// 아래 범위에서, 위로 올라가면서 검사 시작 Row 를 설정해줄 것이다.
+			CheckStartRow = (RowIndex + StartRowOffset) - (CheckMatchNum - 1);
+
+			// 아래로 범위가 벗어난 경우
+			if (CheckStartRow < 0)
+			{
+				IsPartRowMatch = false;
+				continue;
+			}
+
+			// 위로 범위가 벗어난 경우
+			CheckEndRow = CheckStartRow + (CheckMatchNum - 1);
+
+			if (CheckEndRow >= m_VisualRowCount)
+			{
+				IsPartRowMatch = false;
+				break;
+			}
+
+			Cell_Type_Binary InitCellType = m_vecCells[CheckStartRow * m_ColCount + ColIndex]->GetCellType();
+
+			// Match 가 있는지 조사한다.
+			// 해당 길이로 아래 --> 위쪽 순서로 조사한다.
+			for (int StRow = CheckStartRow + 1; StRow <= CheckEndRow; StRow++)
+			{
+				// 첫번째와 나머지 녀석들이 같은지 체크한다 + Sliding Window 개념을 적용한다.
+				CurIndex = StRow * m_ColCount + ColIndex;
+
+				Cell_Type_Binary CurCellType = m_vecCells[CurIndex]->GetCellType();
+
+				bool Result = (int)(m_vecCells[CurIndex]->GetCellType()) & (int)(InitCellType);
+
+				if (((int)m_vecCells[CurIndex]->GetCellType() & (int)InitCellType) == false)
+				{
+					IsPartRowMatch = false;
+					break;
+				}
+
+				// 최초 Cell이 MirrorBall 일 때는 중간 중간 Cell Type을 Update 해줘야 한다.
+				if (InitCellType == Cell_Type_Binary::All)
+				{
+					InitCellType = m_vecCells[CurIndex]->GetCellType();
+				}
+			}
+
+			if (IsPartRowMatch)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+bool CBoard::IsColMatch(int RowIndex, int ColIndex, int Index)
+{
+	// 현재 검사하는 Cell의 Index
+	int CurIndex = -1;
+
+	// 최소 3개까지 조사, 최대 조사 개수는 Row // Col 여부에 따라 달라지게 될 것이다.
+	int MinCheckLength = 3, MaxCheckLength = m_ColCount;
+
+	int CheckStartCol = -1, CheckEndCol = -1;
+
+	// 최대 --> 최소 길이 순으로 조사하기
+	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
+	{
+		for (int StartColOffset = 0; StartColOffset <= CheckMatchNum - 1; StartColOffset++)
+		{
+			bool IsPartMatch = true;
+
+			// 현재 ClickCell 이 포함된 Row 범위에 대해서만 조사할 것이다.
+			CheckStartCol = (ColIndex + StartColOffset) - (CheckMatchNum - 1);
+
+			// 아래로 범위가 벗어난 경우
+			if (CheckStartCol < 0)
+			{
+				IsPartMatch = false;
+				continue;
+			}
+
+			// 오른쪽으로 범위가 벗어난 경우
+			CheckEndCol = CheckStartCol + (CheckMatchNum - 1);
+
+			if (CheckEndCol >= m_ColCount)
+			{
+				IsPartMatch = false;
+				break;
+			}
+
+			Cell_Type_Binary InitCellType = m_vecCells[RowIndex * m_ColCount + CheckStartCol]->GetCellType();
+
+			// 해당 길이로 왼쪽 --> 오른쪽 순서로 조사한다.
+			for (int StCol = CheckStartCol + 1; StCol <= CheckEndCol; StCol++)
+			{
+				CurIndex = RowIndex * m_ColCount + StCol;
+
+				Cell_Type_Binary CurCellType = m_vecCells[CurIndex]->GetCellType();
+
+				bool Result = (int)(m_vecCells[CurIndex]->GetCellType()) & (int)(InitCellType);
+
+				if (((int)m_vecCells[CurIndex]->GetCellType() & (int)InitCellType) == false)
+				{
+					IsPartMatch = false;
+					break;
+				}
+
+				if (InitCellType == Cell_Type_Binary::All)
+				{
+					InitCellType = m_vecCells[CurIndex]->GetCellType();
+				}
+			}
+
+			if (IsPartMatch)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+bool CBoard::IsPossibleMatchExistForCells()
+{
+	int nRow = -1, nCol = -1;
+
+	for (int row = 0; row < m_VisualRowCount; row++)
+	{
+		for (int col = 0; col < m_ColCount; col++)
+		{
+			for (int k = 0; k < 4; k++)
+			{
+				nRow = row + m_DRow[k];
+				nCol = col + m_DCol[k];
+
+				// 범위 제한
+				if (nRow < 0 || nRow >= m_VisualRowCount || nCol < 0 || nCol >= m_ColCount)
+					continue;
+
+				std::vector<int> PartMatchedIdxs;
+
+				std::vector<int> TempMatchedIdxs;
+				TempMatchedIdxs.reserve(10);
+
+				int TempMaxScore = 0;
+
+				bool PartMatch = false;
+
+				// 1) Row Match
+				// 사실상 row, col 애들이 nRow, nCol 으로 가서, Match 여부를 검사하게 되는 것이므로 
+				// std::pair<int, bool> RowMatchResult = CheckAIRowMatch(nRow,nCol, row, col, TempMatchedIdxs);
+				if (IsPossibleRowMatch(row, col, nRow, nCol))
+					return true;
+
+				// 2) Col Match
+				// std::pair<int, bool> ColMatchResult = CheckAIColMatch(nRow, nCol, row, col, TempMatchedIdxs);
+				if (IsPossibleColMatch(row, col, nRow, nCol))
+					return true;
+
+				// 3) BagMatch 
+				// std::pair<int, bool> BagMatchResult = CheckAIBagMatch(nRow, nCol, row, col, TempMatchedIdxs);
+				if (IsPossibleBagMatch(row, col, nRow, nCol))
+					return true;
+			}
+		}
+	}
+
+	// 2) Match 없을 때 검사 (인접 조합)
+	int CurIndex = -1, NxtIndex = -1;
+
+	std::vector<int> vecCombMatchIdx;
+	vecCombMatchIdx.reserve(2);
+
+	for (int row = 0; row < m_VisualRowCount; row++)
+	{
+		for (int col = 0; col < m_ColCount; col++)
+		{
+			for (int k = 0; k < 4; k++)
+			{
+				nRow = row + m_DRow[k];
+				nCol = col + m_DCol[k];
+
+				// 범위 제한
+				if (nRow < 0 || nRow >= m_VisualRowCount || nCol < 0 || nCol >= m_ColCount)
+					continue;
+
+				CurIndex = row * m_ColCount + col;
+				NxtIndex = nRow * m_ColCount + nCol;
+
+				if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal &&
+					(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
+				{
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+bool CBoard::IsPossibleRowMatch(int OriginRowIdx, int OriginColIdx, 
+	int NewRowIdx, int NewColIdx)
+{
+	int MinCheckLength = 3, MaxCheckLength = m_VisualRowCount;
+
+	int CheckStartRow = -1, CheckEndRow = -1;
+
+	int CurIndex = -1, NxtIndex = -1;
+
+	// 새로운 위치에서의 Row Match 여부를 살핀다
+	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
+	{
+		// 특정 길이에서의 Row Match 여부 
+		bool IsPartRowMatch = false;
+
+		for (int StartRowOffset = 0; StartRowOffset <= CheckMatchNum - 1; StartRowOffset++)
+		{
+			bool IsRowMatch = true;
+
+			// 현재 ClickCell 이 포함된 Row 범위에 대해서만 조사할 것이다.
+			// 아래 범위에서, 위로 올라가면서 검사 시작 Row 를 설정해줄 것이다.
+			CheckStartRow = (NewRowIdx + StartRowOffset) - (CheckMatchNum - 1);
+
+			// 아래로 범위가 벗어난 경우
+			if (CheckStartRow < 0)
+			{
+				IsRowMatch = false;
+				continue;
+			}
+
+			// 위로 범위가 벗어난 경우
+			CheckEndRow = CheckStartRow + (CheckMatchNum - 1);
+
+			if (CheckEndRow >= m_VisualRowCount)
+			{
+				IsRowMatch = false;
+				// 어차피 여기예 계속 걸릴 것이므로 ( 왜냐하면, CheckEndRow는 계속 증가 ) --> continue 가 아니라 break 세팅
+				break;
+			}
+
+			Cell_Type_Binary InitCellType = m_vecCells[CheckStartRow * m_ColCount + NewColIdx]->GetCellType();
+
+			if (CheckStartRow == OriginRowIdx)
+			{
+				InitCellType = m_vecCells[CheckStartRow * m_ColCount + OriginColIdx]->GetCellType();
+			}
+
+			for (int StRow = CheckStartRow; StRow <= CheckEndRow; StRow++)
+			{
+				CurIndex = StRow * m_ColCount + NewColIdx;
+
+				if (StRow == OriginRowIdx)
+				{
+					CurIndex = StRow * m_ColCount + OriginColIdx;
+				}
+
+				Cell_Type_Binary CurCellType = m_vecCells[CurIndex]->GetCellType();
+
+				bool Result = (int)(m_vecCells[CurIndex]->GetCellType()) & (int)(InitCellType);
+
+				if (((int)m_vecCells[CurIndex]->GetCellType() & (int)InitCellType) == false)
+				{
+					IsRowMatch = false;
+					break;
+				}
+
+				// 최초 Cell이 MirrorBall 일 때는 중간 중간 Cell Type을 Update 해줘야 한다.
+				if (InitCellType == Cell_Type_Binary::All)
+				{
+					InitCellType = m_vecCells[CurIndex]->GetCellType();
+				}
+			}
+
+			// 만약 해당 Row(세로)가 Match 라면, 해당 Idx 들을 MatchIdxs Vector에 넣어주고 return;
+			// 그리고 함수를 종료한다.
+			if (IsRowMatch)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+bool CBoard::IsPossibleColMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx)
+{
+	int MinCheckLength = 3, MaxCheckLength = m_ColCount;
+
+	int CheckStartCol = -1, CheckEndCol = -1;
+
+	int CurIndex = -1, NxtIndex = -1;
+
+	// 최대 --> 최소 길이 순으로 조사하기
+	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
+	{
+		bool IsPartMatch = false;
+
+		for (int StartColOffset = 0; StartColOffset <= CheckMatchNum - 1; StartColOffset++)
+		{
+			bool IsColMatch = true;
+
+			// 현재 ClickCell 이 포함된 Row 범위에 대해서만 조사할 것이다.
+			CheckStartCol = (NewColIdx + StartColOffset) - (CheckMatchNum - 1);
+
+			// 아래로 범위가 벗어난 경우
+			if (CheckStartCol < 0)
+			{
+				IsColMatch = false;
+				continue;
+			}
+
+			// 오른쪽으로 범위가 벗어난 경우
+			CheckEndCol = CheckStartCol + (CheckMatchNum - 1);
+
+			if (CheckEndCol >= m_ColCount)
+			{
+				IsColMatch = false;
+				// continue;
+				// 여기 걸리면 이후에도 여기 계속 걸린다.
+				// 어차피 CheckEndCol 는 계속 증가하기 때문이다.
+				break;
+			}
+
+			int PartColMatchScore = 0;
+
+			Cell_Type_Binary InitCellType = m_vecCells[NewRowIdx * m_ColCount + CheckStartCol]->GetCellType();
+
+			// 해당 길이로 왼쪽 --> 오른쪽 순서로 조사한다.
+			for (int StCol = CheckStartCol + 1; StCol <= CheckEndCol; StCol++)
+			{
+				CurIndex = NewRowIdx * m_ColCount + StCol;
+
+				if (StCol == OriginColIdx)
+				{
+					CurIndex = OriginRowIdx * m_ColCount + StCol;
+				}
+
+				Cell_Type_Binary CurCellType = m_vecCells[CurIndex]->GetCellType();
+
+				bool Result = (int)(m_vecCells[CurIndex]->GetCellType()) & (int)(InitCellType);
+
+				if (((int)m_vecCells[CurIndex]->GetCellType() & (int)InitCellType) == false)
+				{
+					IsColMatch = false;
+					break;
+				}
+
+				// 최초 Cell이 MirrorBall 일 때는 중간 중간 Cell Type을 Update 해줘야 한다.
+				if (InitCellType == Cell_Type_Binary::All)
+				{
+					InitCellType = m_vecCells[CurIndex]->GetCellType();
+				}
+			}
+
+			// 만약 해당 Row (세로)가 Match 라면, 해당 Cell 들을 Match 상태로 바꿔준다.
+			if (IsColMatch)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+bool CBoard::IsPossibleBagMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx)
+{
+	// 모든 방향에 대한 조사를 한 이후 ,
+	// 중복 까지 제거해서
+	// 그 다음에 Return 할 것이다.
+
+	std::vector<int> TempMatchIdxList;
+	TempMatchIdxList.reserve(m_ColCount);
+
+	int TempMatchMaxScore = 0;
+
+	int FinalMatch = false;
+
+	int Index = NewRowIdx * m_ColCount + NewColIdx;
+
+	std::pair<int, bool> BoolRightDown = CheckBagRightDownMatch(OriginRowIdx, OriginColIdx,
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
+
+	if (BoolRightDown.second)
+		return true;
+
+	std::pair<int, bool> BoolRightUp = CheckBagRightUpMatch(OriginRowIdx, OriginColIdx,
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
+
+	if (BoolRightUp.second)
+		return true;
+
+	std::pair<int, bool> BoolLeftDown = CheckBagLeftDownMatch(OriginRowIdx, OriginColIdx,
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
+
+	if (BoolLeftDown.second)
+		return true;
+
+	std::pair<int, bool> BoolLeftUp = CheckBagLeftUpMatch(OriginRowIdx, OriginColIdx,
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
+
+	if (BoolLeftUp.second)
+		return true;
+
+	std::pair<int, bool> BoolCenterRight = CheckBagCenterRightMatch(OriginRowIdx, OriginColIdx,
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
+
+	if (BoolCenterRight.second)
+		return true;
+
+	std::pair<int, bool> BoolCenterLeft = CheckBagCenterLeftMatch(OriginRowIdx, OriginColIdx,
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
+
+	if (BoolCenterLeft.second)
+		return true;
+
+	std::pair<int, bool> BoolCenterDown = CheckBagCenterDownMatch(OriginRowIdx, OriginColIdx,
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
+
+	if (BoolCenterDown.second)
+		return true;
+
+	std::pair<int, bool> BoolCenterUp = CheckBagCenterUpMatch(OriginRowIdx, OriginColIdx,
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
+
+	if (BoolCenterUp.second)
+		return true;
+
+	return false;
+}
+
+bool CBoard::IsMatchExistForCells(std::vector<CSharedPtr<CCell>>& pVecCells)
 {
 	int RowIndex = -1, ColIndex = -1;
-
-	Match_State CellResult;
-	Match_State CellRowResult = Match_State::NoMatch;
-	Match_State CellColResult = Match_State::NoMatch;
-	Match_State CellBagResult = Match_State::NoMatch;
 
 	// 딱 반만 Update 한다.
 	int CheckMaxIndex = m_VisualRowCount * m_ColCount;
 
 	for (int i = 0; i < CheckMaxIndex; i++)
 	{
-		// 이 조건을 세팅해버리면, 가만히 있다가, 옆에 놈이 내려와서, 자기도 Match 가 되었는데
-		// 단순히 가만히 있었다는 이유로 Match 처리가 안되면 안되니까...?
-		// 1) 그런데 이 녀석들도 제거는 할텐데 ... ?
-		// - 이거 다시 하고, 제거 되는지만 확인해보자
-		// - 지금 확인할 것은, Special 로 바뀌는지 여부이다.
-		// - 그런데 다 바뀌는 것은 맞아 ?? 
-		// 2) 그 다음, 이거 주석 치고, 실행했더니, Match 인데도 안사라지는 놈들이 있다... 이건 뭐지 ?
+		RowIndex = pVecCells[i]->GetRowIndex();
+		ColIndex = pVecCells[i]->GetColIndex();
 
-		// if (m_vecCells[i]->IsPlacedNew() == false)
-		//	continue;
-
-		RowIndex = m_vecCells[i]->GetRowIndex();
-		ColIndex = m_vecCells[i]->GetColIndex();
-
-		// 1번째 Click Cell에 대한 검사 먼저 하기 
-		CellRowResult = CheckRowMatch(RowIndex, ColIndex, i, false);
-		CellColResult = CheckColMatch(RowIndex, ColIndex, i, false);
-
-		// 최대 녀석으로 세팅한다.
-		CellResult = (int)CellColResult > (int)CellRowResult ? CellColResult : CellRowResult;
-
-		// Bag 조합 검사하기
-		CellBagResult = CheckBagMatch(RowIndex, ColIndex, i, false) ? Match_State::Bag : Match_State::NoMatch;
-
-		// 최종 결과
-		CellResult = (int)CellResult > (int)CellBagResult ? CellResult : CellBagResult;
-
-		m_vecMatchState[i] = CellResult;
-
-		if (CellResult != Match_State::NoMatch)
-		{
-			// 모든 Match State 를 초기화 해주고 Return 
-
+		if (IsRowMatch(RowIndex, ColIndex, i))
 			return true;
-		}
+
+		if (IsColMatch(RowIndex, ColIndex, i))
+			return true;
 	}
 
 	return false;
@@ -4829,7 +5253,6 @@ void CBoard::ShuffleRandom(std::vector<CSharedPtr<CCell>>& VecCells)
 
 	// 1) Match도 없고 2) Possible Match는 있을 때까지 기다려야 한다.
 	// 2) 몇개 초기화 할 변수들이 존재하는가 ?
-	CheckMatchUpdate();
 
 	for (int i = 0; i < m_TotCount; i++)
 	{
@@ -4840,6 +5263,23 @@ void CBoard::ShuffleRandom(std::vector<CSharedPtr<CCell>>& VecCells)
 
 		// m_vecCells[i]->SetCellType((Cell_Type)Type);
 		m_vecCells[i]->SetCellType(CellBType);
+	}
+
+	while (true)
+	{
+		if (IsMatchExistForCells(m_vecCells) == false && IsPossibleMatchExistForCells())
+			break;
+
+		for (int i = 0; i < m_TotCount; i++)
+		{
+			Cell_Type_Binary CellBType = ChangeCellTypeToCellBinaryType((Cell_Type)(rand() % (int)Cell_Type::End));
+
+			// int Type = (int)(rand() % (int)Cell_Type::End);
+			// int Type = (rand() + 12) % Cell_Type::End;
+
+			// m_vecCells[i]->SetCellType((Cell_Type)Type);
+			m_vecCells[i]->SetCellType(CellBType);
+		}
 	}
 
 	m_CellsMoving = false;

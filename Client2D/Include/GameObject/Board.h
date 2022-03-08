@@ -203,6 +203,15 @@ private :
 
     // Shuffle Random
 private:
+    bool IsRowMatch(int RowIndex, int ColIndex, int Index);
+    bool IsColMatch(int RowIndex, int ColIndex, int Index);
+    bool IsPossibleMatchExistForCells();
+	bool IsPossibleRowMatch(int OriginRowIdx, int OriginColIdx, 
+        int NewRowIdx, int NewColIdx);
+    bool IsPossibleColMatch(int OriginRowIdx, int OriginColIdx, 
+        int NewRowIdx, int NewColIdx);
+    bool IsPossibleBagMatch(int OriginRowIdx, int OriginColIdx, 
+        int NewRowIdx, int NewColIdx);
     bool IsMatchExistForCells(std::vector<CSharedPtr<CCell>>& vecCells);
     void ShuffleRandom(std::vector<CSharedPtr<CCell>>& vecCells);
 
