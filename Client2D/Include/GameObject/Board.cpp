@@ -5276,6 +5276,6 @@ void CBoard::ShuffleRandom(std::vector<CSharedPtr<CCell>>& VecCells)
 
 	// 관련 변수 초기화
 	m_IsAIChecked = false;
-
+	m_AICheckDelayTime = m_AICheckDelayTimeMax;
 	m_CellsMoving = false;
 }
