@@ -181,10 +181,7 @@ void CBoard::CreateNewCellsAboveShownArea()
 	}
 
 	// Match State 초기화 해주기
-	for (int i = 0; i < m_TotCount; i++)
-	{
-		m_vecMatchState[i] = Match_State::NoMatch;
-	}
+	ResetMatchStateInfo();
 }
 
 CCell* CBoard::CreateSingleNewCell(const std::string& Name, int RowIndex, int ColIndex, 
@@ -244,6 +241,60 @@ CCell* CBoard::CreateSingleNewCell(const std::string& Name, int RowIndex, int Co
 	m_vecCells[Index] = Cell;
 
 	return Cell;
+}
+
+bool CBoard::IsMatchExistForCells(std::vector<CSharedPtr<CCell>>& vecCells)
+{
+	int RowIndex = -1, ColIndex = -1;
+
+	Match_State CellResult;
+	Match_State CellRowResult = Match_State::NoMatch;
+	Match_State CellColResult = Match_State::NoMatch;
+	Match_State CellBagResult = Match_State::NoMatch;
+
+	// 딱 반만 Update 한다.
+	int CheckMaxIndex = m_VisualRowCount * m_ColCount;
+
+	for (int i = 0; i < CheckMaxIndex; i++)
+	{
+		// 이 조건을 세팅해버리면, 가만히 있다가, 옆에 놈이 내려와서, 자기도 Match 가 되었는데
+		// 단순히 가만히 있었다는 이유로 Match 처리가 안되면 안되니까...?
+		// 1) 그런데 이 녀석들도 제거는 할텐데 ... ?
+		// - 이거 다시 하고, 제거 되는지만 확인해보자
+		// - 지금 확인할 것은, Special 로 바뀌는지 여부이다.
+		// - 그런데 다 바뀌는 것은 맞아 ?? 
+		// 2) 그 다음, 이거 주석 치고, 실행했더니, Match 인데도 안사라지는 놈들이 있다... 이건 뭐지 ?
+
+		// if (m_vecCells[i]->IsPlacedNew() == false)
+		//	continue;
+
+		RowIndex = m_vecCells[i]->GetRowIndex();
+		ColIndex = m_vecCells[i]->GetColIndex();
+
+		// 1번째 Click Cell에 대한 검사 먼저 하기 
+		CellRowResult = CheckRowMatch(RowIndex, ColIndex, i, false);
+		CellColResult = CheckColMatch(RowIndex, ColIndex, i, false);
+
+		// 최대 녀석으로 세팅한다.
+		CellResult = (int)CellColResult > (int)CellRowResult ? CellColResult : CellRowResult;
+
+		// Bag 조합 검사하기
+		CellBagResult = CheckBagMatch(RowIndex, ColIndex, i, false) ? Match_State::Bag : Match_State::NoMatch;
+
+		// 최종 결과
+		CellResult = (int)CellResult > (int)CellBagResult ? CellResult : CellBagResult;
+
+		m_vecMatchState[i] = CellResult;
+
+		if (CellResult != Match_State::NoMatch)
+		{
+			// 모든 Match State 를 초기화 해주고 Return 
+
+			return true;
+		}
+	}
+
+	return false;
 }
 
 bool CBoard::CheckCombination(CCell* FirstCell,CCell* SecondCell)
@@ -1080,9 +1131,7 @@ bool CBoard::CheckMatchUpdate()
 	if (m_FirstClickCell || m_SecClickCell)
 		return false;
 
-	// Update 할 필요가 없다면
-	// if (!m_IsCheckUpdateNeeded)
-	//	return false;
+	bool IsMatchExist = false;
 
 	// 새로운 위치로 이동 완료한 Cell 들에 대해서만 조사할 것이다
 	int RowIndex = -1, ColIndex = -1;
@@ -1124,18 +1173,13 @@ bool CBoard::CheckMatchUpdate()
 		// 최종 결과
 		CellResult = (int)CellResult > (int)CellBagResult ? CellResult : CellBagResult;
 
-		// 최종 결과 저장하기
-		// 이것은 특수 타입의 Cell 을 만들기 위함인데
-		// 이를 위해서는 여기 로직을 이후 다시 더 보완해야 한다.
-		if ((int)CellResult > (int)Match_State::Normal)
-		{
-			m_vecMatchState[i] = CellResult;
-		}
-
 		m_vecMatchState[i] = CellResult;
-	}
 
-	// 각 Cell 의 최종 결과에 따라서, 새로운 종류의 Cell 을 해당 위치에 생성할지 말지를 결정한다.
+		if (CellResult != Match_State::NoMatch)
+		{
+			IsMatchExist = true;
+		}
+	}
 
 	// 모든 Cell 들을 다시 m_IsPlacedNew 를 false 처리한다.
 	for (int i = 0; i < m_TotCount; i++)
@@ -1143,10 +1187,7 @@ bool CBoard::CheckMatchUpdate()
 		m_vecCells[i]->SetPlacedNew(false);
 	}
 
-	// 한번 Update 했으니, 더이상 Update 를 해줄 필요가 없다.
-	// m_IsCheckUpdateNeeded = false;
-
-	return true;
+	return IsMatchExist;
 }
 
 bool CBoard::CheckCellsMoving()
@@ -1158,6 +1199,15 @@ bool CBoard::CheckCellsMoving()
 	}
 
 	return false;
+}
+
+void CBoard::ResetMatchStateInfo()
+{
+	// Match State 초기화 해주기
+	for (int i = 0; i < m_TotCount; i++)
+	{
+		m_vecMatchState[i] = Match_State::NoMatch;
+	}
 }
 
 void CBoard::SetMatchStateTrue(int Index)
@@ -3780,28 +3830,26 @@ bool CBoard::CheckAIAndPossibleMatch(float DeltaTime)
 	{
 		m_AICheckDelayTime -= DeltaTime;
 
-		return false;
+		return true;
 	}
 
 	// 현재 Frame 상에서 이미 AI Check가 완료되었다면 X
 	if (m_IsAIChecked)
-		return false;
+		return true;
 
 	// 이미 Match가 존재한다면 X
 	if (m_IsMatchExist)
-		return false;
+		return true;
 
 	// Cell 들이 움직이지 않고 있을 때만 검사한다
 	if (m_CellsMoving)
-		return false;
+		return true;
 
 	// 현재 이동시킨 Cell 을 처리중이라면
 	if (m_FirstClickCell || m_SecClickCell)
-		return false;
+		return true;
 
 	m_IsAIChecked = true;
-
-	bool Match = true;
 
 	int PossibleMatchExist = false;
 
@@ -4565,9 +4613,15 @@ void CBoard::Update(float DeltaTime)
 
 	// CreateNewCells();
 
-	FindMatchUpdate();
+	bool IsMatchExist = FindMatchUpdate();
 
-	CheckAIAndPossibleMatch(DeltaTime);
+	bool IsPossibleMatchExst =  CheckAIAndPossibleMatch(DeltaTime);
+
+	if (!IsMatchExist && !IsPossibleMatchExst)
+	{
+		// 다시 Shuffle 시킨다.
+		ShuffleRandom(m_vecCells);
+	}
 }
 
 void CBoard::PostUpdate(float DeltaTime)
@@ -4873,6 +4927,12 @@ void CBoard::ChangeToMirrorBallCell(float DeltaTime)
 
 void CBoard::ShuffleRandom(std::vector<CSharedPtr<CCell>>& VecCells)
 {
+	m_CellsMoving = true;
+
+	// 1) Match도 없고 2) Possible Match는 있을 때까지 기다려야 한다.
+	// 2) 몇개 초기화 할 변수들이 존재하는가 ?
+	CheckMatchUpdate();
+
 	for (int i = 0; i < m_TotCount; i++)
 	{
 		Cell_Type_Binary CellBType = ChangeCellTypeToCellBinaryType((Cell_Type)(rand() % (int)Cell_Type::End));
@@ -4883,4 +4943,6 @@ void CBoard::ShuffleRandom(std::vector<CSharedPtr<CCell>>& VecCells)
 		// m_vecCells[i]->SetCellType((Cell_Type)Type);
 		m_vecCells[i]->SetCellType(CellBType);
 	}
+
+	m_CellsMoving = false;
 }

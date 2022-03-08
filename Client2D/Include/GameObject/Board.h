@@ -179,6 +179,7 @@ private : // AI
     CCell* CreateSingleNewCell(const std::string& Name, int RowIndex, int ColIndex, const Vector3& WorldPos, float NewYPos,
         Cell_Type_Binary Type, float Opacity, bool ShowEnable, Cell_State State);
 private:
+    bool IsMatchExistForCells(std::vector<CSharedPtr<CCell>>& vecCells);
     void ShuffleRandom(std::vector<CSharedPtr<CCell>>& vecCells);
     void FindMatchCellsAfterTwoClick(); // 2개 Cell 클릭 이후 실행하기
     void SetFindMatchCellsDone();
@@ -187,6 +188,8 @@ private:
     void SetNewIndexOfCells();
     bool FindMatchUpdate(); // 실시간으로 Match 여부 검사하기
     bool CheckCellsMoving();
+private : // 변수 초기화 함수
+    void ResetMatchStateInfo();
 public :
     void SetMatchStateTrue(int Index);
 private : // Match State 를 그에 대응하는 Cell_State 로 바꿔주는 함수

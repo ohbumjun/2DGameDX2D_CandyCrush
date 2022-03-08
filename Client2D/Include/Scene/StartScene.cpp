@@ -25,7 +25,7 @@ bool CStartScene::Init()
 
 	CBoard* Board = m_Scene->CreateGameObject<CBoard>("Board");
 	SetPlayerObject(Board);
-	Board->CreateBoard(8, 6, 60, 80, 
+	Board->CreateBoard(4, 3, 60, 80, 
 		Vector3((float)RS.Width * 0.2f, (float)RS.Height * 0.15f, 1.f));
 
 	return true;
