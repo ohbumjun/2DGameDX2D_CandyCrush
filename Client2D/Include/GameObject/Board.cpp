@@ -802,26 +802,6 @@ void CBoard::DestroyCells()
 
 	for (int Index = 0; Index < DestroyTargetEndIdx; Index++)
 	{
-		/*
-		// Bag 는 한번 더 터뜨려야 한다.
-		if (m_vecCells[Index]->IsSpecialDestroyedBag())
-		{
-			// 여기서 한번 더 분기점을 줘야 할 것 같다.
-			// BagAndBag Combination 폭발 이후, 같은 Combination 효과 대로 터뜨려야 할 지
-			if (m_vecCells[Index]->IsBagAndBagFirstDestroyed())
-			{
-				m_vecCells[Index]->SetDestroyState(Destroy_State::BagAndBag);
-				// m_vecCells[Index]->SetIsBagAndBagDestroyed(false);
-			}
-			// 아니면 그냥 일반 Bag Destroy 대로 터뜨려야 할지 
-			else
-			{
-				m_vecCells[Index]->SetDestroyState(Destroy_State::BagAfter);
-			}
-
-			m_vecCells[Index]->SetSpecialDestroyedBag(false);
-		}
-		*/
 		ManageDestroyedBagInfo(Index);
 
 		ManageBagAndMirrorBallComb(Index);
@@ -843,24 +823,8 @@ void CBoard::DestroyCells()
 
 		// Mirror Ball + Bag 조합 중에서
 		// Mirror Ball 에 해당하는 녀석을 터뜨린다.
-		/*
-		if (m_vecCells[Index]->IsMirrorBallOfBagMirrorBallComb() && 
-			m_vecCells[Index]->GetDestroyState() == Destroy_State::MirrorBall)
-		{
-			Cell_Type_Binary CellBType = ChangeCellTypeToCellBinaryType((Cell_Type)(rand() % (int)Cell_Type::End));
-
-			m_vecCells[Index]->SetMirrorBallDestroyType(CellBType);
-
-			// 한번 터뜨렸으니 Destroy State 정보 초기화
-			m_vecCells[Index]->SetDestroyState(Destroy_State::None);
-
-			DestroyMirrorBallEffect(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex());
-
-		}
-		 */
 		 DestroyMirrorBallOfBagMirrorBallComb(Index);
 		
-
 		// 만약 Match 된 녀석이라면 
 		if (m_vecCellIsMatch[Index])
 		{
@@ -872,40 +836,6 @@ void CBoard::DestroyCells()
 			if ((int)m_vecCells[Index]->GetDestroyState() > (int)Destroy_State::None)
 			{
 				JudgeCellDestroyType(RowIndex, ColIndex, Index);
-			/*
-				switch (m_vecCells[Index]->GetDestroyState())
-				{
-				case  Destroy_State::Horizontal :
-					DestroyHorizontalEffect(RowIndex);
-					break;
-				case  Destroy_State::Vertical:
-					DestroyVerticalEffect(ColIndex);
-					break;
-				case Destroy_State::Bag :
-					DestroyBagEffect(RowIndex, ColIndex, false);
-					break;
-				case Destroy_State::MirrorBall:
-					DestroyMirrorBallEffect(RowIndex, ColIndex);
-					break;
-				case Destroy_State::BagAndBag:
-					DestroyBagAndBagComb(m_vecCells[Index]);
-					break;
-				case Destroy_State::BagAndColLine:
-					DestroyBagLineComb(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex());
-					break;
-				case Destroy_State::BagAndRowLine:
-					DestroyBagLineComb(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex());
-					break;
-				case Destroy_State::BagAndMirrorBall_Bag:
-					{
-						Cell_Type_Binary Type = m_vecCells[RowIndex * m_ColCount + ColIndex]->GetCellType();
-						m_vecCells[RowIndex * m_ColCount + ColIndex]->SetMirrorBallDestroyType(Type);
-						DestroyMirrorBallEffect(RowIndex, ColIndex);
-						// m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndMirrorBall_Mirror);
-					}
-					break;
-				}
-			*/
 			}
 
 			// 해당 위치에서의 MatchState 를 확인해서
@@ -941,52 +871,10 @@ void CBoard::DestroyCells()
 	// 어차피 사라진 녀석들은 화면에 보여지는 영역
 	// 안에서만 사라진 상태로 놓일 것이다. --> m_VisualRowCount
 	SetNewPosOfCells();
-	/*
-	int DestroyedIndex = -1;
-
-	for (int row = 0; row < m_VisualRowCount; row++)
-	{
-		for (int col = 0; col < m_ColCount; col++)
-		{
-			DestroyedIndex = row * m_ColCount + col;
-
-			// 사라진 녀석이 아니라면 Skip
-			if (m_vecCells[DestroyedIndex]->IsActive())
-				continue;
-
-			// 제거된 녀석 그 위로 새롭게 NewPosY를 세팅해서 내려오게 해준다.
-			int ChangeTargetIndex = -1;
-
-			// 내려갈 개수 
-			int DownCellNum = m_vecColNewCellNums[col];
-
-			for (int ChangeRow = row + 1; ChangeRow < m_RowCount; ChangeRow++)
-			{
-				// 내려올 Cell
-				ChangeTargetIndex = ChangeRow * m_ColCount + col;
-
-				// 사라진 Cell 이라면 내려오기 조정 X
-				if (!m_vecCells[ChangeTargetIndex]->IsActive())
-					continue;
-
-				// 현재 위치
-				float CurNewPosY = m_vecCells[ChangeTargetIndex]->GetNewDownPosY();
-
-				// 내려갈 위치 조정하기 
-				// m_vecCells[ChangeTargetIndex]->SetNewPosY(CurNewPosY - m_CellSize.y * DownCellNum);
-				m_vecCells[ChangeTargetIndex]->SetNewPosY(CurNewPosY - m_CellSize.y);
-
-				// 내려갈 Idx 증가시켜주기
-				m_vecCellDownNums[ChangeTargetIndex] += 1;
-			}
-		}
-	}
-	*/
 
 	// todo : 움직인 Cell 새로운 Index 세팅
 	// 여기서 실제로 새로운 Index를 세팅할 것이다.
 	SetNewIndexOfCells();
-
 
 	// m_vecDestroyState 정보 초기화
 	int HalfTotalIndex = (int)(m_TotCount * 0.5f);
@@ -1000,16 +888,11 @@ void CBoard::DestroyCells()
 	}
 
 	//m_vecCellDownNums 정보 초기화
-	for (int i = 0; i < m_TotCount; i++)
-	{
-		m_vecCellDownNums[i] = 0;
-	}
+	ResetVecColNewCellNumsInfo();
 
 	// Match 정보도 초기화 해준다
-	for (int i = 0; i < HalfTotalIndex; i++)
-	{
-		m_vecCellIsMatch[i] = false;
-	}
+	ResetBoolIsMatchInfo();
+
 
 	// 각 열에서 사라진 개수도 0으로 초기화 해주기
 	// 이것은 CreateNewCells 함수에서도 실행하는 녀석이므로
@@ -1146,17 +1029,6 @@ bool CBoard::CheckMatchUpdate()
 
 	for (int i = 0; i < CheckMaxIndex; i++)
 	{
-		// 이 조건을 세팅해버리면, 가만히 있다가, 옆에 놈이 내려와서, 자기도 Match 가 되었는데
-		// 단순히 가만히 있었다는 이유로 Match 처리가 안되면 안되니까...?
-		// 1) 그런데 이 녀석들도 제거는 할텐데 ... ?
-		// - 이거 다시 하고, 제거 되는지만 확인해보자
-		// - 지금 확인할 것은, Special 로 바뀌는지 여부이다.
-		// - 그런데 다 바뀌는 것은 맞아 ?? 
-		// 2) 그 다음, 이거 주석 치고, 실행했더니, Match 인데도 안사라지는 놈들이 있다... 이건 뭐지 ?
-		 
-		// if (m_vecCells[i]->IsPlacedNew() == false)
-		//	continue;
-
 		RowIndex = m_vecCells[i]->GetRowIndex();
 		ColIndex = m_vecCells[i]->GetColIndex();
 
@@ -1182,10 +1054,7 @@ bool CBoard::CheckMatchUpdate()
 	}
 
 	// 모든 Cell 들을 다시 m_IsPlacedNew 를 false 처리한다.
-	for (int i = 0; i < m_TotCount; i++)
-	{
-		m_vecCells[i]->SetPlacedNew(false);
-	}
+	ResetPlacedNewInfo();
 
 	return IsMatchExist;
 }
@@ -1207,6 +1076,35 @@ void CBoard::ResetMatchStateInfo()
 	for (int i = 0; i < m_TotCount; i++)
 	{
 		m_vecMatchState[i] = Match_State::NoMatch;
+	}
+}
+
+void CBoard::ResetBoolIsMatchInfo()
+{
+	int HalfTotalIndex = (int)(m_TotCount * 0.5f);
+
+	for (int i = 0; i < HalfTotalIndex; i++)
+	{
+		m_vecCellIsMatch[i] = false;
+	}
+}
+
+void CBoard::ResetVecColNewCellNumsInfo()
+{
+	for (int i = 0; i < m_TotCount; i++)
+	{
+		m_vecCellDownNums[i] = 0;
+	}
+}
+
+void CBoard::ResetCellDownNumsInfo()
+{}
+
+void CBoard::ResetPlacedNewInfo()
+{
+	for (int i = 0; i < m_TotCount; i++)
+	{
+		m_vecCells[i]->SetPlacedNew(false);
 	}
 }
 
