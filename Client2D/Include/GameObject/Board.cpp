@@ -4494,22 +4494,27 @@ std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 				InitCellType = m_vecCells[CheckStartRow * m_ColCount + OriginColIdx]->GetCellType();
 			}
 
+			// 아래서 위로 한칸 옮겨놨더니, 비교 시작 Col 이고, 비교 범위 밖
+			if (NewRowIdx  == CheckStartRow && OriginRowIdx == NewRowIdx - 1)
+			{
+				InitCellType = m_vecCells[OriginRowIdx * m_ColCount + NewColIdx]->GetCellType();
+			}
+
 			for (int StRow = CheckStartRow; StRow <= CheckEndRow; StRow++)
 			{
 				CurIndex = StRow * m_ColCount + NewColIdx;
+
+				// 아래서 위로 한칸 옮겨놨더니, 비교 시작 Col 이고, 비교 범위 밖
+				if (StRow == NewRowIdx && StRow == CheckStartRow && OriginRowIdx == NewRowIdx - 1)
+				{
+					CurIndex = OriginRowIdx * m_ColCount + NewColIdx;
+				}
 
 				// 위에서 아래로 한칸 옮겨놨더니, 아래에서 올라오면서 Match인 상황
 				if (StRow == NewRowIdx && StRow == CheckEndRow && OriginRowIdx == NewRowIdx + 1)
 				{
 					CurIndex = OriginRowIdx * m_ColCount + NewColIdx;
 				}
-
-				// 아래서 위로 한칸 옮겨놨더니, Match인 상황
-				if (StRow == NewRowIdx && StRow == CheckStartRow && OriginRowIdx == NewRowIdx - 1)
-				{
-					CurIndex = OriginRowIdx * m_ColCount + NewColIdx;
-				}
-				
 
 				if (StRow == OriginRowIdx)
 				{
@@ -4578,6 +4583,18 @@ std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 				for (int row = CheckStartRow; row <= CheckEndRow; row++)
 				{
 					int MatchIdx = row * m_ColCount + NewColIdx;
+
+					// 아래서 위로 한칸 옮겨놨더니, 비교 시작 Col 이고, 비교 범위 밖
+					if (row == NewRowIdx && row == CheckStartRow && OriginRowIdx == NewRowIdx - 1)
+					{
+						MatchIdx = OriginRowIdx * m_ColCount + NewColIdx;
+					}
+
+					// 위에서 아래로 한칸 옮겨놨더니, 아래에서 올라오면서 Match인 상황
+					if (row == NewRowIdx && row == CheckEndRow && OriginRowIdx == NewRowIdx + 1)
+					{
+						MatchIdx = OriginRowIdx * m_ColCount + NewColIdx;
+					}
 
 					if (row == OriginRowIdx)
 					{
@@ -4650,18 +4667,24 @@ std::pair<int, bool> CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 				InitCellType = m_vecCells[OriginRowIdx * m_ColCount + CheckStartCol]->GetCellType();
 			}
 
+			// 왼쪽에서 오른쪽으로 옮겨놨고, 비교 시작 Col 이고, OriginColIdx가 검사 범위 밖
+			if (NewColIdx == CheckStartCol && OriginColIdx == NewColIdx - 1)
+			{
+				InitCellType = m_vecCells[NewRowIdx * m_ColCount + OriginColIdx]->GetCellType();
+			}
+
 			// 해당 길이로 왼쪽 --> 오른쪽 순서로 조사한다.
 			for (int StCol = CheckStartCol; StCol <= CheckEndCol; StCol++)
 			{
 				CurIndex = NewRowIdx * m_ColCount + StCol;
 
-				// 왼쪽에서 오른쪽으로 옮겨놨더니, Match 이고, OriginColIdx가 검사 범위 밖
+				// 왼쪽에서 오른쪽으로 옮겨놨고, 비교 시작 Col 이고, OriginColIdx가 검사 범위 밖
 				if (StCol == NewColIdx && StCol == CheckStartCol && OriginColIdx == NewColIdx - 1)
 				{
 					CurIndex = NewRowIdx * m_ColCount + OriginColIdx;
 				}
 
-				// 오른쪽에서 왼쪽으로 옮겨놨더니, Match 이고, OriginColIdx가 검사 범위 밖
+				// 오른쪽에서 왼쪽으로 옮겨놨더니, 비교 End Col 이고, OriginColIdx가 검사 범위 밖
 				if (StCol == NewColIdx && StCol == CheckEndCol && OriginColIdx == NewColIdx + 1)
 				{
 					CurIndex = NewRowIdx * m_ColCount + OriginColIdx;
@@ -4733,6 +4756,17 @@ std::pair<int, bool> CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 				for (int col = CheckStartCol; col <= CheckEndCol; col++)
 				{
 					int MatchIdx = NewRowIdx * m_ColCount + col;
+
+					if (col == NewColIdx && col == CheckStartCol && OriginColIdx == NewColIdx - 1)
+					{
+						MatchIdx = NewRowIdx * m_ColCount + OriginColIdx;
+					}
+
+					// 오른쪽에서 왼쪽으로 옮겨놨더니, 비교 End Col 이고, OriginColIdx가 검사 범위 밖
+					if (col == NewColIdx && col == CheckEndCol && OriginColIdx == NewColIdx + 1)
+					{
+						MatchIdx = NewRowIdx * m_ColCount + OriginColIdx;
+					}
 
 					if (col == OriginColIdx)
 					{
