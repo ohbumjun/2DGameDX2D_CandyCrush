@@ -230,6 +230,7 @@ private :
     void ResetVecColNewCellNumsInfo();
     void ResetCellDownNumsInfo();
     void ResetPlacedNewInfo();
+    void ResetCellStateInfo();
 
     // Match State 를 그에 대응하는 Cell_State 로 바꿔주는 함수
 private : 

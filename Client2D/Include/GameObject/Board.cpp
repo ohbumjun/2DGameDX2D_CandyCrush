@@ -1532,6 +1532,14 @@ void CBoard::ResetPlacedNewInfo()
 	}
 }
 
+void CBoard::ResetCellStateInfo()
+{
+	for (int i = 0; i < m_TotCount; i++)
+	{
+		m_vecCells[i]->SetCellState(Cell_State::Normal);
+	}
+}
+
 void CBoard::SetMatchStateTrue(int Index)
 {
 	m_vecCellIsMatch[Index] = true;
@@ -5254,6 +5262,8 @@ void CBoard::ShuffleRandom(std::vector<CSharedPtr<CCell>>& VecCells)
 	// 1) Match도 없고 2) Possible Match는 있을 때까지 기다려야 한다.
 	// 2) 몇개 초기화 할 변수들이 존재하는가 ?
 
+	ResetCellStateInfo();
+
 	for (int i = 0; i < m_TotCount; i++)
 	{
 		Cell_Type_Binary CellBType = ChangeCellTypeToCellBinaryType((Cell_Type)(rand() % (int)Cell_Type::End));
@@ -5266,6 +5276,8 @@ void CBoard::ShuffleRandom(std::vector<CSharedPtr<CCell>>& VecCells)
 		if (IsMatchExistForCells(m_vecCells) == false && IsPossibleMatchExistForCells())
 			break;
 
+		ResetCellStateInfo();
+
 		for (int i = 0; i < m_TotCount; i++)
 		{
 			Cell_Type_Binary CellBType = ChangeCellTypeToCellBinaryType((Cell_Type)(rand() % (int)Cell_Type::End));
@@ -5276,6 +5288,9 @@ void CBoard::ShuffleRandom(std::vector<CSharedPtr<CCell>>& VecCells)
 
 	// 관련 변수 초기화
 	m_IsAIChecked = false;
+
 	m_AICheckDelayTime = m_AICheckDelayTimeMax;
+
 	m_CellsMoving = false;
+
 }
