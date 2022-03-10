@@ -72,6 +72,10 @@ private : // 특수 효과
     bool m_IsLineBagCombDestroyedCell;
     float m_LineBagCombDestroyDelayTime;
     float m_LineBagCombDestroyInitDelayTime;
+    // MirrorBall
+    bool m_IsMirrorBallDestroyedCell;
+    float m_MirrorBallDestroyDelayTime;
+    float m_MirrorBallDestroyInitDelayTime;
     // MirrorBall + Line
     bool m_IsLineOfLineMirrorBallComb; // 점점 자신의 Opacity를 줄여나가다가 사라지게 한다.
     bool m_IsSameColorWithMirrorBallLineComb;
@@ -98,6 +102,8 @@ public:
     virtual void Update(float DeltaTime) override;
     virtual void PostUpdate(float DeltaTime) override;
 private : // 특수 효과
+    // Mirror Ball 효과
+    void DestroyMirrorBallEffect(float DeltaTime);
     // Line Destroy효과
     void DestroyedByLineMatch(float DeltaTime);
     void DestroyedByLineAndBagMatch(float DeltaTime);
@@ -238,6 +244,16 @@ public :
     void SetBeingSpecialDestroyed(bool Enable)
     {
         m_IsBeingSpecialDestroyed = Enable;
+    }
+    // Mirror Ball
+    void SetMirrorBallDestroyDelayTime(float Time)
+    {
+        m_MirrorBallDestroyDelayTime = Time;
+        m_MirrorBallDestroyInitDelayTime = Time;
+    }
+    void SetIsMirrorBallDestroyedCell(bool Enable)
+    {
+        m_IsMirrorBallDestroyedCell = Enable;
     }
     // Line + Bag 
     void SetLineBagCombDestroyDelayTime(float Time)

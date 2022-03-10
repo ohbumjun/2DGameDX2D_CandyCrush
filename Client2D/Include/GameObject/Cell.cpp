@@ -347,6 +347,9 @@ void CCell::Update(float DeltaTime)
 	}
 	*/
 
+	// MirrorBall Destroy 효과
+	DestroyMirrorBallEffect(DeltaTime);
+
 	// Line Destroy 효과
 	DestroyedByLineMatch(DeltaTime);
 
@@ -361,9 +364,14 @@ void CCell::Update(float DeltaTime)
 	ApplyDoubleMirrorBallCombEffect(DeltaTime);
 	SequentiallyDestroyCellByDoubleMirrorBallCombEffect(DeltaTime);
 
-	if (m_IsMirrorBallOfBagMirrorBallComb)
+	if (m_CellState == Cell_State::MirrorBall)
 	{
 		AddRelativeRotation(0.f, 0.f, 100.f * DeltaTime);
+	}
+
+	if (m_IsMirrorBallOfBagMirrorBallComb)
+	{
+		// AddRelativeRotation(0.f, 0.f, 100.f * DeltaTime);
 	}
 
 	ApplyNoticeEffect(DeltaTime);
@@ -372,6 +380,35 @@ void CCell::Update(float DeltaTime)
 void CCell::PostUpdate(float DeltaTime)
 {
 	CGameObject::PostUpdate(DeltaTime);
+}
+
+void CCell::DestroyMirrorBallEffect(float DeltaTime)
+{
+	if (!m_IsMirrorBallDestroyedCell)
+		return;
+
+	if (m_MirrorBallDestroyDelayTime > 0.f)
+	{
+		m_MirrorBallDestroyDelayTime -= DeltaTime;
+
+		m_Sprite->SetOpacity(m_MirrorBallDestroyDelayTime / m_MirrorBallDestroyInitDelayTime);
+
+		m_IsMoving = true;
+
+		m_IsBeingSpecialDestroyed = true;
+
+		return;
+	}
+
+	m_IsMirrorBallDestroyedCell = false;
+
+	m_IsMoving = false;
+
+	m_Board->SetMatchStateTrue(m_Index);
+
+	m_IsBeingSpecialDestroyed = false;
+
+	m_DestroyMarkState = DestroyMark_State::None;
 }
 
 void CCell::DestroyedByLineMatch(float DeltaTime)
@@ -386,6 +423,8 @@ void CCell::DestroyedByLineMatch(float DeltaTime)
 		m_Sprite->SetOpacity(m_LineDestroyDelayTime / m_LineDestroyInitDelayTime);
 
 		m_IsMoving = true;
+
+		m_IsBeingSpecialDestroyed = true;
 
 		return;
 	}

@@ -1,4 +1,4 @@
-#include "Board.h"
+ï»¿#include "Board.h"
 #include "Engine.h"
 #include "Scene/Scene.h"
 #include "Scene/SceneManager.h"
@@ -32,16 +32,16 @@ void CBoard::AddClickCellMoveDone()
 
 	if (m_ClickCellsMoveDone >= 2)
 	{
-		// First, Second Cell µé Index ´Ù½Ã ¼¼ÆÃ
+		// First, Second Cell ë“¤ Index ë‹¤ì‹œ ì„¸íŒ…
 		SwitchClickCellsInfo();
 
-		// Click Cell Á¤º¸µé ÃÊ±âÈ­
+		// Click Cell ì •ë³´ë“¤ ì´ˆê¸°í™”
 		ResetClickCellInfos();
 
-		// Match ÇÔ¼ö ½ÇÇà
+		// Match í•¨ìˆ˜ ì‹¤í–‰
 		FindMatchCellsAfterTwoClick();
 
-		// ´Ù½Ã 0À¸·Î ¼¼ÆÃ
+		// ë‹¤ì‹œ 0ìœ¼ë¡œ ì„¸íŒ…
 		m_ClickCellsMoveDone = 0;
 	}
 }
@@ -64,10 +64,10 @@ void CBoard::SwitchClickCellsInfo()
 	m_SecClickCell->SetIndexInfo(FirstIndex, FirstRowIndex, FirstColIndex);
 	// m_SecClickCell->SetNewDownPosY(FirstNewPosY);
 
-	// Swap ¾Ë°í¸®Áò Àû¿ë
-	// ¹İµå½Ã, CSharedPtr ÇüÅÂ·Î ÇØÁà¾ß ÇÑ´Ù.
-	// ±×·¸Áö ¾ÊÀ¸¸é m_vecCells[FirstIndex] = m_SecClickCell; ¿¡¼­, m_vecCells[FirstIndex] ÀÇ
-	// RefCount°¡ 0ÀÌ µÇ¾î¼­, »ç¶óÁ® ¹ö¸°´Ù.
+	// Swap ì•Œê³ ë¦¬ì¦˜ ì ìš©
+	// ë°˜ë“œì‹œ, CSharedPtr í˜•íƒœë¡œ í•´ì¤˜ì•¼ í•œë‹¤.
+	// ê·¸ë ‡ì§€ ì•Šìœ¼ë©´ m_vecCells[FirstIndex] = m_SecClickCell; ì—ì„œ, m_vecCells[FirstIndex] ì˜
+	// RefCountê°€ 0ì´ ë˜ì–´ì„œ, ì‚¬ë¼ì ¸ ë²„ë¦°ë‹¤.
 	CSharedPtr<CCell> Temp = m_vecCells[FirstIndex];
 	m_vecCells[FirstIndex] = m_SecClickCell;
 	m_vecCells[SecIndex] = Temp;
@@ -81,40 +81,40 @@ void CBoard::FindMatchCellsAfterTwoClick()
 	if (!m_FirstClickCell || !m_SecClickCell)
 		return;
 
-	// Match µÇ´Â ³à¼®µéÀÌ ÀÖ´ÂÁö È®ÀÎÇÑ´Ù.
+	// Match ë˜ëŠ” ë…€ì„ë“¤ì´ ìˆëŠ”ì§€ í™•ì¸í•œë‹¤.
 	Match = CheckMatchAfterTwoClick(m_FirstClickCell, m_SecClickCell);
 
-	// todo : Scene¿¡¼­ Á¦°ÅÇÏ±â
-	// ÇØ´ç À§Ä¡ÀÇ Cell »ç¶óÁö°Ô ÇÏ±â
-	// ÀÌ·¸°Ô ÇÏ¸é Scene ³»¿¡¼­´Â Áö¿öÁ®¼­ Render´Â ¾ÈµÇÁö¸¸
-	// ¿©ÀüÈ÷ m_vecCells ¾È¿¡´Â ³²¾ÆÀÖ°Ô µÈ´Ù.
+	// todo : Sceneì—ì„œ ì œê±°í•˜ê¸°
+	// í•´ë‹¹ ìœ„ì¹˜ì˜ Cell ì‚¬ë¼ì§€ê²Œ í•˜ê¸°
+	// ì´ë ‡ê²Œ í•˜ë©´ Scene ë‚´ì—ì„œëŠ” ì§€ì›Œì ¸ì„œ RenderëŠ” ì•ˆë˜ì§€ë§Œ
+	// ì—¬ì „íˆ m_vecCells ì•ˆì—ëŠ” ë‚¨ì•„ìˆê²Œ ëœë‹¤.
 	DestroyCells();
 
-	// »õ·Î¿î Cell »ı¼º
+	// ìƒˆë¡œìš´ Cell ìƒì„±
 	CreateNewCellsAboveShownArea();
 
-	// todo : Match°¡ ÀÖ¾ú´Ù¸é Click Cell Á¤º¸¸¦ ÃÊ±âÈ­ ÇØÁØ´Ù.
+	// todo : Matchê°€ ìˆì—ˆë‹¤ë©´ Click Cell ì •ë³´ë¥¼ ì´ˆê¸°í™” í•´ì¤€ë‹¤.
 	if (Match)
 		SetFindMatchCellsDone();
 
-	// todo : Match°¡ ¾ø´Ù¸é, ±âÁ¸¿¡ ÀÌµ¿½ÃÅ² Cell µéÀ» ´Ù½Ã ¿ø·¡ ´ë·Î ¼¼ÆÃÇÑ´Ù.
+	// todo : Matchê°€ ì—†ë‹¤ë©´, ê¸°ì¡´ì— ì´ë™ì‹œí‚¨ Cell ë“¤ì„ ë‹¤ì‹œ ì›ë˜ ëŒ€ë¡œ ì„¸íŒ…í•œë‹¤.
 	else
 	{
 		if (m_FirstClickCell && m_SecClickCell)
 		{
-			// 2°³ÀÇ Cell ¿¡ »õ·Î¿î À§Ä¡ ¼¼ÆÃ
+			// 2ê°œì˜ Cell ì— ìƒˆë¡œìš´ ìœ„ì¹˜ ì„¸íŒ…
 			m_FirstClickCell->SetClickDestPos(m_SecClickCell->GetWorldPos());
 			m_SecClickCell->SetClickDestPos(m_FirstClickCell->GetWorldPos());
 
-			// Switch ÁßÀÌ¶ó°í Ç¥½ÃÇÏ±â
+			// Switch ì¤‘ì´ë¼ê³  í‘œì‹œí•˜ê¸°
 			m_FirstClickCell->SetIsSwitch(true);
 			m_SecClickCell->SetIsSwitch(true);
 
-			// ´Ù½Ã µ¹¾Æ°¡´Â ³à¼®µéÀÌ¶ó°í ¼¼ÆÃ
+			// ë‹¤ì‹œ ëŒì•„ê°€ëŠ” ë…€ì„ë“¤ì´ë¼ê³  ì„¸íŒ…
 			m_FirstClickCell->SetIsGoingBack(true);
 			m_SecClickCell->SetIsGoingBack(true);
 
-			// Cell ÀÌµ¿Áß Ç¥½ÃÇÏ±â
+			// Cell ì´ë™ì¤‘ í‘œì‹œí•˜ê¸°
 			m_CellsMoving = true;
 		}
 	}
@@ -122,28 +122,28 @@ void CBoard::FindMatchCellsAfterTwoClick()
 
 void CBoard::SetFindMatchCellsDone()
 {
-	// ´Ù½Ã ¸¶¿ì½º Å¬¸¯ »óÅÂ¸¦ µÇµ¹·Á¼­, Å¬¸¯ÀÌ °¡´ÉÇÏ°Ô ¼¼ÆÃÇÑ´Ù.
+	// ë‹¤ì‹œ ë§ˆìš°ìŠ¤ í´ë¦­ ìƒíƒœë¥¼ ë˜ëŒë ¤ì„œ, í´ë¦­ì´ ê°€ëŠ¥í•˜ê²Œ ì„¸íŒ…í•œë‹¤.
 	m_MouseClick = Mouse_Click::None;
 
-	// ÀÌµ¿ ¿©ºÎ False·Î ´Ù½Ã ¼¼ÆÃ
+	// ì´ë™ ì—¬ë¶€ Falseë¡œ ë‹¤ì‹œ ì„¸íŒ…
 	m_CellsMoving = false;
 
 	ResetClickCellInfos();
 
-	// Å¬¸¯ÇÑ Cell µéÀ» nullptr Ã³¸®ÇÑ´Ù
+	// í´ë¦­í•œ Cell ë“¤ì„ nullptr ì²˜ë¦¬í•œë‹¤
 	m_FirstClickCell = nullptr;
 	m_SecClickCell = nullptr;
 }
 
 void CBoard::CreateNewCellsAboveShownArea()
 {
-	// todo : »õ·Î¿î Cell »ı¼ºÇÏ±â --> MatchState Àû¿ëÇÏ±â : ex) m_vecMatchState
+	// todo : ìƒˆë¡œìš´ Cell ìƒì„±í•˜ê¸° --> MatchState ì ìš©í•˜ê¸° : ex) m_vecMatchState
 
-	// ÃÖ»ó´Ü ³ôÀÌ
+	// ìµœìƒë‹¨ ë†’ì´
 	Vector3 BoardStartPos = GetWorldPos();
 	float TopYPos = BoardStartPos.y + m_CellSize.y * (m_RowCount - 1);
 
-	// À§¿¡¼­ ºÎÅÍ ¾Æ·¡·Î ¼¼ÆÃÇÒ °ÍÀÌ´Ù.
+	// ìœ„ì—ì„œ ë¶€í„° ì•„ë˜ë¡œ ì„¸íŒ…í•  ê²ƒì´ë‹¤.
 	for (int col = 0; col < m_ColCount; col++)
 	{
 		if (m_vecColNewCellNums[col] == 0)
@@ -171,17 +171,17 @@ void CBoard::CreateNewCellsAboveShownArea()
 		}
 	}
 
-	// todo : »õ·Ó°Ô Cell »ı¼º ÀÌÈÄ, Random Shuffle
+	// todo : ìƒˆë¡­ê²Œ Cell ìƒì„± ì´í›„, Random Shuffle
 	// ShuffleRandom();
 
 
-	// Column º° »õ·Î »ı¼ºÇÒ Cell °³¼ö ´Ù½Ã ÃÊ±âÈ­
+	// Column ë³„ ìƒˆë¡œ ìƒì„±í•  Cell ê°œìˆ˜ ë‹¤ì‹œ ì´ˆê¸°í™”
 	for (int i = 0; i < m_ColCount; i++)
 	{
 		m_vecColNewCellNums[i] = 0;
 	}
 
-	// Match State ÃÊ±âÈ­ ÇØÁÖ±â
+	// Match State ì´ˆê¸°í™” í•´ì£¼ê¸°
 	ResetMatchStateInfo();
 }
 
@@ -195,50 +195,50 @@ CCell* CBoard::CreateSingleNewCell(const std::string& Name, int RowIndex, int Co
 
 	Vector3 BoardStartPos = GetWorldPos();
 
-	// Owner ¼¼ÆÃ 
+	// Owner ì„¸íŒ… 
 	Cell->m_Board = this;
 
-	// Scene ¼¼ÆÃ 
+	// Scene ì„¸íŒ… 
 	Cell->SetScene(m_Scene);
 
-	// x´Â ¿­, y´Â Çà
+	// xëŠ” ì—´, yëŠ” í–‰
 	Cell->SetWorldPos(WorldPos);
 
-	// Å©±â ¼¼ÆÃ 
+	// í¬ê¸° ì„¸íŒ… 
 	Cell->SetWorldScale(Vector3(m_CellSize.x, m_CellSize.y, 1.f));
 
-	// Index ¼¼ÆÃ --> NewPosYµµ ¼¼ÆÃ
+	// Index ì„¸íŒ… --> NewPosYë„ ì„¸íŒ…
 	Cell->SetIndexInfo(Index, RowIndex, ColIndex);
 
-	// Pivot ¼¼ÆÃ
+	// Pivot ì„¸íŒ…
 	Cell->SetPivot(0.5f, 0.5f, 0.f);
 
-	// Type ¼¼ÆÃ
+	// Type ì„¸íŒ…
 	Cell->SetCellType(Type);
 
-	// Åõ¸íµµ ¼¼ÆÃ ( ¾Èº¸ÀÌ°Ô ÇÏ±â )
+	// íˆ¬ëª…ë„ ì„¸íŒ… ( ì•ˆë³´ì´ê²Œ í•˜ê¸° )
 	Cell->SetOpacity(Opacity);
 
-	// ¾Èº¸ÀÎ´Ù´Â ¸â¹ö º¯¼ö ¼³Á¤
+	// ì•ˆë³´ì¸ë‹¤ëŠ” ë©¤ë²„ ë³€ìˆ˜ ì„¤ì •
 	Cell->SetShowEnable(ShowEnable);
 
-	// º¸¿©Áö´Â ¿µ¿ª °æ°è¼± ¼³Á¤ÇÏ±â
+	// ë³´ì—¬ì§€ëŠ” ì˜ì—­ ê²½ê³„ì„  ì„¤ì •í•˜ê¸°
 	Cell->SetShownAreaTopYPos(BoardStartPos.y + m_CellSize.y * m_VisualRowCount);
 
-	// WorldY Pos ¼¼ÆÃÇÏ±â
+	// WorldY Pos ì„¸íŒ…í•˜ê¸°
 	Cell->SetWorldYPos(WorldPos.y);
 
-	// NewY Pos ¼¼ÆÃÇÏ±â
+	// NewY Pos ì„¸íŒ…í•˜ê¸°
 	Cell->SetNewDownPosY(NewYPos);
 
-	// Cell State ¼¼ÆÃ --> Current Animation ¼¼ÆÃ
+	// Cell State ì„¸íŒ… --> Current Animation ì„¸íŒ…
 	// Cell->SetCurrentAnimation("Normal");
 	Cell->SetCellState(State);
 
-	// MirrorBall Destroy Type Random ¼¼ÆÃ
+	// MirrorBall Destroy Type Random ì„¸íŒ…
 	Cell->SetMirrorBallDestroyType(ChangeCellTypeToCellBinaryType((Cell_Type)(rand() % (int)(Cell_Type::End))));
 
-	// vector ¸ñ·Ï¿¡ Ãß°¡ 
+	// vector ëª©ë¡ì— ì¶”ê°€ 
 	m_vecCells[Index] = Cell;
 
 	return Cell;
@@ -246,36 +246,36 @@ CCell* CBoard::CreateSingleNewCell(const std::string& Name, int RowIndex, int Co
 
 bool CBoard::IsRowMatch(int RowIndex, int ColIndex, int Index)
 {
-	// ÃÖ¼Ò 3°³±îÁö Á¶»ç, ÃÖ´ë Á¶»ç °³¼ö´Â Row // Col ¿©ºÎ¿¡ µû¶ó ´Ş¶óÁö°Ô µÉ °ÍÀÌ´Ù.
+	// ìµœì†Œ 3ê°œê¹Œì§€ ì¡°ì‚¬, ìµœëŒ€ ì¡°ì‚¬ ê°œìˆ˜ëŠ” Row // Col ì—¬ë¶€ì— ë”°ë¼ ë‹¬ë¼ì§€ê²Œ ë  ê²ƒì´ë‹¤.
 	int MinCheckLength = 3, MaxCheckLength = m_VisualRowCount;
 
-	// Index : ÇöÀç °Ë»çÇÏ´Â CellÀÇ Index
+	// Index : í˜„ì¬ ê²€ì‚¬í•˜ëŠ” Cellì˜ Index
 	int CurIndex = -1;
 
 	int CheckStartRow = -1, CheckEndRow = -1;
 
-	// Match °á°ú
+	// Match ê²°ê³¼
 	bool Match = false;
 
-	// ÃÖ´ë --> ÃÖ¼Ò ±æÀÌ ¼øÀ¸·Î Á¶»çÇÏ±â
+	// ìµœëŒ€ --> ìµœì†Œ ê¸¸ì´ ìˆœìœ¼ë¡œ ì¡°ì‚¬í•˜ê¸°
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
 	{
 		for (int StartRowOffset = 0; StartRowOffset <= CheckMatchNum - 1; StartRowOffset++)
 		{
 			bool IsPartRowMatch = true;
 
-			// ÇöÀç ClickCell ÀÌ Æ÷ÇÔµÈ Row ¹üÀ§¿¡ ´ëÇØ¼­¸¸ Á¶»çÇÒ °ÍÀÌ´Ù.
-			// ¾Æ·¡ ¹üÀ§¿¡¼­, À§·Î ¿Ã¶ó°¡¸é¼­ °Ë»ç ½ÃÀÛ Row ¸¦ ¼³Á¤ÇØÁÙ °ÍÀÌ´Ù.
+			// í˜„ì¬ ClickCell ì´ í¬í•¨ëœ Row ë²”ìœ„ì— ëŒ€í•´ì„œë§Œ ì¡°ì‚¬í•  ê²ƒì´ë‹¤.
+			// ì•„ë˜ ë²”ìœ„ì—ì„œ, ìœ„ë¡œ ì˜¬ë¼ê°€ë©´ì„œ ê²€ì‚¬ ì‹œì‘ Row ë¥¼ ì„¤ì •í•´ì¤„ ê²ƒì´ë‹¤.
 			CheckStartRow = (RowIndex + StartRowOffset) - (CheckMatchNum - 1);
 
-			// ¾Æ·¡·Î ¹üÀ§°¡ ¹ş¾î³­ °æ¿ì
+			// ì•„ë˜ë¡œ ë²”ìœ„ê°€ ë²—ì–´ë‚œ ê²½ìš°
 			if (CheckStartRow < 0)
 			{
 				IsPartRowMatch = false;
 				continue;
 			}
 
-			// À§·Î ¹üÀ§°¡ ¹ş¾î³­ °æ¿ì
+			// ìœ„ë¡œ ë²”ìœ„ê°€ ë²—ì–´ë‚œ ê²½ìš°
 			CheckEndRow = CheckStartRow + (CheckMatchNum - 1);
 
 			if (CheckEndRow >= m_VisualRowCount)
@@ -286,11 +286,11 @@ bool CBoard::IsRowMatch(int RowIndex, int ColIndex, int Index)
 
 			Cell_Type_Binary InitCellType = m_vecCells[CheckStartRow * m_ColCount + ColIndex]->GetCellType();
 
-			// Match °¡ ÀÖ´ÂÁö Á¶»çÇÑ´Ù.
-			// ÇØ´ç ±æÀÌ·Î ¾Æ·¡ --> À§ÂÊ ¼ø¼­·Î Á¶»çÇÑ´Ù.
+			// Match ê°€ ìˆëŠ”ì§€ ì¡°ì‚¬í•œë‹¤.
+			// í•´ë‹¹ ê¸¸ì´ë¡œ ì•„ë˜ --> ìœ„ìª½ ìˆœì„œë¡œ ì¡°ì‚¬í•œë‹¤.
 			for (int StRow = CheckStartRow + 1; StRow <= CheckEndRow; StRow++)
 			{
-				// Ã¹¹øÂ°¿Í ³ª¸ÓÁö ³à¼®µéÀÌ °°ÀºÁö Ã¼Å©ÇÑ´Ù + Sliding Window °³³äÀ» Àû¿ëÇÑ´Ù.
+				// ì²«ë²ˆì§¸ì™€ ë‚˜ë¨¸ì§€ ë…€ì„ë“¤ì´ ê°™ì€ì§€ ì²´í¬í•œë‹¤ + Sliding Window ê°œë…ì„ ì ìš©í•œë‹¤.
 				CurIndex = StRow * m_ColCount + ColIndex;
 
 				Cell_Type_Binary CurCellType = m_vecCells[CurIndex]->GetCellType();
@@ -303,7 +303,7 @@ bool CBoard::IsRowMatch(int RowIndex, int ColIndex, int Index)
 					break;
 				}
 
-				// ÃÖÃÊ CellÀÌ MirrorBall ÀÏ ¶§´Â Áß°£ Áß°£ Cell TypeÀ» Update ÇØÁà¾ß ÇÑ´Ù.
+				// ìµœì´ˆ Cellì´ MirrorBall ì¼ ë•ŒëŠ” ì¤‘ê°„ ì¤‘ê°„ Cell Typeì„ Update í•´ì¤˜ì•¼ í•œë‹¤.
 				if (InitCellType == Cell_Type_Binary::All)
 				{
 					InitCellType = m_vecCells[CurIndex]->GetCellType();
@@ -322,32 +322,32 @@ bool CBoard::IsRowMatch(int RowIndex, int ColIndex, int Index)
 
 bool CBoard::IsColMatch(int RowIndex, int ColIndex, int Index)
 {
-	// ÇöÀç °Ë»çÇÏ´Â CellÀÇ Index
+	// í˜„ì¬ ê²€ì‚¬í•˜ëŠ” Cellì˜ Index
 	int CurIndex = -1;
 
-	// ÃÖ¼Ò 3°³±îÁö Á¶»ç, ÃÖ´ë Á¶»ç °³¼ö´Â Row // Col ¿©ºÎ¿¡ µû¶ó ´Ş¶óÁö°Ô µÉ °ÍÀÌ´Ù.
+	// ìµœì†Œ 3ê°œê¹Œì§€ ì¡°ì‚¬, ìµœëŒ€ ì¡°ì‚¬ ê°œìˆ˜ëŠ” Row // Col ì—¬ë¶€ì— ë”°ë¼ ë‹¬ë¼ì§€ê²Œ ë  ê²ƒì´ë‹¤.
 	int MinCheckLength = 3, MaxCheckLength = m_ColCount;
 
 	int CheckStartCol = -1, CheckEndCol = -1;
 
-	// ÃÖ´ë --> ÃÖ¼Ò ±æÀÌ ¼øÀ¸·Î Á¶»çÇÏ±â
+	// ìµœëŒ€ --> ìµœì†Œ ê¸¸ì´ ìˆœìœ¼ë¡œ ì¡°ì‚¬í•˜ê¸°
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
 	{
 		for (int StartColOffset = 0; StartColOffset <= CheckMatchNum - 1; StartColOffset++)
 		{
 			bool IsPartMatch = true;
 
-			// ÇöÀç ClickCell ÀÌ Æ÷ÇÔµÈ Row ¹üÀ§¿¡ ´ëÇØ¼­¸¸ Á¶»çÇÒ °ÍÀÌ´Ù.
+			// í˜„ì¬ ClickCell ì´ í¬í•¨ëœ Row ë²”ìœ„ì— ëŒ€í•´ì„œë§Œ ì¡°ì‚¬í•  ê²ƒì´ë‹¤.
 			CheckStartCol = (ColIndex + StartColOffset) - (CheckMatchNum - 1);
 
-			// ¾Æ·¡·Î ¹üÀ§°¡ ¹ş¾î³­ °æ¿ì
+			// ì•„ë˜ë¡œ ë²”ìœ„ê°€ ë²—ì–´ë‚œ ê²½ìš°
 			if (CheckStartCol < 0)
 			{
 				IsPartMatch = false;
 				continue;
 			}
 
-			// ¿À¸¥ÂÊÀ¸·Î ¹üÀ§°¡ ¹ş¾î³­ °æ¿ì
+			// ì˜¤ë¥¸ìª½ìœ¼ë¡œ ë²”ìœ„ê°€ ë²—ì–´ë‚œ ê²½ìš°
 			CheckEndCol = CheckStartCol + (CheckMatchNum - 1);
 
 			if (CheckEndCol >= m_ColCount)
@@ -358,7 +358,7 @@ bool CBoard::IsColMatch(int RowIndex, int ColIndex, int Index)
 
 			Cell_Type_Binary InitCellType = m_vecCells[RowIndex * m_ColCount + CheckStartCol]->GetCellType();
 
-			// ÇØ´ç ±æÀÌ·Î ¿ŞÂÊ --> ¿À¸¥ÂÊ ¼ø¼­·Î Á¶»çÇÑ´Ù.
+			// í•´ë‹¹ ê¸¸ì´ë¡œ ì™¼ìª½ --> ì˜¤ë¥¸ìª½ ìˆœì„œë¡œ ì¡°ì‚¬í•œë‹¤.
 			for (int StCol = CheckStartCol + 1; StCol <= CheckEndCol; StCol++)
 			{
 				CurIndex = RowIndex * m_ColCount + StCol;
@@ -402,7 +402,7 @@ bool CBoard::IsPossibleMatchExistForCells()
 				nRow = row + m_DRow[k];
 				nCol = col + m_DCol[k];
 
-				// ¹üÀ§ Á¦ÇÑ
+				// ë²”ìœ„ ì œí•œ
 				if (nRow < 0 || nRow >= m_VisualRowCount || nCol < 0 || nCol >= m_ColCount)
 					continue;
 
@@ -416,7 +416,7 @@ bool CBoard::IsPossibleMatchExistForCells()
 				bool PartMatch = false;
 
 				// 1) Row Match
-				// »ç½Ç»ó row, col ¾ÖµéÀÌ nRow, nCol À¸·Î °¡¼­, Match ¿©ºÎ¸¦ °Ë»çÇÏ°Ô µÇ´Â °ÍÀÌ¹Ç·Î 
+				// ì‚¬ì‹¤ìƒ row, col ì• ë“¤ì´ nRow, nCol ìœ¼ë¡œ ê°€ì„œ, Match ì—¬ë¶€ë¥¼ ê²€ì‚¬í•˜ê²Œ ë˜ëŠ” ê²ƒì´ë¯€ë¡œ 
 				// std::pair<int, bool> RowMatchResult = CheckAIRowMatch(nRow,nCol, row, col, TempMatchedIdxs);
 				if (IsPossibleRowMatch(row, col, nRow, nCol))
 					return true;
@@ -434,7 +434,7 @@ bool CBoard::IsPossibleMatchExistForCells()
 		}
 	}
 
-	// 2) Match ¾øÀ» ¶§ °Ë»ç (ÀÎÁ¢ Á¶ÇÕ)
+	// 2) Match ì—†ì„ ë•Œ ê²€ì‚¬ (ì¸ì ‘ ì¡°í•©)
 	int CurIndex = -1, NxtIndex = -1;
 
 	std::vector<int> vecCombMatchIdx;
@@ -449,7 +449,7 @@ bool CBoard::IsPossibleMatchExistForCells()
 				nRow = row + m_DRow[k];
 				nCol = col + m_DCol[k];
 
-				// ¹üÀ§ Á¦ÇÑ
+				// ë²”ìœ„ ì œí•œ
 				if (nRow < 0 || nRow >= m_VisualRowCount || nCol < 0 || nCol >= m_ColCount)
 					continue;
 
@@ -477,34 +477,34 @@ bool CBoard::IsPossibleRowMatch(int OriginRowIdx, int OriginColIdx,
 
 	int CurIndex = -1, NxtIndex = -1;
 
-	// »õ·Î¿î À§Ä¡¿¡¼­ÀÇ Row Match ¿©ºÎ¸¦ »ìÇÉ´Ù
+	// ìƒˆë¡œìš´ ìœ„ì¹˜ì—ì„œì˜ Row Match ì—¬ë¶€ë¥¼ ì‚´í•€ë‹¤
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
 	{
-		// Æ¯Á¤ ±æÀÌ¿¡¼­ÀÇ Row Match ¿©ºÎ 
+		// íŠ¹ì • ê¸¸ì´ì—ì„œì˜ Row Match ì—¬ë¶€ 
 		bool IsPartRowMatch = false;
 
 		for (int StartRowOffset = 0; StartRowOffset <= CheckMatchNum - 1; StartRowOffset++)
 		{
 			bool IsRowMatch = true;
 
-			// ÇöÀç ClickCell ÀÌ Æ÷ÇÔµÈ Row ¹üÀ§¿¡ ´ëÇØ¼­¸¸ Á¶»çÇÒ °ÍÀÌ´Ù.
-			// ¾Æ·¡ ¹üÀ§¿¡¼­, À§·Î ¿Ã¶ó°¡¸é¼­ °Ë»ç ½ÃÀÛ Row ¸¦ ¼³Á¤ÇØÁÙ °ÍÀÌ´Ù.
+			// í˜„ì¬ ClickCell ì´ í¬í•¨ëœ Row ë²”ìœ„ì— ëŒ€í•´ì„œë§Œ ì¡°ì‚¬í•  ê²ƒì´ë‹¤.
+			// ì•„ë˜ ë²”ìœ„ì—ì„œ, ìœ„ë¡œ ì˜¬ë¼ê°€ë©´ì„œ ê²€ì‚¬ ì‹œì‘ Row ë¥¼ ì„¤ì •í•´ì¤„ ê²ƒì´ë‹¤.
 			CheckStartRow = (NewRowIdx + StartRowOffset) - (CheckMatchNum - 1);
 
-			// ¾Æ·¡·Î ¹üÀ§°¡ ¹ş¾î³­ °æ¿ì
+			// ì•„ë˜ë¡œ ë²”ìœ„ê°€ ë²—ì–´ë‚œ ê²½ìš°
 			if (CheckStartRow < 0)
 			{
 				IsRowMatch = false;
 				continue;
 			}
 
-			// À§·Î ¹üÀ§°¡ ¹ş¾î³­ °æ¿ì
+			// ìœ„ë¡œ ë²”ìœ„ê°€ ë²—ì–´ë‚œ ê²½ìš°
 			CheckEndRow = CheckStartRow + (CheckMatchNum - 1);
 
 			if (CheckEndRow >= m_VisualRowCount)
 			{
 				IsRowMatch = false;
-				// ¾îÂ÷ÇÇ ¿©±â¿¹ °è¼Ó °É¸± °ÍÀÌ¹Ç·Î ( ¿Ö³ÄÇÏ¸é, CheckEndRow´Â °è¼Ó Áõ°¡ ) --> continue °¡ ¾Æ´Ï¶ó break ¼¼ÆÃ
+				// ì–´ì°¨í”¼ ì—¬ê¸°ì˜ˆ ê³„ì† ê±¸ë¦´ ê²ƒì´ë¯€ë¡œ ( ì™œëƒí•˜ë©´, CheckEndRowëŠ” ê³„ì† ì¦ê°€ ) --> continue ê°€ ì•„ë‹ˆë¼ break ì„¸íŒ…
 				break;
 			}
 
@@ -517,7 +517,7 @@ bool CBoard::IsPossibleRowMatch(int OriginRowIdx, int OriginColIdx,
 				InitCellType = m_vecCells[CheckStartRow * m_ColCount + OriginColIdx]->GetCellType();
 			}
 
-			// ¾Æ·¡¼­ À§·Î ÇÑÄ­ ¿Å°Ü³ù´õ´Ï, ºñ±³ ½ÃÀÛ Col ÀÌ°í, ºñ±³ ¹üÀ§ ¹Û
+			// ì•„ë˜ì„œ ìœ„ë¡œ í•œì¹¸ ì˜®ê²¨ë†¨ë”ë‹ˆ, ë¹„êµ ì‹œì‘ Col ì´ê³ , ë¹„êµ ë²”ìœ„ ë°–
 			if (NewRowIdx == CheckStartRow && OriginRowIdx == NewRowIdx - 1)
 			{
 				InitCellType = m_vecCells[OriginRowIdx * m_ColCount + NewColIdx]->GetCellType();
@@ -527,13 +527,13 @@ bool CBoard::IsPossibleRowMatch(int OriginRowIdx, int OriginColIdx,
 			{
 				CurIndex = StRow * m_ColCount + NewColIdx;
 
-				// ¾Æ·¡¼­ À§·Î ÇÑÄ­ ¿Å°Ü³ù´õ´Ï, ºñ±³ ½ÃÀÛ Col ÀÌ°í, ºñ±³ ¹üÀ§ ¹Û
+				// ì•„ë˜ì„œ ìœ„ë¡œ í•œì¹¸ ì˜®ê²¨ë†¨ë”ë‹ˆ, ë¹„êµ ì‹œì‘ Col ì´ê³ , ë¹„êµ ë²”ìœ„ ë°–
 				if (StRow == NewRowIdx && StRow == CheckStartRow && OriginRowIdx == NewRowIdx - 1)
 				{
 					CurIndex = OriginRowIdx * m_ColCount + NewColIdx;
 				}
 
-				// À§¿¡¼­ ¾Æ·¡·Î ÇÑÄ­ ¿Å°Ü³ù´õ´Ï, ¾Æ·¡¿¡¼­ ¿Ã¶ó¿À¸é¼­ MatchÀÎ »óÈ²
+				// ìœ„ì—ì„œ ì•„ë˜ë¡œ í•œì¹¸ ì˜®ê²¨ë†¨ë”ë‹ˆ, ì•„ë˜ì—ì„œ ì˜¬ë¼ì˜¤ë©´ì„œ Matchì¸ ìƒí™©
 				if (StRow == NewRowIdx && StRow == CheckEndRow && OriginRowIdx == NewRowIdx + 1)
 				{
 					CurIndex = OriginRowIdx * m_ColCount + NewColIdx;
@@ -554,15 +554,15 @@ bool CBoard::IsPossibleRowMatch(int OriginRowIdx, int OriginColIdx,
 					break;
 				}
 
-				// ÃÖÃÊ CellÀÌ MirrorBall ÀÏ ¶§´Â Áß°£ Áß°£ Cell TypeÀ» Update ÇØÁà¾ß ÇÑ´Ù.
+				// ìµœì´ˆ Cellì´ MirrorBall ì¼ ë•ŒëŠ” ì¤‘ê°„ ì¤‘ê°„ Cell Typeì„ Update í•´ì¤˜ì•¼ í•œë‹¤.
 				if (InitCellType == Cell_Type_Binary::All)
 				{
 					InitCellType = m_vecCells[CurIndex]->GetCellType();
 				}
 			}
 
-			// ¸¸¾à ÇØ´ç Row(¼¼·Î)°¡ Match ¶ó¸é, ÇØ´ç Idx µéÀ» MatchIdxs Vector¿¡ ³Ö¾îÁÖ°í return;
-			// ±×¸®°í ÇÔ¼ö¸¦ Á¾·áÇÑ´Ù.
+			// ë§Œì•½ í•´ë‹¹ Row(ì„¸ë¡œ)ê°€ Match ë¼ë©´, í•´ë‹¹ Idx ë“¤ì„ MatchIdxs Vectorì— ë„£ì–´ì£¼ê³  return;
+			// ê·¸ë¦¬ê³  í•¨ìˆ˜ë¥¼ ì¢…ë£Œí•œë‹¤.
 			if (IsRowMatch)
 			{
 				return true;
@@ -575,14 +575,14 @@ bool CBoard::IsPossibleRowMatch(int OriginRowIdx, int OriginColIdx,
 
 bool CBoard::IsPossibleColMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx)
 {
-	// ÃÖ¼Ò 3°³±îÁö Á¶»ç, ÃÖ´ë Á¶»ç °³¼ö´Â Row // Col ¿©ºÎ¿¡ µû¶ó ´Ş¶óÁö°Ô µÉ °ÍÀÌ´Ù.
+	// ìµœì†Œ 3ê°œê¹Œì§€ ì¡°ì‚¬, ìµœëŒ€ ì¡°ì‚¬ ê°œìˆ˜ëŠ” Row // Col ì—¬ë¶€ì— ë”°ë¼ ë‹¬ë¼ì§€ê²Œ ë  ê²ƒì´ë‹¤.
 	int MinCheckLength = 3, MaxCheckLength = m_ColCount;
 
 	int CheckStartCol = -1, CheckEndCol = -1;
 
 	int CurIndex = -1, NxtIndex = -1;
 
-	// ÃÖ´ë --> ÃÖ¼Ò ±æÀÌ ¼øÀ¸·Î Á¶»çÇÏ±â
+	// ìµœëŒ€ --> ìµœì†Œ ê¸¸ì´ ìˆœìœ¼ë¡œ ì¡°ì‚¬í•˜ê¸°
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
 	{
 		bool IsPartMatch = false;
@@ -591,25 +591,25 @@ bool CBoard::IsPossibleColMatch(int OriginRowIdx, int OriginColIdx, int NewRowId
 		{
 			bool IsColMatch = true;
 
-			// ÇöÀç ClickCell ÀÌ Æ÷ÇÔµÈ Row ¹üÀ§¿¡ ´ëÇØ¼­¸¸ Á¶»çÇÒ °ÍÀÌ´Ù.
+			// í˜„ì¬ ClickCell ì´ í¬í•¨ëœ Row ë²”ìœ„ì— ëŒ€í•´ì„œë§Œ ì¡°ì‚¬í•  ê²ƒì´ë‹¤.
 			CheckStartCol = (NewColIdx + StartColOffset) - (CheckMatchNum - 1);
 
-			// ¾Æ·¡·Î ¹üÀ§°¡ ¹ş¾î³­ °æ¿ì
+			// ì•„ë˜ë¡œ ë²”ìœ„ê°€ ë²—ì–´ë‚œ ê²½ìš°
 			if (CheckStartCol < 0)
 			{
 				IsColMatch = false;
 				continue;
 			}
 
-			// ¿À¸¥ÂÊÀ¸·Î ¹üÀ§°¡ ¹ş¾î³­ °æ¿ì
+			// ì˜¤ë¥¸ìª½ìœ¼ë¡œ ë²”ìœ„ê°€ ë²—ì–´ë‚œ ê²½ìš°
 			CheckEndCol = CheckStartCol + (CheckMatchNum - 1);
 
 			if (CheckEndCol >= m_ColCount)
 			{
 				IsColMatch = false;
 				// continue;
-				// ¿©±â °É¸®¸é ÀÌÈÄ¿¡µµ ¿©±â °è¼Ó °É¸°´Ù.
-				// ¾îÂ÷ÇÇ CheckEndCol ´Â °è¼Ó Áõ°¡ÇÏ±â ¶§¹®ÀÌ´Ù.
+				// ì—¬ê¸° ê±¸ë¦¬ë©´ ì´í›„ì—ë„ ì—¬ê¸° ê³„ì† ê±¸ë¦°ë‹¤.
+				// ì–´ì°¨í”¼ CheckEndCol ëŠ” ê³„ì† ì¦ê°€í•˜ê¸° ë•Œë¬¸ì´ë‹¤.
 				break;
 			}
 
@@ -622,30 +622,30 @@ bool CBoard::IsPossibleColMatch(int OriginRowIdx, int OriginColIdx, int NewRowId
 				InitCellType = m_vecCells[OriginRowIdx * m_ColCount + CheckStartCol]->GetCellType();
 			}
 
-			// ¿ŞÂÊ¿¡¼­ ¿À¸¥ÂÊÀ¸·Î ¿Å°Ü³ù°í, ºñ±³ ½ÃÀÛ Col ÀÌ°í, OriginColIdx°¡ °Ë»ç ¹üÀ§ ¹Û
+			// ì™¼ìª½ì—ì„œ ì˜¤ë¥¸ìª½ìœ¼ë¡œ ì˜®ê²¨ë†¨ê³ , ë¹„êµ ì‹œì‘ Col ì´ê³ , OriginColIdxê°€ ê²€ì‚¬ ë²”ìœ„ ë°–
 			if (NewColIdx == CheckStartCol && OriginColIdx == NewColIdx - 1)
 			{
 				InitCellType = m_vecCells[NewRowIdx * m_ColCount + OriginColIdx]->GetCellType();
 			}
 
-			// ÇØ´ç ±æÀÌ·Î ¿ŞÂÊ --> ¿À¸¥ÂÊ ¼ø¼­·Î Á¶»çÇÑ´Ù.
+			// í•´ë‹¹ ê¸¸ì´ë¡œ ì™¼ìª½ --> ì˜¤ë¥¸ìª½ ìˆœì„œë¡œ ì¡°ì‚¬í•œë‹¤.
 			for (int StCol = CheckStartCol; StCol <= CheckEndCol; StCol++)
 			{
 				CurIndex = NewRowIdx * m_ColCount + StCol;
 
-				// ¿ŞÂÊ¿¡¼­ ¿À¸¥ÂÊÀ¸·Î ¿Å°Ü³ù°í, ºñ±³ ½ÃÀÛ Col ÀÌ°í, OriginColIdx°¡ °Ë»ç ¹üÀ§ ¹Û
+				// ì™¼ìª½ì—ì„œ ì˜¤ë¥¸ìª½ìœ¼ë¡œ ì˜®ê²¨ë†¨ê³ , ë¹„êµ ì‹œì‘ Col ì´ê³ , OriginColIdxê°€ ê²€ì‚¬ ë²”ìœ„ ë°–
 				if (StCol == NewColIdx && StCol == CheckStartCol && OriginColIdx == NewColIdx - 1)
 				{
 					CurIndex = NewRowIdx * m_ColCount + OriginColIdx;
 				}
 
-				// ¿À¸¥ÂÊ¿¡¼­ ¿ŞÂÊÀ¸·Î ¿Å°Ü³ù´õ´Ï, ºñ±³ End Col ÀÌ°í, OriginColIdx°¡ °Ë»ç ¹üÀ§ ¹Û
+				// ì˜¤ë¥¸ìª½ì—ì„œ ì™¼ìª½ìœ¼ë¡œ ì˜®ê²¨ë†¨ë”ë‹ˆ, ë¹„êµ End Col ì´ê³ , OriginColIdxê°€ ê²€ì‚¬ ë²”ìœ„ ë°–
 				if (StCol == NewColIdx && StCol == CheckEndCol && OriginColIdx == NewColIdx + 1)
 				{
 					CurIndex = NewRowIdx * m_ColCount + OriginColIdx;
 				}
 
-				// ¿À¸¥ÂÊ¿¡¼­ ¿ŞÂÊÀ¸·Î ¿Å°Ü³ù´õ´Ï, OriginColIdx°¡ °Ë»ç ¹üÀ§ ¾È
+				// ì˜¤ë¥¸ìª½ì—ì„œ ì™¼ìª½ìœ¼ë¡œ ì˜®ê²¨ë†¨ë”ë‹ˆ, OriginColIdxê°€ ê²€ì‚¬ ë²”ìœ„ ì•ˆ
 				if (StCol == OriginColIdx)
 				{
 					CurIndex = OriginRowIdx * m_ColCount + StCol;
@@ -661,14 +661,14 @@ bool CBoard::IsPossibleColMatch(int OriginRowIdx, int OriginColIdx, int NewRowId
 					break;
 				}
 
-				// ÃÖÃÊ CellÀÌ MirrorBall ÀÏ ¶§´Â Áß°£ Áß°£ Cell TypeÀ» Update ÇØÁà¾ß ÇÑ´Ù.
+				// ìµœì´ˆ Cellì´ MirrorBall ì¼ ë•ŒëŠ” ì¤‘ê°„ ì¤‘ê°„ Cell Typeì„ Update í•´ì¤˜ì•¼ í•œë‹¤.
 				if (InitCellType == Cell_Type_Binary::All)
 				{
 					InitCellType = m_vecCells[CurIndex]->GetCellType();
 				}
 			}
 
-			// ¸¸¾à ÇØ´ç Row (¼¼·Î)°¡ Match ¶ó¸é, ÇØ´ç Cell µéÀ» Match »óÅÂ·Î ¹Ù²ãÁØ´Ù.
+			// ë§Œì•½ í•´ë‹¹ Row (ì„¸ë¡œ)ê°€ Match ë¼ë©´, í•´ë‹¹ Cell ë“¤ì„ Match ìƒíƒœë¡œ ë°”ê¿”ì¤€ë‹¤.
 			if (IsColMatch)
 			{
 				return true;
@@ -681,9 +681,9 @@ bool CBoard::IsPossibleColMatch(int OriginRowIdx, int OriginColIdx, int NewRowId
 
 bool CBoard::IsPossibleBagMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx)
 {
-	// ¸ğµç ¹æÇâ¿¡ ´ëÇÑ Á¶»ç¸¦ ÇÑ ÀÌÈÄ ,
-	// Áßº¹ ±îÁö Á¦°ÅÇØ¼­
-	// ±× ´ÙÀ½¿¡ Return ÇÒ °ÍÀÌ´Ù.
+	// ëª¨ë“  ë°©í–¥ì— ëŒ€í•œ ì¡°ì‚¬ë¥¼ í•œ ì´í›„ ,
+	// ì¤‘ë³µ ê¹Œì§€ ì œê±°í•´ì„œ
+	// ê·¸ ë‹¤ìŒì— Return í•  ê²ƒì´ë‹¤.
 
 	std::vector<int> TempMatchIdxList;
 	TempMatchIdxList.reserve(m_ColCount);
@@ -749,7 +749,7 @@ bool CBoard::IsMatchExistForCells(std::vector<CSharedPtr<CCell>>& pVecCells)
 {
 	int RowIndex = -1, ColIndex = -1;
 
-	// µü ¹İ¸¸ Update ÇÑ´Ù.
+	// ë”± ë°˜ë§Œ Update í•œë‹¤.
 	int CheckMaxIndex = m_VisualRowCount * m_ColCount;
 
 	for (int i = 0; i < CheckMaxIndex; i++)
@@ -774,13 +774,13 @@ bool CBoard::CheckCombination(CCell* FirstCell,CCell* SecondCell)
 
 	bool Result = false;
 
-	// ºÀÁö + ºÀÁö
+	// ë´‰ì§€ + ë´‰ì§€
 	Result = CheckBagAndBagComb(FirstCell, SecondCell);
 
 	if (Result)
 		return true;
 
-	// ºÀÁö + Line
+	// ë´‰ì§€ + Line
 	Result = CheckBagAndRowLineComb(FirstCell, SecondCell);
 
 	if (Result)
@@ -791,7 +791,7 @@ bool CBoard::CheckCombination(CCell* FirstCell,CCell* SecondCell)
 	if (Result)
 		return true;
 
-	// ºÀÁö + MirrorBall
+	// ë´‰ì§€ + MirrorBall
 	Result = CheckBagAndMirrorBallComb(FirstCell, SecondCell);
 
 	if (Result)
@@ -823,17 +823,17 @@ bool CBoard::CheckCombination(CCell* FirstCell,CCell* SecondCell)
 
 void CBoard::ManageDestroyedBagInfo(int Index)
 {
-	// Bag ´Â ÇÑ¹ø ´õ ÅÍ¶ß·Á¾ß ÇÑ´Ù.
+	// Bag ëŠ” í•œë²ˆ ë” í„°ëœ¨ë ¤ì•¼ í•œë‹¤.
 	if (m_vecCells[Index]->IsSpecialDestroyedBag())
 	{
-		// ¿©±â¼­ ÇÑ¹ø ´õ ºĞ±âÁ¡À» Áà¾ß ÇÒ °Í °°´Ù.
-		// BagAndBag Combination Æø¹ß ÀÌÈÄ, °°Àº Combination È¿°ú ´ë·Î ÅÍ¶ß·Á¾ß ÇÒ Áö
+		// ì—¬ê¸°ì„œ í•œë²ˆ ë” ë¶„ê¸°ì ì„ ì¤˜ì•¼ í•  ê²ƒ ê°™ë‹¤.
+		// BagAndBag Combination í­ë°œ ì´í›„, ê°™ì€ Combination íš¨ê³¼ ëŒ€ë¡œ í„°ëœ¨ë ¤ì•¼ í•  ì§€
 		if (m_vecCells[Index]->IsBagAndBagFirstDestroyed())
 		{
 			m_vecCells[Index]->SetDestroyState(Destroy_State::BagAndBag);
 			// m_vecCells[Index]->SetIsBagAndBagDestroyed(false);
 		}
-		// ¾Æ´Ï¸é ±×³É ÀÏ¹İ Bag Destroy ´ë·Î ÅÍ¶ß·Á¾ß ÇÒÁö 
+		// ì•„ë‹ˆë©´ ê·¸ëƒ¥ ì¼ë°˜ Bag Destroy ëŒ€ë¡œ í„°ëœ¨ë ¤ì•¼ í• ì§€ 
 		else
 		{
 			m_vecCells[Index]->SetDestroyState(Destroy_State::BagAfter);
@@ -872,7 +872,7 @@ bool CBoard::CheckBagAndBagComb(CCell* FirstCell, CCell* SecondCell)
 		if (RightColIdx >= m_ColCount)
 			RightColIdx = m_ColCount - 1;
 
-		// Ã¹¹øÂ° CellÀÇ Destroy State À» ¼¼ÆÃÇØÁÖ°í
+		// ì²«ë²ˆì§¸ Cellì˜ Destroy State ì„ ì„¸íŒ…í•´ì£¼ê³ 
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndBag);
 		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndBag);
 
@@ -880,7 +880,7 @@ bool CBoard::CheckBagAndBagComb(CCell* FirstCell, CCell* SecondCell)
 		m_vecCells[SecondCell->GetIndex()]->SetIsBagCombToBeDestroyed(true);
 		
 
-		// Bag Destroy ¹üÀ§ Á¤º¸¸¦ ¼¼ÆÃÇØÁØ´Ù.
+		// Bag Destroy ë²”ìœ„ ì •ë³´ë¥¼ ì„¸íŒ…í•´ì¤€ë‹¤.
 		// m_vecCells[FirstCell->GetIndex()]->SetDestroyBagIndexInfos(TopRowIdx, BottomRowIdx, LeftColIdx, RightColIdx);
 		// m_vecCells[FirstCell->GetIndex()]->SetDestroyBagIndexInfos(TopRowIdx, BottomRowIdx, LeftColIdx, RightColIdx);
 
@@ -935,7 +935,7 @@ void CBoard::DestroyBagAndBagComb(CCell* Cell)
 	if (!Cell->IsActive())
 		return;
 
-	// ÅÍÁú ¹üÀ§¸¦ °è»êÇÑ´Ù.
+	// í„°ì§ˆ ë²”ìœ„ë¥¼ ê³„ì‚°í•œë‹¤.
 	int BottomRowIdx = Cell->GetRowIndex() - 2;
 
 	if (BottomRowIdx < 0)
@@ -962,8 +962,8 @@ void CBoard::DestroyBagAndBagComb(CCell* Cell)
 		{
 			if (row == Cell->GetRowIndex() && col == Cell->GetColIndex())
 			{
-				// ÇØ´ç CellÀº ÇÑ¹ø ´õ Æ¯¼öÈ¿°ú Destroy¸¦ ÇØ¾ß ÇÑ´Ù. (Áï, Notice AnimationÀ¸·Î ¹Ù²î°í ³ª¼­µµ
-				// ÇÑ¹ø ´õ Æ¯¼öÈ¿°ú Destroy Effect¸¦ Áà¾ß ÇÑ´Ù´Â °ÍÀÌ´Ù )
+				// í•´ë‹¹ Cellì€ í•œë²ˆ ë” íŠ¹ìˆ˜íš¨ê³¼ Destroyë¥¼ í•´ì•¼ í•œë‹¤. (ì¦‰, Notice Animationìœ¼ë¡œ ë°”ë€Œê³  ë‚˜ì„œë„
+				// í•œë²ˆ ë” íŠ¹ìˆ˜íš¨ê³¼ Destroy Effectë¥¼ ì¤˜ì•¼ í•œë‹¤ëŠ” ê²ƒì´ë‹¤ )
 				DestroySingleBagCell(row, col, true);
 			}
 			else
@@ -977,14 +977,14 @@ void CBoard::DestroyBagAndBagComb(CCell* Cell)
 
 void CBoard::ManageBagAndMirrorBallComb(int Index)
 {
-	// Mirror Ball + Bag Á¶ÇÕ Áß¿¡¼­
-	// Mirror Ball ¿¡ ÇØ´çÇÏ´Â ³à¼® 
+	// Mirror Ball + Bag ì¡°í•© ì¤‘ì—ì„œ
+	// Mirror Ball ì— í•´ë‹¹í•˜ëŠ” ë…€ì„ 
 	if (m_vecCells[Index]->GetDestroyState() == Destroy_State::BagAndMirrorBall_Mirror)
 	{
 		m_vecCells[Index]->SetIsMirrorBallOfBagMirrorBallComb(true);
 	}
 
-	// À§ÀÇ ÄÚµå ½ÇÇà , ¹Ù·Î ´ÙÀ½ Frame¿¡ °°Àº Cell¿¡ ´ëÇØ ¾Æ·¡ÀÇ ÄÚµå¿¡ °É¸± °ÍÀÌ´Ù.
+	// ìœ„ì˜ ì½”ë“œ ì‹¤í–‰ , ë°”ë¡œ ë‹¤ìŒ Frameì— ê°™ì€ Cellì— ëŒ€í•´ ì•„ë˜ì˜ ì½”ë“œì— ê±¸ë¦´ ê²ƒì´ë‹¤.
 	else if (m_vecCells[Index]->IsMirrorBallOfBagMirrorBallComb() &&
 		m_vecCells[Index]->GetDestroyState() == Destroy_State::None)
 	{
@@ -1001,7 +1001,7 @@ void CBoard::DestroyMirrorBallOfBagMirrorBallComb(int Index)
 
 		m_vecCells[Index]->SetMirrorBallDestroyType(CellBType);
 
-		// ÇÑ¹ø ÅÍ¶ß·ÈÀ¸´Ï Destroy State Á¤º¸ ÃÊ±âÈ­
+		// í•œë²ˆ í„°ëœ¨ë ¸ìœ¼ë‹ˆ Destroy State ì •ë³´ ì´ˆê¸°í™”
 		m_vecCells[Index]->SetDestroyState(Destroy_State::None);
 
 		DestroyMirrorBallEffect(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex());
@@ -1009,8 +1009,8 @@ void CBoard::DestroyMirrorBallOfBagMirrorBallComb(int Index)
 	}
 }
 
-// °¡·Î ¼¼ÁÙ //
-// ¼¼·Î ¼¼ÁÙ //
+// ê°€ë¡œ ì„¸ì¤„ //
+// ì„¸ë¡œ ì„¸ì¤„ //
 void CBoard::DestroyBagLineComb(int RowIndex, int ColIndex)
 {
 	if (!m_vecCells[RowIndex * m_ColCount + ColIndex]->IsActive())
@@ -1038,7 +1038,7 @@ void CBoard::DestroyBagLineComb(int RowIndex, int ColIndex)
 
 	float DelayTime = 0.f;
 
-	// °¡·Î ¼¼ÁÙ Á¦°ÅÇÏ±â
+	// ê°€ë¡œ ì„¸ì¤„ ì œê±°í•˜ê¸°
 	for (int row = BottomRowIdx; row <= TopRowIdx; row++)
 	{
 		for (int col = 0; col < m_ColCount; col++)
@@ -1059,7 +1059,7 @@ void CBoard::DestroyBagLineComb(int RowIndex, int ColIndex)
 
 			if (row == BottomRowIdx)
 			{
-				// ÇØ´ç ColumnÀÇ ±× À§ Cell µé·Î ÇÏ¿©±İ ³»·Á¿À´Â °ÍÀ» Àá½Ã ¸ØÃßµµ·Ï ¼¼ÆÃÇÑ´Ù
+				// í•´ë‹¹ Columnì˜ ê·¸ ìœ„ Cell ë“¤ë¡œ í•˜ì—¬ê¸ˆ ë‚´ë ¤ì˜¤ëŠ” ê²ƒì„ ì ì‹œ ë©ˆì¶”ë„ë¡ ì„¸íŒ…í•œë‹¤
 				for (int row = BottomRowIdx; row < m_RowCount; row++)
 				{
 					m_vecCells[row * m_ColCount + col]->SetPauseGoDown(true);
@@ -1077,7 +1077,7 @@ void CBoard::DestroyBagLineComb(int RowIndex, int ColIndex)
 
 	float LastDelayTime = DelayTime;
 
-	// ¼¼·Î ¼¼ÁÙ Á¦°ÅÇÏ±â
+	// ì„¸ë¡œ ì„¸ì¤„ ì œê±°í•˜ê¸°
 	for (int col = LeftColIdx; col <= RightColIdx; col++)
 	{
 		for (int row = 0; row < m_VisualRowCount; row++)
@@ -1098,7 +1098,7 @@ void CBoard::DestroyBagLineComb(int RowIndex, int ColIndex)
 
 			if (row == m_VisualRowCount - 1)
 			{
-				// ÇØ´ç ColumnÀÇ ±× À§ Cell µé·Î ÇÏ¿©±İ ³»·Á¿À´Â °ÍÀ» Àá½Ã ¸ØÃßµµ·Ï ¼¼ÆÃÇÑ´Ù
+				// í•´ë‹¹ Columnì˜ ê·¸ ìœ„ Cell ë“¤ë¡œ í•˜ì—¬ê¸ˆ ë‚´ë ¤ì˜¤ëŠ” ê²ƒì„ ì ì‹œ ë©ˆì¶”ë„ë¡ ì„¸íŒ…í•œë‹¤
 				for (int row = m_VisualRowCount + 1; row < m_RowCount; row++)
 				{
 					m_vecCells[row * m_ColCount + col]->SetPauseGoDown(true);
@@ -1116,17 +1116,17 @@ void CBoard::DestroyBagLineComb(int RowIndex, int ColIndex)
 
 bool CBoard::CheckBagAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 {
-	// 1) Bag »ö»ó¿¡ ÀÖ´Â ³à¼®µé
+	// 1) Bag ìƒ‰ìƒì— ìˆëŠ” ë…€ì„ë“¤
 	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::Bag && 
 		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall)
 	{
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndMirrorBall_Bag);
 
-		// 1) Destroy_State::BagAndMirrorBall_Mirror ·Î ¼¼ÆÃ 
-		// 2) ±×·¯¸é Destroy Cells ¿¡¼­, Destroy_State::BagAndMirrorBall_Mirror ÀÎ
-		// ³à¼®µéÀ» m_IsMirrorBallOfBagMirrorBallComb ¸¦ true ·Î ¼¼ÆÃ
-		// 3) ±× ´ÙÀ½ Destroy Cells ¿¡¼­ m_IsMirrorBallOfBagMirrorBallComb°¡ true ÀÎ ³à¼®À»
-		// - Destroy_State MirrorBall·Î ¼¼ÆÃ
+		// 1) Destroy_State::BagAndMirrorBall_Mirror ë¡œ ì„¸íŒ… 
+		// 2) ê·¸ëŸ¬ë©´ Destroy Cells ì—ì„œ, Destroy_State::BagAndMirrorBall_Mirror ì¸
+		// ë…€ì„ë“¤ì„ m_IsMirrorBallOfBagMirrorBallComb ë¥¼ true ë¡œ ì„¸íŒ…
+		// 3) ê·¸ ë‹¤ìŒ Destroy Cells ì—ì„œ m_IsMirrorBallOfBagMirrorBallCombê°€ true ì¸ ë…€ì„ì„
+		// - Destroy_State MirrorBallë¡œ ì„¸íŒ…
 		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndMirrorBall_Mirror);
 
 		return true;
@@ -1183,13 +1183,13 @@ bool CBoard::CheckLineAndLineComb(CCell* FirstCell, CCell* SecondCell)
 
 bool CBoard::CheckLineAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 {
-	// 1) Bag »ö»ó¿¡ ÀÖ´Â ³à¼®µé
+	// 1) Bag ìƒ‰ìƒì— ìˆëŠ” ë…€ì„ë“¤
 	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall &&
 		(m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::RowLine || 
 			m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::ColLine))
 	{
-		// 1. ÀÌ·¸°Ô ¼¼ÆÃµÈ ³à¼®À» ¹ß°ßÇÏ¸é
-		// - ÁÖº¯¿¡ MirrorBall ÀÎ ³à¼®À» Ã£´Â´Ù.
+		// 1. ì´ë ‡ê²Œ ì„¸íŒ…ëœ ë…€ì„ì„ ë°œê²¬í•˜ë©´
+		// - ì£¼ë³€ì— MirrorBall ì¸ ë…€ì„ì„ ì°¾ëŠ”ë‹¤.
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::LineAndMirrorBall_Line);
 		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::LineAndMirrorBall_Mirror);
 
@@ -1211,7 +1211,7 @@ bool CBoard::CheckLineAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 
 bool CBoard::DestroyLineAndMirrorBallComb(int RowIndex, int ColIndex, int LineIndex)
 {
-	// ÁÖº¯¿¡ Ã£°í
+	// ì£¼ë³€ì— ì°¾ê³ 
 	int Dx[4] = { -1, 1, 0, 0 };
 	int Dy[4] = { 0, 0, -1, 1 };
 
@@ -1235,7 +1235,7 @@ bool CBoard::DestroyLineAndMirrorBallComb(int RowIndex, int ColIndex, int LineIn
 	if (MirrorBallIndex == -1)
 		return false;
 
-	// ÀÚ±â ÀÚ½ÅÀº Á¡Á¡ Opacity¸¦ ÁÙ¿©³ª°¡°í
+	// ìê¸° ìì‹ ì€ ì ì  Opacityë¥¼ ì¤„ì—¬ë‚˜ê°€ê³ 
 	m_vecCells[LineIndex]->SetIsLineOfLineMirrorBallComb(true);
 	m_vecCells[MirrorBallIndex]->SetIsLineOfLineMirrorBallComb(true);
 	
@@ -1257,7 +1257,7 @@ void CBoard::TriggerLineAndMirrorBallCombEffect(int OriginRowIdx, int OriginColI
 			if (m_vecCells[row * m_ColCount + col]->GetCellType() == CellType &&
 				m_vecCells[row * m_ColCount + col]->GetCellState() != Cell_State::MirrorBall)
 			{
-				// Æ¯¼ö È¿°ú Àû¿ëÇÏ±â
+				// íŠ¹ìˆ˜ íš¨ê³¼ ì ìš©í•˜ê¸°
 				m_vecCells[row * m_ColCount + col]->SetSameColorWithMirrorBallLineComb(true);
 			}
 		}
@@ -1266,7 +1266,7 @@ void CBoard::TriggerLineAndMirrorBallCombEffect(int OriginRowIdx, int OriginColI
 
 bool CBoard::CheckMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 {
-	// 1) Bag »ö»ó¿¡ ÀÖ´Â ³à¼®µé
+	// 1) Bag ìƒ‰ìƒì— ìˆëŠ” ë…€ì„ë“¤
 	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall && 
 		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall)
 	{
@@ -1288,7 +1288,7 @@ bool CBoard::DestroyMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondC
 	{
 		for (int col = 0; col < m_ColCount; col++)
 		{
-			// Æ¯¼ö È¿°ú Àû¿ëÇÏ±â
+			// íŠ¹ìˆ˜ íš¨ê³¼ ì ìš©í•˜ê¸°
 			m_vecCells[row * m_ColCount + col]->SetDoubleMirrorBallCombEffectApplied(true);
 		}
 	}
@@ -1297,9 +1297,9 @@ bool CBoard::DestroyMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondC
 
 void CBoard::TriggerDoubleMirrorBallCombEffect(int OriginRowIdx, int OriginColIdx, int OriginIdx)
 {
-	// 2°³ÀÇ MirrorBall¿¡¼­ ÇØ´ç ÇÔ¼ö¸¦ Äİ¹éÀ¸·Î ½ÇÇàÇÒ °ÍÀÌ´Ù
-	// ´Ü ÇÑ¹ø¸¸ ½ÇÇàÇÏ°Ô ÇÏ±â À§ÇØ¼­
-	// °¡Àå Ã¹¹øÂ° CellÀÇ »óÅÂ°¡ ÀÌ¹Ì m_IsDoubleMirrorBallCombEffectApplied ¶ó¸é return
+	// 2ê°œì˜ MirrorBallì—ì„œ í•´ë‹¹ í•¨ìˆ˜ë¥¼ ì½œë°±ìœ¼ë¡œ ì‹¤í–‰í•  ê²ƒì´ë‹¤
+	// ë‹¨ í•œë²ˆë§Œ ì‹¤í–‰í•˜ê²Œ í•˜ê¸° ìœ„í•´ì„œ
+	// ê°€ì¥ ì²«ë²ˆì§¸ Cellì˜ ìƒíƒœê°€ ì´ë¯¸ m_IsDoubleMirrorBallCombEffectApplied ë¼ë©´ return
 
 	if (m_vecCells[0]->m_IsDoubleMirrorBallCombEffectApplied)
 		return;
@@ -1310,7 +1310,7 @@ void CBoard::TriggerDoubleMirrorBallCombEffect(int OriginRowIdx, int OriginColId
 	{
 		for (int col = 0; col < m_ColCount; col++)
 		{
-			// ÀÌ¹Ì »ç¶óÁø ³à¼® X
+			// ì´ë¯¸ ì‚¬ë¼ì§„ ë…€ì„ X
 			if (!m_vecCells[row * m_ColCount + col]->IsActive())
 				continue;
 
@@ -1326,7 +1326,7 @@ void CBoard::DestroyCells()
 {
 	int CheckMaxIndex = m_VisualRowCount * m_ColCount;
 
-	// »õ·Î¿î Type ¼¼ÆÃ ¹× Destroy
+	// ìƒˆë¡œìš´ Type ì„¸íŒ… ë° Destroy
 	int DestroyTargetEndIdx = (int)(m_TotCount * 0.5f);
 
 	for (int Index = 0; Index < DestroyTargetEndIdx; Index++)
@@ -1338,7 +1338,7 @@ void CBoard::DestroyCells()
 
 	for (int Index = 0; Index < DestroyTargetEndIdx; Index++)
 	{
-		// BagAfter ÀÇ °æ¿ì, ±×³É Match ¿©ºÎ¿Í °ü°è¾øÀÌ ÅÍ¶ß¸°´Ù.
+		// BagAfter ì˜ ê²½ìš°, ê·¸ëƒ¥ Match ì—¬ë¶€ì™€ ê´€ê³„ì—†ì´ í„°ëœ¨ë¦°ë‹¤.
 		 if (m_vecCells[Index]->GetDestroyState() == Destroy_State::BagAfter)
 		{
 			 int RowIndex = m_vecCells[Index]->GetRowIndex();
@@ -1346,29 +1346,29 @@ void CBoard::DestroyCells()
 
 		 	 DestroyBagEffect(RowIndex, ColIndex, true);
 
-			// ÀÌ ³à¼®¿¡ ´ëÇØ¼­´Â ´õÀÌ»ó Match ¿©ºÎ¸¦ °í·ÁÇÏÁö ¾Ê¾Æµµ µÇÁö ¾ÊÀ»±î ?
+			// ì´ ë…€ì„ì— ëŒ€í•´ì„œëŠ” ë”ì´ìƒ Match ì—¬ë¶€ë¥¼ ê³ ë ¤í•˜ì§€ ì•Šì•„ë„ ë˜ì§€ ì•Šì„ê¹Œ ?
 			// continue;
 		}
 
-		// Mirror Ball + Bag Á¶ÇÕ Áß¿¡¼­
-		// Mirror Ball ¿¡ ÇØ´çÇÏ´Â ³à¼®À» ÅÍ¶ß¸°´Ù.
+		// Mirror Ball + Bag ì¡°í•© ì¤‘ì—ì„œ
+		// Mirror Ball ì— í•´ë‹¹í•˜ëŠ” ë…€ì„ì„ í„°ëœ¨ë¦°ë‹¤.
 		 DestroyMirrorBallOfBagMirrorBallComb(Index);
 		
-		// ¸¸¾à Match µÈ ³à¼®ÀÌ¶ó¸é 
+		// ë§Œì•½ Match ëœ ë…€ì„ì´ë¼ë©´ 
 		if (m_vecCellIsMatch[Index])
 		{
 			int RowIndex = m_vecCells[Index]->GetRowIndex();
 			int ColIndex   = m_vecCells[Index]->GetColIndex();
 
-			// ¸¸¾à Destroy_State ¶ó¸é --> Áï, ÇöÀç ÅÍ¶ß·Á¾ß ÇÒ ³à¼®ÀÌ ÀÖ´Ù¸é
+			// ë§Œì•½ Destroy_State ë¼ë©´ --> ì¦‰, í˜„ì¬ í„°ëœ¨ë ¤ì•¼ í•  ë…€ì„ì´ ìˆë‹¤ë©´
 			// if ((int)m_vecDestroyState[Index] > (int)Destroy_State::None)
 			if ((int)m_vecCells[Index]->GetDestroyState() > (int)Destroy_State::None)
 			{
 				JudgeCellDestroyType(RowIndex, ColIndex, Index);
 			}
 
-			// ÇØ´ç À§Ä¡¿¡¼­ÀÇ MatchState ¸¦ È®ÀÎÇØ¼­
-			// Normal º¸´Ù Å« ³à¼®ÀÌ¸é, ±×³É State ¸¸ ¹Ù²ãÁÖ°í
+			// í•´ë‹¹ ìœ„ì¹˜ì—ì„œì˜ MatchState ë¥¼ í™•ì¸í•´ì„œ
+			// Normal ë³´ë‹¤ í° ë…€ì„ì´ë©´, ê·¸ëƒ¥ State ë§Œ ë°”ê¿”ì£¼ê³ 
 			else if ((int)m_vecMatchState[Index] > (int)Match_State::Normal)
 			{
 				m_vecCells[Index]->SetCellState(ChangeMatchStateToCellState(m_vecMatchState[Index]));
@@ -1376,14 +1376,14 @@ void CBoard::DestroyCells()
 				// m_vecDestroyMarkState[Index] = ChangeMatchStateToDestroyMarkState(m_vecMatchState[Index]);
 				m_vecCells[Index]->SetDestroyMarkState(ChangeMatchStateToDestroyMarkState(m_vecMatchState[Index]));
 			}
-			// ±×°Ô ¾Æ´Ï¶ó¸é, Á¦°Å ÀÌÈÄ, ÇØ´ç Col ¿¡¼­ÀÇ Á¦°Å°³¼ö + 1 À» ÇØÁÖ¸é µÈ´Ù.
+			// ê·¸ê²Œ ì•„ë‹ˆë¼ë©´, ì œê±° ì´í›„, í•´ë‹¹ Col ì—ì„œì˜ ì œê±°ê°œìˆ˜ + 1 ì„ í•´ì£¼ë©´ ëœë‹¤.
 			else 
 			{
-				// È­¸é¿¡¼­ Á¦°ÅÇØÁÖ°í
+				// í™”ë©´ì—ì„œ ì œê±°í•´ì£¼ê³ 
 				DestroySingleCell(RowIndex, ColIndex);
 			}
 		}
-		// Match°¡ ¾Æ´Ï¶ó¸é,  --> ±×·¡µµ Á¶ÇÕÀº ±¸¼ºµÉ ¼ö ÀÖ´Ù
+		// Matchê°€ ì•„ë‹ˆë¼ë©´,  --> ê·¸ë˜ë„ ì¡°í•©ì€ êµ¬ì„±ë  ìˆ˜ ìˆë‹¤
 		else
 		{
 			int RowIndex = m_vecCells[Index]->GetRowIndex();
@@ -1403,16 +1403,16 @@ void CBoard::DestroyCells()
 		ResetCellsPauseGoDownInfo();
 	}
 
-	// todo : ÀÌ À§¿¡ ³à¼®µé New Pos ¼¼ÆÃÇÏ±â
-	// ¾îÂ÷ÇÇ »ç¶óÁø ³à¼®µéÀº È­¸é¿¡ º¸¿©Áö´Â ¿µ¿ª
-	// ¾È¿¡¼­¸¸ »ç¶óÁø »óÅÂ·Î ³õÀÏ °ÍÀÌ´Ù. --> m_VisualRowCount
+	// todo : ì´ ìœ„ì— ë…€ì„ë“¤ New Pos ì„¸íŒ…í•˜ê¸°
+	// ì–´ì°¨í”¼ ì‚¬ë¼ì§„ ë…€ì„ë“¤ì€ í™”ë©´ì— ë³´ì—¬ì§€ëŠ” ì˜ì—­
+	// ì•ˆì—ì„œë§Œ ì‚¬ë¼ì§„ ìƒíƒœë¡œ ë†“ì¼ ê²ƒì´ë‹¤. --> m_VisualRowCount
 	SetNewPosOfCells();
 
-	// todo : ¿òÁ÷ÀÎ Cell »õ·Î¿î Index ¼¼ÆÃ
-	// ¿©±â¼­ ½ÇÁ¦·Î »õ·Î¿î Index¸¦ ¼¼ÆÃÇÒ °ÍÀÌ´Ù.
+	// todo : ì›€ì§ì¸ Cell ìƒˆë¡œìš´ Index ì„¸íŒ…
+	// ì—¬ê¸°ì„œ ì‹¤ì œë¡œ ìƒˆë¡œìš´ Indexë¥¼ ì„¸íŒ…í•  ê²ƒì´ë‹¤.
 	SetNewIndexOfCells();
 
-	// m_vecDestroyState Á¤º¸ ÃÊ±âÈ­
+	// m_vecDestroyState ì •ë³´ ì´ˆê¸°í™”
 	int HalfTotalIndex = (int)(m_TotCount * 0.5f);
 
 	for (int i = 0; i < HalfTotalIndex; i++)
@@ -1423,16 +1423,16 @@ void CBoard::DestroyCells()
 		m_vecCells[i]->SetDestroyState(Destroy_State::None); 
 	}
 
-	//m_vecCellDownNums Á¤º¸ ÃÊ±âÈ­
+	//m_vecCellDownNums ì •ë³´ ì´ˆê¸°í™”
 	ResetVecColNewCellNumsInfo();
 
-	// Match Á¤º¸µµ ÃÊ±âÈ­ ÇØÁØ´Ù
+	// Match ì •ë³´ë„ ì´ˆê¸°í™” í•´ì¤€ë‹¤
 	ResetBoolIsMatchInfo();
 
 
-	// °¢ ¿­¿¡¼­ »ç¶óÁø °³¼öµµ 0À¸·Î ÃÊ±âÈ­ ÇØÁÖ±â
-	// ÀÌ°ÍÀº CreateNewCells ÇÔ¼ö¿¡¼­µµ ½ÇÇàÇÏ´Â ³à¼®ÀÌ¹Ç·Î
-	// °Å±â¼­ ¾²°í ³ª¼­, °Å±â¼­ ÃÊ±âÈ­ ¸¦ ÇØÁà¾ß ÇÑ´Ù.
+	// ê° ì—´ì—ì„œ ì‚¬ë¼ì§„ ê°œìˆ˜ë„ 0ìœ¼ë¡œ ì´ˆê¸°í™” í•´ì£¼ê¸°
+	// ì´ê²ƒì€ CreateNewCells í•¨ìˆ˜ì—ì„œë„ ì‹¤í–‰í•˜ëŠ” ë…€ì„ì´ë¯€ë¡œ
+	// ê±°ê¸°ì„œ ì“°ê³  ë‚˜ì„œ, ê±°ê¸°ì„œ ì´ˆê¸°í™” ë¥¼ í•´ì¤˜ì•¼ í•œë‹¤.
 	/*
 	for (int i = 0; i < m_ColCount; i++)
 	{
@@ -1451,33 +1451,33 @@ void CBoard::SetNewPosOfCells()
 		{
 			DestroyedIndex = row * m_ColCount + col;
 
-			// »ç¶óÁø ³à¼®ÀÌ ¾Æ´Ï¶ó¸é Skip
+			// ì‚¬ë¼ì§„ ë…€ì„ì´ ì•„ë‹ˆë¼ë©´ Skip
 			if (m_vecCells[DestroyedIndex]->IsActive())
 				continue;
 
-			// Á¦°ÅµÈ ³à¼® ±× À§·Î »õ·Ó°Ô NewPosY¸¦ ¼¼ÆÃÇØ¼­ ³»·Á¿À°Ô ÇØÁØ´Ù.
+			// ì œê±°ëœ ë…€ì„ ê·¸ ìœ„ë¡œ ìƒˆë¡­ê²Œ NewPosYë¥¼ ì„¸íŒ…í•´ì„œ ë‚´ë ¤ì˜¤ê²Œ í•´ì¤€ë‹¤.
 			int ChangeTargetIndex = -1;
 
-			// ³»·Á°¥ °³¼ö 
+			// ë‚´ë ¤ê°ˆ ê°œìˆ˜ 
 			int DownCellNum = m_vecColNewCellNums[col];
 
 			for (int ChangeRow = row + 1; ChangeRow < m_RowCount; ChangeRow++)
 			{
-				// ³»·Á¿Ã Cell
+				// ë‚´ë ¤ì˜¬ Cell
 				ChangeTargetIndex = ChangeRow * m_ColCount + col;
 
-				// »ç¶óÁø Cell ÀÌ¶ó¸é ³»·Á¿À±â Á¶Á¤ X
+				// ì‚¬ë¼ì§„ Cell ì´ë¼ë©´ ë‚´ë ¤ì˜¤ê¸° ì¡°ì • X
 				if (!m_vecCells[ChangeTargetIndex]->IsActive())
 					continue;
 
-				// ÇöÀç À§Ä¡
+				// í˜„ì¬ ìœ„ì¹˜
 				float CurNewPosY = m_vecCells[ChangeTargetIndex]->GetNewDownPosY();
 
-				// ³»·Á°¥ À§Ä¡ Á¶Á¤ÇÏ±â 
+				// ë‚´ë ¤ê°ˆ ìœ„ì¹˜ ì¡°ì •í•˜ê¸° 
 				// m_vecCells[ChangeTargetIndex]->SetNewPosY(CurNewPosY - m_CellSize.y * DownCellNum);
 				m_vecCells[ChangeTargetIndex]->SetNewPosY(CurNewPosY - m_CellSize.y);
 
-				// ³»·Á°¥ Idx Áõ°¡½ÃÄÑÁÖ±â
+				// ë‚´ë ¤ê°ˆ Idx ì¦ê°€ì‹œì¼œì£¼ê¸°
 				m_vecCellDownNums[ChangeTargetIndex] += 1;
 			}
 		}
@@ -1492,10 +1492,10 @@ void CBoard::SetNewIndexOfCells()
 	{
 		for (int col = 0; col < m_ColCount; col++)
 		{
-			// ³»·Á¿Ã Cell
+			// ë‚´ë ¤ì˜¬ Cell
 			TargetIndex = row * m_ColCount + col;
 
-			// ¸¸¾à ÇØ´ç Cell ÀÌ ³»·Á°¥ °³¼ö°¡ ¾ø´Ù¸é Skip
+			// ë§Œì•½ í•´ë‹¹ Cell ì´ ë‚´ë ¤ê°ˆ ê°œìˆ˜ê°€ ì—†ë‹¤ë©´ Skip
 			if (m_vecCellDownNums[TargetIndex] == 0)
 				continue;
 
@@ -1515,26 +1515,26 @@ bool CBoard::FindMatchUpdate()
 {
 	bool Match = true; //
 
-	// Cell µéÀÌ ¿òÁ÷ÀÌÁö ¾Ê°í ÀÖÀ» ¶§¸¸ °Ë»çÇÑ´Ù
+	// Cell ë“¤ì´ ì›€ì§ì´ì§€ ì•Šê³  ìˆì„ ë•Œë§Œ ê²€ì‚¬í•œë‹¤
 	if (m_CellsMoving)
 		return false;
 
-	// ÇöÀç ÀÌµ¿½ÃÅ² Cell À» Ã³¸®ÁßÀÌ¶ó¸é
+	// í˜„ì¬ ì´ë™ì‹œí‚¨ Cell ì„ ì²˜ë¦¬ì¤‘ì´ë¼ë©´
 	if (m_FirstClickCell || m_SecClickCell)
 		return false;
 
-	// Match µÇ´Â ³à¼®µéÀÌ ÀÖ´ÂÁö È®ÀÎÇÑ´Ù.
+	// Match ë˜ëŠ” ë…€ì„ë“¤ì´ ìˆëŠ”ì§€ í™•ì¸í•œë‹¤.
 	Match = CheckMatchUpdate();
 
 	m_IsMatchExist = CheckMatchExist();
 
-	// todo : Scene¿¡¼­ Á¦°ÅÇÏ±â
-	// ÇØ´ç À§Ä¡ÀÇ Cell »ç¶óÁö°Ô ÇÏ±â
-	// ÀÌ·¸°Ô ÇÏ¸é Scene ³»¿¡¼­´Â Áö¿öÁ®¼­ Render´Â ¾ÈµÇÁö¸¸
-	// ¿©ÀüÈ÷ m_vecCells ¾È¿¡´Â ³²¾ÆÀÖ°Ô µÈ´Ù.
+	// todo : Sceneì—ì„œ ì œê±°í•˜ê¸°
+	// í•´ë‹¹ ìœ„ì¹˜ì˜ Cell ì‚¬ë¼ì§€ê²Œ í•˜ê¸°
+	// ì´ë ‡ê²Œ í•˜ë©´ Scene ë‚´ì—ì„œëŠ” ì§€ì›Œì ¸ì„œ RenderëŠ” ì•ˆë˜ì§€ë§Œ
+	// ì—¬ì „íˆ m_vecCells ì•ˆì—ëŠ” ë‚¨ì•„ìˆê²Œ ëœë‹¤.
 	DestroyCells();
 
-	// »õ·Î¿î Cell »ı¼º
+	// ìƒˆë¡œìš´ Cell ìƒì„±
 	CreateNewCellsAboveShownArea();
 
 	return Match;
@@ -1542,17 +1542,17 @@ bool CBoard::FindMatchUpdate()
 
 bool CBoard::CheckMatchUpdate()
 {
-	// Cell ÀÌ ÀÌµ¿ÁßÀÌ¶ó¸é X
+	// Cell ì´ ì´ë™ì¤‘ì´ë¼ë©´ X
 	if (m_CellsMoving)
 		return false;
 
-	// ÇöÀç Å¬¸¯ »óÅÂ¶ó¸é, X
+	// í˜„ì¬ í´ë¦­ ìƒíƒœë¼ë©´, X
 	if (m_FirstClickCell || m_SecClickCell)
 		return false;
 
 	bool IsMatchExist = false;
 
-	// »õ·Î¿î À§Ä¡·Î ÀÌµ¿ ¿Ï·áÇÑ Cell µé¿¡ ´ëÇØ¼­¸¸ Á¶»çÇÒ °ÍÀÌ´Ù
+	// ìƒˆë¡œìš´ ìœ„ì¹˜ë¡œ ì´ë™ ì™„ë£Œí•œ Cell ë“¤ì— ëŒ€í•´ì„œë§Œ ì¡°ì‚¬í•  ê²ƒì´ë‹¤
 	int RowIndex = -1, ColIndex = -1;
 
 	Match_State CellResult;
@@ -1560,7 +1560,7 @@ bool CBoard::CheckMatchUpdate()
 	Match_State CellColResult = Match_State::NoMatch;
 	Match_State CellBagResult = Match_State::NoMatch;
 
-	// µü ¹İ¸¸ Update ÇÑ´Ù.
+	// ë”± ë°˜ë§Œ Update í•œë‹¤.
 	int CheckMaxIndex = m_VisualRowCount * m_ColCount;
 
 	for (int i = 0; i < CheckMaxIndex; i++)
@@ -1568,17 +1568,17 @@ bool CBoard::CheckMatchUpdate()
 		RowIndex = m_vecCells[i]->GetRowIndex();
 		ColIndex = m_vecCells[i]->GetColIndex();
 
-		// 1¹øÂ° Click Cell¿¡ ´ëÇÑ °Ë»ç ¸ÕÀú ÇÏ±â 
+		// 1ë²ˆì§¸ Click Cellì— ëŒ€í•œ ê²€ì‚¬ ë¨¼ì € í•˜ê¸° 
 		CellRowResult = CheckRowMatch(RowIndex, ColIndex, i, false);
 		CellColResult = CheckColMatch(RowIndex, ColIndex, i, false);
 
-		// ÃÖ´ë ³à¼®À¸·Î ¼¼ÆÃÇÑ´Ù.
+		// ìµœëŒ€ ë…€ì„ìœ¼ë¡œ ì„¸íŒ…í•œë‹¤.
 		CellResult = (int)CellColResult > (int)CellRowResult ? CellColResult : CellRowResult;
 
-		// Bag Á¶ÇÕ °Ë»çÇÏ±â
+		// Bag ì¡°í•© ê²€ì‚¬í•˜ê¸°
 		CellBagResult = CheckBagMatch(RowIndex, ColIndex, i, false) ? Match_State::Bag : Match_State::NoMatch;
 
-		// ÃÖÁ¾ °á°ú
+		// ìµœì¢… ê²°ê³¼
 		CellResult = (int)CellResult > (int)CellBagResult ? CellResult : CellBagResult;
 
 		m_vecMatchState[i] = CellResult;
@@ -1589,7 +1589,7 @@ bool CBoard::CheckMatchUpdate()
 		}
 	}
 
-	// ¸ğµç Cell µéÀ» ´Ù½Ã m_IsPlacedNew ¸¦ false Ã³¸®ÇÑ´Ù.
+	// ëª¨ë“  Cell ë“¤ì„ ë‹¤ì‹œ m_IsPlacedNew ë¥¼ false ì²˜ë¦¬í•œë‹¤.
 	ResetPlacedNewInfo();
 
 	return IsMatchExist;
@@ -1608,7 +1608,7 @@ bool CBoard::CheckCellsMoving()
 
 void CBoard::ResetMatchStateInfo()
 {
-	// Match State ÃÊ±âÈ­ ÇØÁÖ±â
+	// Match State ì´ˆê¸°í™” í•´ì£¼ê¸°
 	for (int i = 0; i < m_TotCount; i++)
 	{
 		m_vecMatchState[i] = Match_State::NoMatch;
@@ -1693,10 +1693,10 @@ Destroy_State CBoard::ChangeMatchStateToDestroyState(Match_State State)
 	case Match_State::Normal:
 		return Destroy_State::None;
 
-	case Match_State::RowLine: // °¡·Î ÁÙ 
+	case Match_State::RowLine: // ê°€ë¡œ ì¤„ 
 		return Destroy_State::Horizontal;
 
-	case Match_State::ColLine: // ¼¼·Î ÁÙ
+	case Match_State::ColLine: // ì„¸ë¡œ ì¤„
 		return Destroy_State::Vertical;
 
 	case Match_State::Bag:
@@ -1713,10 +1713,10 @@ Destroy_State CBoard::ChangeDestroyMarkStateToDestroyState(DestroyMark_State Sta
 {
 	switch (State)
 	{
-	case DestroyMark_State::Horizontal: // °¡·Î ÁÙ 
+	case DestroyMark_State::Horizontal: // ê°€ë¡œ ì¤„ 
 		return Destroy_State::Horizontal;
 
-	case DestroyMark_State::Vertical: // ¼¼·Î ÁÙ
+	case DestroyMark_State::Vertical: // ì„¸ë¡œ ì¤„
 		return Destroy_State::Vertical;
 
 	case DestroyMark_State::Bag:
@@ -1733,10 +1733,10 @@ DestroyMark_State CBoard::ChangeMatchStateToDestroyMarkState(Match_State State)
 {
 	switch (State)
 	{
-	case Match_State::RowLine: // °¡·Î ÁÙ 
+	case Match_State::RowLine: // ê°€ë¡œ ì¤„ 
 		return DestroyMark_State::Horizontal;
 
-	case Match_State::ColLine: // ¼¼·Î ÁÙ
+	case Match_State::ColLine: // ì„¸ë¡œ ì¤„
 		return DestroyMark_State::Vertical;
 
 	case Match_State::Bag:
@@ -1753,10 +1753,10 @@ Cell_Type_Binary CBoard::ChangeCellTypeToCellBinaryType(Cell_Type Type)
 {
 	switch (Type)
 	{
-	case Cell_Type::Blue: // °¡·Î ÁÙ 
+	case Cell_Type::Blue: // ê°€ë¡œ ì¤„ 
 		return Cell_Type_Binary::Blue;
 
-	case Cell_Type::Red: // ¼¼·Î ÁÙ
+	case Cell_Type::Red: // ì„¸ë¡œ ì¤„
 		return Cell_Type_Binary::Red;
 
 	case Cell_Type::Orange:
@@ -1774,7 +1774,7 @@ Cell_Type_Binary CBoard::ChangeCellTypeToCellBinaryType(Cell_Type Type)
 	return Cell_Type_Binary::All;
 }
 
-void CBoard::AddClickCellMoveBackDone() // Á¤¸»·Î Å¬¸¯ÇÑ Cell µéÀÇ ÀÌµ¿ÀÌ ³¡³¯ ¶§ ½ÇÇàÇÏ´Â ÇÔ¼ö
+void CBoard::AddClickCellMoveBackDone() // ì •ë§ë¡œ í´ë¦­í•œ Cell ë“¤ì˜ ì´ë™ì´ ëë‚  ë•Œ ì‹¤í–‰í•˜ëŠ” í•¨ìˆ˜
 {
 	m_ClickCellsMoveDone += 1;
 
@@ -1782,18 +1782,18 @@ void CBoard::AddClickCellMoveBackDone() // Á¤¸»·Î Å¬¸¯ÇÑ Cell µéÀÇ ÀÌµ¿ÀÌ ³¡³¯ ¶
 	{
 		m_ClickCellsMoveDone = 0;
 
-		// ´Ù½Ã ¸¶¿ì½º Å¬¸¯ »óÅÂ¸¦ µÇµ¹·Á¼­, Å¬¸¯ÀÌ °¡´ÉÇÏ°Ô ¼¼ÆÃÇÑ´Ù.
+		// ë‹¤ì‹œ ë§ˆìš°ìŠ¤ í´ë¦­ ìƒíƒœë¥¼ ë˜ëŒë ¤ì„œ, í´ë¦­ì´ ê°€ëŠ¥í•˜ê²Œ ì„¸íŒ…í•œë‹¤.
 		m_MouseClick = Mouse_Click::None;
 
-		// ÀÌµ¿ ¿©ºÎ False·Î ´Ù½Ã ¼¼ÆÃ
+		// ì´ë™ ì—¬ë¶€ Falseë¡œ ë‹¤ì‹œ ì„¸íŒ…
 		m_CellsMoving = false;
 
-		// ´Ù½Ã First, Second Cell ÀÇ Index¸¦ Ã³¸®ÇÑ´Ù.
+		// ë‹¤ì‹œ First, Second Cell ì˜ Indexë¥¼ ì²˜ë¦¬í•œë‹¤.
 		SwitchClickCellsInfo();
 
 		ResetClickCellInfos();
 
-		// Å¬¸¯ÇÑ Cell µéÀ» nullptr Ã³¸®ÇÑ´Ù
+		// í´ë¦­í•œ Cell ë“¤ì„ nullptr ì²˜ë¦¬í•œë‹¤
 		m_FirstClickCell = nullptr;
 		m_SecClickCell = nullptr;
 	}
@@ -1802,11 +1802,11 @@ void CBoard::AddClickCellMoveBackDone() // Á¤¸»·Î Å¬¸¯ÇÑ Cell µéÀÇ ÀÌµ¿ÀÌ ³¡³¯ ¶
 
 void CBoard::ResetClickCellInfos()
 {
-	// Å¬¸¯ÇÑ Cell µéÀÇ Switch »óÅÂ¸¦ false·Î µÇµ¹·ÁÁØ´Ù --> ´õÀÌ»ó ÀÌµ¿ X
+	// í´ë¦­í•œ Cell ë“¤ì˜ Switch ìƒíƒœë¥¼ falseë¡œ ë˜ëŒë ¤ì¤€ë‹¤ --> ë”ì´ìƒ ì´ë™ X
 	m_FirstClickCell->SetIsSwitch(false);
 	m_SecClickCell->SetIsSwitch(false);
 
-	// Going Back »óÅÂµµ false·Î ¸¸µé¾îÁØ´Ù.
+	// Going Back ìƒíƒœë„ falseë¡œ ë§Œë“¤ì–´ì¤€ë‹¤.
 	m_FirstClickCell->SetIsGoingBack(false);
 	m_SecClickCell->SetIsGoingBack(false);
 }
@@ -1826,35 +1826,35 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	Match_State SCellColResult = Match_State::NoMatch;
 	Match_State SCellBagResult = Match_State::NoMatch;
 
-	// 1¹øÂ° Click Cell¿¡ ´ëÇÑ °Ë»ç ¸ÕÀú ÇÏ±â
+	// 1ë²ˆì§¸ Click Cellì— ëŒ€í•œ ê²€ì‚¬ ë¨¼ì € í•˜ê¸°
 	FCellRowResult = CheckRowMatch(FirstClickCell->GetRowIndex(), 
 		FirstClickCell->GetColIndex(), FirstClickCell->GetIndex(), true);
 	FCellColResult = CheckColMatch(FirstClickCell->GetRowIndex(), 
 		FirstClickCell->GetColIndex(), FirstClickCell->GetIndex(), true);
 
-	// todo :  Row, ColumnÀ» ´Ù È®ÀÎÇÑ ÀÌÈÄ
-	// Match_State¿¡ µû¶ó¼­
-	// FirstClickCell, SecondCell ÀÌ ÀÌµ¿ÇÑ À§Ä¡¿¡ »õ·Î¿î Ball TypeÀ» ¼¼ÆÃÇÒÁö °áÁ¤ÇÑ´Ù.
-	// ÃÖ´ë ³à¼®À¸·Î ¼¼ÆÃÇÑ´Ù.
+	// todo :  Row, Columnì„ ë‹¤ í™•ì¸í•œ ì´í›„
+	// Match_Stateì— ë”°ë¼ì„œ
+	// FirstClickCell, SecondCell ì´ ì´ë™í•œ ìœ„ì¹˜ì— ìƒˆë¡œìš´ Ball Typeì„ ì„¸íŒ…í• ì§€ ê²°ì •í•œë‹¤.
+	// ìµœëŒ€ ë…€ì„ìœ¼ë¡œ ì„¸íŒ…í•œë‹¤.
 	FCellResult = (int)FCellColResult > (int)FCellRowResult ? FCellColResult : FCellRowResult;
 
-	// Bag Á¶ÇÕ °Ë»çÇÏ±â
+	// Bag ì¡°í•© ê²€ì‚¬í•˜ê¸°
 	FCellBagResult = CheckBagMatch(FirstClickCell->GetRowIndex(), 
 		FirstClickCell->GetColIndex(), FirstClickCell->GetIndex(), false) ? Match_State::Bag : Match_State::NoMatch;
 
-	// ÃÖÁ¾ °á°ú
+	// ìµœì¢… ê²°ê³¼
 	FCellResult = (int)FCellResult > (int)FCellBagResult ? FCellResult : FCellBagResult;
 
-	// State ¼¼ÆÃ 
+	// State ì„¸íŒ… 
 	m_vecMatchState[FirstClickCell->GetIndex()] = FCellResult;
 
-	// todo : ¿©±â¼¼ Ball TypeÀ» ¼¼ÆÃÇØ¼­ »õ·Ó°Ô ³Ö¾îÁØ´Ù.
-	// todo : ±×·¯¸é, ±× À§¿¡ ³à¼®µéÀº, »õ·Ó°Ô ³»·Á°¥ À§Ä¡ ¹× Index °¡ ´Ş¶óÁ®¾ß ÇÑ´Ù´Â °ÍÀ» ÀÇ¹ÌÇÑ´Ù.
+	// todo : ì—¬ê¸°ì„¸ Ball Typeì„ ì„¸íŒ…í•´ì„œ ìƒˆë¡­ê²Œ ë„£ì–´ì¤€ë‹¤.
+	// todo : ê·¸ëŸ¬ë©´, ê·¸ ìœ„ì— ë…€ì„ë“¤ì€, ìƒˆë¡­ê²Œ ë‚´ë ¤ê°ˆ ìœ„ì¹˜ ë° Index ê°€ ë‹¬ë¼ì ¸ì•¼ í•œë‹¤ëŠ” ê²ƒì„ ì˜ë¯¸í•œë‹¤.
 
-	// 2¹øÂ° Cell ±âÁØÀ¸·Î Match È®ÀÎÇÏ±â
-	// FirstCell °ú Çà È¤Àº ¿­ ÆòÇàÀÎÁö¿¡ µû¶ó ´Ù¸¥ ·ÎÁ÷À» Àû¿ë
-	// °°Àº Row¸¦ ¶Ç ´Ù½Ã °Ë»çÇØÁÙ ÇÊ¿ä´Â ¾ø±â ¶§¹®ÀÌ´Ù
-	// ´Ù¸¥ Row È¤Àº ´Ù¸¥ ColÀ» Á¶»çÇÒ °ÍÀÌ´Ù. --> ¾Æ´Ï´Ù. µÑ´Ù Á¶»ç´Â ÇØ¾ß ÇÑ´Ù.
+	// 2ë²ˆì§¸ Cell ê¸°ì¤€ìœ¼ë¡œ Match í™•ì¸í•˜ê¸°
+	// FirstCell ê³¼ í–‰ í˜¹ì€ ì—´ í‰í–‰ì¸ì§€ì— ë”°ë¼ ë‹¤ë¥¸ ë¡œì§ì„ ì ìš©
+	// ê°™ì€ Rowë¥¼ ë˜ ë‹¤ì‹œ ê²€ì‚¬í•´ì¤„ í•„ìš”ëŠ” ì—†ê¸° ë•Œë¬¸ì´ë‹¤
+	// ë‹¤ë¥¸ Row í˜¹ì€ ë‹¤ë¥¸ Colì„ ì¡°ì‚¬í•  ê²ƒì´ë‹¤. --> ì•„ë‹ˆë‹¤. ë‘˜ë‹¤ ì¡°ì‚¬ëŠ” í•´ì•¼ í•œë‹¤.
 	// if (FirstClickCell->GetColIndex() != SecClickCell->GetColIndex())
 	SCellRowResult = CheckRowMatch(SecClickCell->GetRowIndex(), 
 		SecClickCell->GetColIndex(), SecClickCell->GetIndex(), true);
@@ -1865,25 +1865,25 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 
 	SCellResult = (int)SCellColResult > (int)SCellRowResult ? SCellColResult : SCellRowResult;
 
-	// Bag Á¶ÇÕ °Ë»çÇÏ±â
+	// Bag ì¡°í•© ê²€ì‚¬í•˜ê¸°
 	SCellBagResult = CheckBagMatch(SecClickCell->GetRowIndex(), 
 		SecClickCell->GetColIndex(), SecClickCell->GetIndex(), false) ? Match_State::Bag : Match_State::NoMatch;
 
-	// ÃÖÁ¾ °á°ú
+	// ìµœì¢… ê²°ê³¼
 	SCellResult = (int)SCellResult > (int)SCellBagResult ? SCellResult : SCellBagResult;
 
-	// State ¼¼ÆÃÇÏ±â
-	// ´Ü Á¶°ÇÀÌ ÀÖ´Ù.
+	// State ì„¸íŒ…í•˜ê¸°
+	// ë‹¨ ì¡°ê±´ì´ ìˆë‹¤.
 	bool IsSCellResultValid = true;
 	if (SCellResult == FCellResult)
 	{
-		// 1) FCell, SCell µÑ´Ù RowResult, µÑÀÌ Type ÀÌ µ¿ÀÏÇÏ´Ù¸é --> ÀÎÁ¢ÇØ¼­ ¸ÂÃçÁø °Í
+		// 1) FCell, SCell ë‘˜ë‹¤ RowResult, ë‘˜ì´ Type ì´ ë™ì¼í•˜ë‹¤ë©´ --> ì¸ì ‘í•´ì„œ ë§ì¶°ì§„ ê²ƒ
 		if (SCellResult == Match_State::RowLine && FCellResult == Match_State::RowLine
 			&& SecClickCell->GetCellType() == FirstClickCell->GetCellType())
 		{
 			IsSCellResultValid = false;
 		}
-		// 2) µÑ´Ù ColMatch + µÑÀÌ TypeÀÌ µ¿ÀÏÇÏ´Ù¸é --> ÀÎÁ¢ 
+		// 2) ë‘˜ë‹¤ ColMatch + ë‘˜ì´ Typeì´ ë™ì¼í•˜ë‹¤ë©´ --> ì¸ì ‘ 
 		if (SCellResult == Match_State::ColLine && FCellResult == Match_State::ColLine
 			&& SecClickCell->GetCellType() == FirstClickCell->GetCellType())
 		{
@@ -1898,15 +1898,15 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 
 	bool Result = (int)SCellResult > (int)Match_State::NoMatch || (int)FCellResult > (int)Match_State::NoMatch;
 
-	// todo : Á¶ÇÕ ¿©ºÎµµ È®ÀÎÇÑ´Ù.
+	// todo : ì¡°í•© ì—¬ë¶€ë„ í™•ì¸í•œë‹¤.
 	bool CombinationResult = CheckCombination(FirstClickCell, SecClickCell);
 
 	if (CombinationResult)
 		return true;
 
-	// ¸¸¾à Match °¡ Á¸ÀçÇÏÁö ¾Ê´Â´Ù¸é , Á¶ÇÕµµ ¾ø´Ù¸é
-	// ¿©±â´Â Á¶ÇÕ¿¡ ÇØ´çÇÏÁö ¾Ê´Â´Ù. À§¿¡¼­ Á¶ÇÕÀ» Ã¼Å©Çß±â ¶§¹®¿¡
-	// µÑÁß ÇÏ³ª¶óµµ Mirror Ball ÀÌ Á¸ÀçÇÏ´ÂÁö È®ÀÎÇÑ´Ù.
+	// ë§Œì•½ Match ê°€ ì¡´ì¬í•˜ì§€ ì•ŠëŠ”ë‹¤ë©´ , ì¡°í•©ë„ ì—†ë‹¤ë©´
+	// ì—¬ê¸°ëŠ” ì¡°í•©ì— í•´ë‹¹í•˜ì§€ ì•ŠëŠ”ë‹¤. ìœ„ì—ì„œ ì¡°í•©ì„ ì²´í¬í–ˆê¸° ë•Œë¬¸ì—
+	// ë‘˜ì¤‘ í•˜ë‚˜ë¼ë„ Mirror Ball ì´ ì¡´ì¬í•˜ëŠ”ì§€ í™•ì¸í•œë‹¤.
 	if (!Result && !CombinationResult)
 	{
 		if (m_FirstClickCell->GetCellState() == Cell_State::MirrorBall)
@@ -1930,15 +1930,15 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	return Result;
 }
 
-// ¼¼·Î °Ë»ç ( À§¾Æ·¡ )
+// ì„¸ë¡œ ê²€ì‚¬ ( ìœ„ì•„ë˜ )
 Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool IsClickCell)
 {
 	Match_State RowResultState = Match_State::NoMatch;
 
-	// ÃÖ¼Ò 3°³±îÁö Á¶»ç, ÃÖ´ë Á¶»ç °³¼ö´Â Row // Col ¿©ºÎ¿¡ µû¶ó ´Ş¶óÁö°Ô µÉ °ÍÀÌ´Ù.
+	// ìµœì†Œ 3ê°œê¹Œì§€ ì¡°ì‚¬, ìµœëŒ€ ì¡°ì‚¬ ê°œìˆ˜ëŠ” Row // Col ì—¬ë¶€ì— ë”°ë¼ ë‹¬ë¼ì§€ê²Œ ë  ê²ƒì´ë‹¤.
 	int MinCheckLength = 3, MaxCheckLength = m_VisualRowCount;
 
-	// Index : ÇöÀç °Ë»çÇÏ´Â CellÀÇ Index
+	// Index : í˜„ì¬ ê²€ì‚¬í•˜ëŠ” Cellì˜ Index
 	int CurIndex = -1;
 
 	int CheckStartRow = -1, CheckEndRow = -1;
@@ -1946,71 +1946,71 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 	// Matched CellType
 	Cell_Type_Binary MatchedCellType = {};
 
-	// Match °á°ú
+	// Match ê²°ê³¼
 	bool Match = false;
 
-	// ÃÖ´ë --> ÃÖ¼Ò ±æÀÌ ¼øÀ¸·Î Á¶»çÇÏ±â
+	// ìµœëŒ€ --> ìµœì†Œ ê¸¸ì´ ìˆœìœ¼ë¡œ ì¡°ì‚¬í•˜ê¸°
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
 	{
-		// Æ¯Á¤ ±æÀÌ¿¡¼­ÀÇ Row Match ¿©ºÎ 
+		// íŠ¹ì • ê¸¸ì´ì—ì„œì˜ Row Match ì—¬ë¶€ 
 		bool IsResultRowMatch = false;
 
 		for (int StartRowOffset = 0; StartRowOffset <= CheckMatchNum - 1; StartRowOffset++)
 		{
 			bool IsPartRowMatch = true;
 
-			// ÇöÀç ClickCell ÀÌ Æ÷ÇÔµÈ Row ¹üÀ§¿¡ ´ëÇØ¼­¸¸ Á¶»çÇÒ °ÍÀÌ´Ù.
-			// ¾Æ·¡ ¹üÀ§¿¡¼­, À§·Î ¿Ã¶ó°¡¸é¼­ °Ë»ç ½ÃÀÛ Row ¸¦ ¼³Á¤ÇØÁÙ °ÍÀÌ´Ù.
+			// í˜„ì¬ ClickCell ì´ í¬í•¨ëœ Row ë²”ìœ„ì— ëŒ€í•´ì„œë§Œ ì¡°ì‚¬í•  ê²ƒì´ë‹¤.
+			// ì•„ë˜ ë²”ìœ„ì—ì„œ, ìœ„ë¡œ ì˜¬ë¼ê°€ë©´ì„œ ê²€ì‚¬ ì‹œì‘ Row ë¥¼ ì„¤ì •í•´ì¤„ ê²ƒì´ë‹¤.
 			CheckStartRow = (RowIndex + StartRowOffset) - (CheckMatchNum - 1);
 
-			// ¾Æ·¡·Î ¹üÀ§°¡ ¹ş¾î³­ °æ¿ì
+			// ì•„ë˜ë¡œ ë²”ìœ„ê°€ ë²—ì–´ë‚œ ê²½ìš°
 			if (CheckStartRow < 0)
 			{
 				IsPartRowMatch = false;
 				continue;
 			}
 
-			// À§·Î ¹üÀ§°¡ ¹ş¾î³­ °æ¿ì
+			// ìœ„ë¡œ ë²”ìœ„ê°€ ë²—ì–´ë‚œ ê²½ìš°
 			CheckEndRow = CheckStartRow + (CheckMatchNum - 1);
 
 			if (CheckEndRow >= m_VisualRowCount)
 			{
 				IsPartRowMatch = false;
 				// continue;
-				// ¾îÂ÷ÇÇ ¿©±â¿¹ °è¼Ó °É¸± °ÍÀÌ¹Ç·Î ( ¿Ö³ÄÇÏ¸é, CheckEndRow´Â °è¼Ó Áõ°¡ ) --> continue °¡ ¾Æ´Ï¶ó break ¼¼ÆÃ
+				// ì–´ì°¨í”¼ ì—¬ê¸°ì˜ˆ ê³„ì† ê±¸ë¦´ ê²ƒì´ë¯€ë¡œ ( ì™œëƒí•˜ë©´, CheckEndRowëŠ” ê³„ì† ì¦ê°€ ) --> continue ê°€ ì•„ë‹ˆë¼ break ì„¸íŒ…
 				break;
 			}
 
 			Cell_Type_Binary InitCellType = m_vecCells[CheckStartRow * m_ColCount + ColIndex]->GetCellType();
 
-			// Match °¡ ÀÖ´ÂÁö Á¶»çÇÑ´Ù.
-			// ÇØ´ç ±æÀÌ·Î ¾Æ·¡ --> À§ÂÊ ¼ø¼­·Î Á¶»çÇÑ´Ù.
+			// Match ê°€ ìˆëŠ”ì§€ ì¡°ì‚¬í•œë‹¤.
+			// í•´ë‹¹ ê¸¸ì´ë¡œ ì•„ë˜ --> ìœ„ìª½ ìˆœì„œë¡œ ì¡°ì‚¬í•œë‹¤.
 			for (int StRow = CheckStartRow + 1; StRow <= CheckEndRow; StRow++)
 			{
-				// Ã¹¹øÂ°¿Í ³ª¸ÓÁö ³à¼®µéÀÌ °°ÀºÁö Ã¼Å©ÇÑ´Ù + Sliding Window °³³äÀ» Àû¿ëÇÑ´Ù.
+				// ì²«ë²ˆì§¸ì™€ ë‚˜ë¨¸ì§€ ë…€ì„ë“¤ì´ ê°™ì€ì§€ ì²´í¬í•œë‹¤ + Sliding Window ê°œë…ì„ ì ìš©í•œë‹¤.
 				CurIndex = StRow * m_ColCount + ColIndex;
 
 				Cell_Type_Binary CurCellType = m_vecCells[CurIndex]->GetCellType();
 
 				bool Result = (int)(m_vecCells[CurIndex]->GetCellType()) & (int)(InitCellType);
 
-				// Mirror BallÀÏ °æ¿ì, ¾î¶² TypeÀÌ´ø ÀÏÄ¡ÇÏ°Ô ¼¼ÆÃÇØ¾ß ÇÑ´Ù. µû¶ó¼­ MirrorBallÀº
-				// TypeÀº ´Ù¸£´õ¶óµµ Match·Î ÆÇ´ÜÇÏ°Ô ÇÑ´Ù.
+				// Mirror Ballì¼ ê²½ìš°, ì–´ë–¤ Typeì´ë˜ ì¼ì¹˜í•˜ê²Œ ì„¸íŒ…í•´ì•¼ í•œë‹¤. ë”°ë¼ì„œ MirrorBallì€
+				// Typeì€ ë‹¤ë¥´ë”ë¼ë„ Matchë¡œ íŒë‹¨í•˜ê²Œ í•œë‹¤.
 				if (((int)m_vecCells[CurIndex]->GetCellType() & (int)InitCellType) == false)
 				{
 					IsPartRowMatch = false;
 					break;
 				}
 
-				// ÃÖÃÊ CellÀÌ MirrorBall ÀÏ ¶§´Â Áß°£ Áß°£ Cell TypeÀ» Update ÇØÁà¾ß ÇÑ´Ù.
+				// ìµœì´ˆ Cellì´ MirrorBall ì¼ ë•ŒëŠ” ì¤‘ê°„ ì¤‘ê°„ Cell Typeì„ Update í•´ì¤˜ì•¼ í•œë‹¤.
 				if (InitCellType == Cell_Type_Binary::All)
 				{
 					InitCellType = m_vecCells[CurIndex]->GetCellType();
 				}
 			}
 
-			// ¸¸¾à ÇØ´ç Row(¼¼·Î)°¡ Match ¶ó¸é, ÇØ´ç Cell µéÀ» Match »óÅÂ·Î ¹Ù²ãÁØ´Ù.
-			// ±×¸®°í For ¹®À» ³ª°£´Ù.
+			// ë§Œì•½ í•´ë‹¹ Row(ì„¸ë¡œ)ê°€ Match ë¼ë©´, í•´ë‹¹ Cell ë“¤ì„ Match ìƒíƒœë¡œ ë°”ê¿”ì¤€ë‹¤.
+			// ê·¸ë¦¬ê³  For ë¬¸ì„ ë‚˜ê°„ë‹¤.
 			if (IsPartRowMatch)
 			{
 				for (int MatchedRow = CheckStartRow; MatchedRow <= CheckEndRow; MatchedRow++)
@@ -2023,7 +2023,7 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 
 				IsResultRowMatch = true;
 
-				// For ¹®À» ºüÁ®³ª°£´Ù.
+				// For ë¬¸ì„ ë¹ ì ¸ë‚˜ê°„ë‹¤.
 				break;
 			}
 		}
@@ -2034,25 +2034,25 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 			{
 				bool MarkStateFound = false;
 
-				// 1) Match ÀÌ¸é¼­ + Á¶ÇÕÀÌ µÇ´ÂÁö È®ÀÎÇÑ´Ù.
+				// 1) Match ì´ë©´ì„œ + ì¡°í•©ì´ ë˜ëŠ”ì§€ í™•ì¸í•œë‹¤.
 				bool CombinationFound = false;
 
-				// 2°³¾¿ ºñ±³ ÇÑ´Ù + ¿©·¯ °³ÀÇ Á¶ÇÕÀÌ °ãÄ¡´Â °æ¿ì´Â ¿ì¼± °Ç³Ê ¶Ú´Ù. ( ±×·² È®·üÀÌ ¸Å¿ì ÀûÀ¸¹Ç·Î )
+				// 2ê°œì”© ë¹„êµ í•œë‹¤ + ì—¬ëŸ¬ ê°œì˜ ì¡°í•©ì´ ê²¹ì¹˜ëŠ” ê²½ìš°ëŠ” ìš°ì„  ê±´ë„ˆ ë›´ë‹¤. ( ê·¸ëŸ´ í™•ë¥ ì´ ë§¤ìš° ì ìœ¼ë¯€ë¡œ )
 				for (int row = CheckStartRow; row < CheckEndRow; row++)
 				{
 					int CurIndex = row * m_ColCount + ColIndex;
 					int NxtIndex = (row + 1) * m_ColCount + ColIndex;
 
-					// CheckCombination ÇÔ¼ö¸¦ ÅëÇØ¼­ °ğ¹Ù·Î Destroy State °¡ ¼¼ÆÃµÉ °ÍÀÌ´Ù.
+					// CheckCombination í•¨ìˆ˜ë¥¼ í†µí•´ì„œ ê³§ë°”ë¡œ Destroy State ê°€ ì„¸íŒ…ë  ê²ƒì´ë‹¤.
 					if (CheckCombination(m_vecCells[CurIndex], m_vecCells[NxtIndex]))
 					{
 						MarkStateFound = true;
 						CombinationFound = true;
 
-						// ¾Æ·¡ÀÇ ÄÚµå¸¦ ÇØÁÖ´Â ÀÌÀ¯´Â , ÇöÀç Match Set ¿¡¼­´Â Á¶ÇÕÀ¸·Î ¼¼ÆÃµÇ¾ú´Âµ¥
-						// ex) ¼¼·Î ÁÙ
-						// °°Àº À§Ä¡, °¡·Î ÁÙ¿¡¼­ Match°¡ µÇ¾ú´Ù´Â ÀÌÀ¯·Î,
-						// Special Cell µé¿¡ ´ëÇØ  ´Ù½Ã Destroy »óÅÂ¸¦ ¹Ù²ã¹ö¸± ¼öµµ ÀÖÀ¸¹Ç·Î
+						// ì•„ë˜ì˜ ì½”ë“œë¥¼ í•´ì£¼ëŠ” ì´ìœ ëŠ” , í˜„ì¬ Match Set ì—ì„œëŠ” ì¡°í•©ìœ¼ë¡œ ì„¸íŒ…ë˜ì—ˆëŠ”ë°
+						// ex) ì„¸ë¡œ ì¤„
+						// ê°™ì€ ìœ„ì¹˜, ê°€ë¡œ ì¤„ì—ì„œ Matchê°€ ë˜ì—ˆë‹¤ëŠ” ì´ìœ ë¡œ,
+						// Special Cell ë“¤ì— ëŒ€í•´  ë‹¤ì‹œ Destroy ìƒíƒœë¥¼ ë°”ê¿”ë²„ë¦´ ìˆ˜ë„ ìˆìœ¼ë¯€ë¡œ
 						m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
 						m_vecCells[NxtIndex]->SetDestroyMarkState(DestroyMark_State::None);
 
@@ -2060,34 +2060,34 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 					}
 				}
 
-				// 2) Special Candy°¡ ÀÌ¹Ì ¸¸µé¾îÁ® ÀÖ´ÂÁö È®ÀÎ + Á¶ÇÕÀÌ ¾øÀ» ¶§¸¸ !
+				// 2) Special Candyê°€ ì´ë¯¸ ë§Œë“¤ì–´ì ¸ ìˆëŠ”ì§€ í™•ì¸ + ì¡°í•©ì´ ì—†ì„ ë•Œë§Œ !
 				if (CombinationFound == false)
 				{
 					for (int row = CheckStartRow; row <= CheckEndRow; row++)
 					{
 						int CurIndex = row * m_ColCount + ColIndex;
 
-						// ¾Æ·¡¿Í °ıÈ£¿¡ µé¾î¿À·Á¸é
-						// 1) ÀÌÀü¿¡ Match State °¡ Special ·Î µÇ¾î¼­, Destroy_State °¡ Setting  ( DestroyCells ÇÔ¼ö)
-						// 2) µû¶ó¼­ ¿©±â °É¸° °ÍÀº, ÀÌ¹Ì Special Candy ¶ó´Â ÀÇ¹Ì
+						// ì•„ë˜ì™€ ê´„í˜¸ì— ë“¤ì–´ì˜¤ë ¤ë©´
+						// 1) ì´ì „ì— Match State ê°€ Special ë¡œ ë˜ì–´ì„œ, Destroy_State ê°€ Setting  ( DestroyCells í•¨ìˆ˜)
+						// 2) ë”°ë¼ì„œ ì—¬ê¸° ê±¸ë¦° ê²ƒì€, ì´ë¯¸ Special Candy ë¼ëŠ” ì˜ë¯¸
 						// if ((int)m_vecDestroyMarkState[CurIndex] > (int)DestroyMark_State::None)
 						if ((int)m_vecCells[CurIndex]->GetDestroyMarkState() > (int)DestroyMark_State::None)
 						{
-							// ÆÄ±« »óÅÂ·Î ¼¼ÆÃÇÏ°í 
+							// íŒŒê´´ ìƒíƒœë¡œ ì„¸íŒ…í•˜ê³  
 							// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecDestroyMarkState[CurIndex]);
 							// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
 							m_vecCells[CurIndex]->SetDestroyState(ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState()));
 
-							// MirrorBall ÀÏ °æ¿ì,
+							// MirrorBall ì¼ ê²½ìš°,
 							if (m_vecCells[CurIndex]->GetDestroyMarkState() == DestroyMark_State::MirrorBall)
 							{
 								SetMirrorBallDestroyInfo(CurIndex, MatchedCellType);
 							}
 
-							// Mark Ã£¾ÒÀ½ Ç¥½ÃÇÏ°í 
+							// Mark ì°¾ì•˜ìŒ í‘œì‹œí•˜ê³  
 							MarkStateFound = true;
 
-							// Destroy State ¿ø»óÅÂ
+							// Destroy State ì›ìƒíƒœ
 							// m_vecDestroyMarkState[CurIndex] = DestroyMark_State::None;
 							m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
 						}
@@ -2095,10 +2095,10 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 				}
 				
 
-				// 2) Match State Ã³¸®¸¦ ÇØÁØ´Ù.
+				// 2) Match State ì²˜ë¦¬ë¥¼ í•´ì¤€ë‹¤.
 				if (CheckMatchNum == 3)
 				{
-					RowResultState = Match_State::ColLine;
+					RowResultState = Match_State::MirrorBall;
 					// RowResultState = Match_State::Normal;
 				}
 				if (CheckMatchNum == 4)
@@ -2112,9 +2112,9 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 					RowResultState = Match_State::MirrorBall;
 				*/
 
-				// 3) ¸¸¾à Special Candy°¡ ¸¸µé¾îÁ® ÀÖ¾ú´Ù¸é
-				// - »õ·Î¿î Special Candy´Â ÇØ´ç À§Ä¡¿¡ ¸¸µé¾îÁ®¼­´Â ¾ÈµÈ´Ù.
-				// - µû¶ó¼­ ColResultState ´Â ¹İµå½Ã Normal·Î ¼¼ÆÃ
+				// 3) ë§Œì•½ Special Candyê°€ ë§Œë“¤ì–´ì ¸ ìˆì—ˆë‹¤ë©´
+				// - ìƒˆë¡œìš´ Special CandyëŠ” í•´ë‹¹ ìœ„ì¹˜ì— ë§Œë“¤ì–´ì ¸ì„œëŠ” ì•ˆëœë‹¤.
+				// - ë”°ë¼ì„œ ColResultState ëŠ” ë°˜ë“œì‹œ Normalë¡œ ì„¸íŒ…
 				if (MarkStateFound)
 				{
 					if ((int)RowResultState > (int)Match_State::Normal)
@@ -2122,33 +2122,33 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 				}
 
 			}
-			// Click ÇØ¼­ Match µÈ Cell ÀÌ ¾Æ´Ï¶ó ½Ç½Ã°£ Match Cell ÀÌ¶ó¸é
+			// Click í•´ì„œ Match ëœ Cell ì´ ì•„ë‹ˆë¼ ì‹¤ì‹œê°„ Match Cell ì´ë¼ë©´
 			else
 			{
 				bool MarkStateFound = false;
 
-				// ÀÚ½ÅÀÌ ½ÃÀÛ Cell ÀÌ¶ó¸é
+				// ìì‹ ì´ ì‹œì‘ Cell ì´ë¼ë©´
 				if (CheckStartRow == RowIndex)
 				{
-					// 1) Match ÀÌ¸é¼­ + Á¶ÇÕÀÌ µÇ´ÂÁö È®ÀÎÇÑ´Ù.
+					// 1) Match ì´ë©´ì„œ + ì¡°í•©ì´ ë˜ëŠ”ì§€ í™•ì¸í•œë‹¤.
 					bool CombinationFound = false;
 
-					// 2°³¾¿ ºñ±³ ÇÑ´Ù + ¿©·¯ °³ÀÇ Á¶ÇÕÀÌ °ãÄ¡´Â °æ¿ì´Â ¿ì¼± °Ç³Ê ¶Ú´Ù. ( ±×·² È®·üÀÌ ¸Å¿ì ÀûÀ¸¹Ç·Î )
+					// 2ê°œì”© ë¹„êµ í•œë‹¤ + ì—¬ëŸ¬ ê°œì˜ ì¡°í•©ì´ ê²¹ì¹˜ëŠ” ê²½ìš°ëŠ” ìš°ì„  ê±´ë„ˆ ë›´ë‹¤. ( ê·¸ëŸ´ í™•ë¥ ì´ ë§¤ìš° ì ìœ¼ë¯€ë¡œ )
 					for (int row = CheckStartRow; row < CheckEndRow; row++)
 					{
 						int CurIndex = row * m_ColCount + ColIndex;
 						int NxtIndex = (row + 1) * m_ColCount + ColIndex;
 
-						// CheckCombination ÇÔ¼ö¸¦ ÅëÇØ¼­ °ğ¹Ù·Î Destroy State °¡ ¼¼ÆÃµÉ °ÍÀÌ´Ù.
+						// CheckCombination í•¨ìˆ˜ë¥¼ í†µí•´ì„œ ê³§ë°”ë¡œ Destroy State ê°€ ì„¸íŒ…ë  ê²ƒì´ë‹¤.
 						if (CheckCombination(m_vecCells[CurIndex], m_vecCells[NxtIndex]))
 						{
 							MarkStateFound = true;
 							CombinationFound = true;
 
-							// ¾Æ·¡ÀÇ ÄÚµå¸¦ ÇØÁÖ´Â ÀÌÀ¯´Â , ÇöÀç Match Set ¿¡¼­´Â Á¶ÇÕÀ¸·Î ¼¼ÆÃµÇ¾ú´Âµ¥
-							// ex) ¼¼·Î ÁÙ
-							// °°Àº À§Ä¡, °¡·Î ÁÙ¿¡¼­ Match°¡ µÇ¾ú´Ù´Â ÀÌÀ¯·Î,
-							// Special Cell µé¿¡ ´ëÇØ  ´Ù½Ã Destroy »óÅÂ¸¦ ¹Ù²ã¹ö¸± ¼öµµ ÀÖÀ¸¹Ç·Î
+							// ì•„ë˜ì˜ ì½”ë“œë¥¼ í•´ì£¼ëŠ” ì´ìœ ëŠ” , í˜„ì¬ Match Set ì—ì„œëŠ” ì¡°í•©ìœ¼ë¡œ ì„¸íŒ…ë˜ì—ˆëŠ”ë°
+							// ex) ì„¸ë¡œ ì¤„
+							// ê°™ì€ ìœ„ì¹˜, ê°€ë¡œ ì¤„ì—ì„œ Matchê°€ ë˜ì—ˆë‹¤ëŠ” ì´ìœ ë¡œ,
+							// Special Cell ë“¤ì— ëŒ€í•´  ë‹¤ì‹œ Destroy ìƒíƒœë¥¼ ë°”ê¿”ë²„ë¦´ ìˆ˜ë„ ìˆìœ¼ë¯€ë¡œ
 							m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
 							m_vecCells[NxtIndex]->SetDestroyMarkState(DestroyMark_State::None);
 
@@ -2157,55 +2157,55 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 						}
 					}
 
-					// 1) Special Candy°¡ ÀÌ¹Ì ¸¸µé¾îÁ® ÀÖ´ÂÁö È®ÀÎ
+					// 1) Special Candyê°€ ì´ë¯¸ ë§Œë“¤ì–´ì ¸ ìˆëŠ”ì§€ í™•ì¸
 					if (CombinationFound == false)
 					{
 						for (int row = CheckStartRow; row <= CheckEndRow; row++)
 						{
 							int CurIndex = row * m_ColCount + ColIndex;
 
-							// ¾Æ·¡¿Í °ıÈ£¿¡ µé¾î¿À·Á¸é
-							// 1) ÀÌÀü¿¡ Match State °¡ Special ·Î µÇ¾î¼­, Destroy_State °¡ Setting  ( DestroyCells ÇÔ¼ö)
-							// 2) µû¶ó¼­ ¿©±â °É¸° °ÍÀº, ÀÌ¹Ì Special Candy ¶ó´Â ÀÇ¹Ì
+							// ì•„ë˜ì™€ ê´„í˜¸ì— ë“¤ì–´ì˜¤ë ¤ë©´
+							// 1) ì´ì „ì— Match State ê°€ Special ë¡œ ë˜ì–´ì„œ, Destroy_State ê°€ Setting  ( DestroyCells í•¨ìˆ˜)
+							// 2) ë”°ë¼ì„œ ì—¬ê¸° ê±¸ë¦° ê²ƒì€, ì´ë¯¸ Special Candy ë¼ëŠ” ì˜ë¯¸
 							// if ((int)m_vecDestroyMarkState[CurIndex] > (int)DestroyMark_State::None)
 							if ((int)m_vecCells[CurIndex]->GetDestroyMarkState() > (int)DestroyMark_State::None)
 							{
-								// ÆÄ±« »óÅÂ·Î ¼¼ÆÃÇÏ°í 
+								// íŒŒê´´ ìƒíƒœë¡œ ì„¸íŒ…í•˜ê³  
 								// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
 								m_vecCells[CurIndex]->SetDestroyState(ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState()));
 
-								// MirrorBall ÀÏ °æ¿ì,
+								// MirrorBall ì¼ ê²½ìš°,
 								if (m_vecCells[CurIndex]->GetDestroyMarkState() == DestroyMark_State::MirrorBall)
 								{
 									SetMirrorBallDestroyInfo(CurIndex, MatchedCellType);
 								}
 
-								// Mark Ã£¾ÒÀ½ Ç¥½ÃÇÏ°í 
+								// Mark ì°¾ì•˜ìŒ í‘œì‹œí•˜ê³  
 								MarkStateFound = true;
 
-								// Destroy State ¿ø»óÅÂ
+								// Destroy State ì›ìƒíƒœ
 								// m_vecDestroyMarkState[CurIndex] = DestroyMark_State::None;
 								m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
 							}
 						}
 					}
 				}
-				// 3°³Â¥¸® ÀÏ¶§µµ Special DestroyÀÎ ÇØ¾ß ÇÏ´Â°Í ¾Æ´Ñ°¡ ?
+				// 3ê°œì§œë¦¬ ì¼ë•Œë„ Special Destroyì¸ í•´ì•¼ í•˜ëŠ”ê²ƒ ì•„ë‹Œê°€ ?
 				if (CheckMatchNum == 3)
 				{
 					// RowResultState = Match_State::ColLine;
 					RowResultState = Match_State::Normal;
 				}
 
-				// 4°³ ÀÌ»óÀÌ¶ó¸é, Special Candy¸¦ ¸¸µé°Å³ª, Special Destroy ¼¼ÆÃÀ» ÇØ¾ß ÇÑ´Ù.
+				// 4ê°œ ì´ìƒì´ë¼ë©´, Special Candyë¥¼ ë§Œë“¤ê±°ë‚˜, Special Destroy ì„¸íŒ…ì„ í•´ì•¼ í•œë‹¤.
 				else if (CheckMatchNum >= 4)
 				{
-					// ÀÚ½ÅÀÌ ½ÃÀÛ Cell ÀÌ¶ó¸é
+					// ìì‹ ì´ ì‹œì‘ Cell ì´ë¼ë©´
 					if (CheckStartRow == RowIndex)
 					{
 						if (MarkStateFound)
 						{
-							// Special Candy¸¦ »ı¼ºÇÏÁö ¾Ê´Â´Ù.
+							// Special Candyë¥¼ ìƒì„±í•˜ì§€ ì•ŠëŠ”ë‹¤.
 							RowResultState = Match_State::Normal;
 						}
 						else
@@ -2222,7 +2222,7 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 							*/
 						}
 					}
-					// ¾Æ´Ï¶ó¸é, ±×³É ¿©ÀüÈ÷ Normal ·Î ¼¼ÆÃÇÑ´Ù.
+					// ì•„ë‹ˆë¼ë©´, ê·¸ëƒ¥ ì—¬ì „íˆ Normal ë¡œ ì„¸íŒ…í•œë‹¤.
 					else
 					{
 						RowResultState = Match_State::Normal;
@@ -2230,10 +2230,10 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 				}
 			}
 
-			// Match °á°ú true·Î ¼¼ÆÃ
+			// Match ê²°ê³¼ trueë¡œ ì„¸íŒ…
 			Match = true;
 
-			// For ¹® ³ª°¡±â --> Á¦ÀÏ ³ôÀº ¼ıÀÚºÎÅÍ, ¾Æ·¡¼ıÀÚ·Î °Ë»çÇÏ´Â °ÍÀÌ±â ¶§¹®ÀÌ´Ù.
+			// For ë¬¸ ë‚˜ê°€ê¸° --> ì œì¼ ë†’ì€ ìˆ«ìë¶€í„°, ì•„ë˜ìˆ«ìë¡œ ê²€ì‚¬í•˜ëŠ” ê²ƒì´ê¸° ë•Œë¬¸ì´ë‹¤.
 			break;
 		}
 	}
@@ -2244,25 +2244,25 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 	return RowResultState;
 }
 
-// °¡·Î °Ë»ç ( ¿ŞÂÊ ¿À¸¥ÂÊ )
+// ê°€ë¡œ ê²€ì‚¬ ( ì™¼ìª½ ì˜¤ë¥¸ìª½ )
 Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool IsClickCell)
 {
 	Match_State ColResultState = Match_State::NoMatch;
 
-	// ÇöÀç °Ë»çÇÏ´Â CellÀÇ Index
+	// í˜„ì¬ ê²€ì‚¬í•˜ëŠ” Cellì˜ Index
 	int CurIndex = -1;
 
 	Cell_Type_Binary MatchedCellType = {};
 
-	// Match ÃÖÁ¾ °á°ú 
+	// Match ìµœì¢… ê²°ê³¼ 
 	bool Match = false;
 
-	// ÃÖ¼Ò 3°³±îÁö Á¶»ç, ÃÖ´ë Á¶»ç °³¼ö´Â Row // Col ¿©ºÎ¿¡ µû¶ó ´Ş¶óÁö°Ô µÉ °ÍÀÌ´Ù.
+	// ìµœì†Œ 3ê°œê¹Œì§€ ì¡°ì‚¬, ìµœëŒ€ ì¡°ì‚¬ ê°œìˆ˜ëŠ” Row // Col ì—¬ë¶€ì— ë”°ë¼ ë‹¬ë¼ì§€ê²Œ ë  ê²ƒì´ë‹¤.
 	int MinCheckLength = 3, MaxCheckLength = m_ColCount;
 
 	int CheckStartCol = -1, CheckEndCol = -1;
 
-	// ÃÖ´ë --> ÃÖ¼Ò ±æÀÌ ¼øÀ¸·Î Á¶»çÇÏ±â
+	// ìµœëŒ€ --> ìµœì†Œ ê¸¸ì´ ìˆœìœ¼ë¡œ ì¡°ì‚¬í•˜ê¸°
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
 	{
 		bool IsLengthMatch = false;
@@ -2271,31 +2271,31 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 		{
 			bool IsPartMatch = true;
 
-			// ÇöÀç ClickCell ÀÌ Æ÷ÇÔµÈ Row ¹üÀ§¿¡ ´ëÇØ¼­¸¸ Á¶»çÇÒ °ÍÀÌ´Ù.
+			// í˜„ì¬ ClickCell ì´ í¬í•¨ëœ Row ë²”ìœ„ì— ëŒ€í•´ì„œë§Œ ì¡°ì‚¬í•  ê²ƒì´ë‹¤.
 			CheckStartCol = (ColIndex + StartColOffset) - (CheckMatchNum - 1);
 
-			// ¾Æ·¡·Î ¹üÀ§°¡ ¹ş¾î³­ °æ¿ì
+			// ì•„ë˜ë¡œ ë²”ìœ„ê°€ ë²—ì–´ë‚œ ê²½ìš°
 			if (CheckStartCol < 0)
 			{
 				IsPartMatch = false;
 				continue;
 			}
 
-			// ¿À¸¥ÂÊÀ¸·Î ¹üÀ§°¡ ¹ş¾î³­ °æ¿ì
+			// ì˜¤ë¥¸ìª½ìœ¼ë¡œ ë²”ìœ„ê°€ ë²—ì–´ë‚œ ê²½ìš°
 			CheckEndCol = CheckStartCol + (CheckMatchNum - 1);
 
 			if (CheckEndCol >= m_ColCount)
 			{
 				IsPartMatch = false;
 				// continue;
-				// ¿©±â °É¸®¸é ÀÌÈÄ¿¡µµ ¿©±â °è¼Ó °É¸°´Ù.
-				// ¾îÂ÷ÇÇ CheckEndCol ´Â °è¼Ó Áõ°¡ÇÏ±â ¶§¹®ÀÌ´Ù.
+				// ì—¬ê¸° ê±¸ë¦¬ë©´ ì´í›„ì—ë„ ì—¬ê¸° ê³„ì† ê±¸ë¦°ë‹¤.
+				// ì–´ì°¨í”¼ CheckEndCol ëŠ” ê³„ì† ì¦ê°€í•˜ê¸° ë•Œë¬¸ì´ë‹¤.
 				break;
 			}
 
 			Cell_Type_Binary InitCellType = m_vecCells[RowIndex * m_ColCount + CheckStartCol]->GetCellType();
 
-			// ÇØ´ç ±æÀÌ·Î ¿ŞÂÊ --> ¿À¸¥ÂÊ ¼ø¼­·Î Á¶»çÇÑ´Ù.
+			// í•´ë‹¹ ê¸¸ì´ë¡œ ì™¼ìª½ --> ì˜¤ë¥¸ìª½ ìˆœì„œë¡œ ì¡°ì‚¬í•œë‹¤.
 			for (int StCol = CheckStartCol + 1; StCol <= CheckEndCol; StCol++)
 			{
 				CurIndex = RowIndex * m_ColCount + StCol;
@@ -2310,7 +2310,7 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 					break;
 				}
 
-				// ÃÖÃÊ CellÀÌ MirrorBall ÀÏ ¶§´Â Áß°£ Áß°£ Cell TypeÀ» Update ÇØÁà¾ß ÇÑ´Ù.
+				// ìµœì´ˆ Cellì´ MirrorBall ì¼ ë•ŒëŠ” ì¤‘ê°„ ì¤‘ê°„ Cell Typeì„ Update í•´ì¤˜ì•¼ í•œë‹¤.
 				if (InitCellType == Cell_Type_Binary::All)
 				{
 					InitCellType = m_vecCells[CurIndex]->GetCellType();
@@ -2318,7 +2318,7 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 
 			}
 
-			// ¸¸¾à ÇØ´ç Row (¼¼·Î)°¡ Match ¶ó¸é, ÇØ´ç Cell µéÀ» Match »óÅÂ·Î ¹Ù²ãÁØ´Ù.
+			// ë§Œì•½ í•´ë‹¹ Row (ì„¸ë¡œ)ê°€ Match ë¼ë©´, í•´ë‹¹ Cell ë“¤ì„ Match ìƒíƒœë¡œ ë°”ê¿”ì¤€ë‹¤.
 			if (IsPartMatch)
 			{
 				for (int MatchedCol = CheckStartCol; MatchedCol <= CheckEndCol; MatchedCol++)
@@ -2329,10 +2329,10 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 
 				MatchedCellType = InitCellType;
 
-				// ÇØ´ç ±æÀÌ¿¡¼­ÀÇ match ¿©ºÎ¸¦ true ·Î ¼¼ÆÃ
+				// í•´ë‹¹ ê¸¸ì´ì—ì„œì˜ match ì—¬ë¶€ë¥¼ true ë¡œ ì„¸íŒ…
 				IsLengthMatch = true;
 
-				// For ¹®À» ºüÁ®³ª°£´Ù.
+				// For ë¬¸ì„ ë¹ ì ¸ë‚˜ê°„ë‹¤.
 				break;
 			}
 		}
@@ -2345,26 +2345,26 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 			{
 				bool MarkStateFound = false;
 
-				// 1) Match ÀÌ¸é¼­ + Á¶ÇÕÀÌ µÇ´ÂÁö È®ÀÎÇÑ´Ù.
+				// 1) Match ì´ë©´ì„œ + ì¡°í•©ì´ ë˜ëŠ”ì§€ í™•ì¸í•œë‹¤.
 				bool CombinationFound = false;
 
-				// 2°³¾¿ ºñ±³ ÇÑ´Ù + ¿©·¯ °³ÀÇ Á¶ÇÕÀÌ °ãÄ¡´Â °æ¿ì´Â ¿ì¼± °Ç³Ê ¶Ú´Ù. ( ±×·² È®·üÀÌ ¸Å¿ì ÀûÀ¸¹Ç·Î )
+				// 2ê°œì”© ë¹„êµ í•œë‹¤ + ì—¬ëŸ¬ ê°œì˜ ì¡°í•©ì´ ê²¹ì¹˜ëŠ” ê²½ìš°ëŠ” ìš°ì„  ê±´ë„ˆ ë›´ë‹¤. ( ê·¸ëŸ´ í™•ë¥ ì´ ë§¤ìš° ì ìœ¼ë¯€ë¡œ )
 				for (int col = CheckStartCol; col < CheckEndCol; col++)
 				{
 					int CurIndex = RowIndex * m_ColCount + col;
 					int NxtIndex = RowIndex * m_ColCount + (col + 1);
 
-					// CheckCombination ÇÔ¼ö¸¦ ÅëÇØ¼­ °ğ¹Ù·Î Destroy State °¡ ¼¼ÆÃµÉ °ÍÀÌ´Ù.
+					// CheckCombination í•¨ìˆ˜ë¥¼ í†µí•´ì„œ ê³§ë°”ë¡œ Destroy State ê°€ ì„¸íŒ…ë  ê²ƒì´ë‹¤.
 					if (CheckCombination(m_vecCells[CurIndex], m_vecCells[NxtIndex]))
 					{
 						MarkStateFound = true;
 						CombinationFound = true;
 
 
-						// ¾Æ·¡ÀÇ ÄÚµå¸¦ ÇØÁÖ´Â ÀÌÀ¯´Â , ÇöÀç Match Set ¿¡¼­´Â Á¶ÇÕÀ¸·Î ¼¼ÆÃµÇ¾ú´Âµ¥
-						// ex) ¼¼·Î ÁÙ
-						// °°Àº À§Ä¡, °¡·Î ÁÙ¿¡¼­ Match°¡ µÇ¾ú´Ù´Â ÀÌÀ¯·Î,
-						// Special Cell µé¿¡ ´ëÇØ  ´Ù½Ã Destroy »óÅÂ¸¦ ¹Ù²ã¹ö¸± ¼öµµ ÀÖÀ¸¹Ç·Î
+						// ì•„ë˜ì˜ ì½”ë“œë¥¼ í•´ì£¼ëŠ” ì´ìœ ëŠ” , í˜„ì¬ Match Set ì—ì„œëŠ” ì¡°í•©ìœ¼ë¡œ ì„¸íŒ…ë˜ì—ˆëŠ”ë°
+						// ex) ì„¸ë¡œ ì¤„
+						// ê°™ì€ ìœ„ì¹˜, ê°€ë¡œ ì¤„ì—ì„œ Matchê°€ ë˜ì—ˆë‹¤ëŠ” ì´ìœ ë¡œ,
+						// Special Cell ë“¤ì— ëŒ€í•´  ë‹¤ì‹œ Destroy ìƒíƒœë¥¼ ë°”ê¿”ë²„ë¦´ ìˆ˜ë„ ìˆìœ¼ë¯€ë¡œ
 						m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
 						m_vecCells[NxtIndex]->SetDestroyMarkState(DestroyMark_State::None);
 
@@ -2372,34 +2372,34 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 					}
 				}
 
-				// 1) Special Candy°¡ ÀÌ¹Ì ¸¸µé¾îÁ® ÀÖ´ÂÁö È®ÀÎ
+				// 1) Special Candyê°€ ì´ë¯¸ ë§Œë“¤ì–´ì ¸ ìˆëŠ”ì§€ í™•ì¸
 				if (CombinationFound == false)
 				{
 					for (int col = CheckStartCol; col <= CheckEndCol; col++)
 					{
 						int CurIndex = RowIndex * m_ColCount + col;
 
-						// ¾Æ·¡¿Í °ıÈ£¿¡ µé¾î¿À·Á¸é
-						// 1) ÀÌÀü¿¡ Match State °¡ Special ·Î µÇ¾î¼­, Destroy_State °¡ Setting  ( DestroyCells ÇÔ¼ö)
-						// 2) µû¶ó¼­ ¿©±â °É¸° °ÍÀº, ÀÌ¹Ì Special Candy ¶ó´Â ÀÇ¹Ì
+						// ì•„ë˜ì™€ ê´„í˜¸ì— ë“¤ì–´ì˜¤ë ¤ë©´
+						// 1) ì´ì „ì— Match State ê°€ Special ë¡œ ë˜ì–´ì„œ, Destroy_State ê°€ Setting  ( DestroyCells í•¨ìˆ˜)
+						// 2) ë”°ë¼ì„œ ì—¬ê¸° ê±¸ë¦° ê²ƒì€, ì´ë¯¸ Special Candy ë¼ëŠ” ì˜ë¯¸
 						// if ((int)m_vecDestroyMarkState[CurIndex] > (int)DestroyMark_State::None)
 						if ((int)m_vecCells[CurIndex]->GetDestroyMarkState() > (int)DestroyMark_State::None)
 						{
-							// ÆÄ±« »óÅÂ·Î ¼¼ÆÃÇÏ°í 
+							// íŒŒê´´ ìƒíƒœë¡œ ì„¸íŒ…í•˜ê³  
 							// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecDestroyMarkState[CurIndex]);
 							// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
 							m_vecCells[CurIndex]->SetDestroyState(ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState()));
 
-							// MirrorBall ÀÏ °æ¿ì,
+							// MirrorBall ì¼ ê²½ìš°,
 							if (m_vecCells[CurIndex]->GetDestroyMarkState() == DestroyMark_State::MirrorBall)
 							{
 								SetMirrorBallDestroyInfo(CurIndex, MatchedCellType);
 							}
 
-							// Mark Ã£¾ÒÀ½ Ç¥½ÃÇÏ°í 
+							// Mark ì°¾ì•˜ìŒ í‘œì‹œí•˜ê³  
 							MarkStateFound = true;
 
-							// Destroy State ¿ø»óÅÂ
+							// Destroy State ì›ìƒíƒœ
 							// m_vecDestroyMarkState[CurIndex] = DestroyMark_State::None;
 							m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
 						}
@@ -2407,14 +2407,15 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 				}
 				
 
-				// 2) Match State Ã³¸®¸¦ ÇØÁØ´Ù.
+				// 2) Match State ì²˜ë¦¬ë¥¼ í•´ì¤€ë‹¤.
 				if (CheckMatchNum == 3)
 				{
 					// ColResultState = Match_State::Normal;
-					ColResultState = Match_State::RowLine;
+					// ColResultState = Match_State::RowLine;
+					ColResultState = Match_State::Bag;
 				}
 				if (CheckMatchNum == 4)
-					ColResultState = Match_State::RowLine;
+					ColResultState = Match_State::Bag;
 				if (CheckMatchNum >= 5)
 					ColResultState = Match_State::MirrorBall;
 				/*
@@ -2422,9 +2423,9 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 					ColResultState = Match_State::MirrorBall;
 				*/
 
-				// 3) ¸¸¾à Special Candy°¡ ¸¸µé¾îÁ® ÀÖ¾ú´Ù¸é
-				// - »õ·Î¿î Special Candy´Â ÇØ´ç À§Ä¡¿¡ ¸¸µé¾îÁ®¼­´Â ¾ÈµÈ´Ù.
-				// - µû¶ó¼­ ColResultState ´Â ¹İµå½Ã Normal·Î ¼¼ÆÃ
+				// 3) ë§Œì•½ Special Candyê°€ ë§Œë“¤ì–´ì ¸ ìˆì—ˆë‹¤ë©´
+				// - ìƒˆë¡œìš´ Special CandyëŠ” í•´ë‹¹ ìœ„ì¹˜ì— ë§Œë“¤ì–´ì ¸ì„œëŠ” ì•ˆëœë‹¤.
+				// - ë”°ë¼ì„œ ColResultState ëŠ” ë°˜ë“œì‹œ Normalë¡œ ì„¸íŒ…
 				if (MarkStateFound)
 				{
 					if ((int)ColResultState > (int)Match_State::Normal)
@@ -2432,35 +2433,35 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 				}
 				
 			}
-			// Click ÇØ¼­ Match µÈ Cell ÀÌ ¾Æ´Ï¶ó ½Ç½Ã°£ Match Cell ÀÌ¶ó¸é
+			// Click í•´ì„œ Match ëœ Cell ì´ ì•„ë‹ˆë¼ ì‹¤ì‹œê°„ Match Cell ì´ë¼ë©´
 			else
 			{
 				bool MarkStateFound = false;
 
-				// ÀÚ½ÅÀÌ ½ÃÀÛ Cell ÀÌ¶ó¸é
+				// ìì‹ ì´ ì‹œì‘ Cell ì´ë¼ë©´
 				if (CheckStartCol == ColIndex)
 				{
 
-					// 1) Match ÀÌ¸é¼­ + Á¶ÇÕÀÌ µÇ´ÂÁö È®ÀÎÇÑ´Ù.
+					// 1) Match ì´ë©´ì„œ + ì¡°í•©ì´ ë˜ëŠ”ì§€ í™•ì¸í•œë‹¤.
 					bool CombinationFound = false;
 
-					// 2°³¾¿ ºñ±³ ÇÑ´Ù + ¿©·¯ °³ÀÇ Á¶ÇÕÀÌ °ãÄ¡´Â °æ¿ì´Â ¿ì¼± °Ç³Ê ¶Ú´Ù. ( ±×·² È®·üÀÌ ¸Å¿ì ÀûÀ¸¹Ç·Î )
+					// 2ê°œì”© ë¹„êµ í•œë‹¤ + ì—¬ëŸ¬ ê°œì˜ ì¡°í•©ì´ ê²¹ì¹˜ëŠ” ê²½ìš°ëŠ” ìš°ì„  ê±´ë„ˆ ë›´ë‹¤. ( ê·¸ëŸ´ í™•ë¥ ì´ ë§¤ìš° ì ìœ¼ë¯€ë¡œ )
 					for (int col = CheckStartCol; col < CheckEndCol; col++)
 					{
 						int CurIndex = RowIndex * m_ColCount + col;
 						int NxtIndex = RowIndex * m_ColCount + (col + 1);
 
-						// CheckCombination ÇÔ¼ö¸¦ ÅëÇØ¼­ °ğ¹Ù·Î Destroy State °¡ ¼¼ÆÃµÉ °ÍÀÌ´Ù.
+						// CheckCombination í•¨ìˆ˜ë¥¼ í†µí•´ì„œ ê³§ë°”ë¡œ Destroy State ê°€ ì„¸íŒ…ë  ê²ƒì´ë‹¤.
 						if (CheckCombination(m_vecCells[CurIndex], m_vecCells[NxtIndex]))
 						{
 							MarkStateFound = true;
 							CombinationFound = true;
 
 
-							// ¾Æ·¡ÀÇ ÄÚµå¸¦ ÇØÁÖ´Â ÀÌÀ¯´Â , ÇöÀç Match Set ¿¡¼­´Â Á¶ÇÕÀ¸·Î ¼¼ÆÃµÇ¾ú´Âµ¥
-							// ex) ¼¼·Î ÁÙ
-							// °°Àº À§Ä¡, °¡·Î ÁÙ¿¡¼­ Match°¡ µÇ¾ú´Ù´Â ÀÌÀ¯·Î,
-							// Special Cell µé¿¡ ´ëÇØ  ´Ù½Ã Destroy »óÅÂ¸¦ ¹Ù²ã¹ö¸± ¼öµµ ÀÖÀ¸¹Ç·Î
+							// ì•„ë˜ì˜ ì½”ë“œë¥¼ í•´ì£¼ëŠ” ì´ìœ ëŠ” , í˜„ì¬ Match Set ì—ì„œëŠ” ì¡°í•©ìœ¼ë¡œ ì„¸íŒ…ë˜ì—ˆëŠ”ë°
+							// ex) ì„¸ë¡œ ì¤„
+							// ê°™ì€ ìœ„ì¹˜, ê°€ë¡œ ì¤„ì—ì„œ Matchê°€ ë˜ì—ˆë‹¤ëŠ” ì´ìœ ë¡œ,
+							// Special Cell ë“¤ì— ëŒ€í•´  ë‹¤ì‹œ Destroy ìƒíƒœë¥¼ ë°”ê¿”ë²„ë¦´ ìˆ˜ë„ ìˆìœ¼ë¯€ë¡œ
 							m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
 							m_vecCells[NxtIndex]->SetDestroyMarkState(DestroyMark_State::None);
 
@@ -2468,55 +2469,55 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 						}
 					}
 
-					// 2) Special Candy°¡ ÀÌ¹Ì ¸¸µé¾îÁ® ÀÖ´ÂÁö È®ÀÎ
+					// 2) Special Candyê°€ ì´ë¯¸ ë§Œë“¤ì–´ì ¸ ìˆëŠ”ì§€ í™•ì¸
 					if (CombinationFound == false)
 					{
 						for (int col = CheckStartCol; col <= CheckEndCol; col++)
 						{
 							int CurIndex = RowIndex * m_ColCount + col;
 
-							// ¾Æ·¡¿Í °ıÈ£¿¡ µé¾î¿À·Á¸é
-							// 1) ÀÌÀü¿¡ Match State °¡ Special ·Î µÇ¾î¼­, Destroy_State °¡ Setting  ( DestroyCells ÇÔ¼ö)
-							// 2) µû¶ó¼­ ¿©±â °É¸° °ÍÀº, ÀÌ¹Ì Special Candy ¶ó´Â ÀÇ¹Ì
+							// ì•„ë˜ì™€ ê´„í˜¸ì— ë“¤ì–´ì˜¤ë ¤ë©´
+							// 1) ì´ì „ì— Match State ê°€ Special ë¡œ ë˜ì–´ì„œ, Destroy_State ê°€ Setting  ( DestroyCells í•¨ìˆ˜)
+							// 2) ë”°ë¼ì„œ ì—¬ê¸° ê±¸ë¦° ê²ƒì€, ì´ë¯¸ Special Candy ë¼ëŠ” ì˜ë¯¸
 							// if ((int)m_vecDestroyMarkState[CurIndex] > (int)DestroyMark_State::None)
 							if ((int)m_vecCells[CurIndex]->GetDestroyMarkState() > (int)DestroyMark_State::None)
 							{
-								// ÆÄ±« »óÅÂ·Î ¼¼ÆÃÇÏ°í
+								// íŒŒê´´ ìƒíƒœë¡œ ì„¸íŒ…í•˜ê³ 
 								// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState());
 								m_vecCells[CurIndex]->SetDestroyState(ChangeDestroyMarkStateToDestroyState(m_vecCells[CurIndex]->GetDestroyMarkState()));
 
-								// MirrorBall ÀÏ °æ¿ì,
+								// MirrorBall ì¼ ê²½ìš°,
 								if (m_vecCells[CurIndex]->GetDestroyMarkState() == DestroyMark_State::MirrorBall)
 								{
 									SetMirrorBallDestroyInfo(CurIndex, MatchedCellType);
 								}
 
-								// Mark Ã£¾ÒÀ½ Ç¥½ÃÇÏ°í 
+								// Mark ì°¾ì•˜ìŒ í‘œì‹œí•˜ê³  
 								MarkStateFound = true;
 
-								// Destroy State ¿ø»óÅÂ
+								// Destroy State ì›ìƒíƒœ
 								// m_vecDestroyMarkState[CurIndex] = DestroyMark_State::None;
 								m_vecCells[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
 							}
 						}
 					}
 				}
-				// 3°³Â¥¸® ÀÏ¶§µµ Special DestroyÀÎ ÇØ¾ß ÇÏ´Â°Í ¾Æ´Ñ°¡ ?
+				// 3ê°œì§œë¦¬ ì¼ë•Œë„ Special Destroyì¸ í•´ì•¼ í•˜ëŠ”ê²ƒ ì•„ë‹Œê°€ ?
 				if (CheckMatchNum == 3)
 				{
 					ColResultState = Match_State::Normal;
 					// ColResultState = Match_State::RowLine;
 				}
 
-				// 4°³ ÀÌ»óÀÌ¶ó¸é, Special Candy¸¦ ¸¸µé°Å³ª, Special Destroy ¼¼ÆÃÀ» ÇØ¾ß ÇÑ´Ù.
+				// 4ê°œ ì´ìƒì´ë¼ë©´, Special Candyë¥¼ ë§Œë“¤ê±°ë‚˜, Special Destroy ì„¸íŒ…ì„ í•´ì•¼ í•œë‹¤.
 				else if (CheckMatchNum >= 4)
 				{
-					// ÀÚ½ÅÀÌ ½ÃÀÛ Cell ÀÌ¶ó¸é
+					// ìì‹ ì´ ì‹œì‘ Cell ì´ë¼ë©´
 					if (CheckStartCol == ColIndex)
 					{
 						if (MarkStateFound)
 						{
-							// Special Candy¸¦ »ı¼ºÇÏÁö ¾Ê´Â´Ù.
+							// Special Candyë¥¼ ìƒì„±í•˜ì§€ ì•ŠëŠ”ë‹¤.
 							ColResultState = Match_State::Normal;
 						}
 						else
@@ -2535,7 +2536,7 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 							*/
 						}
 					}
-					// ¾Æ´Ï¶ó¸é, ±×³É ¿©ÀüÈ÷ Normal ·Î ¼¼ÆÃÇÑ´Ù.
+					// ì•„ë‹ˆë¼ë©´, ê·¸ëƒ¥ ì—¬ì „íˆ Normal ë¡œ ì„¸íŒ…í•œë‹¤.
 					else
 					{
 						ColResultState = Match_State::Normal;
@@ -2549,11 +2550,11 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 				}
 			}
 
-			// ÀüÃ¼ Match °á°ú true·Î ¼¼ÆÃ
+			// ì „ì²´ Match ê²°ê³¼ trueë¡œ ì„¸íŒ…
 			Match = true;
 
-			// For ¹® ³ª°¡±â --> Á¦ÀÏ ³ôÀº ¼ıÀÚºÎÅÍ Á¶»çÇÏ´Â °ÍÀÌ±â ¶§¹®ÀÌ´Ù.
-			// ÇÑ ¼¼Æ®°¡ ³¡³­ ÀÌÈÄ. ÇØ´ç ¼¼Æ®¿¡¼­ Match°¡ ³ª¿Ô´Ù¸é, ´õÀÌ»ó ÁøÇàÇÒ ÇÊ¿ä´Â ¾ø´Ù.
+			// For ë¬¸ ë‚˜ê°€ê¸° --> ì œì¼ ë†’ì€ ìˆ«ìë¶€í„° ì¡°ì‚¬í•˜ëŠ” ê²ƒì´ê¸° ë•Œë¬¸ì´ë‹¤.
+			// í•œ ì„¸íŠ¸ê°€ ëë‚œ ì´í›„. í•´ë‹¹ ì„¸íŠ¸ì—ì„œ Matchê°€ ë‚˜ì™”ë‹¤ë©´, ë”ì´ìƒ ì§„í–‰í•  í•„ìš”ëŠ” ì—†ë‹¤.
 			break;
 		}
 	}
@@ -2564,7 +2565,7 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 	return ColResultState;
 }
 
-// °¡·Î ¸ğµÎ Á¦°Å
+// ê°€ë¡œ ëª¨ë‘ ì œê±°
 bool CBoard::DestroyHorizontalEffect(int RowIndex)
 {
 	for (int col = 0; col < m_ColCount; col++)
@@ -2580,7 +2581,7 @@ bool CBoard::DestroyHorizontalEffect(int RowIndex)
 			m_vecCells[RowIndex * m_ColCount + col]->SetIsLineDestroyedCell(true);
 			m_vecCells[RowIndex * m_ColCount + col]->SetLineDestroyDelayTime(0.1f + col * 0.1f);
 		}
-		// ÇØ´ç ColumnÀÇ ±× À§ Cell µé·Î ÇÏ¿©±İ ³»·Á¿À´Â °ÍÀ» Àá½Ã ¸ØÃßµµ·Ï ¼¼ÆÃÇÑ´Ù
+		// í•´ë‹¹ Columnì˜ ê·¸ ìœ„ Cell ë“¤ë¡œ í•˜ì—¬ê¸ˆ ë‚´ë ¤ì˜¤ëŠ” ê²ƒì„ ì ì‹œ ë©ˆì¶”ë„ë¡ ì„¸íŒ…í•œë‹¤
 		for (int row = RowIndex + 1; row < m_RowCount; row++)
 		{
 			m_vecCells[row * m_ColCount + col]->SetPauseGoDown(true);
@@ -2590,7 +2591,7 @@ bool CBoard::DestroyHorizontalEffect(int RowIndex)
 	return true;
 }
 
-// ¼¼·Î ¸ğµÎ Á¦°Å
+// ì„¸ë¡œ ëª¨ë‘ ì œê±°
 bool CBoard::DestroyVerticalEffect(int ColIndex)
 {
 	for (int row = 0; row < m_VisualRowCount; row++)
@@ -2611,7 +2612,7 @@ bool CBoard::DestroyVerticalEffect(int ColIndex)
 
 		if (row == 0)
 		{
-			// ÇØ´ç ColumnÀÇ ±× À§ Cell µé·Î ÇÏ¿©±İ ³»·Á¿À´Â °ÍÀ» Àá½Ã ¸ØÃßµµ·Ï ¼¼ÆÃÇÑ´Ù
+			// í•´ë‹¹ Columnì˜ ê·¸ ìœ„ Cell ë“¤ë¡œ í•˜ì—¬ê¸ˆ ë‚´ë ¤ì˜¤ëŠ” ê²ƒì„ ì ì‹œ ë©ˆì¶”ë„ë¡ ì„¸íŒ…í•œë‹¤
 			for (int row = m_VisualRowCount; row < m_RowCount; row++)
 			{
 				m_vecCells[row * m_ColCount + ColIndex]->SetPauseGoDown(true);
@@ -2650,12 +2651,12 @@ bool CBoard::DestroyBagEffect(int RowIndex, int ColIndex, bool IsAfterEffect, bo
 		}
 	}
 
-	// Destroy State ÃÊ±âÈ­ ½Ã¿¡´Â, BagAfter´Â ÃÊ±âÈ­ ÇÏÁö ¾ÊÀ¸¸ç
-	// Destroy Cells ¿¡¼­´Â BagAfter ÀÌ¶ó¸é, DestroyBag ¸¦ IsAfterEffect¸¦ true·Î ÁÖ°í ÇØ´ç ÇÔ¼ö ´Ù½Ã ½ÇÇà
-	// ÀÌ¶§´Â Á¤»óÀûÀ¸·Î Áö¿öÁØ´Ù.
+	// Destroy State ì´ˆê¸°í™” ì‹œì—ëŠ”, BagAfterëŠ” ì´ˆê¸°í™” í•˜ì§€ ì•Šìœ¼ë©°
+	// Destroy Cells ì—ì„œëŠ” BagAfter ì´ë¼ë©´, DestroyBag ë¥¼ IsAfterEffectë¥¼ trueë¡œ ì£¼ê³  í•´ë‹¹ í•¨ìˆ˜ ë‹¤ì‹œ ì‹¤í–‰
+	// ì´ë•ŒëŠ” ì •ìƒì ìœ¼ë¡œ ì§€ì›Œì¤€ë‹¤.
 
-	// ¿©±â¼­, ´Ù¸¥ Æ¯¼öÈ¿°ú¿¡ ÀÇÇØ, BagAfter°¡ »ç¶óÁ® ¹ö¸®´Â °æ¿ì, µ¿ÀÛÇÏÁö ¾Ê°Ô µÇ´Âµ¥
-	// ÀÌ´Â, º°µµ·Î ¼¼ÆÃÀ» ÇØÁà¾ß ÇÑ´Ù.
+	// ì—¬ê¸°ì„œ, ë‹¤ë¥¸ íŠ¹ìˆ˜íš¨ê³¼ì— ì˜í•´, BagAfterê°€ ì‚¬ë¼ì ¸ ë²„ë¦¬ëŠ” ê²½ìš°, ë™ì‘í•˜ì§€ ì•Šê²Œ ë˜ëŠ”ë°
+	// ì´ëŠ”, ë³„ë„ë¡œ ì„¸íŒ…ì„ í•´ì¤˜ì•¼ í•œë‹¤.
 
 	return true;
 }
@@ -2665,7 +2666,7 @@ bool CBoard::DestroyMirrorBallEffect (int RowIndex, int ColIndex)
 	if (!m_vecCells[RowIndex * m_ColCount + ColIndex]->IsActive())
 		return true;
 
-	// °°Àº »ö»óÀÇ TypeÀ» ¸ğµÎ Destroy, ´Ü, MirrorBallÀº X
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Typeï¿½ï¿½ ï¿½ï¿½ï¿½ Destroy, ï¿½ï¿½, MirrorBallï¿½ï¿½ X
 	Cell_Type_Binary DestroyType = m_vecCells[RowIndex * m_ColCount + ColIndex]->GetMirrorBallDestroyType();
 
 	int Index = -1;
@@ -2680,8 +2681,7 @@ bool CBoard::DestroyMirrorBallEffect (int RowIndex, int ColIndex)
 
 			if ((int)(CurCellType) & (int)DestroyType)
 			{
-				// Mirror Ball ÀÏ °æ¿ì Á¦¿Ü
-				// ¹°·Ğ, ÀÚ±â ÀÚ½Åµµ Á¦¿Ü
+				// Mirror Ball ì´ë©´ ê±´ë„ˆë›´ë‹¤. ìê¸° ìì‹ ë„ ê±´ë„ˆë›´ë‹¤
 				if (m_vecCells[Index]->GetCellState() == Cell_State::MirrorBall)
 					continue;
 
@@ -2690,7 +2690,7 @@ bool CBoard::DestroyMirrorBallEffect (int RowIndex, int ColIndex)
 		}
 	}
 
-	// ÀÚ±â ÀÚ½Åµµ Á¦°ÅÇÑ´Ù.
+	// ìê¸° ìì‹ ë„ ì œê±°í•œë‹¤.
 	DestroySingleNormalCell(RowIndex, ColIndex);
 
 	return true;
@@ -2743,30 +2743,30 @@ void CBoard::DestroySingleCell(int RowIndex, int ColIndex)
 {
 	int Index = RowIndex * m_ColCount + ColIndex;
 
-	// ÀÌ¹Ì Destroy Ã³¸®¸¦ Çß´Ù¸é X
+	// ì´ë¯¸ Destroy ì²˜ë¦¬ë¥¼ í–ˆë‹¤ë©´ X
 	/*
 	if (!m_vecCells[Index]->IsActive())
 		return;
 
-	// Destroy Ã³¸®
+	// Destroy ì²˜ë¦¬
 	m_vecCells[Index]->Destroy();
 
-	// Destroy Mark State ÃÊ±âÈ­
+	// Destroy Mark State ì´ˆê¸°í™”
 	m_vecCells[Index]->SetDestroyMarkState(DestroyMark_State::None);
 
-	// ÇØ´ç Column Á¦°Å °³¼ö Áõ°¡
+	// í•´ë‹¹ Column ì œê±° ê°œìˆ˜ ì¦ê°€
 	m_vecColNewCellNums[ColIndex] += 1;
 	*/
 
 	if (!m_vecCells[Index]->IsActive())
 		return;
 
-	// Bag Cell °ú ±× ¿Ü Cell ÀÇ Destroy ¹æ½ÄÀ» ´Ù¸£°Ô ¼¼ÆÃÇÑ´Ù.
+	// Bag Cell ê³¼ ê·¸ ì™¸ Cell ì˜ Destroy ë°©ì‹ì„ ë‹¤ë¥´ê²Œ ì„¸íŒ…í•œë‹¤.
 	if (m_vecCells[Index]->GetCellState() == Cell_State::Bag)
 	{
-		// Bag And Bag È¿°ú·Î »ç¶óÁ®¾ß ÇÒ ´ë»óÀÌÁö¸¸
-		// ³ª ÀÚ½ÅÀÌ ¾Æ´Ï¶ó, ÀÎÁ¢ÇÑ ³à¼®ÀÌ¶ó¸é, ÀÌ ³à¼®Àº ¿©±â¼­ Destroy Ã³¸®¸¦ ÇØÁÖÁö ¾Ê´Â´Ù.
-		// ¿Ö³ÄÇÏ¸é DestroySingleBagCell ÇÔ¼ö´Â ÀÚ±â ÀÚ½Å¿¡ ´ëÇØ Á÷Á¢ È£ÃâÇÏ°Ô ÇÒ °ÍÀÌ±â ¶§¹®ÀÌ´Ù.
+		// Bag And Bag íš¨ê³¼ë¡œ ì‚¬ë¼ì ¸ì•¼ í•  ëŒ€ìƒì´ì§€ë§Œ
+		// ë‚˜ ìì‹ ì´ ì•„ë‹ˆë¼, ì¸ì ‘í•œ ë…€ì„ì´ë¼ë©´, ì´ ë…€ì„ì€ ì—¬ê¸°ì„œ Destroy ì²˜ë¦¬ë¥¼ í•´ì£¼ì§€ ì•ŠëŠ”ë‹¤.
+		// ì™œëƒí•˜ë©´ DestroySingleBagCell í•¨ìˆ˜ëŠ” ìê¸° ìì‹ ì— ëŒ€í•´ ì§ì ‘ í˜¸ì¶œí•˜ê²Œ í•  ê²ƒì´ê¸° ë•Œë¬¸ì´ë‹¤.
 		bool Result = m_vecCells[Index]->IsBagCombToBeDestroyed();
 
 		if (m_vecCells[Index]->IsBagCombToBeDestroyed())
@@ -2790,36 +2790,36 @@ void CBoard::DestroySingleNormalCell(int RowIndex, int ColIndex)
 {
 	int Index = RowIndex * m_ColCount + ColIndex;
 
-	// Destroy Ã³¸® 
+	// Destroy ì²˜ë¦¬ 
 	m_vecCells[Index]->Destroy();
 
-	// Destroy Mark State ÃÊ±âÈ­ 
+	// Destroy Mark State ì´ˆê¸°í™” 
 	m_vecCells[Index]->SetDestroyMarkState(DestroyMark_State::None);
 
-	// ÇØ´ç Column Á¦°Å °³¼ö Áõ°¡
+	// í•´ë‹¹ Column ì œê±° ê°œìˆ˜ ì¦ê°€
 	// m_vecColNewCellNums[Index % m_ColCount] += 1;
 	m_vecColNewCellNums[ColIndex] += 1;
 }
 
 void CBoard::DestroySingleBagCell(int RowIndex, int ColIndex, bool IsBagAndBagComb)
 {
-	// Match ¾Æ´Ò¶§¿Í ¸ÂÀ» ¶§¸¦ ±¸ºĞÇØ¾ß ÇÏ´Â°ÍÀÎ ¾Æ´Ñ°¡ ?
+	// Match ì•„ë‹ë•Œì™€ ë§ì„ ë•Œë¥¼ êµ¬ë¶„í•´ì•¼ í•˜ëŠ”ê²ƒì¸ ì•„ë‹Œê°€ ?
 
 	int Index = RowIndex * m_ColCount + ColIndex;
 
-	// ÇöÀç Cell State Àº Cell ·Î °è¼Ó À¯Áö
+	// í˜„ì¬ Cell State ì€ Cell ë¡œ ê³„ì† ìœ ì§€
 
-	// 1) ÇöÀç ºÀÁö »óÅÂ ÀÏ ¶§´Â -->
-	// - Notice ·Î Animation ¹Ù²ãÁÖ°í
-	// - ÀÌÈÄ, ´ÙÀ½ Frame ¿¡ ÅÍÁú ¼ö ÀÖµµ·Ï, SpecialDestroyedBag ¸¦ true·Î Áà¼­
-	// - Destroy Cells  ÇÔ¼ö¿¡¼­ ÇØ´ç Cell ¿¡ ´ëÇØ Destroy Bag ÇÔ¼ö¸¦ ½ÇÇàÇÒ ¼ö ÀÖ°Ô ¼¼ÆÃÇØ¾ß ÇÑ´Ù.
+	// 1) í˜„ì¬ ë´‰ì§€ ìƒíƒœ ì¼ ë•ŒëŠ” -->
+	// - Notice ë¡œ Animation ë°”ê¿”ì£¼ê³ 
+	// - ì´í›„, ë‹¤ìŒ Frame ì— í„°ì§ˆ ìˆ˜ ìˆë„ë¡, SpecialDestroyedBag ë¥¼ trueë¡œ ì¤˜ì„œ
+	// - Destroy Cells  í•¨ìˆ˜ì—ì„œ í•´ë‹¹ Cell ì— ëŒ€í•´ Destroy Bag í•¨ìˆ˜ë¥¼ ì‹¤í–‰í•  ìˆ˜ ìˆê²Œ ì„¸íŒ…í•´ì•¼ í•œë‹¤.
 
-	// 2) Áï, °á°úÀûÀ¸·Î Destroy_State °¡ Bag After °¡ µÉ ¶§¸¸, Á¦°ÅÇÒ ¼ö ÀÖ¾î¾ß ÇÑ´Ù.
+	// 2) ì¦‰, ê²°ê³¼ì ìœ¼ë¡œ Destroy_State ê°€ Bag After ê°€ ë  ë•Œë§Œ, ì œê±°í•  ìˆ˜ ìˆì–´ì•¼ í•œë‹¤.
 
-	// 3) ´Ü, Áßº¹À¸·Î Special Destroy °¡ ¹ß»ıÇÏ¿©, ¿©±â ÇÔ¼ö¿¡ , °°Àº Cell ¿¡ ´ëÇØ 2¹ø ÀÌ»ó µé¾î¿Ã ¼ö ÀÖ´Ù.
+	// 3) ë‹¨, ì¤‘ë³µìœ¼ë¡œ Special Destroy ê°€ ë°œìƒí•˜ì—¬, ì—¬ê¸° í•¨ìˆ˜ì— , ê°™ì€ Cell ì— ëŒ€í•´ 2ë²ˆ ì´ìƒ ë“¤ì–´ì˜¬ ìˆ˜ ìˆë‹¤.
 	if (m_vecCells[Index]->GetDestroyState() != Destroy_State::BagAfter )
 	{
-		// ÀÏ¹İ Æ¯¼öÈ¿°ú --> Bag Destroy È¿°ú¸¦ ÁØ ÀÌÈÄ, Bag After ÇüÅÂ·Î ¹Ù²ã¾ß ÇÒ ¶§
+		// ì¼ë°˜ íŠ¹ìˆ˜íš¨ê³¼ --> Bag Destroy íš¨ê³¼ë¥¼ ì¤€ ì´í›„, Bag After í˜•íƒœë¡œ ë°”ê¿”ì•¼ í•  ë•Œ
 		if (m_vecCells[Index]->GetDestroyState() != Destroy_State::BagAndBag)
 		{
 			if (m_vecCells[Index]->IsSpecialDestroyedBag() == false)
@@ -2830,8 +2830,8 @@ void CBoard::DestroySingleBagCell(int RowIndex, int ColIndex, bool IsBagAndBagCo
 		}
 		else
 		{
-			// ¿©±â¼­ ÇÑ¹ø ´õ ÅÍ¶ß·Á¾ß ÇÏ´Â °ÍÀÎÁö
-			// ÀÌ¹Ì ÇÑ¹ø ÅÍÁø °ÍÀÌ¶ó¸é 
+			// ì—¬ê¸°ì„œ í•œë²ˆ ë” í„°ëœ¨ë ¤ì•¼ í•˜ëŠ” ê²ƒì¸ì§€
+			// ì´ë¯¸ í•œë²ˆ í„°ì§„ ê²ƒì´ë¼ë©´ 
 			bool Result =  m_vecCells[Index]->IsBagAndBagFirstDestroyed();
 			if (m_vecCells[Index]->IsBagAndBagFirstDestroyed())
 			{
@@ -2839,14 +2839,14 @@ void CBoard::DestroySingleBagCell(int RowIndex, int ColIndex, bool IsBagAndBagCo
 				m_vecCells[Index]->ResetDestroyBagIndexInfos();
 				DestroySingleNormalCell(RowIndex, ColIndex);
 			}
-			// ¾Æ´Ï¸é ÃÖÃÊ·Î BagAndBag ¼¼ÆÃÀ» ÇØÁà¾ß ÇÏ´ÂÁö¸¦ ÆÇº°ÇØ¾ß ÇÑ´Ù.
+			// ì•„ë‹ˆë©´ ìµœì´ˆë¡œ BagAndBag ì„¸íŒ…ì„ í•´ì¤˜ì•¼ í•˜ëŠ”ì§€ë¥¼ íŒë³„í•´ì•¼ í•œë‹¤.
 			else
 			{
 				if (m_vecCells[Index]->IsSpecialDestroyedBag() == false)
 				{
 					m_vecCells[Index]->SetCurrentAnimation("Notice");
 					m_vecCells[Index]->SetSpecialDestroyedBag(true);
-					// Á¶ÇÕÀ¸·Î ¹Ù²ï ³à¼®Àº, ´Ù½Ã ÇÑ¹ø ´õ Destroy_State¸¦ BagAndBag ·Î ÇØ¾ß ÇÑ´Ù.
+					// ì¡°í•©ìœ¼ë¡œ ë°”ë€ ë…€ì„ì€, ë‹¤ì‹œ í•œë²ˆ ë” Destroy_Stateë¥¼ BagAndBag ë¡œ í•´ì•¼ í•œë‹¤.
 					m_vecCells[Index]->SetIsBagAndBagDestroyed(true);
 				}
 			}
@@ -2862,7 +2862,7 @@ void CBoard::DestroySingleBagCell(int RowIndex, int ColIndex, bool IsBagAndBagCo
 
 				if (IsBagAndBagComb)
 				{
-					// Á¶ÇÕÀ¸·Î ¹Ù²ï ³à¼®Àº, ´Ù½Ã ÇÑ¹ø ´õ Destroy_State¸¦ BagAndBag ·Î ÇØ¾ß ÇÑ´Ù.
+					// ì¡°í•©ìœ¼ë¡œ ë°”ë€ ë…€ì„ì€, ë‹¤ì‹œ í•œë²ˆ ë” Destroy_Stateë¥¼ BagAndBag ë¡œ í•´ì•¼ í•œë‹¤.
 					m_vecCells[Index]->SetIsBagAndBagDestroyed(true);
 				}
 			}
@@ -2919,7 +2919,7 @@ void CBoard::SetMirrorBallDestroyInfo(int Index, Cell_Type_Binary DestroyType)
 
 bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked)
 {
-	// Match°¡ ÀÌ·ç¾îÁø Idx Á¤º¸µéÀ» ´ã´Â ¹è¿­
+	// Matchê°€ ì´ë£¨ì–´ì§„ Idx ì •ë³´ë“¤ì„ ë‹´ëŠ” ë°°ì—´
 	std::vector<int> MatchIdxList;
 	MatchIdxList.reserve(10);
 
@@ -2944,16 +2944,16 @@ bool CBoard::CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked
 	bool Result = BoolRightDown.second || BoolRightUp.second || BoolLeftDown.second || BoolLeftUp.second ||
 		BoolCenterRight.second || BoolCenterLeft.second || BoolCenterDown.second || BoolCenterUp.second;
 
-	// Match°¡ ÀÖ¾ú´Ù¸é
+	// Matchê°€ ìˆì—ˆë‹¤ë©´
 	if (Result)
 	{
-		// ±âÁ¸¿¡ BagMatch°¡ ÀÖ¾ú¾îµµ »õ·Î ¸¸µç´Ù.
+		// ê¸°ì¡´ì— BagMatchê°€ ìˆì—ˆì–´ë„ ìƒˆë¡œ ë§Œë“ ë‹¤.
 		Result = BoolRightDown.second || BoolRightUp.second || BoolLeftDown.second || BoolLeftUp.second ||
 			BoolCenterRight.second || BoolCenterLeft.second || BoolCenterDown.second || BoolCenterUp.second;
 	}
 
-	// todo :Match ¿©ºÎ¿Í º°°³·Î, ¿©±â¼­´Â Á¶ÇÕÀ» °í·ÁÇÑ´Ù.
-	// ÁÖº¯ 4¹æÇâÀ¸·Î ÀÎÁ¢ÇÑ ³à¼®µéÀÌ ÀÖ´ÂÁö¸¦ Á¶»çÇÒ °ÍÀÌ´Ù.
+	// todo :Match ì—¬ë¶€ì™€ ë³„ê°œë¡œ, ì—¬ê¸°ì„œëŠ” ì¡°í•©ì„ ê³ ë ¤í•œë‹¤.
+	// ì£¼ë³€ 4ë°©í–¥ìœ¼ë¡œ ì¸ì ‘í•œ ë…€ì„ë“¤ì´ ìˆëŠ”ì§€ë¥¼ ì¡°ì‚¬í•  ê²ƒì´ë‹¤.
 
 	return BoolRightDown.second || BoolRightUp.second || BoolLeftDown.second || BoolLeftUp.second ||
 		BoolCenterRight.second || BoolCenterLeft.second || BoolCenterDown.second || BoolCenterUp.second;
@@ -2964,11 +2964,11 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int OriginRowIdx, int Origin
 {
 	MatchIdxList.clear();
 
-	// ¿À¸¥ÂÊ 3°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ì˜¤ë¥¸ìª½ 3ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewColIdx + 2 >= m_ColCount)
 		return std::make_pair(0, false);
 
-	// ¾Æ·¡ 2°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ì•„ë˜ 2ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewRowIdx - 2 < 0)
 		return std::make_pair(0, false);
 
@@ -2979,7 +2979,7 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int OriginRowIdx, int Origin
 
 	int TempCombScore = 0;
 
-	// ±âº» 5Á¡¿¡¼­ ½ÃÀÛ ( ¸ÂÈ÷¸é 5°³°¡ ¸ÂÇôÁö´Â °ÍÀÌ¹Ç·Î )
+	// ê¸°ë³¸ 5ì ì—ì„œ ì‹œì‘ ( ë§íˆë©´ 5ê°œê°€ ë§í˜€ì§€ëŠ” ê²ƒì´ë¯€ë¡œ )
 	int MatchScore = 5;
 
 	int NxtIndex = -1;
@@ -2989,7 +2989,7 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int OriginRowIdx, int Origin
 
 	bool IsTwoCombination = false;
 
-	// ÇöÀç Col ¿¡¼­ºÎÅÍ ¿À¸¥ÂÊ 2Ä­À» °Ë»çÇÑ´Ù.
+	// í˜„ì¬ Col ì—ì„œë¶€í„° ì˜¤ë¥¸ìª½ 2ì¹¸ì„ ê²€ì‚¬í•œë‹¤.
 	for (int col = NewColIdx; col <= NewColIdx + 2; col++)
 	{
 		int CurCheckIndex = NewRowIdx * m_ColCount + col;
@@ -3004,9 +3004,9 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int OriginRowIdx, int Origin
 			CurCheckIndex = NewRowIdx * m_ColCount + NewColIdx;
 		}
 
-		// ¿Ö Match_State °¡ Bag ¶ó¸é ¿ª½Ã ReturnÀ» ÇØÁÖ´Â °ÍÀÏ±î ?
-		// ¿Ö³ÄÇÏ¸é, ÀÌ¹Ì Bag ¶ó´Â Special Á¶ÇÕÀÌ ÀÖ´ø °÷¿¡
-		// »õ·Î¿î Bag Special Cell À» ¸¸µé°í ½ÍÁö ¾Ê±â ¶§¹®ÀÌ´Ù.
+		// ì™œ Match_State ê°€ Bag ë¼ë©´ ì—­ì‹œ Returnì„ í•´ì£¼ëŠ” ê²ƒì¼ê¹Œ ?
+		// ì™œëƒí•˜ë©´, ì´ë¯¸ Bag ë¼ëŠ” Special ì¡°í•©ì´ ìˆë˜ ê³³ì—
+		// ìƒˆë¡œìš´ Bag Special Cell ì„ ë§Œë“¤ê³  ì‹¶ì§€ ì•Šê¸° ë•Œë¬¸ì´ë‹¤.
 		if (m_vecCells[CurCheckIndex]->GetCellType() != InitType ||
 			m_vecMatchState[CurCheckIndex] == Match_State::Bag)
 		{
@@ -3016,8 +3016,8 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int OriginRowIdx, int Origin
 
 		IsTwoCombination = false;
 
-		// 1) Á¶ÇÕ Á¡¼ö °Ë»ç --> ¿¬¼ÓÀûÀÎ Cell µéÀ» Á¶»çÇØ¾ß ÇÑ´Ù.
-		// ÇÏÁö¸¸, Á¶»çÇÏ´Â ¹Ù·Î ´ÙÀ½ Cell ¿ª½Ã TypeÀº OriginIndex ÀÇ Cell°ú TypeÀÌ µ¿ÀÏÇØ¾ß ÇÑ´Ù.
+		// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬ --> ì—°ì†ì ì¸ Cell ë“¤ì„ ì¡°ì‚¬í•´ì•¼ í•œë‹¤.
+		// í•˜ì§€ë§Œ, ì¡°ì‚¬í•˜ëŠ” ë°”ë¡œ ë‹¤ìŒ Cell ì—­ì‹œ Typeì€ OriginIndex ì˜ Cellê³¼ Typeì´ ë™ì¼í•´ì•¼ í•œë‹¤.
 		if (col < NewColIdx + 2)
 		{
 			NxtIndex = NewRowIdx * m_ColCount + (col + 1);
@@ -3039,7 +3039,7 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int OriginRowIdx, int Origin
 			}
 		}
 
-		// 2) Special Cell °Ë»ç
+		// 2) Special Cell ê²€ì‚¬
 		if (IsTwoCombination == false)
 		{
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurCheckIndex]);
@@ -3049,7 +3049,7 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int OriginRowIdx, int Origin
 		MatchIdxList.push_back(CurCheckIndex);
 	}
 
-	// ¾Æ·¡ 2°³
+	// ì•„ë˜ 2ê°œ
 	for (int row = NewRowIdx; row >= NewRowIdx - 2; row--)
 	{
 		int CurCheckIndex = row * m_ColCount + NewColIdx;
@@ -3073,7 +3073,7 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int OriginRowIdx, int Origin
 
 		IsTwoCombination = false;
 
-		// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+		// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 		if (row > NewRowIdx - 2)
 		{
 			NxtIndex = (row - 1) * m_ColCount + NewColIdx;
@@ -3095,7 +3095,7 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int OriginRowIdx, int Origin
 			}
 		}
 
-		// 2) Special Cell °Ë»ç
+		// 2) Special Cell ê²€ì‚¬
 		if (IsTwoCombination == false)
 		{
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurCheckIndex]);
@@ -3104,7 +3104,7 @@ std::pair<int, bool> CBoard::CheckBagRightDownMatch(int OriginRowIdx, int Origin
 		MatchIdxList.push_back(CurCheckIndex);
 	}
 
-	// ¸¸¾à ¸ğµÎ ¸Â¾Ò´Ù¸é
+	// ë§Œì•½ ëª¨ë‘ ë§ì•˜ë‹¤ë©´
 	if (IsAllMatch)
 	{
 		if (!IsAI)
@@ -3129,11 +3129,11 @@ std::pair<int, bool> CBoard::CheckBagRightUpMatch(int OriginRowIdx, int OriginCo
 {
 	MatchIdxList.clear();
 
-	// ¿À¸¥ÂÊ 2°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ì˜¤ë¥¸ìª½ 2ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewColIdx + 2 >= m_ColCount)
 		return std::make_pair(0, false);
 
-	// À§ 2°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ìœ„ 2ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewRowIdx + 2 >= m_VisualRowCount)
 		return std::make_pair(0, false);
 
@@ -3144,7 +3144,7 @@ std::pair<int, bool> CBoard::CheckBagRightUpMatch(int OriginRowIdx, int OriginCo
 
 	int TempCombScore = 0;
 
-	// ±âº» 5Á¡¿¡¼­ ½ÃÀÛ ( ¸ÂÈ÷¸é 5°³°¡ ¸ÂÇôÁö´Â °ÍÀÌ¹Ç·Î )
+	// ê¸°ë³¸ 5ì ì—ì„œ ì‹œì‘ ( ë§íˆë©´ 5ê°œê°€ ë§í˜€ì§€ëŠ” ê²ƒì´ë¯€ë¡œ )
 	int MatchScore = 5;
 
 	int NxtIndex = -1;
@@ -3154,8 +3154,8 @@ std::pair<int, bool> CBoard::CheckBagRightUpMatch(int OriginRowIdx, int OriginCo
 
 	bool IsTwoCombination = false;
 
-	// ÇöÀç Row 
-	// && ÇöÀç Col ¿¡¼­ºÎÅÍ ¿À¸¥ÂÊ 2Ä­À» °Ë»çÇÑ´Ù.
+	// í˜„ì¬ Row 
+	// && í˜„ì¬ Col ì—ì„œë¶€í„° ì˜¤ë¥¸ìª½ 2ì¹¸ì„ ê²€ì‚¬í•œë‹¤.
 	for (int col = NewColIdx; col <= NewColIdx + 2; col++)
 	{
 		int CurCheckIndex = NewRowIdx * m_ColCount + col;
@@ -3178,7 +3178,7 @@ std::pair<int, bool> CBoard::CheckBagRightUpMatch(int OriginRowIdx, int OriginCo
 
 		IsTwoCombination = false;
 
-		// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+		// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 		if (col < NewColIdx + 2)
 		{
 			NxtIndex = NewRowIdx * m_ColCount + (col + 1);
@@ -3200,7 +3200,7 @@ std::pair<int, bool> CBoard::CheckBagRightUpMatch(int OriginRowIdx, int OriginCo
 			}
 		}
 
-		// 2) Special Cell °Ë»ç
+		// 2) Special Cell ê²€ì‚¬
 		if (IsTwoCombination == false)
 		{
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurCheckIndex]);
@@ -3209,7 +3209,7 @@ std::pair<int, bool> CBoard::CheckBagRightUpMatch(int OriginRowIdx, int OriginCo
 		MatchIdxList.push_back(CurCheckIndex);
 	}
 
-	// À§ 2°³ Row ¸¦ °í·ÁÇÑ´Ù.
+	// ìœ„ 2ê°œ Row ë¥¼ ê³ ë ¤í•œë‹¤.
 	for (int row = NewRowIdx; row <= NewRowIdx + 2; row++)
 	{
 		int CurCheckIndex = row * m_ColCount + NewColIdx;
@@ -3232,7 +3232,7 @@ std::pair<int, bool> CBoard::CheckBagRightUpMatch(int OriginRowIdx, int OriginCo
 
 		IsTwoCombination = false;
 
-		// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+		// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 		if (row < NewRowIdx + 2)
 		{
 			NxtIndex = (row + 1) * m_ColCount + NewColIdx;
@@ -3254,7 +3254,7 @@ std::pair<int, bool> CBoard::CheckBagRightUpMatch(int OriginRowIdx, int OriginCo
 			}
 		}
 
-		// 2) Special Cell °Ë»ç
+		// 2) Special Cell ê²€ì‚¬
 		if (IsTwoCombination == false)
 		{
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurCheckIndex]);
@@ -3263,7 +3263,7 @@ std::pair<int, bool> CBoard::CheckBagRightUpMatch(int OriginRowIdx, int OriginCo
 		MatchIdxList.push_back(CurCheckIndex);
 	}
 
-	// ¸¸¾à ¸ğµå ¸Â¾Ò´Ù¸é
+	// ë§Œì•½ ëª¨ë“œ ë§ì•˜ë‹¤ë©´
 	if (IsAllMatch)
 	{
 		if (!IsAI)
@@ -3288,11 +3288,11 @@ std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int OriginRowIdx, int OriginC
 {
 	MatchIdxList.clear();
 
-	// ¿ŞÂÊ 2°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ì™¼ìª½ 2ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewColIdx - 2 < 0)
 		return std::make_pair(0, false);
 
-	// ¾Æ·¡ 2°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ì•„ë˜ 2ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewRowIdx - 2 < 0)
 		return std::make_pair(0, false);
 
@@ -3303,7 +3303,7 @@ std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int OriginRowIdx, int OriginC
 
 	int TempCombScore = 0;
 
-	// ±âº» 5Á¡¿¡¼­ ½ÃÀÛ ( ¸ÂÈ÷¸é 5°³°¡ ¸ÂÇôÁö´Â °ÍÀÌ¹Ç·Î )
+	// ê¸°ë³¸ 5ì ì—ì„œ ì‹œì‘ ( ë§íˆë©´ 5ê°œê°€ ë§í˜€ì§€ëŠ” ê²ƒì´ë¯€ë¡œ )
 	int MatchScore = 5;
 
 	int NxtIndex = -1;
@@ -3313,8 +3313,8 @@ std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int OriginRowIdx, int OriginC
 
 	bool IsTwoCombination = false;
 
-	// ÇöÀç Row 
-	// && ÇöÀç Col ¿¡¼­ºÎÅÍ ¿ŞÂÊ 2Ä­À» °Ë»çÇÑ´Ù.
+	// í˜„ì¬ Row 
+	// && í˜„ì¬ Col ì—ì„œë¶€í„° ì™¼ìª½ 2ì¹¸ì„ ê²€ì‚¬í•œë‹¤.
 	for (int col = NewColIdx; col >= NewColIdx - 2; col--)
 	{
 		int CurCheckIndex = NewRowIdx * m_ColCount + col;
@@ -3337,7 +3337,7 @@ std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int OriginRowIdx, int OriginC
 
 		IsTwoCombination = false;
 
-		// 1) Á¶ÇÕ Á¡¼ö Á¶»ç
+		// 1) ì¡°í•© ì ìˆ˜ ì¡°ì‚¬
 		if (col > NewColIdx - 2)
 		{
 			NxtIndex = NewRowIdx * m_ColCount + (col - 1);
@@ -3359,7 +3359,7 @@ std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int OriginRowIdx, int OriginC
 			}
 		}
 
-		// 2) Special Cell °Ë»ç
+		// 2) Special Cell ê²€ì‚¬
 		if (IsTwoCombination == false)
 		{
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurCheckIndex]);
@@ -3368,7 +3368,7 @@ std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int OriginRowIdx, int OriginC
 		MatchIdxList.push_back(CurCheckIndex);
 	}
 
-	// ¾Æ·¡ 2°³ Row ¸¦ °í·ÁÇÑ´Ù.
+	// ì•„ë˜ 2ê°œ Row ë¥¼ ê³ ë ¤í•œë‹¤.
 	for (int row = NewRowIdx; row >= NewRowIdx - 2; row--)
 	{
 		int CurCheckIndex = row * m_ColCount + NewColIdx;
@@ -3391,7 +3391,7 @@ std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int OriginRowIdx, int OriginC
 
 		IsTwoCombination = false;
 
-		// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+		// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 		if (row > NewRowIdx - 2)
 		{
 			NxtIndex = (row - 1) * m_ColCount + NewColIdx;
@@ -3413,7 +3413,7 @@ std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int OriginRowIdx, int OriginC
 			}
 		}
 
-		// 2) Special Cell °Ë»ç
+		// 2) Special Cell ê²€ì‚¬
 		if (IsTwoCombination == false)
 		{
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurCheckIndex]);
@@ -3422,7 +3422,7 @@ std::pair<int, bool> CBoard::CheckBagLeftDownMatch(int OriginRowIdx, int OriginC
 		MatchIdxList.push_back(CurCheckIndex);
 	}
 
-	// ¸¸¾à ¸ğµå ¸Â¾Ò´Ù¸é
+	// ë§Œì•½ ëª¨ë“œ ë§ì•˜ë‹¤ë©´
 	if (IsAllMatch)
 	{
 		if (!IsAI)
@@ -3447,11 +3447,11 @@ std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int OriginRowIdx, int OriginCol
 {
 	MatchIdxList.clear();
 
-	// ¿ŞÂÊ 2°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ì™¼ìª½ 2ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewColIdx - 2 < 0)
 		return std::make_pair(0, false);
 
-	// À§ 2°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ìœ„ 2ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewRowIdx + 2 >= m_VisualRowCount)
 		return std::make_pair(0, false);
 
@@ -3471,8 +3471,8 @@ std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int OriginRowIdx, int OriginCol
 
 	bool IsTwoCombination = false;
 
-	// ÇöÀç Row 
-	// && ÇöÀç Col ¿¡¼­ºÎÅÍ ¿ŞÂÊ 2Ä­À» °Ë»çÇÑ´Ù.
+	// í˜„ì¬ Row 
+	// && í˜„ì¬ Col ì—ì„œë¶€í„° ì™¼ìª½ 2ì¹¸ì„ ê²€ì‚¬í•œë‹¤.
 	for (int col = NewColIdx; col >= NewColIdx - 2; col--)
 	{
 		int CurCheckIndex = NewRowIdx * m_ColCount + col;
@@ -3495,7 +3495,7 @@ std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int OriginRowIdx, int OriginCol
 
 		IsTwoCombination = false;
 
-		// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+		// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 		if (col > NewColIdx - 2)
 		{
 			NxtIndex = NewRowIdx * m_ColCount + (col - 1);
@@ -3517,7 +3517,7 @@ std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int OriginRowIdx, int OriginCol
 			}
 		}
 
-		// 2) Special Cell °Ë»ç
+		// 2) Special Cell ê²€ì‚¬
 		if (IsTwoCombination == false)
 		{
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurCheckIndex]);
@@ -3526,7 +3526,7 @@ std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int OriginRowIdx, int OriginCol
 		MatchIdxList.push_back(NewRowIdx * m_ColCount + col);
 	}
 
-	// À§ 2°³ Row ¸¦ °í·ÁÇÑ´Ù.
+	// ìœ„ 2ê°œ Row ë¥¼ ê³ ë ¤í•œë‹¤.
 	for (int row = NewRowIdx; row <= NewRowIdx + 2; row++)
 	{
 		int CurCheckIndex = row * m_ColCount + NewColIdx;
@@ -3550,7 +3550,7 @@ std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int OriginRowIdx, int OriginCol
 
 		IsTwoCombination = false;
 
-		// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+		// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 		if (row < NewRowIdx + 2)
 		{
 			NxtIndex = (row + 1) * m_ColCount + NewColIdx;
@@ -3571,7 +3571,7 @@ std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int OriginRowIdx, int OriginCol
 			}
 		}
 
-		// 2) Special Cell °Ë»ç
+		// 2) Special Cell ê²€ì‚¬
 		if (IsTwoCombination == false)
 		{
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurCheckIndex]);
@@ -3580,7 +3580,7 @@ std::pair<int, bool> CBoard::CheckBagLeftUpMatch(int OriginRowIdx, int OriginCol
 		MatchIdxList.push_back(CurCheckIndex);
 	}
 
-	// ¸¸¾à ¸ğµå ¸Â¾Ò´Ù¸é
+	// ë§Œì•½ ëª¨ë“œ ë§ì•˜ë‹¤ë©´
 	if (IsAllMatch)
 	{
 		if (!IsAI)
@@ -3605,15 +3605,15 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int OriginRowIdx, int Orig
 {
 	MatchIdxList.clear();
 
-	// ¿À¸¥ÂÊ 2°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ì˜¤ë¥¸ìª½ 2ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewColIdx + 2 >= m_ColCount)
 		return std::make_pair(0, false);
 
-	// À§ 1°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ìœ„ 1ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewRowIdx + 1 >= m_VisualRowCount)
 		return std::make_pair(0, false);
 
-	// ¾Æ·¡ 1°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ì•„ë˜ 1ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewRowIdx - 1 < 0)
 		return std::make_pair(0, false);
 
@@ -3632,8 +3632,8 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int OriginRowIdx, int Orig
 
 	bool IsTwoCombination = false;
 
-	// ÇöÀç Row 
-	// && ÇöÀç Col ¿¡¼­ºÎÅÍ ¿À¸¥ÂÊ 2Ä­À» °Ë»çÇÑ´Ù.
+	// í˜„ì¬ Row 
+	// && í˜„ì¬ Col ì—ì„œë¶€í„° ì˜¤ë¥¸ìª½ 2ì¹¸ì„ ê²€ì‚¬í•œë‹¤.
 	for (int col = NewColIdx; col <= NewColIdx + 2; col++)
 	{
 		int CurCheckIndex = NewRowIdx * m_ColCount + col;
@@ -3657,7 +3657,7 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int OriginRowIdx, int Orig
 
 		IsTwoCombination = false;
 
-		// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+		// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 		if (col < NewColIdx + 2)
 		{
 			NxtIndex = NewRowIdx * m_ColCount + (col + 1);
@@ -3679,7 +3679,7 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int OriginRowIdx, int Orig
 			}
 		}
 
-		// 2) Special Cell °Ë»ç
+		// 2) Special Cell ê²€ì‚¬
 		if (IsTwoCombination == false)
 		{
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurCheckIndex]);
@@ -3688,8 +3688,8 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int OriginRowIdx, int Orig
 		MatchIdxList.push_back(CurCheckIndex);
 	}
 
-	// À§ 1°³, ¾Æ·¡ 1°³ Row ¸¦ °í·ÁÇÑ´Ù.
-	// À§¸¦ °í·ÁÇÑ´Ù.
+	// ìœ„ 1ê°œ, ì•„ë˜ 1ê°œ Row ë¥¼ ê³ ë ¤í•œë‹¤.
+	// ìœ„ë¥¼ ê³ ë ¤í•œë‹¤.
 	NxtIndex = (NewRowIdx + 1) * m_ColCount + NewColIdx;
 
 	if (NewRowIdx + 1 == OriginRowIdx)
@@ -3706,7 +3706,7 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int OriginRowIdx, int Orig
 
 	IsTwoCombination = false;
 
-	// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+	// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 	if ((int)m_vecCells[OriginIndex]->GetCellState() > (int)Cell_State::Normal &&
 		(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
 	{
@@ -3717,7 +3717,7 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int OriginRowIdx, int Orig
 		IsTwoCombination = true;
 	}
 
-	// 2) Special Cell °Ë»ç
+	// 2) Special Cell ê²€ì‚¬
 	if (IsTwoCombination == false)
 	{
 		MatchScore += CalculateAISpecialCellScore(m_vecCells[NxtIndex]);
@@ -3725,7 +3725,7 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int OriginRowIdx, int Orig
 
 	MatchIdxList.push_back(NxtIndex);
 
-	// ¾Æ·¡¸¦ °Ë»çÇÑ´Ù.
+	// ì•„ë˜ë¥¼ ê²€ì‚¬í•œë‹¤.
 	NxtIndex = (NewRowIdx - 1) * m_ColCount + NewColIdx;
 
 	if (NewRowIdx - 1 == OriginRowIdx)
@@ -3742,7 +3742,7 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int OriginRowIdx, int Orig
 
 	IsTwoCombination = false;
 
-	// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+	// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 	if ((int)m_vecCells[OriginIndex]->GetCellState() > (int)Cell_State::Normal &&
 		(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
 	{
@@ -3753,7 +3753,7 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int OriginRowIdx, int Orig
 		IsTwoCombination = true;
 	}
 
-	// 2) Special Cell °Ë»ç
+	// 2) Special Cell ê²€ì‚¬
 	if (IsTwoCombination == false)
 	{
 		MatchScore += CalculateAISpecialCellScore(m_vecCells[NxtIndex]);
@@ -3761,7 +3761,7 @@ std::pair<int, bool> CBoard::CheckBagCenterRightMatch(int OriginRowIdx, int Orig
 
 	MatchIdxList.push_back(NxtIndex);
 
-	// ¸¸¾à ¸ğµå ¸Â¾Ò´Ù¸é
+	// ë§Œì•½ ëª¨ë“œ ë§ì•˜ë‹¤ë©´
 	if (IsAllMatch)
 	{
 		if (!IsAI)
@@ -3786,15 +3786,15 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int OriginRowIdx, int Origi
 {
 	MatchIdxList.clear();
 
-	// ¿ŞÂÊ 2°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ì™¼ìª½ 2ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewColIdx - 2 < 0)
 		return std::make_pair(0, false);
 
-	// À§ 1°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ìœ„ 1ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewRowIdx + 1 >= m_VisualRowCount)
 		return std::make_pair(0, false);
 
-	// ¾Æ·¡ 1°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ì•„ë˜ 1ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewRowIdx - 1 < 0)
 		return std::make_pair(0, false);
 
@@ -3814,8 +3814,8 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int OriginRowIdx, int Origi
 
 	bool IsTwoCombination = false;
 
-	// ÇöÀç Row 
-	// && ÇöÀç Col ¿¡¼­ºÎÅÍ ¿ŞÂÊ 2Ä­À» °Ë»çÇÑ´Ù.
+	// í˜„ì¬ Row 
+	// && í˜„ì¬ Col ì—ì„œë¶€í„° ì™¼ìª½ 2ì¹¸ì„ ê²€ì‚¬í•œë‹¤.
 	for (int col = NewColIdx; col >= NewColIdx - 2; col--)
 	{
 		int CurCheckIndex = NewRowIdx * m_ColCount + col;
@@ -3837,7 +3837,7 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int OriginRowIdx, int Origi
 			return std::make_pair(0, false);
 		}
 
-		// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+		// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 		if (col > NewColIdx - 2)
 		{
 			NxtIndex = NewRowIdx * m_ColCount + (col - 1);
@@ -3859,7 +3859,7 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int OriginRowIdx, int Origi
 			}
 		}
 
-		// 2) Special Cell °Ë»ç
+		// 2) Special Cell ê²€ì‚¬
 		if (IsTwoCombination == false)
 		{
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurCheckIndex]);
@@ -3868,8 +3868,8 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int OriginRowIdx, int Origi
 		MatchIdxList.push_back(CurCheckIndex);
 	}
 
-	// À§ 1°³, ¾Æ·¡ 1°³ Row ¸¦ °í·ÁÇÑ´Ù.
-	// À§¸¦ °í·ÁÇÑ´Ù.
+	// ìœ„ 1ê°œ, ì•„ë˜ 1ê°œ Row ë¥¼ ê³ ë ¤í•œë‹¤.
+	// ìœ„ë¥¼ ê³ ë ¤í•œë‹¤.
 	NxtIndex = (NewRowIdx + 1) * m_ColCount + NewColIdx;
 
 	if (NewRowIdx + 1 == OriginRowIdx)
@@ -3886,7 +3886,7 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int OriginRowIdx, int Origi
 
 	IsTwoCombination = false;
 
-	// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+	// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 	if ((int)m_vecCells[OriginIndex]->GetCellState() > (int)Cell_State::Normal &&
 		(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
 	{
@@ -3897,7 +3897,7 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int OriginRowIdx, int Origi
 		IsTwoCombination = true;
 	}
 
-	// 2) Special Cell °Ë»ç
+	// 2) Special Cell ê²€ì‚¬
 	if (IsTwoCombination == false)
 	{
 		MatchScore += CalculateAISpecialCellScore(m_vecCells[NxtIndex]);
@@ -3906,7 +3906,7 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int OriginRowIdx, int Origi
 	MatchIdxList.push_back(NxtIndex);
 
 
-	// ¾Æ·¡¸¦ °í·ÁÇÑ´Ù.
+	// ì•„ë˜ë¥¼ ê³ ë ¤í•œë‹¤.
 	NxtIndex = (NewRowIdx - 1) * m_ColCount + NewColIdx;
 
 	if (NewRowIdx - 1 == OriginRowIdx)
@@ -3923,7 +3923,7 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int OriginRowIdx, int Origi
 
 	IsTwoCombination = false;
 
-	// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+	// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 	if ((int)m_vecCells[OriginIndex]->GetCellState() > (int)Cell_State::Normal &&
 		(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
 	{
@@ -3934,7 +3934,7 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int OriginRowIdx, int Origi
 		IsTwoCombination = true;
 	}
 
-	// 2) Special Cell °Ë»ç
+	// 2) Special Cell ê²€ì‚¬
 	if (IsTwoCombination == false)
 	{
 		MatchScore += CalculateAISpecialCellScore(m_vecCells[NxtIndex]);
@@ -3942,7 +3942,7 @@ std::pair<int, bool> CBoard::CheckBagCenterLeftMatch(int OriginRowIdx, int Origi
 
 	MatchIdxList.push_back(NxtIndex);
 
-	// ¸¸¾à ¸ğµå ¸Â¾Ò´Ù¸é
+	// ë§Œì•½ ëª¨ë“œ ë§ì•˜ë‹¤ë©´
 	if (IsAllMatch)
 	{
 		if (!IsAI)
@@ -3967,15 +3967,15 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int OriginRowIdx, int Origi
 {
 	MatchIdxList.clear();
 
-	// ¾Æ·¡ 2°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ì•„ë˜ 2ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewRowIdx - 2 < 0)
 		return std::make_pair(0, false);
 
-	// ¿ŞÂÊ 1°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ì™¼ìª½ 1ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewColIdx + 1 >= m_ColCount)
 		return std::make_pair(0, false);
 
-	// ¿À¸¥ÂÊ 1°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ì˜¤ë¥¸ìª½ 1ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewColIdx - 1 < 0)
 		return std::make_pair(0, false);
 
@@ -3994,12 +3994,12 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int OriginRowIdx, int Origi
 
 	bool IsTwoCombination = false;
 
-	// Match°¡ ÀÌ·ç¾îÁø Idx Á¤º¸µéÀ» ´ã´Â ¹è¿­
+	// Matchê°€ ì´ë£¨ì–´ì§„ Idx ì •ë³´ë“¤ì„ ë‹´ëŠ” ë°°ì—´
 	// std::vector<int> MatchIdxList;
 	// MatchIdxList.reserve(6);
 
-	// ÇöÀç Row 
-	// && ÇöÀç Row ¿¡¼­ºÎÅÍ ¾Æ·¡ 2Ä­À» °Ë»çÇÑ´Ù.
+	// í˜„ì¬ Row 
+	// && í˜„ì¬ Row ì—ì„œë¶€í„° ì•„ë˜ 2ì¹¸ì„ ê²€ì‚¬í•œë‹¤.
 	for (int row = NewRowIdx; row >= NewRowIdx - 2; row--)
 	{
 		int CurCheckIndex = row * m_ColCount + NewColIdx;
@@ -4023,7 +4023,7 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int OriginRowIdx, int Origi
 		}
 
 
-		// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+		// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 		if (row > NewRowIdx - 2)
 		{
 			NxtIndex = (row - 1) * m_ColCount + NewColIdx;
@@ -4045,7 +4045,7 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int OriginRowIdx, int Origi
 			}
 		}
 
-		// 2) Special Cell °Ë»ç
+		// 2) Special Cell ê²€ì‚¬
 		if (IsTwoCombination == false)
 		{
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurCheckIndex]);
@@ -4054,8 +4054,8 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int OriginRowIdx, int Origi
 		MatchIdxList.push_back(CurCheckIndex);
 	}
 
-	// ¿ŞÂÊ 1°³, ¿À¸¥ÂÊ 1°³ Row ¸¦ °í·ÁÇÑ´Ù.
-	// ¿ŞÂÊÀ» °í·ÁÇÑ´Ù.
+	// ì™¼ìª½ 1ê°œ, ì˜¤ë¥¸ìª½ 1ê°œ Row ë¥¼ ê³ ë ¤í•œë‹¤.
+	// ì™¼ìª½ì„ ê³ ë ¤í•œë‹¤.
 	NxtIndex = NewRowIdx * m_ColCount + (NewColIdx - 1);
 
 	if (NewColIdx - 1 == OriginColIdx)
@@ -4072,7 +4072,7 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int OriginRowIdx, int Origi
 
 	IsTwoCombination = false;
 
-	// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+	// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 	if ((int)m_vecCells[OriginIndex]->GetCellState() > (int)Cell_State::Normal &&
 		(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
 	{
@@ -4083,7 +4083,7 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int OriginRowIdx, int Origi
 		IsTwoCombination = true;
 	}
 
-	// 2) Special Cell °Ë»ç
+	// 2) Special Cell ê²€ì‚¬
 	if (IsTwoCombination == false)
 	{
 		MatchScore += CalculateAISpecialCellScore(m_vecCells[NxtIndex]);
@@ -4091,7 +4091,7 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int OriginRowIdx, int Origi
 
 	MatchIdxList.push_back(NxtIndex);
 
-	// ¿À¸¥ÂÊÀ» °í·ÁÇÑ´Ù.
+	// ì˜¤ë¥¸ìª½ì„ ê³ ë ¤í•œë‹¤.
 	NxtIndex = NewRowIdx * m_ColCount + (NewColIdx + 1);
 
 	if (NewColIdx + 1 == OriginColIdx)
@@ -4108,7 +4108,7 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int OriginRowIdx, int Origi
 
 	IsTwoCombination = false;
 
-	// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+	// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 	if ((int)m_vecCells[OriginIndex]->GetCellState() > (int)Cell_State::Normal &&
 		(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
 	{
@@ -4119,7 +4119,7 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int OriginRowIdx, int Origi
 		IsTwoCombination = true;
 	}
 
-	// 2) Special Cell °Ë»ç
+	// 2) Special Cell ê²€ì‚¬
 	if (IsTwoCombination == false)
 	{
 		MatchScore += CalculateAISpecialCellScore(m_vecCells[NxtIndex]);
@@ -4127,7 +4127,7 @@ std::pair<int, bool> CBoard::CheckBagCenterDownMatch(int OriginRowIdx, int Origi
 
 	MatchIdxList.push_back(NxtIndex);
 
-	// ¸¸¾à ¸ğµå ¸Â¾Ò´Ù¸é
+	// ë§Œì•½ ëª¨ë“œ ë§ì•˜ë‹¤ë©´
 	if (IsAllMatch)
 	{
 		if (!IsAI)
@@ -4152,15 +4152,15 @@ std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int OriginRowIdx, int OriginC
 {
 	MatchIdxList.clear();
 
-	// À§ 2°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ìœ„ 2ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewRowIdx + 2 >= m_VisualRowCount)
 		return std::make_pair(0, false);
 
-	// ¿ŞÂÊ 1°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ì™¼ìª½ 1ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewColIdx + 1 >= m_ColCount)
 		return std::make_pair(0, false);
 
-	// ¿À¸¥ÂÊ 1°³¸¦ °Ë»çÇØ¾ß ÇÏ´Âµ¥ ¹üÀ§¸¦ ¹ş¾î³µ´Ù¸é X
+	// ì˜¤ë¥¸ìª½ 1ê°œë¥¼ ê²€ì‚¬í•´ì•¼ í•˜ëŠ”ë° ë²”ìœ„ë¥¼ ë²—ì–´ë‚¬ë‹¤ë©´ X
 	if (NewColIdx - 1 < 0)
 		return std::make_pair(0, false);
 
@@ -4179,8 +4179,8 @@ std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int OriginRowIdx, int OriginC
 
 	bool IsTwoCombination = false;
 
-	// ÇöÀç Row 
-	// && ÇöÀç Row ¿¡¼­ºÎÅÍ À§ 2Ä­À» °Ë»çÇÑ´Ù.
+	// í˜„ì¬ Row 
+	// && í˜„ì¬ Row ì—ì„œë¶€í„° ìœ„ 2ì¹¸ì„ ê²€ì‚¬í•œë‹¤.
 	for (int row = NewRowIdx; row <= NewRowIdx + 2; row++)
 	{
 		int CurCheckIndex = row * m_ColCount + NewColIdx;
@@ -4204,7 +4204,7 @@ std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int OriginRowIdx, int OriginC
 
 		IsTwoCombination = false;
 
-		// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+		// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 		if (row < NewRowIdx + 2)
 		{
 			NxtIndex = (row + 1) * m_ColCount + NewColIdx;
@@ -4226,7 +4226,7 @@ std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int OriginRowIdx, int OriginC
 			}
 		}
 
-		// 2) Special Cell °Ë»ç
+		// 2) Special Cell ê²€ì‚¬
 		if (IsTwoCombination == false)
 		{
 			MatchScore += CalculateAISpecialCellScore(m_vecCells[CurCheckIndex]);
@@ -4235,8 +4235,8 @@ std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int OriginRowIdx, int OriginC
 		MatchIdxList.push_back(row * m_ColCount + NewColIdx);
 	}
 
-	// ¿ŞÂÊ 1°³, ¿À¸¥ÂÊ 1°³ Row ¸¦ °í·ÁÇÑ´Ù.
-	// ¿ŞÂÊ 1°³¸¦ °í·ÁÇÑ´Ù.
+	// ì™¼ìª½ 1ê°œ, ì˜¤ë¥¸ìª½ 1ê°œ Row ë¥¼ ê³ ë ¤í•œë‹¤.
+	// ì™¼ìª½ 1ê°œë¥¼ ê³ ë ¤í•œë‹¤.
 	NxtIndex = NewRowIdx * m_ColCount + (NewColIdx - 1);
 
 	if (NewColIdx - 1 == OriginColIdx)
@@ -4253,7 +4253,7 @@ std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int OriginRowIdx, int OriginC
 
 	IsTwoCombination = false;
 
-	// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+	// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 	if ((int)m_vecCells[OriginIndex]->GetCellState() > (int)Cell_State::Normal &&
 		(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
 	{
@@ -4264,7 +4264,7 @@ std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int OriginRowIdx, int OriginC
 		IsTwoCombination = true;
 	}
 
-	// 2) Special Cell °Ë»ç
+	// 2) Special Cell ê²€ì‚¬
 	if (IsTwoCombination == false)
 	{
 		MatchScore += CalculateAISpecialCellScore(m_vecCells[NxtIndex]);
@@ -4272,7 +4272,7 @@ std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int OriginRowIdx, int OriginC
 
 	MatchIdxList.push_back(NxtIndex);
 
-	// ¿À¸¥ÂÊ 1°³¸¦ °í·ÁÇÑ´Ù.
+	// ì˜¤ë¥¸ìª½ 1ê°œë¥¼ ê³ ë ¤í•œë‹¤.
 	NxtIndex = NewRowIdx * m_ColCount + (NewColIdx + 1);
 
 	if (NewColIdx + 1 == OriginColIdx)
@@ -4289,7 +4289,7 @@ std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int OriginRowIdx, int OriginC
 
 	IsTwoCombination = false;
 
-	// 1) Á¶ÇÕ Á¡¼ö °Ë»ç
+	// 1) ì¡°í•© ì ìˆ˜ ê²€ì‚¬
 	if ((int)m_vecCells[OriginIndex]->GetCellState() > (int)Cell_State::Normal &&
 		(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
 	{
@@ -4300,7 +4300,7 @@ std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int OriginRowIdx, int OriginC
 		IsTwoCombination = true;
 	}
 
-	// 2) Special Cell °Ë»ç
+	// 2) Special Cell ê²€ì‚¬
 	if (IsTwoCombination == false)
 	{
 		MatchScore += CalculateAISpecialCellScore(m_vecCells[NxtIndex]);
@@ -4308,7 +4308,7 @@ std::pair<int, bool> CBoard::CheckBagCenterUpMatch(int OriginRowIdx, int OriginC
 
 	MatchIdxList.push_back(NxtIndex);
 
-	// ¸¸¾à ¸ğµå ¸Â¾Ò´Ù¸é
+	// ë§Œì•½ ëª¨ë“œ ë§ì•˜ë‹¤ë©´
 	if (IsAllMatch)
 	{
 		if (!IsAI)
@@ -4347,23 +4347,23 @@ bool CBoard::CheckMatchExist()
 
 bool CBoard::CheckAIAndPossibleMatch(float DeltaTime)
 {
-	// ÇöÀç Frame »ó¿¡¼­ ÀÌ¹Ì AI Check°¡ ¿Ï·áµÇ¾ú´Ù¸é X
+	// í˜„ì¬ Frame ìƒì—ì„œ ì´ë¯¸ AI Checkê°€ ì™„ë£Œë˜ì—ˆë‹¤ë©´ X
 	if (m_IsAIChecked)
 		return true;
 
-	// ÀÌ¹Ì Match°¡ Á¸ÀçÇÑ´Ù¸é X
+	// ì´ë¯¸ Matchê°€ ì¡´ì¬í•œë‹¤ë©´ X
 	if (m_IsMatchExist)
 		return true;
 
-	// Cell µéÀÌ ¿òÁ÷ÀÌÁö ¾Ê°í ÀÖÀ» ¶§¸¸ °Ë»çÇÑ´Ù
+	// Cell ë“¤ì´ ì›€ì§ì´ì§€ ì•Šê³  ìˆì„ ë•Œë§Œ ê²€ì‚¬í•œë‹¤
 	if (m_CellsMoving)
 		return true;
 
-	// ÇöÀç ÀÌµ¿½ÃÅ² Cell À» Ã³¸®ÁßÀÌ¶ó¸é
+	// í˜„ì¬ ì´ë™ì‹œí‚¨ Cell ì„ ì²˜ë¦¬ì¤‘ì´ë¼ë©´
 	if (m_FirstClickCell || m_SecClickCell)
 		return true;
 
-	// ÀÏÁ¤ ½Ã°£ Delay¸¦ ÁØ´Ù.
+	// ì¼ì • ì‹œê°„ Delayë¥¼ ì¤€ë‹¤.
 	if (m_AICheckDelayTime > 0.f)
 	{
 		m_AICheckDelayTime -= DeltaTime;
@@ -4380,12 +4380,12 @@ bool CBoard::CheckAIAndPossibleMatch(float DeltaTime)
 	std::vector<int> vecFinalMatchedIdxs;
 	vecFinalMatchedIdxs.reserve(10);
 
-	// 1) Match ¿©ºÎ °Ë»ç
-	// - Row, Col, BagMatch °¢°¢¿¡¼­´Â Match ¿©ºÎ, Score, MatchIdx ¸¦ return ¹Ş´Â´Ù.
-	// ¾Æ´Ï, Â÷·Ê´ë·Î MatchIdx ¸¦ ´ãÀ» vector´Â & ·Î ³Ñ°ÜÁÖ°í, ±× ´Ü¿¡¼­ vector ¿¡ ³Ö¾îÁÖ°Ô ÇÏ°í
-	// °¢ ÇÔ¼öÀÇ ½ÇÇàÀÌ ³¡³¯ ¶§¸¶´Ù Á¡¼ö¸¦ ºñ±³ÇÏ¿©, ´õ ³ôÀº ³à¼®µé·Î ÇØ´ç vector¸¦ Ã¤¿öÁØ´Ù.
-	// ±×·¸°Ô ÇØ¼­, Match ÀÏ ¶§ÀÇ Á¡¼ö ±¸ÇÏ°í
-	// °¢ cell ¿¡ ´ëÇØ 4¹æÇâ ÀÌµ¿
+	// 1) Match ì—¬ë¶€ ê²€ì‚¬
+	// - Row, Col, BagMatch ê°ê°ì—ì„œëŠ” Match ì—¬ë¶€, Score, MatchIdx ë¥¼ return ë°›ëŠ”ë‹¤.
+	// ì•„ë‹ˆ, ì°¨ë¡€ëŒ€ë¡œ MatchIdx ë¥¼ ë‹´ì„ vectorëŠ” & ë¡œ ë„˜ê²¨ì£¼ê³ , ê·¸ ë‹¨ì—ì„œ vector ì— ë„£ì–´ì£¼ê²Œ í•˜ê³ 
+	// ê° í•¨ìˆ˜ì˜ ì‹¤í–‰ì´ ëë‚  ë•Œë§ˆë‹¤ ì ìˆ˜ë¥¼ ë¹„êµí•˜ì—¬, ë” ë†’ì€ ë…€ì„ë“¤ë¡œ í•´ë‹¹ vectorë¥¼ ì±„ì›Œì¤€ë‹¤.
+	// ê·¸ë ‡ê²Œ í•´ì„œ, Match ì¼ ë•Œì˜ ì ìˆ˜ êµ¬í•˜ê³ 
+	// ê° cell ì— ëŒ€í•´ 4ë°©í–¥ ì´ë™
 	int nRow = -1, nCol = -1;
 	
 	for (int row = 0; row < m_VisualRowCount; row++)
@@ -4397,7 +4397,7 @@ bool CBoard::CheckAIAndPossibleMatch(float DeltaTime)
 				nRow = row + m_DRow[k];
 				nCol   = col + m_DCol[k];
 
-				// ¹üÀ§ Á¦ÇÑ
+				// ë²”ìœ„ ì œí•œ
 				if (nRow < 0 || nRow >= m_VisualRowCount || nCol < 0 || nCol >= m_ColCount)
 					continue;
 
@@ -4411,7 +4411,7 @@ bool CBoard::CheckAIAndPossibleMatch(float DeltaTime)
 				bool PartMatch = false;
 
 				// 1) Row Match
-				// »ç½Ç»ó row, col ¾ÖµéÀÌ nRow, nCol À¸·Î °¡¼­, Match ¿©ºÎ¸¦ °Ë»çÇÏ°Ô µÇ´Â °ÍÀÌ¹Ç·Î 
+				// ì‚¬ì‹¤ìƒ row, col ì• ë“¤ì´ nRow, nCol ìœ¼ë¡œ ê°€ì„œ, Match ì—¬ë¶€ë¥¼ ê²€ì‚¬í•˜ê²Œ ë˜ëŠ” ê²ƒì´ë¯€ë¡œ 
 				// std::pair<int, bool> RowMatchResult = CheckAIRowMatch(nRow,nCol, row, col, TempMatchedIdxs);
 				std::pair<int, bool> RowMatchResult = CheckAIRowMatch(row,col,nRow,nCol, TempMatchedIdxs);
 
@@ -4460,7 +4460,7 @@ bool CBoard::CheckAIAndPossibleMatch(float DeltaTime)
 				{
 					PossibleMatchExist = true;
 
-					// Max Score µµ °»½ÅÇÑ´Ù.
+					// Max Score ë„ ê°±ì‹ í•œë‹¤.
 					if (TotalMatchMaxScore < TempMaxScore)
 					{
 						TotalMatchMaxScore = TempMaxScore;
@@ -4472,7 +4472,7 @@ bool CBoard::CheckAIAndPossibleMatch(float DeltaTime)
 		}
 	}
 
-	// 2) Match ¾øÀ» ¶§ °Ë»ç (ÀÎÁ¢ Á¶ÇÕ)
+	// 2) Match ì—†ì„ ë•Œ ê²€ì‚¬ (ì¸ì ‘ ì¡°í•©)
 	bool  TotalCombExist = false;
 
 	int TotalCombMaxScore = 0;
@@ -4491,7 +4491,7 @@ bool CBoard::CheckAIAndPossibleMatch(float DeltaTime)
 				nRow = row + m_DRow[k];
 				nCol  = col + m_DCol[k];
 
-				// ¹üÀ§ Á¦ÇÑ
+				// ë²”ìœ„ ì œí•œ
 				if (nRow < 0 || nRow >= m_VisualRowCount || nCol < 0 || nCol >= m_ColCount)
 					continue;
 
@@ -4516,19 +4516,19 @@ bool CBoard::CheckAIAndPossibleMatch(float DeltaTime)
 		}
 	}
 
-	// ÀÌ·¯ÇÑ ·ÎÁ÷À» ¸ğµç Cell ¿¡ ´ëÇØ ÁøÇàÇÑ´Ù.
+	// ì´ëŸ¬í•œ ë¡œì§ì„ ëª¨ë“  Cell ì— ëŒ€í•´ ì§„í–‰í•œë‹¤.
 
-	// ¸¸¾à, ÀÌ·³¿¡µµ ºÒ±¸ÇÏ°í, ¸ğµç °æ¿ì¿¡ ´ëÇØ
-	// - Áï, Matchµµ ¾ø°í
-	// - ÀÎÁ¢ Á¶ÇÕµµ ¾øÀ¸¸é
-	// false¸¦ ¸®ÅÏÇØ¼­
-	// ´Ù½Ã SuffleÀÌ ÀÏ¾î³ª°Ô ÇÑ´Ù.
+	// ë§Œì•½, ì´ëŸ¼ì—ë„ ë¶ˆêµ¬í•˜ê³ , ëª¨ë“  ê²½ìš°ì— ëŒ€í•´
+	// - ì¦‰, Matchë„ ì—†ê³ 
+	// - ì¸ì ‘ ì¡°í•©ë„ ì—†ìœ¼ë©´
+	// falseë¥¼ ë¦¬í„´í•´ì„œ
+	// ë‹¤ì‹œ Suffleì´ ì¼ì–´ë‚˜ê²Œ í•œë‹¤.
 	if (!TotalCombExist && !PossibleMatchExist)
 		return false;
 
-	// ±×°Ô ¾Æ´Ï¶ó¸é,
-	// Match ¿Í Comb ÀÇ Á¡¼ö¸¦ ºñ±³ÇÏ°í
-	// ´õ ³ôÀº Á¡¼öÀÇ Match Idx µéÀ» Notice Animation À¸·Î ¹Ù²ãÁØ´Ù
+	// ê·¸ê²Œ ì•„ë‹ˆë¼ë©´,
+	// Match ì™€ Comb ì˜ ì ìˆ˜ë¥¼ ë¹„êµí•˜ê³ 
+	// ë” ë†’ì€ ì ìˆ˜ì˜ Match Idx ë“¤ì„ Notice Animation ìœ¼ë¡œ ë°”ê¿”ì¤€ë‹¤
 	if (TotalCombMaxScore <= TotalMatchMaxScore)
 	{
 		size_t Size = vecFinalMatchedIdxs.size();
@@ -4558,20 +4558,20 @@ bool CBoard::CheckAIAndPossibleMatch(float DeltaTime)
 int CBoard::CalculateAICombScore(CCell* FirstCell, CCell* SecondCell)
 {
 	/*
-	ÁÙ¹«´Ì + ÁÙ¹«´Ì => 20
-	ºÀÁö + ÁÙ¹«´Ì ==> 30
-	ºÀÁö + ºÀÁö ==> 40
-	ºÀÁö + MirrorBall ==> 50
-	MirrorBall + ÁÙ¹«´Ì ==> 60
+	ì¤„ë¬´ëŠ¬ + ì¤„ë¬´ëŠ¬ => 20
+	ë´‰ì§€ + ì¤„ë¬´ëŠ¬ ==> 30
+	ë´‰ì§€ + ë´‰ì§€ ==> 40
+	ë´‰ì§€ + MirrorBall ==> 50
+	MirrorBall + ì¤„ë¬´ëŠ¬ ==> 60
 	MirrorBall + MirrorBall ==> 70
 	 */
 
-	// ÁÙ¹«´Ì + ÁÙ¹«´Ì 
+	// ì¤„ë¬´ëŠ¬ + ì¤„ë¬´ëŠ¬ 
 	if ((FirstCell->GetCellState() == Cell_State::RowLine || FirstCell->GetCellState() == Cell_State::ColLine) ||
 		(SecondCell->GetCellState() == Cell_State::RowLine || SecondCell->GetCellState() == Cell_State::ColLine))
 		return 20;
 
-	// ºÀÁö + ÁÙ¹«´Ì 
+	// ë´‰ì§€ + ì¤„ë¬´ëŠ¬ 
 	if ((FirstCell->GetCellState() == Cell_State::RowLine || FirstCell->GetCellState() == Cell_State::ColLine) ||
 		SecondCell->GetCellState() == Cell_State::Bag)
 		return 30;
@@ -4579,12 +4579,12 @@ int CBoard::CalculateAICombScore(CCell* FirstCell, CCell* SecondCell)
 		FirstCell->GetCellState() == Cell_State::Bag)
 		return 30;
 
-	// ºÀÁö + ºÀÁö 
+	// ë´‰ì§€ + ë´‰ì§€ 
 	if (FirstCell->GetCellState() == Cell_State::Bag ||
 		SecondCell->GetCellState() == Cell_State::Bag)
 		return 40;
 
-	// ºÀÁö + MirrorBall
+	// ë´‰ì§€ + MirrorBall
 	if (FirstCell->GetCellState() == Cell_State::Bag ||
 		SecondCell->GetCellState() == Cell_State::MirrorBall)
 		return 50;
@@ -4592,7 +4592,7 @@ int CBoard::CalculateAICombScore(CCell* FirstCell, CCell* SecondCell)
 		FirstCell->GetCellState() == Cell_State::MirrorBall)
 		return 50;
 
-	// MirrorBall + ÁÙ¹«´Ì 
+	// MirrorBall + ì¤„ë¬´ëŠ¬ 
 	if ((FirstCell->GetCellState() == Cell_State::RowLine || FirstCell->GetCellState() == Cell_State::ColLine) ||
 		SecondCell->GetCellState() == Cell_State::MirrorBall)
 		return 30;
@@ -4629,7 +4629,7 @@ int CBoard::CalculateAISpecialCellScore(CCell* Cell)
 std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 							 int NewRowIdx, int    NewColIdx, std::vector<int>& MatchedIdxs)
 {
-	// Match µÈ Idx Á¤º¸µéÀ» ´ãÀ» ¹è¿­ --> ÀÌ°ÍÀº ±×³É ¿ÜºÎ¿¡¼­ ¾ò¾î¿Â´Ù.
+	// Match ëœ Idx ì •ë³´ë“¤ì„ ë‹´ì„ ë°°ì—´ --> ì´ê²ƒì€ ê·¸ëƒ¥ ì™¸ë¶€ì—ì„œ ì–»ì–´ì˜¨ë‹¤.
 	MatchedIdxs.clear();
 	
 	// MatchedIdxs.reserve(m_VisualRowCount);
@@ -4642,40 +4642,40 @@ std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 
 	int CurIndex = -1, NxtIndex = -1;
 
-	// »õ·Î¿î À§Ä¡¿¡¼­ÀÇ Row Match ¿©ºÎ¸¦ »ìÇÉ´Ù
+	// ìƒˆë¡œìš´ ìœ„ì¹˜ì—ì„œì˜ Row Match ì—¬ë¶€ë¥¼ ì‚´í•€ë‹¤
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
 	{
-		// Æ¯Á¤ ±æÀÌ¿¡¼­ÀÇ Row Match ¿©ºÎ 
+		// íŠ¹ì • ê¸¸ì´ì—ì„œì˜ Row Match ì—¬ë¶€ 
 		bool IsPartRowMatch = false;
 
 		for (int StartRowOffset = 0; StartRowOffset <= CheckMatchNum - 1; StartRowOffset++)
 		{
 			bool IsRowMatch = true;
 
-			// ÇöÀç ClickCell ÀÌ Æ÷ÇÔµÈ Row ¹üÀ§¿¡ ´ëÇØ¼­¸¸ Á¶»çÇÒ °ÍÀÌ´Ù.
-			// ¾Æ·¡ ¹üÀ§¿¡¼­, À§·Î ¿Ã¶ó°¡¸é¼­ °Ë»ç ½ÃÀÛ Row ¸¦ ¼³Á¤ÇØÁÙ °ÍÀÌ´Ù.
+			// í˜„ì¬ ClickCell ì´ í¬í•¨ëœ Row ë²”ìœ„ì— ëŒ€í•´ì„œë§Œ ì¡°ì‚¬í•  ê²ƒì´ë‹¤.
+			// ì•„ë˜ ë²”ìœ„ì—ì„œ, ìœ„ë¡œ ì˜¬ë¼ê°€ë©´ì„œ ê²€ì‚¬ ì‹œì‘ Row ë¥¼ ì„¤ì •í•´ì¤„ ê²ƒì´ë‹¤.
 			CheckStartRow = (NewRowIdx + StartRowOffset) - (CheckMatchNum - 1);
 
-			// ¾Æ·¡·Î ¹üÀ§°¡ ¹ş¾î³­ °æ¿ì
+			// ì•„ë˜ë¡œ ë²”ìœ„ê°€ ë²—ì–´ë‚œ ê²½ìš°
 			if (CheckStartRow < 0)
 			{
 				IsRowMatch = false;
 				continue;
 			}
 
-			// À§·Î ¹üÀ§°¡ ¹ş¾î³­ °æ¿ì
+			// ìœ„ë¡œ ë²”ìœ„ê°€ ë²—ì–´ë‚œ ê²½ìš°
 			CheckEndRow = CheckStartRow + (CheckMatchNum - 1);
 
 			if (CheckEndRow >= m_VisualRowCount)
 			{
 				IsRowMatch = false;
-				// ¾îÂ÷ÇÇ ¿©±â¿¹ °è¼Ó °É¸± °ÍÀÌ¹Ç·Î ( ¿Ö³ÄÇÏ¸é, CheckEndRow´Â °è¼Ó Áõ°¡ ) --> continue °¡ ¾Æ´Ï¶ó break ¼¼ÆÃ
+				// ì–´ì°¨í”¼ ì—¬ê¸°ì˜ˆ ê³„ì† ê±¸ë¦´ ê²ƒì´ë¯€ë¡œ ( ì™œëƒí•˜ë©´, CheckEndRowëŠ” ê³„ì† ì¦ê°€ ) --> continue ê°€ ì•„ë‹ˆë¼ break ì„¸íŒ…
 				break;
 			}
 
-			// todo : 1¼øÀ§ = Á¶ÇÕ
-			// todo : 2¼øÀ§ = Single Special Cell
-			// todo : 3¼øÀ§ = ±×³É Match Only
+			// todo : 1ìˆœìœ„ = ì¡°í•©
+			// todo : 2ìˆœìœ„ = Single Special Cell
+			// todo : 3ìˆœìœ„ = ê·¸ëƒ¥ Match Only
 
 			int PartRowMatchScore = 0;
 
@@ -4686,7 +4686,7 @@ std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 				InitCellType = m_vecCells[CheckStartRow * m_ColCount + OriginColIdx]->GetCellType();
 			}
 
-			// ¾Æ·¡¼­ À§·Î ÇÑÄ­ ¿Å°Ü³ù´õ´Ï, ºñ±³ ½ÃÀÛ Col ÀÌ°í, ºñ±³ ¹üÀ§ ¹Û
+			// ì•„ë˜ì„œ ìœ„ë¡œ í•œì¹¸ ì˜®ê²¨ë†¨ë”ë‹ˆ, ë¹„êµ ì‹œì‘ Col ì´ê³ , ë¹„êµ ë²”ìœ„ ë°–
 			if (NewRowIdx  == CheckStartRow && OriginRowIdx == NewRowIdx - 1)
 			{
 				InitCellType = m_vecCells[OriginRowIdx * m_ColCount + NewColIdx]->GetCellType();
@@ -4696,13 +4696,13 @@ std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 			{
 				CurIndex = StRow * m_ColCount + NewColIdx;
 
-				// ¾Æ·¡¼­ À§·Î ÇÑÄ­ ¿Å°Ü³ù´õ´Ï, ºñ±³ ½ÃÀÛ Col ÀÌ°í, ºñ±³ ¹üÀ§ ¹Û
+				// ì•„ë˜ì„œ ìœ„ë¡œ í•œì¹¸ ì˜®ê²¨ë†¨ë”ë‹ˆ, ë¹„êµ ì‹œì‘ Col ì´ê³ , ë¹„êµ ë²”ìœ„ ë°–
 				if (StRow == NewRowIdx && StRow == CheckStartRow && OriginRowIdx == NewRowIdx - 1)
 				{
 					CurIndex = OriginRowIdx * m_ColCount + NewColIdx;
 				}
 
-				// À§¿¡¼­ ¾Æ·¡·Î ÇÑÄ­ ¿Å°Ü³ù´õ´Ï, ¾Æ·¡¿¡¼­ ¿Ã¶ó¿À¸é¼­ MatchÀÎ »óÈ²
+				// ìœ„ì—ì„œ ì•„ë˜ë¡œ í•œì¹¸ ì˜®ê²¨ë†¨ë”ë‹ˆ, ì•„ë˜ì—ì„œ ì˜¬ë¼ì˜¤ë©´ì„œ Matchì¸ ìƒí™©
 				if (StRow == NewRowIdx && StRow == CheckEndRow && OriginRowIdx == NewRowIdx + 1)
 				{
 					CurIndex = OriginRowIdx * m_ColCount + NewColIdx;
@@ -4723,7 +4723,7 @@ std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 					break;
 				}
 
-				// ÃÖÃÊ CellÀÌ MirrorBall ÀÏ ¶§´Â Áß°£ Áß°£ Cell TypeÀ» Update ÇØÁà¾ß ÇÑ´Ù.
+				// ìµœì´ˆ Cellì´ MirrorBall ì¼ ë•ŒëŠ” ì¤‘ê°„ ì¤‘ê°„ Cell Typeì„ Update í•´ì¤˜ì•¼ í•œë‹¤.
 				if (InitCellType == Cell_Type_Binary::All)
 				{
 					InitCellType = m_vecCells[CurIndex]->GetCellType();
@@ -4733,7 +4733,7 @@ std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 
 				int TempCombScore = 0;
 
-				// 1) ´ÙÀ½ ³à¼®°ú Á¶ÇÕ ¿©ºÎ
+				// 1) ë‹¤ìŒ ë…€ì„ê³¼ ì¡°í•© ì—¬ë¶€
 				if (StRow <= CheckEndRow - 1)
 				{
 					NxtIndex = (StRow + 1) * m_ColCount + NewColIdx;
@@ -4761,28 +4761,28 @@ std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 					}
 				}
 
-				// 2) Special ¿©ºÎ
+				// 2) Special ì—¬ë¶€
 				if (IsTwoCombination == false)
 				{
 					PartRowMatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
 				}
 			}
 
-			// ¸¸¾à ÇØ´ç Row(¼¼·Î)°¡ Match ¶ó¸é, ÇØ´ç Idx µéÀ» MatchIdxs Vector¿¡ ³Ö¾îÁÖ°í return;
-			// ±×¸®°í ÇÔ¼ö¸¦ Á¾·áÇÑ´Ù.
+			// ë§Œì•½ í•´ë‹¹ Row(ì„¸ë¡œ)ê°€ Match ë¼ë©´, í•´ë‹¹ Idx ë“¤ì„ MatchIdxs Vectorì— ë„£ì–´ì£¼ê³  return;
+			// ê·¸ë¦¬ê³  í•¨ìˆ˜ë¥¼ ì¢…ë£Œí•œë‹¤.
 			if (IsRowMatch)
 			{
 				for (int row = CheckStartRow; row <= CheckEndRow; row++)
 				{
 					int MatchIdx = row * m_ColCount + NewColIdx;
 
-					// ¾Æ·¡¼­ À§·Î ÇÑÄ­ ¿Å°Ü³ù´õ´Ï, ºñ±³ ½ÃÀÛ Col ÀÌ°í, ºñ±³ ¹üÀ§ ¹Û
+					// ì•„ë˜ì„œ ìœ„ë¡œ í•œì¹¸ ì˜®ê²¨ë†¨ë”ë‹ˆ, ë¹„êµ ì‹œì‘ Col ì´ê³ , ë¹„êµ ë²”ìœ„ ë°–
 					if (row == NewRowIdx && row == CheckStartRow && OriginRowIdx == NewRowIdx - 1)
 					{
 						MatchIdx = OriginRowIdx * m_ColCount + NewColIdx;
 					}
 
-					// À§¿¡¼­ ¾Æ·¡·Î ÇÑÄ­ ¿Å°Ü³ù´õ´Ï, ¾Æ·¡¿¡¼­ ¿Ã¶ó¿À¸é¼­ MatchÀÎ »óÈ²
+					// ìœ„ì—ì„œ ì•„ë˜ë¡œ í•œì¹¸ ì˜®ê²¨ë†¨ë”ë‹ˆ, ì•„ë˜ì—ì„œ ì˜¬ë¼ì˜¤ë©´ì„œ Matchì¸ ìƒí™©
 					if (row == NewRowIdx && row == CheckEndRow && OriginRowIdx == NewRowIdx + 1)
 					{
 						MatchIdx = OriginRowIdx * m_ColCount + NewColIdx;
@@ -4798,7 +4798,7 @@ std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 
 				PartRowMatchScore += CheckMatchNum;
 
-				// Á¡¼öµµ °°ÀÌ return ÇØÁà¾ß ÇÏ´Â°¡ ?
+				// ì ìˆ˜ë„ ê°™ì´ return í•´ì¤˜ì•¼ í•˜ëŠ”ê°€ ?
 				return std::make_pair(PartRowMatchScore, true);
 			}
 		}
@@ -4812,14 +4812,14 @@ std::pair<int, bool> CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 {
 	MatchedIdxs.clear();
 
-	// ÃÖ¼Ò 3°³±îÁö Á¶»ç, ÃÖ´ë Á¶»ç °³¼ö´Â Row // Col ¿©ºÎ¿¡ µû¶ó ´Ş¶óÁö°Ô µÉ °ÍÀÌ´Ù.
+	// ìµœì†Œ 3ê°œê¹Œì§€ ì¡°ì‚¬, ìµœëŒ€ ì¡°ì‚¬ ê°œìˆ˜ëŠ” Row // Col ì—¬ë¶€ì— ë”°ë¼ ë‹¬ë¼ì§€ê²Œ ë  ê²ƒì´ë‹¤.
 	int MinCheckLength = 3, MaxCheckLength = m_ColCount;
 
 	int CheckStartCol = -1, CheckEndCol = -1;
 
 	int CurIndex = -1, NxtIndex = -1;
 
-	// ÃÖ´ë --> ÃÖ¼Ò ±æÀÌ ¼øÀ¸·Î Á¶»çÇÏ±â
+	// ìµœëŒ€ --> ìµœì†Œ ê¸¸ì´ ìˆœìœ¼ë¡œ ì¡°ì‚¬í•˜ê¸°
 	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
 	{
 		bool IsPartMatch = false;
@@ -4828,25 +4828,25 @@ std::pair<int, bool> CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 		{
 			bool IsColMatch = true;
 
-			// ÇöÀç ClickCell ÀÌ Æ÷ÇÔµÈ Row ¹üÀ§¿¡ ´ëÇØ¼­¸¸ Á¶»çÇÒ °ÍÀÌ´Ù.
+			// í˜„ì¬ ClickCell ì´ í¬í•¨ëœ Row ë²”ìœ„ì— ëŒ€í•´ì„œë§Œ ì¡°ì‚¬í•  ê²ƒì´ë‹¤.
 			CheckStartCol = (NewColIdx + StartColOffset) - (CheckMatchNum - 1);
 
-			// ¾Æ·¡·Î ¹üÀ§°¡ ¹ş¾î³­ °æ¿ì
+			// ì•„ë˜ë¡œ ë²”ìœ„ê°€ ë²—ì–´ë‚œ ê²½ìš°
 			if (CheckStartCol < 0)
 			{
 				IsColMatch = false;
 				continue;
 			}
 
-			// ¿À¸¥ÂÊÀ¸·Î ¹üÀ§°¡ ¹ş¾î³­ °æ¿ì
+			// ì˜¤ë¥¸ìª½ìœ¼ë¡œ ë²”ìœ„ê°€ ë²—ì–´ë‚œ ê²½ìš°
 			CheckEndCol = CheckStartCol + (CheckMatchNum - 1);
 
 			if (CheckEndCol >= m_ColCount)
 			{
 				IsColMatch = false;
 				// continue;
-				// ¿©±â °É¸®¸é ÀÌÈÄ¿¡µµ ¿©±â °è¼Ó °É¸°´Ù.
-				// ¾îÂ÷ÇÇ CheckEndCol ´Â °è¼Ó Áõ°¡ÇÏ±â ¶§¹®ÀÌ´Ù.
+				// ì—¬ê¸° ê±¸ë¦¬ë©´ ì´í›„ì—ë„ ì—¬ê¸° ê³„ì† ê±¸ë¦°ë‹¤.
+				// ì–´ì°¨í”¼ CheckEndCol ëŠ” ê³„ì† ì¦ê°€í•˜ê¸° ë•Œë¬¸ì´ë‹¤.
 				break;
 			}
 
@@ -4859,30 +4859,30 @@ std::pair<int, bool> CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 				InitCellType = m_vecCells[OriginRowIdx * m_ColCount + CheckStartCol]->GetCellType();
 			}
 
-			// ¿ŞÂÊ¿¡¼­ ¿À¸¥ÂÊÀ¸·Î ¿Å°Ü³ù°í, ºñ±³ ½ÃÀÛ Col ÀÌ°í, OriginColIdx°¡ °Ë»ç ¹üÀ§ ¹Û
+			// ì™¼ìª½ì—ì„œ ì˜¤ë¥¸ìª½ìœ¼ë¡œ ì˜®ê²¨ë†¨ê³ , ë¹„êµ ì‹œì‘ Col ì´ê³ , OriginColIdxê°€ ê²€ì‚¬ ë²”ìœ„ ë°–
 			if (NewColIdx == CheckStartCol && OriginColIdx == NewColIdx - 1)
 			{
 				InitCellType = m_vecCells[NewRowIdx * m_ColCount + OriginColIdx]->GetCellType();
 			}
 
-			// ÇØ´ç ±æÀÌ·Î ¿ŞÂÊ --> ¿À¸¥ÂÊ ¼ø¼­·Î Á¶»çÇÑ´Ù.
+			// í•´ë‹¹ ê¸¸ì´ë¡œ ì™¼ìª½ --> ì˜¤ë¥¸ìª½ ìˆœì„œë¡œ ì¡°ì‚¬í•œë‹¤.
 			for (int StCol = CheckStartCol; StCol <= CheckEndCol; StCol++)
 			{
 				CurIndex = NewRowIdx * m_ColCount + StCol;
 
-				// ¿ŞÂÊ¿¡¼­ ¿À¸¥ÂÊÀ¸·Î ¿Å°Ü³ù°í, ºñ±³ ½ÃÀÛ Col ÀÌ°í, OriginColIdx°¡ °Ë»ç ¹üÀ§ ¹Û
+				// ì™¼ìª½ì—ì„œ ì˜¤ë¥¸ìª½ìœ¼ë¡œ ì˜®ê²¨ë†¨ê³ , ë¹„êµ ì‹œì‘ Col ì´ê³ , OriginColIdxê°€ ê²€ì‚¬ ë²”ìœ„ ë°–
 				if (StCol == NewColIdx && StCol == CheckStartCol && OriginColIdx == NewColIdx - 1)
 				{
 					CurIndex = NewRowIdx * m_ColCount + OriginColIdx;
 				}
 
-				// ¿À¸¥ÂÊ¿¡¼­ ¿ŞÂÊÀ¸·Î ¿Å°Ü³ù´õ´Ï, ºñ±³ End Col ÀÌ°í, OriginColIdx°¡ °Ë»ç ¹üÀ§ ¹Û
+				// ì˜¤ë¥¸ìª½ì—ì„œ ì™¼ìª½ìœ¼ë¡œ ì˜®ê²¨ë†¨ë”ë‹ˆ, ë¹„êµ End Col ì´ê³ , OriginColIdxê°€ ê²€ì‚¬ ë²”ìœ„ ë°–
 				if (StCol == NewColIdx && StCol == CheckEndCol && OriginColIdx == NewColIdx + 1)
 				{
 					CurIndex = NewRowIdx * m_ColCount + OriginColIdx;
 				}
 
-				// ¿À¸¥ÂÊ¿¡¼­ ¿ŞÂÊÀ¸·Î ¿Å°Ü³ù´õ´Ï, OriginColIdx°¡ °Ë»ç ¹üÀ§ ¾È
+				// ì˜¤ë¥¸ìª½ì—ì„œ ì™¼ìª½ìœ¼ë¡œ ì˜®ê²¨ë†¨ë”ë‹ˆ, OriginColIdxê°€ ê²€ì‚¬ ë²”ìœ„ ì•ˆ
 				if (StCol == OriginColIdx)
 				{
 					CurIndex = OriginRowIdx* m_ColCount + StCol;
@@ -4898,7 +4898,7 @@ std::pair<int, bool> CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 					break;
 				}
 
-				// ÃÖÃÊ CellÀÌ MirrorBall ÀÏ ¶§´Â Áß°£ Áß°£ Cell TypeÀ» Update ÇØÁà¾ß ÇÑ´Ù.
+				// ìµœì´ˆ Cellì´ MirrorBall ì¼ ë•ŒëŠ” ì¤‘ê°„ ì¤‘ê°„ Cell Typeì„ Update í•´ì¤˜ì•¼ í•œë‹¤.
 				if (InitCellType == Cell_Type_Binary::All)
 				{
 					InitCellType = m_vecCells[CurIndex]->GetCellType();
@@ -4908,7 +4908,7 @@ std::pair<int, bool> CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 
 				int TempCombScore = 0;
 
-				// 1) ´ÙÀ½ ³à¼®°úÀÇ Á¶ÇÕ ¿©ºÎ
+				// 1) ë‹¤ìŒ ë…€ì„ê³¼ì˜ ì¡°í•© ì—¬ë¶€
 				if (StCol <= CheckEndCol - 1)
 				{
 					NxtIndex = NewRowIdx * m_ColCount + (StCol + 1);
@@ -4934,15 +4934,15 @@ std::pair<int, bool> CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 					}
 				}
 
-				// Á¶ÇÕÀÌ Á¸ÀçÇÏÁö ¾Ê¾Ò´Ù¸é
-				// °¢ CellÀÇ Special ¿©ºÎ¸¦ Á¶»çÇÑ´Ù.
+				// ì¡°í•©ì´ ì¡´ì¬í•˜ì§€ ì•Šì•˜ë‹¤ë©´
+				// ê° Cellì˜ Special ì—¬ë¶€ë¥¼ ì¡°ì‚¬í•œë‹¤.
 				if (IsTwoCombination == false)
 				{
 					PartColMatchScore += CalculateAISpecialCellScore(m_vecCells[CurIndex]);
 				}
 			}
 
-			// ¸¸¾à ÇØ´ç Row (¼¼·Î)°¡ Match ¶ó¸é, ÇØ´ç Cell µéÀ» Match »óÅÂ·Î ¹Ù²ãÁØ´Ù.
+			// ë§Œì•½ í•´ë‹¹ Row (ì„¸ë¡œ)ê°€ Match ë¼ë©´, í•´ë‹¹ Cell ë“¤ì„ Match ìƒíƒœë¡œ ë°”ê¿”ì¤€ë‹¤.
 			if (IsColMatch)
 			{
 				for (int col = CheckStartCol; col <= CheckEndCol; col++)
@@ -4954,7 +4954,7 @@ std::pair<int, bool> CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 						MatchIdx = NewRowIdx * m_ColCount + OriginColIdx;
 					}
 
-					// ¿À¸¥ÂÊ¿¡¼­ ¿ŞÂÊÀ¸·Î ¿Å°Ü³ù´õ´Ï, ºñ±³ End Col ÀÌ°í, OriginColIdx°¡ °Ë»ç ¹üÀ§ ¹Û
+					// ì˜¤ë¥¸ìª½ì—ì„œ ì™¼ìª½ìœ¼ë¡œ ì˜®ê²¨ë†¨ë”ë‹ˆ, ë¹„êµ End Col ì´ê³ , OriginColIdxê°€ ê²€ì‚¬ ë²”ìœ„ ë°–
 					if (col == NewColIdx && col == CheckEndCol && OriginColIdx == NewColIdx + 1)
 					{
 						MatchIdx = NewRowIdx * m_ColCount + OriginColIdx;
@@ -4981,9 +4981,9 @@ std::pair<int, bool> CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 std::pair<int, bool> CBoard::CheckAIBagMatch(int OriginRowIdx, int OriginColIdx, int NewRowIdx, int NewColIdx,
 	std::vector<int>& MatchedIdxs)
 {
-	// ¸ğµç ¹æÇâ¿¡ ´ëÇÑ Á¶»ç¸¦ ÇÑ ÀÌÈÄ ,
-	// Áßº¹ ±îÁö Á¦°ÅÇØ¼­
-	// ±× ´ÙÀ½¿¡ Return ÇÒ °ÍÀÌ´Ù.
+	// ëª¨ë“  ë°©í–¥ì— ëŒ€í•œ ì¡°ì‚¬ë¥¼ í•œ ì´í›„ ,
+	// ì¤‘ë³µ ê¹Œì§€ ì œê±°í•´ì„œ
+	// ê·¸ ë‹¤ìŒì— Return í•  ê²ƒì´ë‹¤.
 
 	std::vector<int> TempMatchIdxList;
 	TempMatchIdxList.reserve(m_ColCount);
@@ -5149,7 +5149,7 @@ bool CBoard::Init()
 	if (!CGameObject::Init())
 		return false;
 
-	// Component ¼¼ÆÃ
+	// Component ì„¸íŒ…
 	m_Sprite = CreateComponent<CStaticMeshComponent>("BoardComponent");
 
 	SetRootComponent(m_Sprite);
@@ -5164,10 +5164,10 @@ bool CBoard::Init()
 
 	m_Sprite->AddChild(m_BoardBackGround);
 
-	// ÀÌ¹ÌÁö ¼¼ÆÃ
+	// ì´ë¯¸ì§€ ì„¸íŒ…
 
 
-	// Input Callback ¼¼ÆÃ
+	// Input Callback ì„¸íŒ…
 	CInput::GetInst()->SetKeyCallback("BoardCellClick", Key_State::Key_Down, this, 
 		&CBoard::ClickCell);
 
@@ -5190,7 +5190,7 @@ void CBoard::Update(float DeltaTime)
 
 	m_CellsMoving = CheckCellsMoving();
 
-	// ÀÌÀü Frame ±îÁö´Â ¿òÁ÷ÀÌ°í ÀÖ´Ù°¡, ÀÌ¹ø¿¡ ¸ØÃá °Í --> »õ·Î AI Check ÇØ¾ßÇÒ »óÈ²
+	// ì´ì „ Frame ê¹Œì§€ëŠ” ì›€ì§ì´ê³  ìˆë‹¤ê°€, ì´ë²ˆì— ë©ˆì¶˜ ê²ƒ --> ìƒˆë¡œ AI Check í•´ì•¼í•  ìƒí™©
 	if (PrevFrameCellMoving == true && m_CellsMoving == false)
 	{
 		m_IsAIChecked = false;
@@ -5206,7 +5206,7 @@ void CBoard::Update(float DeltaTime)
 
 	if (!IsMatchExist && !IsPossibleMatchExst)
 	{
-		// ´Ù½Ã Shuffle ½ÃÅ²´Ù.
+		// ë‹¤ì‹œ Shuffle ì‹œí‚¨ë‹¤.
 		ShuffleRandom(m_vecCells);
 	}
 }
@@ -5218,28 +5218,28 @@ void CBoard::PostUpdate(float DeltaTime)
 
 bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float HeightRatio, const Vector3& LB)
 {
-	m_RowCount = CountRow * 2; // º¸¿©ÁöÁö ¾Ê´Â ¿µ¿ª±îÁö Æ÷ÇÔ
+	m_RowCount = CountRow * 2; // ë³´ì—¬ì§€ì§€ ì•ŠëŠ” ì˜ì—­ê¹Œì§€ í¬í•¨
 	m_ColCount = CountCol;
 	m_TotCount = m_RowCount * m_ColCount;
 	m_VisualRowCount = CountRow;
 	m_IndexOffset = m_ColCount * m_VisualRowCount;
 
-	// m_vecColNewCellNums : °¢ ¿­¸¶´Ù ¸î°³°¡ »õ·Î »ı¼ºµÇ¾î¾ß ÇÏ´Â°¡
+	// m_vecColNewCellNums : ê° ì—´ë§ˆë‹¤ ëª‡ê°œê°€ ìƒˆë¡œ ìƒì„±ë˜ì–´ì•¼ í•˜ëŠ”ê°€
 	m_vecColNewCellNums.resize(CountCol);
 
-	// °¢ À§Ä¡ÀÇ Cell ¸¶´Ù, ¸î°³ÇàÀÌ ³»·Á°¡¾ß ÇÏ´Â°¡
+	// ê° ìœ„ì¹˜ì˜ Cell ë§ˆë‹¤, ëª‡ê°œí–‰ì´ ë‚´ë ¤ê°€ì•¼ í•˜ëŠ”ê°€
 	m_vecCellDownNums.resize(m_TotCount);
 
-	// °¢ Cell ÀÇ Match Type
+	// ê° Cell ì˜ Match Type
 	m_vecMatchState.resize(m_TotCount);
 
-	// °¢ CellÀÇ Match ¿©ºÎ
+	// ê° Cellì˜ Match ì—¬ë¶€
 	m_vecCellIsMatch.resize((int)(m_TotCount * 0.5f));
 
-	// °¢ Cell ÀÇ Destroy State
+	// ê° Cell ì˜ Destroy State
 	// m_vecDestroyState.resize(m_TotCount / 2);
 
-	// °¢ CellÀÇ MarkState
+	// ê° Cellì˜ MarkState
 	// m_vecDestroyMarkState.resize(m_TotCount / 2);
 
 	int MatchCellEndIdx = (int)(m_TotCount * 0.5f);
@@ -5249,17 +5249,17 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 		m_vecCellIsMatch[i] = false;
 	}
 
-	// ½ÃÀÛÁ¡ ¼¼ÆÃ
+	// ì‹œì‘ì  ì„¸íŒ…
 	m_Sprite->SetWorldPos(LB);
 
-	// ³Êºñ , ³ôÀÌ ¼¼ÆÃ
+	// ë„ˆë¹„ , ë†’ì´ ì„¸íŒ…
 	Resolution RS = CEngine::GetInst()->GetResolution();
 
-	// ³ôÀÌÀÇ °æ¿ì 2¹è·Î ¼¼ÆÃÇÑ´Ù. --> ½ÇÁ¦ È­¸é¿¡ º¸¿©Áö´Â ¿µ¿ª + À§·Î ¼ûÀº ¿µ¿ª
-	// x,y : ¿­, Çà
+	// ë†’ì´ì˜ ê²½ìš° 2ë°°ë¡œ ì„¸íŒ…í•œë‹¤. --> ì‹¤ì œ í™”ë©´ì— ë³´ì—¬ì§€ëŠ” ì˜ì—­ + ìœ„ë¡œ ìˆ¨ì€ ì˜ì—­
+	// x,y : ì—´, í–‰
 	m_Sprite->SetWorldScale((float)(RS.Width * (WidthRatio / 100.f)), (float)(RS.Height * (HeightRatio / 100.f)) * 2.f, 1.f);
 
-	// Block, Cell ¼¼ÆÃ
+	// Block, Cell ì„¸íŒ…
 	m_vecCells.resize(m_TotCount);
 
 	Vector3 BoardStartPos = LB;
@@ -5268,7 +5268,7 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 	m_CellSize.x = CellSize.x;
 	m_CellSize.y = CellSize.y;
 
-	// BackGround Pos, Scale Á¶Á¤ÇÏ±â
+	// BackGround Pos, Scale ì¡°ì •í•˜ê¸°
 	Vector3 BoardWorldScale = m_Sprite->GetWorldScale();
 	Vector3 BoardImaeScale = Vector3(BoardWorldScale.x + CellSize.x * 2.f , BoardWorldScale.y * 0.5f + CellSize.y * 2.f, BoardWorldScale.z);
 
@@ -5276,7 +5276,7 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 	m_BoardBackGround->SetRelativePos(Vector3(CellSize.x * -1.f, CellSize.y * -1.f, 1.f));
 	m_BoardBackGround->AddWorldPos(Vector3(CellSize.x * -0.5f, CellSize.y * - 0.5f, 0.f));
 
-	// Mouse Offset ¼¼ÆÃÇÏ±â
+	// Mouse Offset ì„¸íŒ…í•˜ê¸°
 	m_MousePosOffSet = Vector2(0.5f, 0.5f) * m_CellSize;
 
 	for (int row = 0; row < m_RowCount; row++)
@@ -5302,20 +5302,20 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 
 			if (CellWorldYPos >= BoardStartPos.y + m_CellSize.y * m_VisualRowCount)
 			{
-				// Opacity ¼³Á¤
+				// Opacity ì„¤ì •
 				// Cell->SetOpacity(0.0f);
 				NewCell->SetOpacity(0.1f);
 
-				// ¾Èº¸ÀÎ´Ù´Â ¸â¹ö º¯¼ö ¼³Á¤
+				// ì•ˆë³´ì¸ë‹¤ëŠ” ë©¤ë²„ ë³€ìˆ˜ ì„¤ì •
 				NewCell->SetShowEnable(false);
 			}
 		}
 	}
 
-	// ÇÑ¹ø ·£´ıÇÏ°Ô ¼¯±â
+	// í•œë²ˆ ëœë¤í•˜ê²Œ ì„ê¸°
 	ShuffleRandom(m_vecCells);
 
-	// Block ¸¸µé±â -------------------------------------------------------------------
+	// Block ë§Œë“¤ê¸° -------------------------------------------------------------------
 	m_vecBlocks.resize((int)(m_TotCount * 0.5f));
 
 	for (int row = 0; row < m_VisualRowCount; row++)
@@ -5332,13 +5332,13 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 
 			Vector3 BoardStartPos = GetWorldPos();
 
-			// Owner ¼¼ÆÃ 
+			// Owner ì„¸íŒ… 
 			Block->m_Board = this;
 
-			// Scene ¼¼ÆÃ 
+			// Scene ì„¸íŒ… 
 			Block->SetScene(m_Scene);
 
-			// x´Â ¿­, y´Â Çà
+			// xëŠ” ì—´, yëŠ” í–‰
 			Vector3 BlockWorldPos = Vector3(
 				WorldPos.x + m_CellSize.x * 0.1f, 
 				WorldPos.y + m_CellSize.y * 0.1f, 
@@ -5346,22 +5346,22 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 			Block->SetWorldPos(WorldPos);
 			// Block->SetWorldPos(BlockWorldPos);
 
-			// Å©±â ¼¼ÆÃ 
+			// í¬ê¸° ì„¸íŒ… 
 			// Block->SetWorldScale(Vector3(m_CellSize.x, m_CellSize.y, 1.f));
 			Block->SetWorldScale(Vector3(m_CellSize.x * 0.9f, m_CellSize.y * 0.9f, 1.f));
 
-			// Index ¼¼ÆÃ --> NewPosYµµ ¼¼ÆÃ
+			// Index ì„¸íŒ… --> NewPosYë„ ì„¸íŒ…
 			Block->SetIndexInfo(Index, row, col);
 
-			// Pivot ¼¼ÆÃ
+			// Pivot ì„¸íŒ…
 			Block->SetPivot(0.5f, 0.5f, 0.f);
 
-			// Block Sprite Å©±â , À§Ä¡ ¼¼ÆÃ
+			// Block Sprite í¬ê¸° , ìœ„ì¹˜ ì„¸íŒ…
 			Block->GetSpriteComponent()->SetWorldPos(WorldPos);
 
 			Block->GetSpriteComponent()->SetWorldScale(Vector3(m_CellSize.x * 0.9f, m_CellSize.y * 0.9f, 1.f));
 
-			// vector ¸ñ·Ï¿¡ Ãß°¡ 
+			// vector ëª©ë¡ì— ì¶”ê°€ 
 			m_vecBlocks[Index] = Block;
 
 		}
@@ -5382,7 +5382,7 @@ void CBoard::ResetClickBlockInfo()
 	if (!m_ClickedBlock)
 		return;
 
-	// ±×³É ¸ğµç Cell µéÀ» ±×·¸°Ô ¼¼ÆÃÇÑ´Ù.
+	// ê·¸ëƒ¥ ëª¨ë“  Cell ë“¤ì„ ê·¸ë ‡ê²Œ ì„¸íŒ…í•œë‹¤.
 	for (int row = 0; row < m_VisualRowCount; row++)
 	{
 		for (int col = 0; col < m_ColCount; col++)
@@ -5400,7 +5400,7 @@ void CBoard::ResetClickBlockInfo()
 
 void CBoard::ClickCell(float DeltaTime)
 {
-	// CellÀÌ ÀÌµ¿ ÁßÀÌ¶ó¸é Click ¾È¸Ô°Ô ÇÏ±â 
+	// Cellì´ ì´ë™ ì¤‘ì´ë¼ë©´ Click ì•ˆë¨¹ê²Œ í•˜ê¸° 
 	if (m_CellsMoving)
 		return;
 
@@ -5411,7 +5411,7 @@ void CBoard::ClickCell(float DeltaTime)
 	int IndexX = (int)(ConvertPos.x / m_CellSize.x);
 	int IndexY = (int)(ConvertPos.y / m_CellSize.y);
 
-	// ¹üÀ§ ¹ÛÀº Á¶»çÇÏÁö ¾Ê´Â´Ù. + Å¬¸¯ Á¤º¸ ÃÊ±âÈ­
+	// ë²”ìœ„ ë°–ì€ ì¡°ì‚¬í•˜ì§€ ì•ŠëŠ”ë‹¤. + í´ë¦­ ì •ë³´ ì´ˆê¸°í™”
 	if (IndexX < 0 || IndexX >= m_ColCount)
 	{
 		m_FirstClickCell = nullptr;
@@ -5428,19 +5428,19 @@ void CBoard::ClickCell(float DeltaTime)
 		return;
 	}
 
-	// Ã¹¹øÂ° Cell ¼±ÅÃ
+	// ì²«ë²ˆì§¸ Cell ì„ íƒ
 	if (m_MouseClick == Mouse_Click::None)
 	{
 		m_FirstClickCell = m_vecCells[IndexY * m_ColCount + IndexX];
 		m_MouseClick = Mouse_Click::First;
 
-		// Å¬¸¯ÇÑ Board ÀÇ Static Mesh Component »ö»óÀ» ¹Ù²ãÁØ´Ù.
+		// í´ë¦­í•œ Board ì˜ Static Mesh Component ìƒ‰ìƒì„ ë°”ê¿”ì¤€ë‹¤.
 		SetClickBlockInfo(IndexY * m_ColCount + IndexX);
 	}
-	// µÎ¹øÂ° Cell ¼±ÅÃ
+	// ë‘ë²ˆì§¸ Cell ì„ íƒ
 	else if (m_MouseClick == Mouse_Click::First)
 	{
-		// ¸¸¾à Ã¹¹øÂ° ¼±ÅÃµÈ ³à¼®°ú °°Àº ³à¼®ÀÌ¸é skip
+		// ë§Œì•½ ì²«ë²ˆì§¸ ì„ íƒëœ ë…€ì„ê³¼ ê°™ì€ ë…€ì„ì´ë©´ skip
 		int FirstCellIndex = m_FirstClickCell->GetIndex();
 		int SecCellIndex = (IndexY * m_ColCount + IndexX);
 
@@ -5453,7 +5453,7 @@ void CBoard::ClickCell(float DeltaTime)
 			return;
 		}
 
-		// ÀÎÁ¢ÇÏÁö ¾Ê´Â´Ù¸é Skip
+		// ì¸ì ‘í•˜ì§€ ì•ŠëŠ”ë‹¤ë©´ Skip
 		int FirstCellColIndex = m_FirstClickCell->GetColIndex();
 		int FirstCellRowIndex = m_FirstClickCell->GetRowIndex();
 
@@ -5466,10 +5466,10 @@ void CBoard::ClickCell(float DeltaTime)
 			return;
 		}
 
-		// Block Àº ¿ø »óÅÂ·Î
+		// Block ì€ ì› ìƒíƒœë¡œ
 		ResetClickBlockInfo();
 
-		// AI ·Î Ã¼Å©µÈ Notice µµ ¿ø»óÅÂ·Î
+		// AI ë¡œ ì²´í¬ëœ Notice ë„ ì›ìƒíƒœë¡œ
 		ResetAINoticeState();
 
 		m_SecClickCell = m_vecCells[IndexY * m_ColCount + IndexX];
@@ -5477,18 +5477,18 @@ void CBoard::ClickCell(float DeltaTime)
 		Vector3 SecondPos = m_SecClickCell->GetWorldPos();
 		Vector3 FirstPos = m_FirstClickCell->GetWorldPos();
 
-		// 2°³ÀÇ Cell ¿¡ »õ·Î¿î À§Ä¡ ¼¼ÆÃ
+		// 2ê°œì˜ Cell ì— ìƒˆë¡œìš´ ìœ„ì¹˜ ì„¸íŒ…
 		m_FirstClickCell->SetClickDestPos(m_SecClickCell->GetWorldPos());
 		m_SecClickCell->SetClickDestPos(m_FirstClickCell->GetWorldPos());
 
-		// Switch ÁßÀÌ¶ó°í Ç¥½ÃÇÏ±â
+		// Switch ì¤‘ì´ë¼ê³  í‘œì‹œí•˜ê¸°
 		m_FirstClickCell->SetIsSwitch(true);
 		m_SecClickCell->SetIsSwitch(true);
 
-		// Cell ÀÌµ¿Áß Ç¥½ÃÇÏ±â
+		// Cell ì´ë™ì¤‘ í‘œì‹œí•˜ê¸°
 		m_CellsMoving = true;
 
-		// ½Ç½Ã°£ CheckUpdate Ç¥½ÃÇÏ±â //
+		// ì‹¤ì‹œê°„ CheckUpdate í‘œì‹œí•˜ê¸° //
 		m_IsCheckUpdateNeeded = true;
 	}
 }
@@ -5526,8 +5526,8 @@ void CBoard::ShuffleRandom(std::vector<CSharedPtr<CCell>>& VecCells)
 {
 	m_CellsMoving = true;
 
-	// 1) Matchµµ ¾ø°í 2) Possible Match´Â ÀÖÀ» ¶§±îÁö ±â´Ù·Á¾ß ÇÑ´Ù.
-	// 2) ¸î°³ ÃÊ±âÈ­ ÇÒ º¯¼öµéÀÌ Á¸ÀçÇÏ´Â°¡ ?
+	// 1) Matchë„ ì—†ê³  2) Possible MatchëŠ” ìˆì„ ë•Œê¹Œì§€ ê¸°ë‹¤ë ¤ì•¼ í•œë‹¤.
+	// 2) ëª‡ê°œ ì´ˆê¸°í™” í•  ë³€ìˆ˜ë“¤ì´ ì¡´ì¬í•˜ëŠ”ê°€ ?
 
 	ResetCellStateInfo();
 
@@ -5553,7 +5553,7 @@ void CBoard::ShuffleRandom(std::vector<CSharedPtr<CCell>>& VecCells)
 		}
 	}
 
-	// °ü·Ã º¯¼ö ÃÊ±âÈ­
+	// ê´€ë ¨ ë³€ìˆ˜ ì´ˆê¸°í™”
 	m_IsAIChecked = false;
 
 	m_AICheckDelayTime = m_AICheckDelayTimeMax;
