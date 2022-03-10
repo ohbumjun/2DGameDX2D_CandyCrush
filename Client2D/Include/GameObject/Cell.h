@@ -69,6 +69,7 @@ private : // 특수 효과
     float m_LineDestroyDelayTime;
     float m_LineDestroyInitDelayTime;
     // Line + Bag
+    bool m_IsLineOfLineBagComb;
     bool m_IsLineBagCombDestroyedCell;
     float m_LineBagCombDestroyDelayTime;
     float m_LineBagCombDestroyInitDelayTime;
@@ -237,6 +238,10 @@ public:
     }
 	// Setter
 public :
+    void SetIsLineOfLineBagComb(bool Enable)
+    {
+        m_IsLineOfLineBagComb = Enable;
+    }
     void SetPauseGoDown(bool Enable)
     {
         m_PauseGoDown = Enable;

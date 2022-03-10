@@ -1045,6 +1045,15 @@ void CBoard::DestroyBagLineComb(int RowIndex, int ColIndex)
 		{
 			DelayTime = 0.1f + col * 0.1f;
 
+			// Bag Line Combo의 Bag 라면, 계속 크기를 키우는 효과를 준다
+			if (m_vecCells[row * m_ColCount + col]->GetCellState() == Cell_State::Bag)
+			{
+				if (std::abs(row - RowIndex) + std::abs(col - ColIndex) == 1)
+				{
+					m_vecCells[row * m_ColCount + col]->SetIsLineOfLineBagComb(true);
+				}
+			}
+
 			if (m_vecCells[row * m_ColCount + col]->GetCellState() == Cell_State::Bag ||
 				m_vecCells[row * m_ColCount + col]->GetCellState() == Cell_State::MirrorBall)
 			{
@@ -2098,7 +2107,7 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 				// 2) Match State 처리를 해준다.
 				if (CheckMatchNum == 3)
 				{
-					RowResultState = Match_State::MirrorBall;
+					RowResultState = Match_State::ColLine;
 					// RowResultState = Match_State::Normal;
 				}
 				if (CheckMatchNum == 4)
@@ -2850,23 +2859,6 @@ void CBoard::DestroySingleBagCell(int RowIndex, int ColIndex, bool IsBagAndBagCo
 					m_vecCells[Index]->SetIsBagAndBagDestroyed(true);
 				}
 			}
-			/*
-			}
-			*/
-
-			/*
-			if (m_vecCells[Index]->IsSpecialDestroyedBag() == false)
-			{
-				m_vecCells[Index]->SetCurrentAnimation("Notice");
-				m_vecCells[Index]->SetSpecialDestroyedBag(true);
-
-				if (IsBagAndBagComb)
-				{
-					// 조합으로 바뀐 녀석은, 다시 한번 더 Destroy_State를 BagAndBag 로 해야 한다.
-					m_vecCells[Index]->SetIsBagAndBagDestroyed(true);
-				}
-			}
-			*/
 		}
 	}
 	else
@@ -2895,7 +2887,6 @@ bool CBoard::CheckIsCellBeingSpecialDestroyed()
 	{
 		for (int col = 0; col < m_ColCount; col++)
 		{
-			// int Index = row * m_ColCount + col;
 
 			if (m_vecCells[row * m_ColCount + col]->IsBeingSpecialDestroyed())
 				return true;

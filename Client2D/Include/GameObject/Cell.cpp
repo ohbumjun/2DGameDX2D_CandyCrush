@@ -8,6 +8,7 @@ CCell::CCell() :
 	m_ShownAreaOffset(5.f),
 	m_IsShownEnable(true),
 	m_IsGoingBack(false),
+	m_IsLineOfLineBagComb(false),
 	m_IsLineDestroyedCell(false),
 	m_IsLineBagCombDestroyedCell(false),
 	m_IsSwitch(false),
@@ -347,6 +348,11 @@ void CCell::Update(float DeltaTime)
 	}
 	*/
 
+	if (m_IsLineOfLineBagComb)
+	{
+		AddWorldScale(Vector3(50.f, 50.f, 0.f) * DeltaTime);
+	}
+
 	// MirrorBall Destroy È¿°ú
 	DestroyMirrorBallEffect(DeltaTime);
 
@@ -396,6 +402,8 @@ void CCell::DestroyMirrorBallEffect(float DeltaTime)
 		m_IsMoving = true;
 
 		m_IsBeingSpecialDestroyed = true;
+
+		AddRelativeRotation(0.f, 0.f, 50.f * DeltaTime);
 
 		return;
 	}
