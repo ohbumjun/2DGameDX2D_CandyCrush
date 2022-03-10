@@ -2510,12 +2510,17 @@ bool CBoard::DestroyHorizontalEffect(int RowIndex)
 {
 	for (int col = 0; col < m_ColCount; col++)
 	{
-		m_vecCells[RowIndex * m_ColCount + col]->SetBeingSpecialDestroyed(true);
-		m_vecCells[RowIndex * m_ColCount + col]->SetIsLineDestroyedCell(true);
-		m_vecCells[RowIndex * m_ColCount + col]->SetLineDestroyDelayTime(0.1f + col * 0.1f);
-
-		DestroySingleCell(RowIndex, col);
-
+		if (m_vecCells[RowIndex * m_ColCount + col]->GetCellState() == Cell_State::Bag || 
+			m_vecCells[RowIndex * m_ColCount + col]->GetCellState() == Cell_State::MirrorBall)
+		{
+			DestroySingleCell(RowIndex, col);
+		}
+		else
+		{
+			m_vecCells[RowIndex * m_ColCount + col]->SetBeingSpecialDestroyed(true);
+			m_vecCells[RowIndex * m_ColCount + col]->SetIsLineDestroyedCell(true);
+			m_vecCells[RowIndex * m_ColCount + col]->SetLineDestroyDelayTime(0.1f + col * 0.1f);
+		}
 		// 해당 Column의 그 위 Cell 들로 하여금 내려오는 것을 잠시 멈추도록 세팅한다
 		for (int row = RowIndex + 1; row < m_RowCount; row++)
 		{
@@ -2531,9 +2536,18 @@ bool CBoard::DestroyVerticalEffect(int ColIndex)
 {
 	for (int row = 0; row < m_VisualRowCount; row++)
 	{
-		m_vecCells[row * m_ColCount + ColIndex]->SetBeingSpecialDestroyed(true);
-		m_vecCells[row * m_ColCount + ColIndex]->SetIsLineDestroyedCell(true);
-		m_vecCells[row * m_ColCount + ColIndex]->SetLineDestroyDelayTime(0.1f + row * 0.1f);
+		if (m_vecCells[row * m_ColCount + ColIndex]->GetCellState() == Cell_State::Bag ||
+			m_vecCells[row * m_ColCount + ColIndex]->GetCellState() == Cell_State::MirrorBall)
+		{
+			DestroySingleCell(row, ColIndex);
+		}
+		else
+		{
+			m_vecCells[row * m_ColCount + ColIndex]->SetBeingSpecialDestroyed(true);
+			m_vecCells[row * m_ColCount + ColIndex]->SetIsLineDestroyedCell(true);
+			m_vecCells[row * m_ColCount + ColIndex]->SetLineDestroyDelayTime(0.1f + row * 0.1f);
+		}
+
 		// DestroySingleCell(row, ColIndex);
 
 		if (row == m_VisualRowCount - 1)
