@@ -93,8 +93,6 @@ private :
     bool FindMatchUpdate(); // 실시간으로 Match 여부 검사하기
 public :
     bool CreateBoard(int CountRow, int CountCol, float WidthRatio, float HeightRatio, const Vector3& LB);
-public :
-
 	// Click
 public: 
     void AddClickCellMoveDone();

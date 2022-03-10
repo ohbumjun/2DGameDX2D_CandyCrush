@@ -1036,22 +1036,81 @@ void CBoard::DestroyBagLineComb(int RowIndex, int ColIndex)
 	if (BottomRowIdx < 0)
 		BottomRowIdx = 0;
 
+	float DelayTime = 0.f;
+
 	// 가로 세줄 제거하기
 	for (int row = BottomRowIdx; row <= TopRowIdx; row++)
 	{
 		for (int col = 0; col < m_ColCount; col++)
 		{
+			DelayTime = 0.1f + col * 0.1f;
+
+			if (m_vecCells[row * m_ColCount + col]->GetCellState() == Cell_State::Bag ||
+				m_vecCells[row * m_ColCount + col]->GetCellState() == Cell_State::MirrorBall)
+			{
+				DestroySingleCell(row, col);
+			}
+			else
+			{
+				m_vecCells[row * m_ColCount + col]->SetBeingSpecialDestroyed(true);
+				m_vecCells[row * m_ColCount + col]->SetIsLineBagCombDestroyedCell(true);
+				m_vecCells[row * m_ColCount + col]->SetLineBagCombDestroyDelayTime(DelayTime);
+			}
+
+			if (row == BottomRowIdx)
+			{
+				// 해당 Column의 그 위 Cell 들로 하여금 내려오는 것을 잠시 멈추도록 세팅한다
+				for (int row = BottomRowIdx; row < m_RowCount; row++)
+				{
+					m_vecCells[row * m_ColCount + col]->SetPauseGoDown(true);
+				}
+			}
+		}
+
+		/*
+		for (int col = 0; col < m_ColCount; col++)
+		{
 			DestroySingleCell(row, col);
 		}
+		*/
 	}
+
+	float LastDelayTime = DelayTime;
 
 	// 세로 세줄 제거하기
 	for (int col = LeftColIdx; col <= RightColIdx; col++)
 	{
 		for (int row = 0; row < m_VisualRowCount; row++)
 		{
+			DelayTime = LastDelayTime + row * 0.1f;
+
+			if (m_vecCells[row * m_ColCount + col]->GetCellState() == Cell_State::Bag ||
+				m_vecCells[row * m_ColCount + col]->GetCellState() == Cell_State::MirrorBall)
+			{
+				DestroySingleCell(row, col);
+			}
+			else
+			{
+				m_vecCells[row * m_ColCount + col]->SetBeingSpecialDestroyed(true);
+				m_vecCells[row * m_ColCount + col]->SetIsLineBagCombDestroyedCell(true);
+				m_vecCells[row * m_ColCount + col]->SetLineBagCombDestroyDelayTime(DelayTime);
+			}
+
+			if (row == m_VisualRowCount - 1)
+			{
+				// 해당 Column의 그 위 Cell 들로 하여금 내려오는 것을 잠시 멈추도록 세팅한다
+				for (int row = m_VisualRowCount + 1; row < m_RowCount; row++)
+				{
+					m_vecCells[row * m_ColCount + col]->SetPauseGoDown(true);
+				}
+			}
+		}
+		/*
+		for (int row = 0; row < m_VisualRowCount; row++)
+		{
 			DestroySingleCell(row, col);
 		}
+		*/
 	}
 }
 
@@ -2550,7 +2609,7 @@ bool CBoard::DestroyVerticalEffect(int ColIndex)
 
 		// DestroySingleCell(row, ColIndex);
 
-		if (row == m_VisualRowCount - 1)
+		if (row == 0)
 		{
 			// 해당 Column의 그 위 Cell 들로 하여금 내려오는 것을 잠시 멈추도록 세팅한다
 			for (int row = m_VisualRowCount; row < m_RowCount; row++)
@@ -5314,8 +5373,8 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 void CBoard::SetClickBlockInfo(int Index)
 {
 	m_ClickedBlock = m_vecBlocks[Index];
-	m_ClickedBlock->SetOpacity(8.f);
-	m_ClickedBlock->SetBaseColor(0.f, 0.7f, 1.f, 1.f);
+	m_ClickedBlock->SetStaticOpacity(8.f);
+	m_ClickedBlock->SetStaticBaseColor(0.f, 0.7f, 1.f, 1.f);
 }
 
 void CBoard::ResetClickBlockInfo()
@@ -5323,8 +5382,18 @@ void CBoard::ResetClickBlockInfo()
 	if (!m_ClickedBlock)
 		return;
 
-	m_ClickedBlock->SetOpacity(0.f);
-	m_ClickedBlock->SetBaseColor(1.f, 1.f, 1.f, 1.f);
+	// 그냥 모든 Cell 들을 그렇게 세팅한다.
+	for (int row = 0; row < m_VisualRowCount; row++)
+	{
+		for (int col = 0; col < m_ColCount; col++)
+		{
+			m_vecBlocks[row * m_ColCount + col]->SetStaticOpacity(0.f);
+			m_vecBlocks[row * m_ColCount + col]->SetStaticBaseColor(1.f, 1.f, 1.f, 1.f);
+		}
+	}
+
+	// m_ClickedBlock->SetStaticOpacity(0.f);
+	// m_ClickedBlock->SetStaticBaseColor(1.f, 1.f, 1.f, 1.f);
 
 	m_ClickedBlock = nullptr;
 }
@@ -5367,7 +5436,6 @@ void CBoard::ClickCell(float DeltaTime)
 
 		// 클릭한 Board 의 Static Mesh Component 색상을 바꿔준다.
 		SetClickBlockInfo(IndexY * m_ColCount + IndexX);
-
 	}
 	// 두번째 Cell 선택
 	else if (m_MouseClick == Mouse_Click::First)
@@ -5388,6 +5456,7 @@ void CBoard::ClickCell(float DeltaTime)
 		// 인접하지 않는다면 Skip
 		int FirstCellColIndex = m_FirstClickCell->GetColIndex();
 		int FirstCellRowIndex = m_FirstClickCell->GetRowIndex();
+
 		if (std::abs(m_FirstClickCell->GetColIndex() - IndexX) + std::abs(m_FirstClickCell->GetRowIndex() - IndexY) > 1)
 		{
 			m_MouseClick = Mouse_Click::None;

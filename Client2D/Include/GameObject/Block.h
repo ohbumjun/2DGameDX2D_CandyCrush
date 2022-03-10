@@ -31,11 +31,11 @@ public :
 		return m_SpriteComponent;
 	}
 public :
-	void SetOpacity (float Opacity)
+	void SetStaticOpacity (float Opacity)
 	{
 		m_StaticComponent->SetOpacity(Opacity);
 	}
-	void SetBaseColor(float r, float g, float b, float a)
+	void SetStaticBaseColor(float r, float g, float b, float a)
 	{
 		m_StaticComponent->SetBaseColor(r, g, b, a);
 	}

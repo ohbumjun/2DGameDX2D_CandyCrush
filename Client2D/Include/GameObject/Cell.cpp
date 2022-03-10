@@ -9,6 +9,7 @@ CCell::CCell() :
 	m_IsShownEnable(true),
 	m_IsGoingBack(false),
 	m_IsLineDestroyedCell(false),
+	m_IsLineBagCombDestroyedCell(false),
 	m_IsSwitch(false),
 	m_PauseGoDown(false),
 	m_IsSpecialDestroyedBag(false),
@@ -349,6 +350,9 @@ void CCell::Update(float DeltaTime)
 	// Line Destroy È¿°ú
 	DestroyedByLineMatch(DeltaTime);
 
+	// Line + Bag Comb 
+	DestroyedByLineAndBagMatch(DeltaTime);
+
 	// Line ++ MirrorBall
 	DecreaseOpacityAndDestroyLineMirrorBallComb(DeltaTime);
 	ChangeStateSameColorWithLineMirrorBallComb(DeltaTime);
@@ -387,6 +391,35 @@ void CCell::DestroyedByLineMatch(float DeltaTime)
 	}
 
 	m_IsLineDestroyedCell = false;
+
+	m_IsMoving = false;
+
+	m_Board->SetMatchStateTrue(m_Index);
+
+	m_IsBeingSpecialDestroyed = false;
+
+	m_DestroyMarkState = DestroyMark_State::None;
+}
+
+void CCell::DestroyedByLineAndBagMatch(float DeltaTime)
+{
+	if (!m_IsLineBagCombDestroyedCell)
+		return;
+
+	if (m_LineBagCombDestroyDelayTime > 0.f)
+	{
+		m_LineBagCombDestroyDelayTime -= DeltaTime;
+
+		m_Sprite->SetOpacity(m_LineBagCombDestroyDelayTime / m_LineBagCombDestroyInitDelayTime);
+
+		m_IsMoving = true;
+
+		m_IsBeingSpecialDestroyed = true;
+
+		return;
+	}
+
+	m_IsLineBagCombDestroyedCell = false;
 
 	m_IsMoving = false;
 
