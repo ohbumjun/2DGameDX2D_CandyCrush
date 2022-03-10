@@ -1081,7 +1081,7 @@ bool CBoard::CheckBagAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 		return true;
 	}
 
-	return false;
+	return false; //
 }
 
 bool CBoard::CheckLineAndLineComb(CCell* FirstCell, CCell* SecondCell)
