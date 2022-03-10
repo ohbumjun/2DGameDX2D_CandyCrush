@@ -2513,8 +2513,7 @@ bool CBoard::DestroyHorizontalEffect(int RowIndex)
 		m_vecCells[RowIndex * m_ColCount + col]->SetBeingSpecialDestroyed(true);
 		m_vecCells[RowIndex * m_ColCount + col]->SetIsLineDestroyedCell(true);
 		m_vecCells[RowIndex * m_ColCount + col]->SetLineDestroyDelayTime(0.1f + col * 0.1f);
-
-		DestroySingleCell(RowIndex, col);
+		// DestroySingleCell(RowIndex, col);
 
 		// 해당 Column의 그 위 Cell 들로 하여금 내려오는 것을 잠시 멈추도록 세팅한다
 		for (int row = RowIndex + 1; row < m_RowCount; row++)

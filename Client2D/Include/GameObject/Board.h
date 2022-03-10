@@ -70,6 +70,9 @@ private:
 
 	// Cell 의 Pivot 을 고려해서, Mouse 위치에 더해줘야할 OffSet
     Vector2 m_MousePosOffSet;
+
+    // 현재 Special Destroy 되고 있는 상태인지
+    bool m_IsBeingSpecialDestroyed;
 public :
     Vector2 GetCellSize () const
 {
@@ -128,7 +131,9 @@ private :
     void DestroySingleMirrorBallCell(int RowIndex, int ColIndex);
 
     // Combination
-private: 
+private:
+    void ResetCellsPauseGoDownInfo();
+    bool CheckIsCellBeingSpecialDestroyed();
     // 봉지 + 봉지 --> 주변 2개 터진다 + 2번 연속으로 
     // 봉지 + 줄무늬 --> 좌우 상하로 3줄씩 없애준다.
     // 봉지 + Mirror Ball --> 해당 봉지 Type 의 Cell 들 모두 제거 + 이후 2번째에는 MirrorBall에 의해 Random Cell 모두 제거
@@ -214,7 +219,6 @@ private:
         int NewRowIdx, int NewColIdx);
     bool IsMatchExistForCells(std::vector<CSharedPtr<CCell>>& vecCells);
     void ShuffleRandom(std::vector<CSharedPtr<CCell>>& vecCells);
-
     // Destroy Cells  + 재조정
 private :
     void SetFindMatchCellsDone();
@@ -222,7 +226,6 @@ private :
     void SetNewPosOfCells();
     void SetNewIndexOfCells();
     bool CheckCellsMoving();
-
     // 변수 초기화 함수
 private : 
     void ResetMatchStateInfo();

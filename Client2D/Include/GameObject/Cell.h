@@ -61,6 +61,13 @@ private : // Notice 효과
     bool m_IsNoticeToggleUp;
     float m_ToggleMoveDist;
 private : // 특수 효과
+    // 특수효과로 사라지는 중인지
+    bool m_IsBeingSpecialDestroyed;
+    bool m_PauseGoDown; // --> 같은 Column 중에서 아래 녀석이 특수 효과로 사라지고 있다면, 잠시 내려가는 것을 중단한다.
+    // Line 효과
+    bool m_IsLineDestroyedCell;
+    float m_LineDestroyDelayTime;
+    float m_LineDestroyInitDelayTime;
     // MirrorBall + Line
     bool m_IsLineOfLineMirrorBallComb; // 점점 자신의 Opacity를 줄여나가다가 사라지게 한다.
     bool m_IsSameColorWithMirrorBallLineComb;
@@ -87,6 +94,9 @@ public:
     virtual void Update(float DeltaTime) override;
     virtual void PostUpdate(float DeltaTime) override;
 private : // 특수 효과
+    // Line Destroy효과
+    void DestroyedByLineMatch(float DeltaTime);
+
     // MirrorBall + Line
     void DecreaseOpacityAndDestroyLineMirrorBallComb(float DeltaTime);
     void ChangeStateSameColorWithLineMirrorBallComb(float DeltaTime);
@@ -95,6 +105,14 @@ private : // 특수 효과
     void SequentiallyDestroyCellByDoubleMirrorBallCombEffect(float DeltaTime);
 // Getter 
 public:
+    bool IsBeingSpecialDestroyed() const
+    {
+        return m_IsBeingSpecialDestroyed;
+    }
+    bool IsLineDestroyedCell() const
+    {
+        return m_IsLineDestroyedCell;
+    }
     bool IsPossibleMatch () const
     {
         return m_IsPossibleMatch;
@@ -209,7 +227,24 @@ public:
     }
 	// Setter
 public :
-    void SetPossibleNoticeMatch ()
+    void SetPauseGoDown(bool Enable)
+    {
+        m_PauseGoDown = Enable;
+    }
+    void SetBeingSpecialDestroyed(bool Enable)
+    {
+        m_IsBeingSpecialDestroyed = Enable;
+    }
+    void SetLineDestroyDelayTime(float Time)
+    {
+        m_LineDestroyDelayTime = Time;
+        m_LineDestroyInitDelayTime = Time;
+    }
+    void SetIsLineDestroyedCell(bool Enable)
+    {
+        m_IsLineDestroyedCell = Enable;
+    }
+	void SetPossibleNoticeMatch ()
     {
         if (m_IsPossibleMatch)
             return;

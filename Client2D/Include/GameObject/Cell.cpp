@@ -8,7 +8,9 @@ CCell::CCell() :
 	m_ShownAreaOffset(5.f),
 	m_IsShownEnable(true),
 	m_IsGoingBack(false),
+	m_IsLineDestroyedCell(false),
 	m_IsSwitch(false),
+	m_PauseGoDown(false),
 	m_IsSpecialDestroyedBag(false),
 	m_IsBagAndBagFirstDestroyed(false),
 	m_IsBagCombToBeDestroyed(false),
@@ -166,6 +168,9 @@ void CCell::SetIndexInfo(int Index, int RowIndex, int ColIndex)
 
 void CCell::GoDown(float DeltaTime)
 {
+	if (m_PauseGoDown)
+		return;
+
 	// 계속 내려가기
 	if (m_PosY > m_NewDownPosY)
 	{
@@ -341,6 +346,9 @@ void CCell::Update(float DeltaTime)
 	}
 	*/
 
+	// Line Destroy 효과
+	DestroyedByLineMatch(DeltaTime);
+
 	// Line ++ MirrorBall
 	DecreaseOpacityAndDestroyLineMirrorBallComb(DeltaTime);
 	ChangeStateSameColorWithLineMirrorBallComb(DeltaTime);
@@ -350,7 +358,9 @@ void CCell::Update(float DeltaTime)
 	SequentiallyDestroyCellByDoubleMirrorBallCombEffect(DeltaTime);
 
 	if (m_IsMirrorBallOfBagMirrorBallComb)
+	{
 		AddRelativeRotation(0.f, 0.f, 100.f * DeltaTime);
+	}
 
 	ApplyNoticeEffect(DeltaTime);
 }
@@ -358,6 +368,33 @@ void CCell::Update(float DeltaTime)
 void CCell::PostUpdate(float DeltaTime)
 {
 	CGameObject::PostUpdate(DeltaTime);
+}
+
+void CCell::DestroyedByLineMatch(float DeltaTime)
+{
+	if (!m_IsLineDestroyedCell)
+		return;
+
+	if (m_LineDestroyDelayTime > 0.f)
+	{
+		m_LineDestroyDelayTime -= DeltaTime;
+
+		m_Sprite->SetOpacity(m_LineDestroyDelayTime / m_LineDestroyInitDelayTime);
+
+		m_IsMoving = true;
+
+		return;
+	}
+
+	m_IsLineDestroyedCell = false;
+
+	m_IsMoving = false;
+
+	m_Board->SetMatchStateTrue(m_Index);
+
+	m_IsBeingSpecialDestroyed = false;
+
+	m_DestroyMarkState = DestroyMark_State::None;
 }
 
 void CCell::DecreaseOpacityAndDestroyLineMirrorBallComb(float DeltaTime)
@@ -412,10 +449,6 @@ void CCell::ChangeStateSameColorWithLineMirrorBallComb(float DeltaTime)
 				int Random = rand() % 2;
 
 				SetCellState(Random == 0 ? Cell_State::ColLine : Cell_State::RowLine);
-
-				// SetDestroyMarkState(Random == 0 ? DestroyMark_State::LineMirrorBallComb_Vertical : DestroyMark_State::LineMirrorBallComb_Horizontal);
-
-				// SetDestroyMarkState(ChangeMatchStateToDestroyMarkState(m_vecMatchState[Index]));
 			}
 		}
 		// 계속 투명도를 올린다
