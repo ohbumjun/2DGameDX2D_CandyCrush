@@ -144,6 +144,18 @@
     <Filter Include="02. Resource\02. Shader\02. ShaderClass\04. PosMesh">
       <UniqueIdentifier>{df50968f-cd35-4f19-84dd-8b0263500968}</UniqueIdentifier>
     </Filter>
+    <Filter Include="09. UI">
+      <UniqueIdentifier>{b12a3e04-9f09-421f-a979-97d6ee38437d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. UI\01. Window">
+      <UniqueIdentifier>{0fa7874c-2290-4bc5-882d-bf5079a42c11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="09. UI\02. Widget">
+      <UniqueIdentifier>{587a08b5-2644-4049-97c2-eaf65566ce9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\06. Widget">
+      <UniqueIdentifier>{5f75853a-d5ab-4aba-b380-322a8c951da4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -342,6 +354,15 @@
     <ClInclude Include="Resource\Shader\PosMeshShader.h">
       <Filter>02. Resource\02. Shader\02. ShaderClass\04. PosMesh</Filter>
     </ClInclude>
+    <ClInclude Include="UI\UIWindow.h">
+      <Filter>09. UI\01. Window</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\UIWidget.h">
+      <Filter>09. UI\02. Widget</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shader\WidgetConstantBuffer.h">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\06. Widget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -530,6 +551,15 @@
     <ClCompile Include="Resource\Shader\PosMeshShader.cpp">
       <Filter>02. Resource\02. Shader\02. ShaderClass\04. PosMesh</Filter>
     </ClCompile>
+    <ClCompile Include="UI\UIWindow.cpp">
+      <Filter>09. UI\01. Window</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\UIWidget.cpp">
+      <Filter>09. UI\02. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\WidgetConstantBuffer.cpp">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\06. Widget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">
@@ -547,6 +577,9 @@
       <Filter>02. Resource\02. Shader\01. HLSL</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\Shader\Collider.fx">
+      <Filter>02. Resource\02. Shader\01. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\Shader\Widget.fx">
       <Filter>02. Resource\02. Shader\01. HLSL</Filter>
     </FxCompile>
   </ItemGroup>

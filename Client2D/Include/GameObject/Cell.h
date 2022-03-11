@@ -98,6 +98,7 @@ private:
     void GoDown(float DeltaTime);
     void SwitchMove(float DeltaTime);
     void ApplyNoticeEffect(float DeltaTime);
+    void ApplyBagOfLineBagCombIncreseSizeEffect(float DeltaTime);
 public:
     virtual bool Init() override;
     virtual void Update(float DeltaTime) override;

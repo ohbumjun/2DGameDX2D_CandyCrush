@@ -1038,6 +1038,8 @@ void CBoard::DestroyBagLineComb(int RowIndex, int ColIndex)
 
 	float DelayTime = 0.f;
 
+	bool BagOfBagLineCombIncSize = false;
+
 	// 가로 세줄 제거하기
 	for (int row = BottomRowIdx; row <= TopRowIdx; row++)
 	{
@@ -1048,8 +1050,10 @@ void CBoard::DestroyBagLineComb(int RowIndex, int ColIndex)
 			// Bag Line Combo의 Bag 라면, 계속 크기를 키우는 효과를 준다
 			if (m_vecCells[row * m_ColCount + col]->GetCellState() == Cell_State::Bag)
 			{
-				if (std::abs(row - RowIndex) + std::abs(col - ColIndex) == 1)
+				if (!BagOfBagLineCombIncSize && std::abs(row - RowIndex) + std::abs(col - ColIndex) == 1)
 				{
+					BagOfBagLineCombIncSize = true;
+
 					m_vecCells[row * m_ColCount + col]->SetIsLineOfLineBagComb(true);
 				}
 			}
@@ -2107,8 +2111,7 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 				// 2) Match State 처리를 해준다.
 				if (CheckMatchNum == 3)
 				{
-					RowResultState = Match_State::ColLine;
-					// RowResultState = Match_State::Normal;
+					RowResultState = Match_State::Normal;
 				}
 				if (CheckMatchNum == 4)
 				{
@@ -2419,9 +2422,7 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 				// 2) Match State 처리를 해준다.
 				if (CheckMatchNum == 3)
 				{
-					// ColResultState = Match_State::Normal;
-					// ColResultState = Match_State::RowLine;
-					ColResultState = Match_State::Bag;
+					ColResultState = Match_State::Normal;
 				}
 				if (CheckMatchNum == 4)
 					ColResultState = Match_State::Bag;
@@ -2515,7 +2516,6 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 				if (CheckMatchNum == 3)
 				{
 					ColResultState = Match_State::Normal;
-					// ColResultState = Match_State::RowLine;
 				}
 
 				// 4개 이상이라면, Special Candy를 만들거나, Special Destroy 세팅을 해야 한다.
@@ -2675,10 +2675,11 @@ bool CBoard::DestroyMirrorBallEffect (int RowIndex, int ColIndex)
 	if (!m_vecCells[RowIndex * m_ColCount + ColIndex]->IsActive())
 		return true;
 
-	// ���� ������ Type�� ��� Destroy, ��, MirrorBall�� X
 	Cell_Type_Binary DestroyType = m_vecCells[RowIndex * m_ColCount + ColIndex]->GetMirrorBallDestroyType();
 
 	int Index = -1;
+
+	float DelayTime = 0.0f;
 
 	for (int row = 0; row < m_VisualRowCount; row++)
 	{
@@ -2694,7 +2695,14 @@ bool CBoard::DestroyMirrorBallEffect (int RowIndex, int ColIndex)
 				if (m_vecCells[Index]->GetCellState() == Cell_State::MirrorBall)
 					continue;
 
-				DestroySingleCell(row, col);
+				DelayTime += 0.5f;
+
+				m_vecCells[row * m_ColCount + col]->SetBeingSpecialDestroyed(true);
+				m_vecCells[row * m_ColCount + col]->SetIsMirrorBallDestroyedCell(true);
+				m_vecCells[row * m_ColCount + col]->SetMirrorBallDestroyDelayTime(DelayTime);
+
+
+				// DestroySingleCell(row, col);
 			}
 		}
 	}

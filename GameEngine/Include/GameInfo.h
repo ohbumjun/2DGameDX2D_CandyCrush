@@ -144,6 +144,25 @@ struct AnimationCBuffer {
 	Vector3 Empty;
 };
 
+struct WidgetCBuffer {
+	Vector4 Tint;
+	Matrix matWP;
+	float Opacity;
+	int UseTexture;
+	int WidgetAnimType;
+	int WidgetAnimEnable;
+	Vector2 Animation2DStartUV;
+	Vector2 Animation2DEndUV;
+
+	WidgetCBuffer() :
+		Animation2DStartUV(0.f, 0.f),
+		Animation2DEndUV(1.f, 1.f),
+		UseTexture(0),
+		WidgetAnimEnable(0),
+		Opacity(1.f)
+		{}
+};
+
 struct ColliderCBuffer {
 	Vector4 Color;
 	Matrix matWVP;

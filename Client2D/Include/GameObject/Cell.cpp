@@ -311,6 +311,14 @@ void CCell::ApplyNoticeEffect(float DeltaTime)
 	}
 }
 
+void CCell::ApplyBagOfLineBagCombIncreseSizeEffect(float DeltaTime)
+{
+	if (m_CellState == Cell_State::MirrorBall)
+	{
+		AddRelativeRotation(0.f, 0.f, 100.f * DeltaTime);
+	}
+}
+
 bool CCell::Init()
 {
 	if (!CGameObject::Init())
@@ -350,7 +358,7 @@ void CCell::Update(float DeltaTime)
 
 	if (m_IsLineOfLineBagComb)
 	{
-		AddWorldScale(Vector3(50.f, 50.f, 0.f) * DeltaTime);
+		AddWorldScale(Vector3(100.f, 100.f, 0.f) * DeltaTime);
 	}
 
 	// MirrorBall Destroy È¿°ú
@@ -370,17 +378,14 @@ void CCell::Update(float DeltaTime)
 	ApplyDoubleMirrorBallCombEffect(DeltaTime);
 	SequentiallyDestroyCellByDoubleMirrorBallCombEffect(DeltaTime);
 
-	if (m_CellState == Cell_State::MirrorBall)
-	{
-		AddRelativeRotation(0.f, 0.f, 100.f * DeltaTime);
-	}
-
 	if (m_IsMirrorBallOfBagMirrorBallComb)
 	{
 		// AddRelativeRotation(0.f, 0.f, 100.f * DeltaTime);
 	}
 
 	ApplyNoticeEffect(DeltaTime);
+
+	ApplyBagOfLineBagCombIncreseSizeEffect(DeltaTime);
 }
 
 void CCell::PostUpdate(float DeltaTime)
@@ -403,7 +408,7 @@ void CCell::DestroyMirrorBallEffect(float DeltaTime)
 
 		m_IsBeingSpecialDestroyed = true;
 
-		AddRelativeRotation(0.f, 0.f, 50.f * DeltaTime);
+		AddRelativeRotation(0.f, 0.f, 50.f * -1.f * DeltaTime);
 
 		return;
 	}
