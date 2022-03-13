@@ -35,10 +35,13 @@ protected :
 	Vector2 m_Size;
 	Vector2 m_Pos;
 	Vector2 m_RenderPos;
-	bool m_Start;
 	int m_ZOrder;
-	float m_Angle;
 	Vector4 m_Tint;
 	float m_Opacity;
+	float m_Angle;
+	float m_Start;
+	class CWidgetConstantBuffer* m_CBuffer;
+	CSharedPtr<class CShader> m_Shader;
+	CSharedPtr<class CMesh> m_Mesh;
 };
 

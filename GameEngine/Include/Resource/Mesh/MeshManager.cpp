@@ -44,6 +44,29 @@ bool CMeshManager::Init()
 		return false;
 	}
 
+	CMesh* WidgetMesh = new CStaticMesh;
+
+	// Pos, UV를 전달한다
+	VertexUV WidgetVtx[4] = {
+		VertexUV(Vector3(0.f, 1.f, 0.f), Vector2(0.f, 0.f)),
+		VertexUV(Vector3(1.f, 1.f, 0.f), Vector2(1.f, 0.f)),
+		VertexUV(Vector3(0.f, 0.f, 0.f), Vector2(0.f, 1.f)),
+		VertexUV(Vector3(1.f, 0.f, 0.f), Vector2(1.f, 1.f))
+	};
+
+	int WidgetIdx[6] = { 0, 1, 3, 0, 3, 2 };
+
+	WidgetMesh->SetName("Widget");
+
+	if (!WidgetMesh->CreateMesh(WidgetVtx, sizeof(VertexUV), 4, D3D11_USAGE_IMMUTABLE,
+		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST, 
+		WidgetIdx, 4, 6, D3D11_USAGE_IMMUTABLE, DXGI_FORMAT_R32_UINT))
+	{
+		SAFE_DELETE(FrameRect);
+		return false;
+	}
+
+	// Frame Rect
 	m_mapMesh.insert(std::make_pair("FrameRect", FrameRect));
 
 	return true;

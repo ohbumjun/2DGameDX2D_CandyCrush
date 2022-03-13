@@ -9,6 +9,7 @@
 #include "Mesh2DShader.h"
 #include "ColliderShader.h"
 #include "PosMeshShader.h"
+#include "WidgetShader.h"
 
 CShaderManager::CShaderManager()
 {}
@@ -26,6 +27,8 @@ bool CShaderManager::Init()
 	if (!CreateShader<CColliderShader>("ColliderShader"))
 		return false;
 	if (!CreateShader<CPosMeshShader>("PosMeshShader"))
+		return false;
+	if (!CreateShader<CWidgetShader>("WidgetShader"))
 		return false;
 
 	// 상수 버퍼
