@@ -151,7 +151,7 @@ void CUIWidget::Render()
 
 	m_CBuffer->UpdateCBuffer();
 
-	m_Shader->SetShader();
+	m_Shader->SetShader(); //
 	m_Mesh->Render();
 }
 
