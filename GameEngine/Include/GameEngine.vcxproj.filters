@@ -156,6 +156,9 @@
     <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\06. Widget">
       <UniqueIdentifier>{5f75853a-d5ab-4aba-b380-322a8c951da4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\02. Shader\02. ShaderClass\05. Widget">
+      <UniqueIdentifier>{3da26531-695e-4ece-8fa0-540645916040}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -363,6 +366,9 @@
     <ClInclude Include="Resource\Shader\WidgetConstantBuffer.h">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\06. Widget</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Shader\WidgetShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\05. Widget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -559,6 +565,9 @@
     </ClCompile>
     <ClCompile Include="Resource\Shader\WidgetConstantBuffer.cpp">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\06. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\WidgetShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\05. Widget</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
