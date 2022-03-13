@@ -62,12 +62,15 @@ bool CMeshManager::Init()
 		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST, 
 		WidgetIdx, 4, 6, D3D11_USAGE_IMMUTABLE, DXGI_FORMAT_R32_UINT))
 	{
-		SAFE_DELETE(FrameRect);
+		SAFE_DELETE(WidgetMesh);
 		return false;
 	}
 
 	// Frame Rect
 	m_mapMesh.insert(std::make_pair("FrameRect", FrameRect));
+
+	// WigetMesh
+	m_mapMesh.insert(std::make_pair("WidgetMesh", WidgetMesh));
 
 	return true;
 }

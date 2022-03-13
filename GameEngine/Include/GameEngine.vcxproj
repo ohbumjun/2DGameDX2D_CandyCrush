@@ -234,6 +234,8 @@
     <ClInclude Include="Scene\ViewPort.h" />
     <ClInclude Include="SharedPtr.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="UI\UIButton.h" />
+    <ClInclude Include="UI\UIImage.h" />
     <ClInclude Include="UI\UIWidget.h" />
     <ClInclude Include="UI\UIWindow.h" />
     <ClInclude Include="Vector2.h" />
@@ -302,6 +304,8 @@
     <ClCompile Include="Scene\SceneResource.cpp" />
     <ClCompile Include="Scene\ViewPort.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="UI\UIButton.cpp" />
+    <ClCompile Include="UI\UIImage.cpp" />
     <ClCompile Include="UI\UIWidget.cpp" />
     <ClCompile Include="UI\UIWindow.cpp" />
     <ClCompile Include="Vector2.cpp" />

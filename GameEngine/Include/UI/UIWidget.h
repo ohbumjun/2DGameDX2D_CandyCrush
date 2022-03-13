@@ -119,3 +119,4 @@ public:
 	virtual CUIWidget* Clone();
 };
 
+

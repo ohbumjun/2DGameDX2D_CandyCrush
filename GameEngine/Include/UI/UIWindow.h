@@ -40,7 +40,7 @@ public :
 {
 		return m_ViewPort;
 }
-	float GetZOrder() const
+	int GetZOrder() const
 {
 		return m_ZOrder;
 }
@@ -106,7 +106,8 @@ public :
 }
 
 	template<typename T>
-	T* CreateUIWidget(const std::string& Name)
+	// T* CreateUIWidget(const std::string& Name)
+	T* CreateUIWidget(const std::string_view Name)
 {
 		T* Widget = new T;
 		Widget->SetOwner(this);
