@@ -56,7 +56,7 @@ bool CMeshManager::Init()
 
 	int WidgetIdx[6] = { 0, 1, 3, 0, 3, 2 };
 
-	WidgetMesh->SetName("Widget");
+	WidgetMesh->SetName("WidgetMesh");
 
 	if (!WidgetMesh->CreateMesh(WidgetVtx, sizeof(VertexUV), 4, D3D11_USAGE_IMMUTABLE,
 		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST, 

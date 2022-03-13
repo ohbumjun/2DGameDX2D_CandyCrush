@@ -9,6 +9,11 @@ protected:
 	~CViewPort();
 private:
 	class CScene* m_Scene;
+public :
+	class CScene* GetScene() const
+{
+		return m_Scene;
+}
 public:
 	virtual bool Init();
 	virtual void Start();
