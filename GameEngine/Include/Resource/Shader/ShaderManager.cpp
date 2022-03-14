@@ -43,7 +43,7 @@ bool CShaderManager::Init()
 	if (!CreateConstantBuffer("ColliderCBuffer", 4, sizeof(ColliderCBuffer), (int)Buffer_Shader_Type::Graphic))
 		return false;
 	if (!CreateConstantBuffer("WidgetCBuffer", 5, sizeof(WidgetCBuffer), (int)Buffer_Shader_Type::Graphic))
-		return false;
+		// return false;
 
 
 	return true;
