@@ -27,6 +27,14 @@ enum Key_State {
 	Key_Max
 };
 
+enum Button_State {
+	Normal,
+	MouseOn,
+	Click,
+	Disable,
+	Max
+};
+
 enum class Input_Type {
 	Window,
 	Direct

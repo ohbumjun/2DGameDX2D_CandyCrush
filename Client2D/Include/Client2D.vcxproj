@@ -161,7 +161,9 @@
     <ClCompile Include="GameObject\Cell.cpp" />
     <ClCompile Include="GameObject\Player2D.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Scene\IntroScene.cpp" />
     <ClCompile Include="Scene\StartScene.cpp" />
+    <ClCompile Include="UI\IntroWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientManager.h" />
@@ -171,7 +173,9 @@
     <ClInclude Include="GameObject\Cell.h" />
     <ClInclude Include="GameObject\Player2D.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Scene\IntroScene.h" />
     <ClInclude Include="Scene\StartScene.h" />
+    <ClInclude Include="UI\IntroWidget.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client2D.rc" />

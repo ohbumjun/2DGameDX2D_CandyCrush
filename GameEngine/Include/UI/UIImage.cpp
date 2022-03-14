@@ -1,20 +1,22 @@
 #include "UIImage.h"
-#include"UIWindow.h"
-#include "../Scene/ViewPort.h"
+#include "UIWindow.h"
+#include "../Resource/ResourceManager.h"
 #include "../Scene/Scene.h"
 #include "../Scene/SceneResource.h"
-#include "../Resource/ResourceManager.h"
+#include "../Scene/ViewPort.h"
+#include "../PathManager.h"
 #include "../Resource/Shader/WidgetConstantBuffer.h"
 
  CUIImage::CUIImage() :
 	 m_Info{}
-{}
+{
+	 SetTypeID<CUIImage>();
+ }
 
  CUIImage::CUIImage(const CUIImage& Widget) : CUIWidget(Widget)
 {
 	 m_Info = Widget.m_Info;
-
-	 m_ClickCallback = nullptr;
+	 m_Callback = nullptr;
  }
 
  CUIImage::~CUIImage()
@@ -22,37 +24,29 @@
 
  void CUIImage::SetTexture(const std::string& Name, const TCHAR* FileName, const std::string& PathName)
 {
+	 TCHAR FullPath[MAX_PATH] = {};
+
+	 const PathInfo* Path = CPathManager::GetInst()->FindPath(PathName);
+
+	 if (Path)
+		 lstrcpy(FullPath, Path->Path);
+
+	 lstrcat(FullPath, FileName);
+
+	 SetTextureFullPath(Name, FullPath);
+ }
+
+ void CUIImage::SetTextureFullPath(const std::string& Name, const TCHAR* FullPath)
+{
 	 if (m_Owner->GetViewPort())
 	 {
-		 m_Owner->GetViewPort()->GetScene()->GetSceneResource()->LoadTexture(Name, FileName, PathName);
+		 m_Owner->GetViewPort()->GetScene()->GetSceneResource()->LoadTextureFullPath(Name, FullPath);
 
 		 m_Info.m_Texture = m_Owner->GetViewPort()->GetScene()->GetSceneResource()->FindTexture(Name);
 	}
 	 else
 	 {
-		 CResourceManager::GetInst()->LoadTexture(Name, FileName, PathName);
-		 
-		 m_Info.m_Texture = CResourceManager::GetInst()->FindTexture(Name);
-	 }
-
-	 if (m_Info.m_Texture)
-	 {
-		 SetSize((float)m_Info.m_Texture->GetWidth(),(float)m_Info.m_Texture->GetHeight());
-		 SetUseTexture(true);
-	 }
- }
-
- void CUIImage::SetTexture(const std::string& Name, const TCHAR* FullPath)
-{
-	 if (m_Owner->GetViewPort())
-	 {
-		 m_Owner->GetViewPort()->GetScene()->GetSceneResource()->LoadTexture(Name, FullPath);
-
-		 m_Info.m_Texture = m_Owner->GetViewPort()->GetScene()->GetSceneResource()->FindTexture(Name);
-	 }
-	 else
-	 {
-		 CResourceManager::GetInst()->LoadTexture(Name, FullPath);
+		CResourceManager::GetInst()->LoadTextureFullPath(Name, FullPath);
 
 		 m_Info.m_Texture = CResourceManager::GetInst()->FindTexture(Name);
 	 }
@@ -60,50 +54,38 @@
 	 if (m_Info.m_Texture)
 	 {
 		 SetSize((float)m_Info.m_Texture->GetWidth(), (float)m_Info.m_Texture->GetHeight());
+
 		 SetUseTexture(true);
 	 }
  }
 
- void CUIImage::SetTexture(const std::string& Name, const std::vector<TCHAR*>& vecFileName,
-	const std::string& PathName)
+ void CUIImage::SetTexture(const std::string& Name, CTexture* Texture)
 {
-	 if (m_Owner->GetViewPort())
-	 {
-		 m_Owner->GetViewPort()->GetScene()->GetSceneResource()->LoadTexture(Name, vecFileName, PathName);
+	 if (!Texture)
+		 return;
 
-		 m_Info.m_Texture = m_Owner->GetViewPort()->GetScene()->GetSceneResource()->FindTexture(Name);
-	 }
-	 else
-	 {
-		 CResourceManager::GetInst()->LoadTexture(Name, vecFileName, PathName);
-
-		 m_Info.m_Texture = CResourceManager::GetInst()->FindTexture(Name);
-	 }
+	 m_Info.m_Texture = Texture;
 
 	 if (m_Info.m_Texture)
 	 {
 		 SetSize((float)m_Info.m_Texture->GetWidth(), (float)m_Info.m_Texture->GetHeight());
+
 		 SetUseTexture(true);
 	 }
+ }
+
+ void CUIImage::SetTextureTint(float r, float g, float b, float a)
+{
+	 m_Info.m_Tint = Vector4(r / 255.f, g / 255.f, b / 255.f, a / 255.f);
  }
 
  void CUIImage::AddAnimationFrameData(const Vector2& StartPos, const Vector2& Size)
- {
+{
 	 AnimationFrameData Data = {};
 	 Data.StartPos = StartPos;
 	 Data.Size = Size;
 
 	 m_Info.m_vecFrameData.push_back(Data);
- }
-
- void CUIImage::SetTextureTint(const Vector4& Color)
-{
-	 m_Info.m_Tint = Color;
- }
-
- void CUIImage::SetTextureTint(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
-{
-	 m_Info.m_Tint = Vector4(r / 255.f, g / 255.f, b / 255.f, a / 255.f);
  }
 
  bool CUIImage::Init()
@@ -128,12 +110,11 @@
 {
 	CUIWidget::PostUpdate(DeltaTime);
 
-	// Frame 정보 Update
 	if (!m_Info.m_vecFrameData.empty())
 	{
-		float FrameTime = m_Info.m_PlayTime / m_Info.m_vecFrameData.size();
+		float FrameTime = m_Info.m_PlayTime / (float)m_Info.m_vecFrameData.size();
 
-		m_Info.m_AnimTime += DeltaTime * m_Info.m_PlayScale;
+		m_Info.m_AnimTime += DeltaTime;
 
 		if (m_Info.m_AnimTime >= FrameTime)
 		{
@@ -146,58 +127,49 @@
 
  void CUIImage::Render()
 {
-	CUIWidget::Render();
+	 int Frame = 0;
 
-	int Frame = 0;
+	 if (!m_Info.m_vecFrameData.empty())
+	 {
+		 m_CBuffer->SetAnimEnable(true);
 
-	// Animation이 존재한다면, StartUV, EndUV 도 세팅
-	if (!m_Info.m_vecFrameData.empty())
-	{
-		CTexture* AnimTexture = m_Info.m_Texture;
+		 switch (m_Info.m_Texture->GetImageType())
+		 {
+			 case Image_Type::Atlas :
+			 {
+				 Vector2 StartPos = m_Info.m_vecFrameData[m_Info.m_FrameIndex].StartPos;
+				 Vector2 EndPos   = StartPos + m_Info.m_vecFrameData[m_Info.m_FrameIndex].Size;
 
-		m_CBuffer->SetAnimEnable(true);
-		// m_CBuffer->SetAnimType(AnimTexture->GetImageType());
+				 Vector2 TextureSize = Vector2((float)m_Info.m_Texture->GetWidth(), (float)m_Info.m_Texture->GetHeight());
 
-		switch (AnimTexture->GetImageType())
-		{
-		case Image_Type::Atlas :
-		{
-			Vector2 AnimStartPos = m_Info.m_vecFrameData[m_Info.m_FrameIndex].StartPos;
-			Vector2 AnimEndPos = AnimStartPos +  m_Info.m_vecFrameData[m_Info.m_FrameIndex].Size;
+				 Vector2 StartUV = StartPos / TextureSize;
+				 Vector2 EndUV   = EndPos / TextureSize;
 
-			Vector2 TextureSize = Vector2((float)m_Info.m_Texture->GetWidth(), (float)m_Info.m_Texture->GetHeight());
+				 m_CBuffer->SetAnimStartUV(StartUV);
+				 m_CBuffer->SetAnimEndUV(EndUV);
+			 }
+			 break;
+			 case Image_Type::Frame:
+			 {
+				 Frame = m_Info.m_FrameIndex;
 
-			Vector2 StartUV = AnimStartPos / TextureSize;
-			Vector2 EndUV = AnimEndPos / TextureSize;
+				 m_CBuffer->SetAnimStartUV(Vector2(0.f, 0.f));
+				 m_CBuffer->SetAnimEndUV(Vector2(1.f, 1.f));
+			 }
+			 break;
+		 }
+	 }
+	 else
+	 {
+		 m_CBuffer->SetAnimEnable(false);
+	 }
 
-			m_CBuffer->SetAnimStartUV(StartUV);
-			m_CBuffer->SetAnimEndUV(EndUV);
-		}
-		break;
-		case Image_Type::Frame :
-		{
-			Frame = m_Info.m_FrameIndex;
+	 m_Tint = m_Info.m_Tint;
 
-			// Frame 일때는 하나의 Texture 가 여러개의 Texture를 지니고 있고
-			// 각각의 Texture가 하나의 Animation을 의미하게 된다. 
-			m_CBuffer->SetAnimStartUV(Vector2(0.f, 0.f));
-			m_CBuffer->SetAnimEndUV(Vector2(1.f, 1.f));
-		}
-		default:
-			break;
-		}
-	}
-	else
-	{
-		m_CBuffer->SetAnimEnable(false);
-	}
-
-	if (m_Info.m_Texture)
-	{
-		m_Info.m_Texture->SetShader(0, (int)Buffer_Shader_Type::Pixel, Frame); //
-	}
-
-	m_Tint = m_Info.m_Tint;
+	 if (m_Info.m_Texture)
+	 {
+		 m_Info.m_Texture->SetShader(0, (int)Buffer_Shader_Type::Pixel, 0);
+	 }
 
 	CUIWidget::Render();
 }

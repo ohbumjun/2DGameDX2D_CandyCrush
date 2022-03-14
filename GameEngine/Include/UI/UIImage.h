@@ -10,31 +10,25 @@ protected:
     CUIImage();
     CUIImage(const CUIImage& Widget);
     virtual ~CUIImage() override;
-protected:
+protected :
     WidgetImageInfo m_Info;
-    std::function<void()> m_ClickCallback;
-public :
-    WidgetImageInfo GetWidgetImageInfo() const
-{
-        return m_Info;
-}
+    std::function<void()> m_Callback;
 public :
     void SetPlayTime(float PlayTime)
 {
         m_Info.m_PlayTime = PlayTime;
 }
-    void SetPlayScale (float PlayScale)
+    void SetPlayScale(float PlayScale)
 {
         m_Info.m_PlayScale = PlayScale;
 }
-
+public :
     void SetTexture(const std::string& Name, const TCHAR* FileName, const std::string& PathName = TEXTURE_PATH);
-    void SetTexture(const std::string& Name, const TCHAR* FullPath);
-    void SetTexture(const std::string& Name, const std::vector<TCHAR*>& vecFileName,
-        const std::string& PathName = TEXTURE_PATH);
+    void SetTextureFullPath(const std::string& Name, const TCHAR* FullPath);
+    void SetTexture(const std::string& Name, CTexture* Texture);
+public :
+    void SetTextureTint(float r, float g, float b, float a);
     void AddAnimationFrameData(const Vector2& StartPos, const Vector2& Size);
-    void SetTextureTint(const Vector4& Color);
-    void SetTextureTint(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 public :
     virtual bool Init() override;
     virtual void Start() override;
@@ -44,8 +38,10 @@ public :
     virtual CUIImage* Clone() override;
 public :
     template<typename T>
-    void SetClickCallback(T* Obj, void(T::*Func)())
+	void SetCallback(T* Obj, void(T::*Func)())
 {
-        m_ClickCallback = std::bind(Func, Obj);
+        m_Callback = std::bind(Func, Obj);
 }
 };
+
+
