@@ -135,15 +135,17 @@ void CUIWidget::Render()
 {
 	Matrix matScale, matRotate, matTranslate;
 
-	Matrix matWP, matWorld;
+	Matrix matWP, matWorld, matProj;
 
 	matScale.Scaling(m_Size.x, m_Size.y, 1.f);
 	matRotate.Rotation(0.f, 0.f, m_Angle);
-	matTranslate.Translation(m_Pos.x, m_Pos.y, 0.f);
+	matTranslate.Translation(m_RenderPos.x, m_RenderPos.y, 0.f);
 
 	matWorld = matScale * matRotate * matTranslate;
 
-	matWP = matWorld * CSceneManager::GetInst()->GetScene()->GetCameraManager()->GetCurrentCamera()->GetProjMatrix();
+	matProj = CSceneManager::GetInst()->GetScene()->GetCameraManager()->GetCurrentCamera()->GetProjMatrix();
+
+	matWP = matWorld * matProj;
 
 	matWP.Transpose();
 

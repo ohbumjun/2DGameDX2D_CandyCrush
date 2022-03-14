@@ -89,7 +89,7 @@ public :
 }
 public :
 	template<typename T>
-	T* FindUIWidget(const std::string_view Name)
+	T* FindUIWidget(const std::string& Name)
 {
 		auto iter = m_WidgetList.begin();
 		auto iterEnd = m_WidgetList.end();
@@ -107,7 +107,7 @@ public :
 
 	template<typename T>
 	// T* CreateUIWidget(const std::string& Name)
-	T* CreateUIWidget(const std::string_view Name)
+	T* CreateUIWidget(const std::string& Name)
 {
 		T* Widget = new T;
 		Widget->SetOwner(this);

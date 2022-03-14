@@ -13,7 +13,7 @@ protected:
     virtual ~CIntroWidget();
 private:
     CSharedPtr<CUIButton> m_Button;
-    CSharedPtr<CUIImage> m_TestImage;
+    CSharedPtr<CUIImage> m_Image;
 public:
     virtual void Start() override;
     virtual bool Init() override;

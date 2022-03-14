@@ -3,6 +3,7 @@
 #include "resource.h"
 #include "Scene/SceneManager.h"
 #include "Scene/StartScene.h"
+#include "Scene/IntroScene.h"
 #include "Input.h"
 
 DEFINITION_SINGLE(CClientManager)
@@ -37,7 +38,8 @@ bool CClientManager::Init(HINSTANCE hInst)
 
 void CClientManager::CreateDefaultSceneMode()
 {
-	CSceneManager::GetInst()->CreateSceneMode<CStartScene>();
+	// CSceneManager::GetInst()->CreateSceneMode<CStartScene>();
+	CSceneManager::GetInst()->CreateSceneMode<CIntroScene>();
 }
 
 int CClientManager::Run()

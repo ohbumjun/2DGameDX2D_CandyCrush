@@ -8,6 +8,7 @@
 #include "../Scene/SceneManager.h"
 #include "../Scene/Scene.h"
 #include "../Scene/ViewPort.h"
+#include "../Scene/ViewPort.h"
 
 DEFINITION_SINGLE(CRenderManager)
 
@@ -216,7 +217,7 @@ void CRenderManager::Render()
 	// Widget 출력시 Alpha Blending 처리하기
 	m_AlphaDisable->SetState();
 
-	// CSceneManager::GetInst()->GetScene()->GetViewPort()->Render();
+	CSceneManager::GetInst()->GetScene()->GetViewPort()->Render();
 
 	// Mouse Widget 도 출력
 	// CUIWindow* MouseWidget = CEngine::GetInst()->GetMouseWidget();

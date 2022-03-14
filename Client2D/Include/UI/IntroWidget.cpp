@@ -26,6 +26,9 @@ bool CIntroWidget::Init()
 	m_Button->SetTexture(Button_State::MouseOn, "StartButton", TEXT("Start.png"));
 	m_Button->SetTexture(Button_State::Click, "StartButton", TEXT("Start.png"));
 
+	// m_Button->SetTextureTint(Button_State::Normal, 220, 220, 220, 255);
+	// m_Button->SetTextureTint(Button_State::MouseOn, 255, 255, 255, 255);
+	// m_Button->SetTextureTint(Button_State::Click, 150, 150, 150, 255);
 	m_Button->SetTextureTint(Button_State::Normal, 220, 220, 220, 255);
 	m_Button->SetTextureTint(Button_State::MouseOn, 255, 255, 255, 255);
 	m_Button->SetTextureTint(Button_State::Click, 150, 150, 150, 255);

@@ -50,7 +50,7 @@ public :
 	{
 		T* Window = new T;
 		Window->SetName(Name);
-		Window->SetViewPort(this);
+		Window->m_ViewPort = this;
 		Window->SetScene(m_Scene);
 
 		if (!Window->Init())

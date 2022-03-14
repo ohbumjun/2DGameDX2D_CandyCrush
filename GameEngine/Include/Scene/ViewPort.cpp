@@ -37,7 +37,7 @@ void CViewPort::Update(float DeltaTime)
 			iterEnd = m_WindowList.end();
 			continue;
 		}
-		if ((*iter)->IsEnable())
+		if (!(*iter)->IsEnable())
 		{
 			++iter;
 			continue;
@@ -62,7 +62,7 @@ void CViewPort::PostUpdate(float DeltaTime)
 			iterEnd = m_WindowList.end();
 			continue;
 		}
-		if ((*iter)->IsEnable())
+		if (!(*iter)->IsEnable())
 		{
 			++iter;
 			continue;

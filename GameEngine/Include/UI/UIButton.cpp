@@ -17,7 +17,7 @@
 
  CUIButton::CUIButton(const CUIButton& Button) : CUIWidget(Button)
 {
-	 *this = Button;
+ 	*this = Button;
 	 m_ClickCallback = nullptr;
 	 m_State = Button_State::Normal;
  }
@@ -61,6 +61,7 @@
 	 if (m_Info[(int)State].m_Texture)
 	 {
 		 SetSize((float)m_Info[(int)State].m_Texture->GetWidth(), (float)m_Info[(int)State].m_Texture->GetHeight());
+
 		 SetUseTexture(true);
 	 }
  }
@@ -120,27 +121,30 @@
 
 	bool LMouseClick = CInput::GetInst()->GetMouseLButtonClick();
 
-	if (m_MouseHovered)
+	if (m_State != Button_State::Disable)
 	{
-		if (LMouseClick)
+		if (m_MouseHovered)
 		{
-			m_State = Button_State::Click;
-		}
-		else if (m_State == Button_State::Click)
-		{
-			if (m_ClickCallback)
-				m_ClickCallback();
+			if (LMouseClick)
+			{
+				m_State = Button_State::Click;
+			}
+			else if (m_State == Button_State::Click)
+			{
+				if (m_ClickCallback)
+					m_ClickCallback();
 
-			m_State = Button_State::MouseOn;
+				m_State = Button_State::MouseOn;
+			}
+			else
+			{
+				m_State = Button_State::MouseOn;
+			}
 		}
 		else
 		{
-			m_State = Button_State::MouseOn;
+			m_State = Button_State::Normal;
 		}
-	}
-	else
-	{
-		m_State = Button_State::Normal;
 	}
 }
 

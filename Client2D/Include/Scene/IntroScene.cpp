@@ -24,7 +24,7 @@ bool CIntroScene::Init()
 
 	Resolution RS = CEngine::GetInst()->GetResolution();
 
-	m_IntroWidget = m_Scene->GetViewPort()->
+	m_IntroWidget = m_Scene->GetViewPort()->CreateUIWindow<CIntroWidget>("IntroWidget");
 
 	return true;
 }
