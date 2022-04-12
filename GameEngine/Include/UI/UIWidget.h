@@ -41,7 +41,7 @@ protected:
 	Vector4 m_Tint;
 	float m_Opacity;
 	float m_Angle;
-	float m_Start;
+	bool m_Start;
 	class CWidgetConstantBuffer* m_CBuffer;
 	CSharedPtr<class CShader> m_Shader;
 	CSharedPtr<class CMesh> m_Mesh;
@@ -104,6 +104,10 @@ public:
 	void SetTint(const Vector4& Tint)
 	{
 		m_Tint = Tint;
+	}
+	void SetZOrder(int Order)
+	{
+		m_ZOrder = Order;
 	}
 	void SetShader(const std::string& Name);
 	void SetUseTexture(bool Use);

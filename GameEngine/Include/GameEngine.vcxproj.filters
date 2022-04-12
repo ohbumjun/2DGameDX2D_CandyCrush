@@ -375,6 +375,9 @@
     <ClInclude Include="UI\UIButton.h">
       <Filter>09. UI\02. Widget</Filter>
     </ClInclude>
+    <ClInclude Include="UI\UIText.h">
+      <Filter>09. UI\02. Widget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -579,6 +582,9 @@
       <Filter>09. UI\02. Widget</Filter>
     </ClCompile>
     <ClCompile Include="UI\UIButton.cpp">
+      <Filter>09. UI\02. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\UIText.cpp">
       <Filter>09. UI\02. Widget</Filter>
     </ClCompile>
   </ItemGroup>

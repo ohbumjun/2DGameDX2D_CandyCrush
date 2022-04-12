@@ -85,7 +85,7 @@ public :
 public :
 	static bool SortWidget(CUIWidget* X, CUIWidget* Y)
 {
-		return X->GetZOrder() > Y->GetZOrder();
+		return X->GetZOrder() < Y->GetZOrder();
 }
 public :
 	template<typename T>
