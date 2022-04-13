@@ -111,8 +111,9 @@
 }
 
  void CUIButton::Update(float DeltaTime)
-{
-	CUIWidget::Update(DeltaTime);
+ {
+	 CUIWidget::Update(DeltaTime);
+
 }
 
  void CUIButton::PostUpdate(float DeltaTime)

@@ -191,7 +191,7 @@ void CInput::Update(float DeltaTime)
 	UpdateMouse(DeltaTime);
 
 	// UI : 마우스 충돌
-	// m_CollisionWidget = CSceneManager::GetInst()->GetScene()->GetCollision()->CollisionWidget();
+	m_CollisionWidget = CSceneManager::GetInst()->GetScene()->GetSceneCollision()->CollisionWidget();
 
 	// 키 상태를 업데이트 해준다.
 	UpdateKeyState();

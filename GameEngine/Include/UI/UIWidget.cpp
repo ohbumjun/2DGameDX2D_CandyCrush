@@ -71,6 +71,8 @@ void CUIWidget::SetUseAnimation(bool Use)
 
 bool CUIWidget::CollisionMouse(const Vector2& MousePos)
 {
+	m_MouseHovered = true;
+
 	if (MousePos.x < m_Pos.x)
 		m_MouseHovered = false;
 	if (MousePos.x >= m_Pos.x + m_Size.x)

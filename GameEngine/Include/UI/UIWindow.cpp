@@ -52,14 +52,14 @@ bool CUIWindow::CollisionMouse(const Vector2& MousePos)
 		m_WidgetList.sort(CUIWindow::SortWidget);
 	}
 
-	auto iter = m_WidgetList.begin();
-	auto iterEnd = m_WidgetList.end();
+	auto rIter = m_WidgetList.rbegin();
+	auto rIterEnd = m_WidgetList.rend();
 
-	for (; iter != iterEnd; ++iter)
+	for (; rIter != rIterEnd; ++rIter)
 	{
-		if ((*iter)->IsEnable())
+		if (!(*rIter)->IsEnable())
 			continue;
-		if ((*iter)->CollisionMouse(MousePos))
+		if ((*rIter)->CollisionMouse(MousePos))
 		{
 			m_MouseHovered = true;
 			return true;
