@@ -35,7 +35,6 @@ private :
 
 	bool m_Alpha;
 	float m_Opacity;
-	Vector2 m_Size;
 	Vector4 m_Color;
 	float m_FontSize;
 
@@ -52,7 +51,7 @@ public :
 {
 		int Length = lstrlen(Text);
 
-		if (Length >= m_TextCapacity)
+		if (Length + 1 >= m_TextCapacity)
 		{
 			m_TextCapacity *= 2;
 
@@ -60,7 +59,7 @@ public :
 
 			m_Text = new TCHAR[m_TextCapacity];
 
-			memset(m_Text, 0, m_TextCapacity);
+			memset(m_Text, 0, sizeof(TCHAR) *m_TextCapacity);
 		}
 
 		lstrcpy(m_Text, Text);
@@ -73,7 +72,7 @@ public :
 {
 		int Length = m_TextCount + lstrlen(Text);
 
-		if (Length >= m_TextCapacity)
+		if (Length + 1 >= m_TextCapacity)
 		{
 			m_TextCapacity *= 2;
 
@@ -103,16 +102,21 @@ public :
 	}
 }
 public :
+	virtual void SetSize(float x, float y);
+public :
 	void SetFont(const std::string& Name);
 	void SetFontSize(float Size);
 	void SetFontAlphaEnable(bool Enable);
 	void SetFontOpacity(float Opacity);
 	void SetFontColor(float r, float g, float b);
+	void SetTextAlignH(TEXT_ALIGN_H H);
+	void SetTextAlignV(TEXT_ALIGN_V V);
 
 	void SetShadowEnable(bool Enable);
 	void SetShadowFontAlphaEnable(bool Enable);
 	void SetShadowFontOpacity(float Opacity);
 	void SetShadowFontColor(float r, float g, float b);
+
 public :
 	bool CreateTextLayout();
 

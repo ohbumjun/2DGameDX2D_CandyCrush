@@ -15,12 +15,13 @@ CUIText::CUIText() :
 	m_FontOriginalName(nullptr),
 	m_Alpha(false),
 	m_Opacity(1.f),
-	m_Size{},
 	m_Color{},
-	m_ShadowEnable(true),
+	m_ShadowEnable(false),
 	m_ShadowAlpha(true),
 	m_ShadowOpacity(1.f),
 	m_ShadowOffset(1.f, 1.f),
+	m_AlignH(TEXT_ALIGN_H::Center),
+	m_AlignV(TEXT_ALIGN_V::Middle),
 	m_ShadowColor{}
 {
 	m_CollisionMouseEnable = false;
@@ -42,6 +43,12 @@ CUIText::~CUIText()
 	SAFE_DELETE_ARRAY(m_Text);
 	SAFE_DELETE_ARRAY(m_FontOriginalName);
 	SAFE_RELEASE(m_FontLayOut);
+}
+
+void CUIText::SetSize(float x, float y)
+{
+	CUIWidget::SetSize(x, y);
+	CreateTextLayout();
 }
 
 void CUIText::SetFont(const std::string& Name)
@@ -77,6 +84,17 @@ void CUIText::SetFontColor(float r, float g, float b)
 	m_ColorBrush = CResourceManager::GetInst()->FindFontColor(m_Color);
 }
 
+void CUIText::SetTextAlignH(TEXT_ALIGN_H H)
+{
+	m_AlignH = H;
+	CreateTextLayout();
+}
+void CUIText::SetTextAlignV(TEXT_ALIGN_V V)
+{
+	m_AlignV = V;
+	CreateTextLayout();
+}
+
 void CUIText::SetShadowEnable(bool Enable)
 {
 	m_ShadowEnable = Enable;
@@ -104,11 +122,17 @@ void CUIText::SetShadowFontColor(float r, float g, float b)
 
 bool CUIText::CreateTextLayout()
 {
+	if (!m_CurrentFont)
+		return false;
+
+	SAFE_RELEASE(m_FontLayOut);
+
 	m_FontLayOut = CResourceManager::GetInst()->CreateTextLayout(m_Text, m_CurrentFont, m_Size.x, m_Size.y);
 
 	DWRITE_TEXT_RANGE Range = {};
 	Range.startPosition = 0;
 	Range.length = lstrlen(m_Text);
+
 	m_FontLayOut->SetFontSize(m_FontSize, Range);
 
 	switch(m_AlignH)
@@ -183,42 +207,35 @@ void CUIText::Render()
 {
 	m_2DTarget->BeginDraw();
 
-	Resolution RS = CEngine::GetInst()->GetResolution();
+	Resolution	RS = CDevice::GetInst()->GetResolution();
 
-	D2D1_POINT_2F Point = {};
-
+	D2D1_POINT_2F	Point;
 	Point.x = m_RenderPos.x;
-	Point.y = (float)RS.Height - m_RenderPos.y - m_Size.y;
+	Point.y = RS.Height - m_RenderPos.y - m_Size.y;
 
 	if (m_ShadowEnable)
 	{
-		D2D1_POINT_2F ShadowPoint = {};
-
+		D2D1_POINT_2F	ShadowPoint = Point;
 		ShadowPoint.x += m_ShadowOffset.x;
 		ShadowPoint.y += m_ShadowOffset.y;
 
 		if (m_ShadowAlpha)
-		{
-			m_ShadowBrush->SetOpacity(m_ShadowAlpha);
-		}
-		else
-		{
-			m_ShadowBrush->SetOpacity(1.f);
-		}
+			m_ShadowBrush->SetOpacity(m_ShadowOpacity);
 
-		m_2DTarget->DrawTextLayout(ShadowPoint, m_FontLayOut, m_ShadowBrush);
+		else
+			m_ShadowBrush->SetOpacity(1.f);
+
+		m_2DTarget->DrawTextLayout(ShadowPoint, m_FontLayOut, m_ShadowBrush,
+			D2D1_DRAW_TEXT_OPTIONS_NONE);
 	}
 
 	if (m_Alpha)
-	{
 		m_ColorBrush->SetOpacity(m_Opacity);
-	}
 	else
-	{
 		m_ColorBrush->SetOpacity(1.f);
-	}
 
-	m_2DTarget->DrawTextLayout(Point, m_FontLayOut, m_ColorBrush);
+	m_2DTarget->DrawTextLayout(Point, m_FontLayOut, m_ColorBrush,
+		D2D1_DRAW_TEXT_OPTIONS_NONE);
 
 	m_2DTarget->EndDraw();
 }
