@@ -34,27 +34,9 @@ public :
 			return m_CreateObjectCallback(Scene, Size);
 		return nullptr;
 	}
-private :
-	bool ChangeScene()
-{
-	if (m_NextScene)
-	{
-		if (m_NextScene->m_Change)
-		{
-			SAFE_DELETE(m_Scene);
-			m_Scene = m_NextScene;
-			m_NextScene = nullptr;
-
-			// Render Manager 에 해당 Scene의 Object List 세팅
-			CRenderManager::GetInst()->SetObjectList(&m_Scene->m_ObjList);
-
-			m_Scene->Start();
-
-			return true;
-		}
-	}
-	return false;
-}
+public  :
+	bool ChangeScene();
+	void CreateNewScene(bool AutoChange = true);
 public :
 	template<typename T>
 	void SetCreateSceneModeFunction(T* Obj, void(T::*Func)(CScene* Scene, size_t Size))
@@ -67,18 +49,11 @@ public :
 		m_CreateObjectCallback = std::bind(Func, Obj, std::placeholders::_1, std::placeholders::_2);
 }
 	template<typename T>
-	T* CreateSceneMode(bool Current = true)
+	bool CreateSceneMode(bool Current = true)
 	{
 		if (Current)
 			return m_Scene->CreateSceneMode<T>();
 		return m_NextScene->CreateSceneMode<T>();
-	}
-	template<typename T>
-	T* CreateNewScene(bool AutoChange = true)
-	{
-		SAFE_DELETE(m_NextScene);
-		m_NextScene = new T;
-		m_NextScene->SetAutoChange(AutoChange);
 	}
 	template<typename T>
 	T* CreateEmptySceneMode(bool Current = true)

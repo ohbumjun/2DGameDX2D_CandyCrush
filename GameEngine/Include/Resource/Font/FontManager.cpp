@@ -7,7 +7,9 @@ CFontManager::CFontManager() :
 	m_mapFont{},
 	m_mapFontColor{},
 	m_mapFontFile{}
-{}
+{
+	m_CurrentFontOriginalName = new TCHAR[MAX_PATH];
+}
 
 CFontManager::~CFontManager()
 {
@@ -40,6 +42,9 @@ CFontManager::~CFontManager()
 			SAFE_RELEASE(iter->second);
 		}
 	}
+
+	SAFE_DELETE(m_CurrentFontOriginalName);
+	SAFE_DELETE(m_CurrentFontOriginalNameMultibyte);
 
 	SAFE_RELEASE(m_WriteFactory);
 }
@@ -132,6 +137,10 @@ bool CFontManager::CreateExternalFontFile(const std::string& Name, const TCHAR* 
 
 	m_mapFontFile.insert(std::make_pair(Name, FontCollection));
 
+	SAFE_RELEASE(FontFile);
+	SAFE_RELEASE(Builder);
+	SAFE_RELEASE(FontSet);
+
 	return true;
 }
 
@@ -152,12 +161,14 @@ const TCHAR* CFontManager::GetFontOriginalName(const std::string& CreatedFontNam
 	if (FAILED(FontFamily->GetFamilyNames(&LocalizedFontString)))
 		return nullptr;
 
-	m_CurrentFontOriginalName = new TCHAR[MAX_PATH];
 
 	memset(m_CurrentFontOriginalName, 0, sizeof(TCHAR) * MAX_PATH);
 
 	if (FAILED(LocalizedFontString->GetString(0, m_CurrentFontOriginalName, MAX_PATH)))
 		return nullptr;
+
+	SAFE_RELEASE(FontFamily);
+	SAFE_RELEASE(LocalizedFontString);
 
 	return m_CurrentFontOriginalName;
 }

@@ -191,7 +191,8 @@ CCell* CBoard::CreateSingleNewCell(const std::string& Name, int RowIndex, int Co
 {
 	int Index = RowIndex * m_ColCount + ColIndex;
 
-	CCell* Cell = CSceneManager::GetInst()->GetScene()->CreateGameObject<CCell>(Name);
+	// CCell* Cell = CSceneManager::GetInst()->GetScene()->CreateGameObject<CCell>(Name);
+	CCell* Cell = m_Scene->CreateGameObject<CCell>(Name);
 
 	Vector3 BoardStartPos = GetWorldPos();
 

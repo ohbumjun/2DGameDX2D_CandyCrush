@@ -1,4 +1,7 @@
 #include "IntroWidget.h"
+#include "Scene/Scene.h"
+#include "Scene/SceneManager.h"
+#include "../Scene/StartScene.h"
 
 CIntroWidget::CIntroWidget()
 {}
@@ -38,6 +41,8 @@ bool CIntroWidget::Init()
 	m_Button->SetTextureTint(Button_State::MouseOn, 255, 255, 255, 255);
 	m_Button->SetTextureTint(Button_State::Click, 150, 150, 150, 255);
 
+	m_Button->SetClickCallback(this, &CIntroWidget::StartPlayButtonCallback);
+
 	m_Button->SetZOrder(1);
 
 	m_ButtonPressText = CreateUIWidget<CUIText>("ButtonPressText");
@@ -76,3 +81,10 @@ void CIntroWidget::Render()
 
 void CIntroWidget::ButtonClick()
 {}
+
+void CIntroWidget::StartPlayButtonCallback()
+{
+	CSceneManager::GetInst()->CreateNewScene(false);
+	CSceneManager::GetInst()->CreateSceneMode<CStartScene>(false);
+	CSceneManager::GetInst()->ChangeNextScene();
+}

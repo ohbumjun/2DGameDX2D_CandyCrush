@@ -24,5 +24,7 @@ public:
     virtual void Render() override;
 public:
     void ButtonClick();
+private :
+    void StartPlayButtonCallback();
 };
 
