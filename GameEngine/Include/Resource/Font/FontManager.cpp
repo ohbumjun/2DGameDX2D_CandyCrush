@@ -10,7 +10,39 @@ CFontManager::CFontManager() :
 {}
 
 CFontManager::~CFontManager()
-{}
+{
+	{
+		auto iter = m_mapFont.begin();
+		auto iterEnd = m_mapFont.end();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			SAFE_RELEASE(iter->second);
+		}
+	}
+
+	{
+		auto iter = m_mapFontColor.begin();
+		auto iterEnd = m_mapFontColor.end();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			SAFE_RELEASE(iter->second);
+		}
+	}
+
+	{
+		auto iter = m_mapFontFile.begin();
+		auto iterEnd = m_mapFontFile.end();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			SAFE_RELEASE(iter->second);
+		}
+	}
+
+	SAFE_RELEASE(m_WriteFactory);
+}
 
 bool CFontManager::LoadExternalFont(const std::string& Name,
 	const TCHAR* FontOriginalName, float weight, float FontSize,
@@ -120,6 +152,8 @@ const TCHAR* CFontManager::GetFontOriginalName(const std::string& CreatedFontNam
 	if (FAILED(FontFamily->GetFamilyNames(&LocalizedFontString)))
 		return nullptr;
 
+	m_CurrentFontOriginalName = new TCHAR[MAX_PATH];
+
 	memset(m_CurrentFontOriginalName, 0, sizeof(TCHAR) * MAX_PATH);
 
 	if (FAILED(LocalizedFontString->GetString(0, m_CurrentFontOriginalName, MAX_PATH)))
@@ -222,7 +256,7 @@ unsigned CFontManager::CreateFontKey(const Vector4& Color)
 	Result = A;
 	Result = (Result << 8) | R;
 	Result = (Result << 8) | G;
-	Result = (Result << 8) | A;
+	Result = (Result << 8) | B;
 
 	return Result;
 }
@@ -244,7 +278,7 @@ bool CFontManager::CreateFontColor(unsigned FontKey)
 {
 	ID2D1SolidColorBrush* FontColor = FindFontColor(FontKey);
 
-	if (FontKey)
+	if (FontColor)
 		return true;
 
 	float r, g, b, a;
