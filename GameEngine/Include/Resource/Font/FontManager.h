@@ -11,9 +11,13 @@ private :
 	~CFontManager();
 private :
 	IDWriteFactory5* m_WriteFactory;
-	std::unordered_map<unsigned int, ID2D1SolidColorBrush*> m_mapFontColor;
-	std::unordered_map<std::string, IDWriteFontCollection1*> m_mapFontFile;
+	// 외부 Font File 을 내부 Font 로 세팅한 정보들
 	std::unordered_map<std::string, IDWriteTextFormat*> m_mapFont;
+	// Font를 Render 하기 위한 Brush
+	std::unordered_map<unsigned int, ID2D1SolidColorBrush*> m_mapFontColor;
+	// 외부 Font File 내용
+	std::unordered_map<std::string, IDWriteFontCollection1*> m_mapFontFile;
+	// Font File의 Original Name
 	TCHAR* m_CurrentFontOriginalName;
 	char* m_CurrentFontOriginalNameMultibyte;
 public :
@@ -45,6 +49,11 @@ private :
 	bool CreateFontColor(unsigned char r, unsigned char g,
 		unsigned char b, unsigned char a);
 	bool CreateFontColor(const Vector4& Color);
+public :
+	IDWriteTextLayout* CreateTextLayout(const TCHAR* Text, 
+		IDWriteTextFormat* Font, float Width, float Height);
+	IDWriteTextLayout* CreateTextLayout(const TCHAR* Text,
+		const std::string& FontName, float Width, float Height);
 private :
 	static CFontManager* m_Inst;
 public :

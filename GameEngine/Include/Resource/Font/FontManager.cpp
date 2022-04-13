@@ -274,3 +274,28 @@ bool CFontManager::CreateFontColor(const Vector4& Color)
 {
 	return CreateFontColor(CreateFontKey(Color));
 }
+
+IDWriteTextLayout* CFontManager::CreateTextLayout(const TCHAR* Text, IDWriteTextFormat* Font, float Width, float Height)
+{
+	IDWriteTextLayout* Layout = nullptr;
+
+	if (FAILED(m_WriteFactory->CreateTextLayout(Text,
+		lstrlen(Text), Font, Width, Height,& Layout)))
+		return nullptr;
+
+	return Layout;
+}
+
+IDWriteTextLayout* CFontManager::CreateTextLayout(const TCHAR* Text, const std::string& FontName, float Width,
+	float Height)
+{
+	IDWriteTextLayout* Layout = nullptr;
+
+	IDWriteTextFormat* Font = FindFont(FontName);
+
+	if (FAILED(m_WriteFactory->CreateTextLayout(Text,
+		lstrlen(Text), Font, Width, Height, &Layout)))
+		return nullptr;
+
+	return Layout;
+}

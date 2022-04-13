@@ -123,6 +123,79 @@ void CResourceManager::ReleaseMaterial(const std::string& Name)
 	m_MaterialManager->ReleaseMaterial(Name);
 }
 
+IDWriteTextLayout* CResourceManager::CreateTextLayout(const TCHAR* Text, IDWriteTextFormat* Font, float Width,
+	float Height)
+{
+	return m_FontManager->CreateTextLayout(Text, Font, Width, Height);
+}
+
+IDWriteTextLayout* CResourceManager::CreateTextLayout(const TCHAR* Text, const std::string& FontName, float Width,
+	float Height)
+{
+	return m_FontManager->CreateTextLayout(Text, FontName, Width, Height);
+}
+
+IDWriteFontCollection1* CResourceManager::FindFontFile(const std::string& Name)
+{
+	return m_FontManager->FindFontFile(Name);
+}
+
+IDWriteTextFormat* CResourceManager::FindFont(const std::string& Name)
+{
+	return m_FontManager->FindFont(Name);
+}
+
+ID2D1SolidColorBrush* CResourceManager::FindFontColor(unsigned Color)
+{
+	return m_FontManager->FindFontColor(Color);
+}
+
+ID2D1SolidColorBrush* CResourceManager::FindFontColor(float r, float g, float b, float a)
+{
+	return m_FontManager->FindFontColor(r, g, b, a);
+}
+
+ID2D1SolidColorBrush* CResourceManager::FindFontColor(unsigned char r, unsigned char g, unsigned char b,
+	unsigned char a)
+{
+	return m_FontManager->FindFontColor(r, g, b, a);
+}
+
+ID2D1SolidColorBrush* CResourceManager::FindFontColor(const Vector4& Color)
+{
+	return m_FontManager->FindFontColor(Color);
+}
+
+bool CResourceManager::CreateFontColor(unsigned FontKey)
+{
+	return m_FontManager->CreateFontColor(FontKey);
+}
+
+bool CResourceManager::CreateFontColor(float r, float g, float b, float a)
+{
+	return m_FontManager->CreateFontColor(r,g,b,a);
+}
+
+bool CResourceManager::CreateFontColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+	return m_FontManager->CreateFontColor(r, g, b, a);
+}
+
+bool CResourceManager::CreateFontColor(const Vector4& Color)
+{
+	return m_FontManager->CreateFontColor(Color);
+}
+
+const TCHAR* CResourceManager::GetFontOriginalName(const std::string& CreatedFontName)
+{
+	return m_FontManager->GetFontOriginalName(CreatedFontName);
+}
+
+const char* CResourceManager::GetFontOriginalNameMultibyte(const std::string& CreatedFontName)
+{
+	return m_FontManager->GetFontOriginalNameMultibyte(CreatedFontName);
+}
+
 bool CResourceManager::Init()
 {
 	// Mesh

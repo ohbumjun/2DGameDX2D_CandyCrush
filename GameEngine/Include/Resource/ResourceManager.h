@@ -8,6 +8,7 @@
 #include "Material/Material.h"
 #include "Material/MaterialManager.h"
 #include "Animation/AnimationManager.h"
+#include "Font/FontManager.h"
 
 class CResourceManager
 {
@@ -18,6 +19,7 @@ private :
 	CAnimationManager* m_AnimationManager;
 	CShaderManager* m_ShaderManager;
 	CMaterialManager* m_MaterialManager;
+	CFontManager* m_FontManager;
 
 public : // ============= Mesh ===============
 	CMesh* FindMesh(const std::string& Name); 
@@ -57,7 +59,6 @@ public : // ============= Shader ============
 	}
 	class CShader* FindShader(const std::string& Name);
 	class CConstantBuffer* FindConstantBuffer(const std::string& Name);
-
 public: // ============= Material ===============
 	template<typename T>
 	bool CreateMaterial(const std::string& Name)
@@ -66,7 +67,28 @@ public: // ============= Material ===============
 	}
 	CMaterial* FindMaterial(const std::string& Name);
 	void ReleaseMaterial(const std::string& Name);
+public : // ============= Font ===============
+	IDWriteTextLayout* CreateTextLayout(const TCHAR* Text,
+		IDWriteTextFormat* Font, float Width, float Height);
+	IDWriteTextLayout* CreateTextLayout(const TCHAR* Text,
+		const std::string& FontName, float Width, float Height);
 
+	IDWriteFontCollection1* FindFontFile(const std::string& Name);
+	IDWriteTextFormat* FindFont(const std::string& Name);
+	ID2D1SolidColorBrush* FindFontColor(unsigned int Color);
+	ID2D1SolidColorBrush* FindFontColor(float r, float g, float b, float a);
+	ID2D1SolidColorBrush* FindFontColor(unsigned char r, unsigned char g,
+		unsigned char b, unsigned char a);
+	ID2D1SolidColorBrush* FindFontColor(const Vector4& Color);
+
+	bool CreateFontColor(unsigned int FontKey);
+	bool CreateFontColor(float r, float g, float b, float a);
+	bool CreateFontColor(unsigned char r, unsigned char g,
+		unsigned char b, unsigned char a);
+	bool CreateFontColor(const Vector4& Color);
+
+	const TCHAR* GetFontOriginalName(const std::string& CreatedFontName);
+	const char* GetFontOriginalNameMultibyte(const std::string& CreatedFontName);
 public :
 	bool Init();
 
