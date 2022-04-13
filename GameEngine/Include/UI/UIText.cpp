@@ -1,55 +1,53 @@
 #include "UIText.h"
 #include "../Resource/ResourceManager.h"
-#include "../Device.h"
+#include "../../Device.h"
+#include "../../Engine.h"
 
 CUIText::CUIText() :
-m_TextCount(0),
-m_TextCapacity(32),
-m_Font(nullptr),
-m_FontKey(nullptr),
-m_FontLayout(nullptr),
-m_ColorBrush(nullptr),
-m_2DTarget(nullptr),
-m_FontSize(20.f),
-m_Alpha(true),
-m_Opacity(1.f),
-m_ShadowAlpha(true),
-m_ShadowOpacity(1.f),
-m_ShadowEnable(false),
-m_ShadowColorBrush(nullptr),
-m_ShadowOffset(1.f, 1.f),
-m_AlignH(TEXT_ALIGN_H::Center),
-m_AlignV(TEXT_ALIGN_V::Middle)
+	m_Text(nullptr),
+	m_TextCount(0),
+	m_TextCapacity(32),
+	m_CurrentFont(nullptr),
+	m_ColorBrush(nullptr),
+	m_ShadowBrush(nullptr),
+	m_2DTarget(nullptr),
+	m_FontLayOut(nullptr),
+	m_FontOriginalName(nullptr),
+	m_Alpha(false),
+	m_Opacity(1.f),
+	m_Size{},
+	m_Color{},
+	m_ShadowEnable(true),
+	m_ShadowAlpha(true),
+	m_ShadowOpacity(1.f),
+	m_ShadowOffset(1.f, 1.f),
+	m_ShadowColor{}
 {
 	m_CollisionMouseEnable = false;
 
 	m_Text = new TCHAR[m_TextCapacity];
-
-	memset(m_Text, 0, sizeof(TCHAR) * m_TextCapacity);
-
-	m_FontOriginalName = new TCHAR[128];
-
-	memset(m_FontOriginalName, 0, sizeof(TCHAR) * 128);
-
+	memset(m_Text, 0, sizeof(TCHAR)* m_TextCapacity);
 	lstrcpy(m_Text, TEXT("TEXT"));
-
 	m_TextCount = 4;
-	m_FontColor.w = 1.f;
+
+	m_FontOriginalName = new TCHAR[MAX_PATH];
+	memset(m_FontOriginalName, 0, sizeof(TCHAR)* MAX_PATH);
+
+	m_Color.w = 1.f;
 	m_ShadowColor.w = 1.f;
 }
 
 CUIText::~CUIText()
 {
-	SAFE_RELEASE(m_FontLayout);
 	SAFE_DELETE_ARRAY(m_Text);
 	SAFE_DELETE_ARRAY(m_FontOriginalName);
+	SAFE_RELEASE(m_FontLayOut);
 }
 
 void CUIText::SetFont(const std::string& Name)
 {
 	m_FontKey = Name;
-	m_Font = CResourceManager::GetInst()->FindFont(Name);
-
+	m_CurrentFont = CResourceManager::GetInst()->FindFont(m_FontKey);
 	CreateTextLayout();
 }
 
@@ -59,35 +57,24 @@ void CUIText::SetFontSize(float Size)
 	CreateTextLayout();
 }
 
-void CUIText::SetAlignH(TEXT_ALIGN_H Align)
-{
-	m_AlignH = Align;
-}
-
-void CUIText::SetAlignV(TEXT_ALIGN_V Align)
-{
-	m_AlignV = Align;
-}
-
-void CUIText::SetColor(float r, float g, float b)
-{
-	m_FontColor.x = r;
-	m_FontColor.y = g;
-	m_FontColor.z = b;
-
-	CResourceManager::GetInst()->CreateFontColor(m_FontColor);
-
-	m_ColorBrush = CResourceManager::GetInst()->FindFontColor(m_FontColor);
-}
-
-void CUIText::SetAlphaEnable(bool Enable)
+void CUIText::SetFontAlphaEnable(bool Enable)
 {
 	m_Alpha = Enable;
 }
 
-void CUIText::SetOpacity(float Opacity)
+void CUIText::SetFontOpacity(float Opacity)
 {
 	m_Opacity = Opacity;
+}
+
+void CUIText::SetFontColor(float r, float g, float b)
+{
+	m_Color.x = r;
+	m_Color.y = g;
+	m_Color.z = b;
+
+	CResourceManager::GetInst()->CreateFontColor(m_Color);
+	m_ColorBrush = CResourceManager::GetInst()->FindFontColor(m_Color);
 }
 
 void CUIText::SetShadowEnable(bool Enable)
@@ -95,75 +82,58 @@ void CUIText::SetShadowEnable(bool Enable)
 	m_ShadowEnable = Enable;
 }
 
-void CUIText::SetShadowOffset(const Vector2& Offset)
+void CUIText::SetShadowFontAlphaEnable(bool Enable)
 {
-	m_ShadowOffset = Offset;
+	m_ShadowAlpha = Enable;
 }
 
-void CUIText::SetShadowOffset(float x, float y)
+void CUIText::SetShadowFontOpacity(float Opacity)
 {
-	m_ShadowOffset = Vector2(x, y);
+	m_ShadowOpacity = Opacity;
 }
 
-void CUIText::SetShadowColor(float r, float g, float b)
+void CUIText::SetShadowFontColor(float r, float g, float b)
 {
 	m_ShadowColor.x = r;
 	m_ShadowColor.y = g;
 	m_ShadowColor.z = b;
 
 	CResourceManager::GetInst()->CreateFontColor(m_ShadowColor);
-	m_ShadowColorBrush = CResourceManager::GetInst()->FindFontColor(m_ShadowColor);;
-}
-
-void CUIText::SetShadowAlphaEnable(bool Enable)
-{
-	m_ShadowAlpha = Enable;
-}
-
-void CUIText::SetShadowOpacity(float Opacity)
-{
-	m_ShadowOpacity = Opacity;
+	m_ShadowBrush = CResourceManager::GetInst()->FindFontColor(m_ShadowColor);
 }
 
 bool CUIText::CreateTextLayout()
 {
-	if (!m_Font)
-		return false;
-
-	SAFE_RELEASE(m_FontLayout);
-
-	m_FontLayout = CResourceManager::GetInst()->CreateTextLayout(m_Text,
-		m_Font, m_Size.x, m_Size.y);
+	m_FontLayOut = CResourceManager::GetInst()->CreateTextLayout(m_Text, m_CurrentFont, m_Size.x, m_Size.y);
 
 	DWRITE_TEXT_RANGE Range = {};
 	Range.startPosition = 0;
 	Range.length = lstrlen(m_Text);
+	m_FontLayOut->SetFontSize(m_FontSize, Range);
 
-	m_FontLayout->SetFontSize(m_FontSize, Range);
-
-	switch (m_AlignH)
+	switch(m_AlignH)
 	{
 	case TEXT_ALIGN_H::Left :
-		m_FontLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+		m_FontLayOut->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
 		break;
 	case TEXT_ALIGN_H::Center:
-		m_FontLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+		m_FontLayOut->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
 		break;
 	case TEXT_ALIGN_H::Right:
-		m_FontLayout->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING);
+		m_FontLayOut->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_TRAILING);
 		break;
 	}
 
-	switch(m_AlignV)
+	switch (m_AlignV)
 	{
-	case TEXT_ALIGN_V::Top :
-		m_FontLayout->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
+	case TEXT_ALIGN_V::Top:
+		m_FontLayOut->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 		break;
 	case TEXT_ALIGN_V::Middle:
-		m_FontLayout->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+		m_FontLayOut->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
 		break;
 	case TEXT_ALIGN_V::Bottom:
-		m_FontLayout->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_FAR);
+		m_FontLayOut->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_FAR);
 		break;
 	}
 
@@ -182,19 +152,17 @@ bool CUIText::Init()
 
 	m_2DTarget = CDevice::GetInst()->Get2DRenderTarget();
 
-	const TCHAR* FontName = CResourceManager::GetInst()->GetFontOriginalName("Default");
-
-	lstrcpy(m_FontOriginalName, FontName);
-
 	m_FontKey = "Default";
+	const TCHAR* FontOriginName = CResourceManager::GetInst()->GetFontOriginalName(m_FontKey);
+	lstrcpy(m_FontOriginalName, FontOriginName);
 
-	m_Font = CResourceManager::GetInst()->FindFont(m_FontKey);
+	m_CurrentFont = CResourceManager::GetInst()->FindFont(m_FontKey);
 
-	CResourceManager::GetInst()->CreateFontColor(m_FontColor);
-	m_ColorBrush = CResourceManager::GetInst()->FindFontColor(m_FontColor);
+	CResourceManager::GetInst()->CreateFontColor(m_Color);
+	m_ColorBrush = CResourceManager::GetInst()->FindFontColor(m_Color);
 
 	CResourceManager::GetInst()->CreateFontColor(m_ShadowColor);
-	m_ShadowColorBrush = CResourceManager::GetInst()->FindFontColor(m_ShadowColor);
+	m_ShadowBrush = CResourceManager::GetInst()->FindFontColor(m_ShadowColor);
 
 	CreateTextLayout();
 
@@ -215,30 +183,30 @@ void CUIText::Render()
 {
 	m_2DTarget->BeginDraw();
 
-	CUIWidget::Render();
+	Resolution RS = CEngine::GetInst()->GetResolution();
 
-	Resolution RS = CDevice::GetInst()->GetResolution();
+	D2D1_POINT_2F Point = {};
 
-	D2D1_POINT_2F  Point;
 	Point.x = m_RenderPos.x;
-	Point.y = RS.Height - m_RenderPos.y - m_Size.y;
+	Point.y = (float)RS.Height - m_RenderPos.y - m_Size.y;
 
 	if (m_ShadowEnable)
 	{
 		D2D1_POINT_2F ShadowPoint = {};
+
 		ShadowPoint.x += m_ShadowOffset.x;
 		ShadowPoint.y += m_ShadowOffset.y;
 
 		if (m_ShadowAlpha)
 		{
-			m_ShadowColorBrush->SetOpacity(m_ShadowOpacity);
+			m_ShadowBrush->SetOpacity(m_ShadowAlpha);
 		}
 		else
 		{
-			m_ShadowColorBrush->SetOpacity(1.f);
+			m_ShadowBrush->SetOpacity(1.f);
 		}
 
-		m_2DTarget->DrawTextLayout(ShadowPoint, m_FontLayout, m_ShadowColorBrush);
+		m_2DTarget->DrawTextLayout(ShadowPoint, m_FontLayOut, m_ShadowBrush);
 	}
 
 	if (m_Alpha)
@@ -250,7 +218,7 @@ void CUIText::Render()
 		m_ColorBrush->SetOpacity(1.f);
 	}
 
-	m_2DTarget->DrawTextLayout(Point, m_FontLayout, m_ColorBrush);
+	m_2DTarget->DrawTextLayout(Point, m_FontLayOut, m_ColorBrush);
 
 	m_2DTarget->EndDraw();
 }

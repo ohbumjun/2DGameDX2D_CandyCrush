@@ -3,7 +3,10 @@
 #include "../../Device.h"
 #include "../../Engine.h"
 
-CFontManager::CFontManager()
+CFontManager::CFontManager() :
+	m_mapFont{},
+	m_mapFontColor{},
+	m_mapFontFile{}
 {}
 
 CFontManager::~CFontManager()
@@ -45,7 +48,7 @@ bool CFontManager::Init()
 		return false;
 
 	// 외부 Font File 을 하나 만든다.
-	CreateExternalFontFile("Default", TEXT(""));
+	CreateExternalFontFile("Default", TEXT("NotoSansKR-Regular.otf"));
 
 	const TCHAR* FontOriginalName = GetFontOriginalName("Default");
 
@@ -267,7 +270,7 @@ bool CFontManager::CreateFontColor(float r, float g, float b, float a)
 
 bool CFontManager::CreateFontColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
-	return CreateFontColor(CreateFontColor(r, g, b, a));
+	return CreateFontColor(CreateFontKey(r, g, b, a));
 }
 
 bool CFontManager::CreateFontColor(const Vector4& Color)

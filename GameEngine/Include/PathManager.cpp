@@ -56,6 +56,7 @@ bool CPathManager::Init()
 
 	AddPath(SHADER_PATH, TEXT("Shader\\"));
 	AddPath(TEXTURE_PATH, TEXT("Texture\\"));
+	AddPath(FONT_PATH, TEXT("Font\\"));
 
 
 	// Engine Path ¸¸µé±â  ----------------------------------------------

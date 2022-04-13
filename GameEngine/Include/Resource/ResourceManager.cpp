@@ -14,6 +14,7 @@ CResourceManager::~CResourceManager()
 	SAFE_DELETE(m_AnimationManager);
 	SAFE_DELETE(m_ShaderManager);
 	SAFE_DELETE(m_MaterialManager);
+	SAFE_DELETE(m_FontManager);
 }
 
 CMesh* CResourceManager::FindMesh(const std::string& Name)
@@ -240,6 +241,15 @@ bool CResourceManager::Init()
 	if (!m_MaterialManager->Init())
 	{
 		SAFE_DELETE(m_MaterialManager);
+		return false;
+	}
+
+	// Font 
+	m_FontManager = new CFontManager;
+
+	if (!m_FontManager->Init())
+	{
+		SAFE_DELETE(m_FontManager);
 		return false;
 	}
 

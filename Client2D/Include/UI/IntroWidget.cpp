@@ -40,6 +40,13 @@ bool CIntroWidget::Init()
 	m_CoverImage->SetTexture("IntroCoverImage", TEXT("CandyCrush/IntroCover.jpg"));
 	m_CoverImage->SetSize(1280.f, 720.f);
 
+	m_ButtonPressText = CreateUIWidget<CUIText>("ButtonPressText");
+	m_ButtonPressText->SetText(TEXT("플레이하세요"));
+	m_ButtonPressText->SetFontColor(1.f, 1.f, 1.f);
+	m_ButtonPressText->SetSize(150.f, 40.f);
+	m_ButtonPressText->SetPos(425.f, 305.f);
+	m_ButtonPressText->SetShadowEnable(true);
+
 	// Candy Image
 	// m_BigCandyImage = CreateUIWidget<CUIImage>("CoverImage");
 	// m_BigCandyImage->SetPos(880.f, 0.f);

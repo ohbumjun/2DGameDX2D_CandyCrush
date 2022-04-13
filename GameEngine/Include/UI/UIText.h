@@ -24,87 +24,68 @@ protected :
 	TCHAR* m_Text;
 	int m_TextCount;
 	int m_TextCapacity;
-protected :
-	IDWriteTextFormat* m_Font;
-	IDWriteTextLayout* m_FontLayout;
+private :
+	IDWriteTextFormat* m_CurrentFont;
 	ID2D1SolidColorBrush* m_ColorBrush;
+	ID2D1SolidColorBrush* m_ShadowBrush;
 	ID2D1RenderTarget* m_2DTarget;
-	std::string m_FontKey;
+	IDWriteTextLayout* m_FontLayOut;
 	TCHAR* m_FontOriginalName;
-	float m_FontSize;
+	std::string m_FontKey;
+
 	bool m_Alpha;
 	float m_Opacity;
-	Vector4 m_FontColor;
+	Vector2 m_Size;
+	Vector4 m_Color;
+	float m_FontSize;
 
-	// Shadow
 	bool m_ShadowEnable;
-	ID2D1SolidColorBrush* m_ShadowColorBrush;
 	bool m_ShadowAlpha;
 	float m_ShadowOpacity;
-	Vector4 m_ShadowColor;
 	Vector2 m_ShadowOffset;
-private :
+	Vector4 m_ShadowColor;
+
 	TEXT_ALIGN_H m_AlignH;
 	TEXT_ALIGN_V m_AlignV;
-
-public :
-	const TCHAR* GetText() const
-{
-		return m_Text;
-}
-	int GetTextCount() const
-{
-		return m_TextCount;
-}
-	virtual void SetSize(const Vector2& Size)
-{
-		CUIWidget::SetSize(Size);
-		CreateTextLayout();
-}
-	virtual void SetSize(float x, float y)
-{
-		CUIWidget::SetSize(x, y);
-		CreateTextLayout();
-}
 public :
 	void SetText(const TCHAR* Text)
 {
 		int Length = lstrlen(Text);
 
-	if (Length + 1 > m_TextCapacity)
-	{
-		m_TextCapacity *= 2;
+		if (Length >= m_TextCapacity)
+		{
+			m_TextCapacity *= 2;
 
-		SAFE_DELETE_ARRAY(m_Text);
+			SAFE_DELETE_ARRAY(m_Text);
 
-		m_Text = new TCHAR[m_TextCapacity];
+			m_Text = new TCHAR[m_TextCapacity];
 
-		memset(m_Text, 0, sizeof(TCHAR) * m_TextCapacity);
-	}
+			memset(m_Text, 0, m_TextCapacity);
+		}
 
-	lstrcpy(m_Text, Text);
+		lstrcpy(m_Text, Text);
 
-	m_TextCount = Length;
+		m_TextCount = Length;
 
-	CreateTextLayout();
+		CreateTextLayout();
 }
 	void AddText(const TCHAR* Text)
 {
 		int Length = m_TextCount + lstrlen(Text);
 
-		if (Length > m_TextCapacity)
+		if (Length >= m_TextCapacity)
 		{
 			m_TextCapacity *= 2;
 
-			TCHAR* NewChar = new TCHAR[m_TextCapacity];
+			TCHAR* NewText = new TCHAR[m_TextCapacity];
 
-			memset(NewChar, 0, sizeof(TCHAR) * m_TextCapacity);
+			memset(NewText, 0, sizeof(TCHAR) * m_TextCapacity);
 
-			lstrcpy(NewChar, m_Text);
+			lstrcpy(NewText, m_Text);
 
 			SAFE_DELETE_ARRAY(m_Text);
 
-			m_Text = NewChar;
+			m_Text = NewText;
 		}
 
 		lstrcat(m_Text, Text);
@@ -113,46 +94,25 @@ public :
 
 		CreateTextLayout();
 }
-	void pop_back()
-{
-	if (m_TextCount > 0)
-	{
-		--m_TextCount;
-
-		m_Text[m_TextCount] = 0;
-
-		CreateTextLayout();
-	}
-}
-
 	void Clear()
 {
 	if (m_TextCount > 0)
 	{
 		m_TextCount = 0;
-
 		memset(m_Text, 0, sizeof(TCHAR) * m_TextCapacity);
-
-		CreateTextLayout();
 	}
 }
-
 public :
 	void SetFont(const std::string& Name);
 	void SetFontSize(float Size);
-	void SetAlignH(TEXT_ALIGN_H Align);
-	void SetAlignV(TEXT_ALIGN_V Align);
-	void SetColor(float r, float g, float b);
-	void SetAlphaEnable(bool Enable);
-	void SetOpacity(float Opacity);
+	void SetFontAlphaEnable(bool Enable);
+	void SetFontOpacity(float Opacity);
+	void SetFontColor(float r, float g, float b);
 
 	void SetShadowEnable(bool Enable);
-	void SetShadowOffset(const Vector2& Offset);
-	void SetShadowOffset(float x, float y);
-	void SetShadowColor(float r, float g, float b);
-	void SetShadowAlphaEnable(bool Enable);
-	void SetShadowOpacity(float Opacity);
-
+	void SetShadowFontAlphaEnable(bool Enable);
+	void SetShadowFontOpacity(float Opacity);
+	void SetShadowFontColor(float r, float g, float b);
 public :
 	bool CreateTextLayout();
 
