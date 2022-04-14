@@ -387,6 +387,9 @@
     <ClInclude Include="ThreadQueue.h">
       <Filter>01. Engine\08. Thread</Filter>
     </ClInclude>
+    <ClInclude Include="Thread.h">
+      <Filter>01. Engine\08. Thread</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -599,7 +602,7 @@
     <ClCompile Include="Sync.cpp">
       <Filter>01. Engine\08. Thread</Filter>
     </ClCompile>
-    <ClCompile Include="ThreadQueue.cpp">
+    <ClCompile Include="Thread.cpp">
       <Filter>01. Engine\08. Thread</Filter>
     </ClCompile>
   </ItemGroup>
