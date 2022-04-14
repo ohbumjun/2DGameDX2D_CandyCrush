@@ -5328,7 +5328,8 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 
 			int Index = row * m_ColCount + col;
 
-			CBlock* Block = CSceneManager::GetInst()->GetScene()->CreateGameObject<CBlock>("Block" + std::to_string(Index));
+			// CBlock* Block = CSceneManager::GetInst()->GetScene()->CreateGameObject<CBlock>("Block" + std::to_string(Index));
+			CBlock* Block = m_Scene->CreateGameObject<CBlock>("Block" + std::to_string(Index));
 
 			Vector3 BoardStartPos = GetWorldPos();
 

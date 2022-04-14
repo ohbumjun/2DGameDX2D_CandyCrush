@@ -159,6 +159,9 @@
     <Filter Include="02. Resource\02. Shader\02. ShaderClass\05. Widget">
       <UniqueIdentifier>{3da26531-695e-4ece-8fa0-540645916040}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Engine\08. Thread">
+      <UniqueIdentifier>{8594872f-64df-43fd-95e4-b7ace49cff72}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -378,6 +381,12 @@
     <ClInclude Include="UI\UIText.h">
       <Filter>09. UI\02. Widget</Filter>
     </ClInclude>
+    <ClInclude Include="Sync.h">
+      <Filter>01. Engine\08. Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadQueue.h">
+      <Filter>01. Engine\08. Thread</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -586,6 +595,12 @@
     </ClCompile>
     <ClCompile Include="UI\UIText.cpp">
       <Filter>09. UI\02. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Sync.cpp">
+      <Filter>01. Engine\08. Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadQueue.cpp">
+      <Filter>01. Engine\08. Thread</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

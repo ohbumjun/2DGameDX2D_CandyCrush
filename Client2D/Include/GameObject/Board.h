@@ -103,7 +103,6 @@ public:
     void ChangeToMirrorBallCell(float DeltaTime);
     void SetClickBlockInfo(int Index);
     void ResetClickBlockInfo();
-
     // Check Match
 private:
     bool CheckMatchUpdate();
@@ -157,11 +156,9 @@ private:
 public :
     void TriggerLineAndMirrorBallCombEffect(int OriginRowIdx, int OriginColIdx, int OriginIdx);
     void TriggerDoubleMirrorBallCombEffect(int OriginRowIdx, int OriginColIdx, int OriginIdx);
-
     // MirrorBall Match
 private : 
     void SetMirrorBallDestroyInfo(int Index, Cell_Type_Binary DestroyType);
-
     // BagMatch
 private: 
     bool CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked);

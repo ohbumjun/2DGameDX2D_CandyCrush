@@ -233,6 +233,8 @@
     <ClInclude Include="Scene\SceneResource.h" />
     <ClInclude Include="Scene\ViewPort.h" />
     <ClInclude Include="SharedPtr.h" />
+    <ClInclude Include="Sync.h" />
+    <ClInclude Include="ThreadQueue.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="UI\UIButton.h" />
     <ClInclude Include="UI\UIImage.h" />
@@ -255,6 +257,7 @@
     <ClCompile Include="Component\SpriteComponent.cpp" />
     <ClCompile Include="Component\StaticMeshComponent.cpp" />
     <ClCompile Include="Component\Transform.cpp" />
+    <ClCompile Include="Sync.cpp" />
     <ClCompile Include="GameObject\GameObject.cpp" />
     <ClCompile Include="Ref.cpp" />
     <ClCompile Include="Device.cpp" />
@@ -304,6 +307,7 @@
     <ClCompile Include="Scene\SceneMode.cpp" />
     <ClCompile Include="Scene\SceneResource.cpp" />
     <ClCompile Include="Scene\ViewPort.cpp" />
+    <ClCompile Include="ThreadQueue.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="UI\UIButton.cpp" />
     <ClCompile Include="UI\UIImage.cpp" />
