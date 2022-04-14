@@ -79,9 +79,6 @@ void CIntroWidget::Render()
 	CUIWindow::Render();
 }
 
-void CIntroWidget::ButtonClick()
-{}
-
 void CIntroWidget::StartPlayButtonCallback()
 {
 	CSceneManager::GetInst()->CreateNewScene(false);
