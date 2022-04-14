@@ -14,6 +14,7 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <dinput.h>
+#include <process.h> // Thread
 
 // DWrite
 #include <dwrite.h>

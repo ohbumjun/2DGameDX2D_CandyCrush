@@ -2,6 +2,11 @@
 
 #include <string>
 
+struct LoadingMessage {
+	bool Complete;
+	float Percent;
+};
+
 enum class Cell_Type_Binary {
 	Blue = 0x1,
 	Red = 0x2,

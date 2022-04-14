@@ -22,6 +22,9 @@
     <Filter Include="03. UI">
       <UniqueIdentifier>{18cd96a1-3e28-492c-8855-b2c5e68f6238}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. Thread">
+      <UniqueIdentifier>{4dabc5ac-0ad5-4cd3-8e71-f2e04ee2c5eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -50,6 +53,12 @@
     </ClCompile>
     <ClCompile Include="UI\IntroWidget.cpp">
       <Filter>03. UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread\LoadingThread.cpp">
+      <Filter>04. Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\IntroLoadingScene.cpp">
+      <Filter>01. SceneMode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +91,12 @@
     </ClInclude>
     <ClInclude Include="UI\IntroWidget.h">
       <Filter>03. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread\LoadingThread.h">
+      <Filter>04. Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\IntroLoadingScene.h">
+      <Filter>01. SceneMode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
