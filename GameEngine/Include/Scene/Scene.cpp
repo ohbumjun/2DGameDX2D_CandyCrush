@@ -80,6 +80,10 @@ void CScene::Start()
 
 void CScene::Update(float DeltaTime)
 {
+	// Scene Mode
+	m_SceneMode->Update(DeltaTime);
+
+	// Object
 	auto iter = m_ObjList.begin();
 	auto iterEnd = m_ObjList.end();
 

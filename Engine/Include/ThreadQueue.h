@@ -58,10 +58,7 @@ public :
 		CSync Sync(&m_Crt);
 
 	if (empty())
-	{
 		assert(false);
-		return nullptr;
-	}
 
 	return m_Queue[(m_Head + 1) % m_Capacity];
 }

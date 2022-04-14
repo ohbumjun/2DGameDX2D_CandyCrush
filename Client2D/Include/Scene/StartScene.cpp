@@ -18,6 +18,11 @@ bool CStartScene::Init()
 
 	CreateAnimationSequence();
 
+	if (m_LoadingFunction)
+		m_LoadingFunction(false, 0.5f);
+
+	Sleep(2000);
+
 	// CPlayer2D* Player2D = m_Scene->CreateGameObject<CPlayer2D>("Player");
 	// SetPlayerObject(Player2D);
 

@@ -165,6 +165,7 @@
     <ClCompile Include="Scene\IntroScene.cpp" />
     <ClCompile Include="Scene\StartScene.cpp" />
     <ClCompile Include="Thread\LoadingThread.cpp" />
+    <ClCompile Include="UI\IntroLoadingWidget.cpp" />
     <ClCompile Include="UI\IntroWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +180,7 @@
     <ClInclude Include="Scene\IntroScene.h" />
     <ClInclude Include="Scene\StartScene.h" />
     <ClInclude Include="Thread\LoadingThread.h" />
+    <ClInclude Include="UI\IntroLoadingWidget.h" />
     <ClInclude Include="UI\IntroWidget.h" />
   </ItemGroup>
   <ItemGroup>

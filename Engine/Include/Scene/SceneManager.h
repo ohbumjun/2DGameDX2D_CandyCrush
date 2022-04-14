@@ -59,8 +59,8 @@ public :
 	T* CreateEmptySceneMode(bool Current = true)
 	{
 		if (Current)
-			m_Scene->CreateEmptySceneMode<T>();
-		m_NextScene->CreateEmptySceneMode<T>();
+			return m_Scene->CreateEmptySceneMode<T>();
+		return m_NextScene->CreateEmptySceneMode<T>();
 	}
 	void ChangeNextScene()
 	{

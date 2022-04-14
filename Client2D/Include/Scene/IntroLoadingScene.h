@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene\SceneMode.h"
+#include "../UI/IntroLoadingWidget.h"
 
 class CIntroLoadingScene :
     public CSceneMode
@@ -8,7 +9,7 @@ public:
     CIntroLoadingScene();
     ~CIntroLoadingScene();
 private :
-    CSharedPtr<CLoadingWidget> m_MainWidget;
+    CSharedPtr<CIntroLoadingWidget> m_MainWidget;
     class CLoadingThread* m_LoadingThread;
 
 public :
@@ -16,4 +17,5 @@ public :
     virtual void Update(float DeltaTime) override;
         
 };
+
 

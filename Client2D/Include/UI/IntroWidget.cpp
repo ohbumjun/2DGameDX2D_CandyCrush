@@ -2,6 +2,7 @@
 #include "Scene/Scene.h"
 #include "Scene/SceneManager.h"
 #include "../Scene/StartScene.h"
+#include "../Scene/IntroLoadingScene.h"
 
 CIntroWidget::CIntroWidget()
 {}
@@ -82,6 +83,6 @@ void CIntroWidget::Render()
 void CIntroWidget::StartPlayButtonCallback()
 {
 	CSceneManager::GetInst()->CreateNewScene(false);
-	CSceneManager::GetInst()->CreateSceneMode<CStartScene>(false);
+	CSceneManager::GetInst()->CreateSceneMode<CIntroLoadingScene>(false);
 	CSceneManager::GetInst()->ChangeNextScene();
 }

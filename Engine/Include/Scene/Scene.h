@@ -89,7 +89,7 @@ private :
 {
 		m_SceneMode = new T;
 		m_SceneMode->m_Scene = this;
-		return m_SceneMode;
+		return (T*)m_SceneMode.Get();
 }
 
 };

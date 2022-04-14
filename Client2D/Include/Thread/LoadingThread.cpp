@@ -22,7 +22,7 @@ void CLoadingThread::Run()
 
 	CStartScene* NextScene = CSceneManager::GetInst()->CreateEmptySceneMode<CStartScene>(false);
 
-	NextScene->SetLoadingFunction(this, CLoadingThread::AddMessage);
+	NextScene->SetLoadingFunction(this, &CLoadingThread::AddMessage);
 
 	NextScene->Init();
 
