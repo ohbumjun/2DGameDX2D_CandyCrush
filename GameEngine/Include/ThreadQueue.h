@@ -11,47 +11,59 @@ public :
 	CThreadQueue()
 {
 		m_Size = 0;
+		m_Tail = 0;
+		m_Head = 0;
 		m_Capacity = SIZE;
-		m_Queue = new T[SIZE];
 		InitializeCriticalSection(&m_Crt);
 }
 	~CThreadQueue()
 {
-		delete[] m_Queue;
 		DeleteCriticalSection(&m_Crt);
 }
 private :
-	T* m_Queue;
+	T m_Queue[SIZE + 1];
 	int m_Capacity;
 	int m_Size;
+	int m_Head;
+	int m_Tail;
 	CRITICAL_SECTION m_Crt;
 public :
 	bool empty()
 {
 		return m_Size == 0;
 }
+	void clear()
+{
+		CSync Sync(&m_Crt);
+
+		m_Size = 0;
+		m_Head = 0;
+		m_Tail = 0;
+}
 	void push_back(T Data)
 {
 	CSync Sync(&m_Crt);
 
-	if (m_Capacity <= m_Size)
-	{
-		m_Capacity *= 2;
+	if ((m_Tail + 1) % m_Capacity == m_Head)
+		return;
 
-		T* NewQueue = new T[m_Capacity];
+	m_Tail = (m_Tail + 1) % m_Capacity;
 
-		memset(NewQueue, 0, m_Capacity);
-
-		memcpy(NewQueue, m_Queue, m_Size);
-
-		delete[] m_Queue;
-
-		m_Queue = NewQueue;
-	}
-
-	m_Queue[m_Size] = Data;
+	m_Queue[m_Tail] = Data;
 
 	++m_Size;
+}
+	T& front()
+{
+		CSync Sync(&m_Crt);
+
+	if (empty())
+	{
+		assert(false);
+		return nullptr;
+	}
+
+	return m_Queue[(m_Head + 1) % m_Capacity];
 }
 	void pop_back()
 {
@@ -62,6 +74,17 @@ public :
 		assert(false);
 		return;
 	}
+
+	m_Head = (m_Head + 1) % m_Capacity;
+
+	--m_Size;
+}
+
+	int size()
+{
+		CSync Sync(&m_Crt);
+
+		return m_Size;
 }
 };
 
