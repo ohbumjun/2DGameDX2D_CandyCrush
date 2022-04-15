@@ -160,7 +160,6 @@
 			 stkNums.pop();
 		 }
 	 }
-
 	
 	 m_CBuffer->SetAnimEnable(false);
 

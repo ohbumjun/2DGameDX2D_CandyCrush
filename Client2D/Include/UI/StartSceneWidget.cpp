@@ -65,11 +65,43 @@ bool CStartSceneWidget::Init()
 	m_MirrorBallItem->SetTexture("MirrorBallItem", TEXT("CandyCrush/Item/MirrorBallItem.png"));
 	m_MirrorBallItem->SetSize(80.f, 80.f);
 
+
+	std::vector<TCHAR*> vecFileName;
+	// "Number/1.NoRed0.%d.png"
+	for (int i = 0; i < 10; i++)
+	{
+		TCHAR* FileName = new TCHAR[MAX_PATH];
+		memset(FileName, 0, sizeof(TCHAR) * MAX_PATH);
+		wsprintf(FileName, TEXT("Number/1.NoRed0.%d.png"), i);
+		vecFileName.push_back(FileName);
+	}
+
+	m_MirrorBallLeftNumber = CreateUIWidget<CUINumber>("MirrorBallLeftNumber");
+	m_MirrorBallLeftNumber->SetTexture("Number", vecFileName);
+	m_MirrorBallLeftNumber->AddFrameData(10);
+	m_MirrorBallLeftNumber->SetNumber(1);
+	m_MirrorBallLeftNumber->SetPos(45.f, 300.f);
+	m_MirrorBallLeftNumber->SetZOrder(3);
+	m_MirrorBallLeftNumber->SetSize(50.f, 50.f);
+
 	m_TimePlusItem = CreateUIWidget<CUIImage>("TimePlusItem");
 	m_TimePlusItem->SetPos(150.f, 300.f);
 	m_TimePlusItem->SetZOrder(2);
 	m_TimePlusItem->SetTexture("TimePlusItem", TEXT("CandyCrush/Item/TimeIncreaseItem.png"));
 	m_TimePlusItem->SetSize(80.f, 80.f);
+
+	m_TimePlusLeftNumber = CreateUIWidget<CUINumber>("TimePlusLeftNumber");
+	m_TimePlusLeftNumber->SetTexture("Number", vecFileName);
+	m_TimePlusLeftNumber->AddFrameData(10);
+	m_TimePlusLeftNumber->SetNumber(1);
+	m_TimePlusLeftNumber->SetPos(155.f, 300.f);
+	m_TimePlusLeftNumber->SetZOrder(3);
+	m_TimePlusLeftNumber->SetSize(50.f, 50.f);
+
+	for (int i = 0; i < 10; i++)
+	{
+		SAFE_DELETE(vecFileName[i]);
+	}
 
 	// CSharedPtr<CUIText> m_MirrorBallNumText;
 	// CSharedPtr<CUIText> m_TimePlusNumText;
