@@ -109,3 +109,9 @@ enum class Buffer_Type {
 	Index
 };
 
+enum class ProgressBar_Dir {
+	RightToLeft,
+	LeftToRight,
+	TopToBottom,
+	BottomToTop
+};

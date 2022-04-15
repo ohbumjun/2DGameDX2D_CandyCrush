@@ -132,6 +132,11 @@ struct TransformCBuffer {
 	float Empty1;
 };
 
+struct ProgressBarCBuffer {
+	float Percent;
+	int Dir;
+	Vector2 Empty;
+};
 
 struct Standard2DCBuffer {
 	int AnimationEnable;

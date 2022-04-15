@@ -44,6 +44,8 @@ bool CShaderManager::Init()
 		return false;
 	if (!CreateConstantBuffer("WidgetCBuffer", 5, sizeof(WidgetCBuffer), (int)Buffer_Shader_Type::Graphic))
 		return false;
+	if (!CreateConstantBuffer("ProgressBarCBuffer", 6, sizeof(ProgressBarCBuffer), (int)Buffer_Shader_Type::Graphic))
+		return false;
 
 
 	return true;

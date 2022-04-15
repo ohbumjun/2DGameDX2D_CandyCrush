@@ -19,13 +19,12 @@ bool CLoadingThread::Init()
 void CLoadingThread::Run()
 {
 	CSceneManager::GetInst()->CreateNewScene(false);
+	CStartScene* StartScene = CSceneManager::GetInst()->CreateEmptySceneMode<CStartScene>(false);
 
-	CStartScene* NextScene = CSceneManager::GetInst()->CreateEmptySceneMode<CStartScene>(false);
+	StartScene->SetLoadingFunction<CLoadingThread>(this, &CLoadingThread::AddMessage);
+	StartScene->Init();
 
-	NextScene->SetLoadingFunction(this, &CLoadingThread::AddMessage);
+	// Set Loading Percent UI
 
-	NextScene->Init();
-
-	AddMessage(true, 1.f);
-
+	AddMessage(true, 100.f);
 }

@@ -216,6 +216,7 @@
     <ClInclude Include="Resource\Shader\MaterialConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\Mesh2DShader.h" />
     <ClInclude Include="Resource\Shader\PosMeshShader.h" />
+    <ClInclude Include="Resource\Shader\ProgressBarConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\Shader.h" />
     <ClInclude Include="Resource\Shader\ShaderManager.h" />
     <ClInclude Include="Resource\Shader\Standard2DConstantBuffer.h" />
@@ -239,6 +240,7 @@
     <ClInclude Include="Timer.h" />
     <ClInclude Include="UI\UIButton.h" />
     <ClInclude Include="UI\UIImage.h" />
+    <ClInclude Include="UI\UIProgressBar.h" />
     <ClInclude Include="UI\UIText.h" />
     <ClInclude Include="UI\UIWidget.h" />
     <ClInclude Include="UI\UIWindow.h" />
@@ -258,6 +260,7 @@
     <ClCompile Include="Component\SpriteComponent.cpp" />
     <ClCompile Include="Component\StaticMeshComponent.cpp" />
     <ClCompile Include="Component\Transform.cpp" />
+    <ClCompile Include="Resource\Shader\ProgressBarConstantBuffer.cpp" />
     <ClCompile Include="Sync.cpp" />
     <ClCompile Include="GameObject\GameObject.cpp" />
     <ClCompile Include="Ref.cpp" />
@@ -312,6 +315,7 @@
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="UI\UIButton.cpp" />
     <ClCompile Include="UI\UIImage.cpp" />
+    <ClCompile Include="UI\UIProgressBar.cpp" />
     <ClCompile Include="UI\UIText.cpp" />
     <ClCompile Include="UI\UIWidget.cpp" />
     <ClCompile Include="UI\UIWindow.cpp" />

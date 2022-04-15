@@ -7,15 +7,13 @@ class CIntroLoadingScene :
 {
 public:
     CIntroLoadingScene();
-    ~CIntroLoadingScene();
+	virtual ~CIntroLoadingScene() override;
 private :
     CSharedPtr<CIntroLoadingWidget> m_MainWidget;
     class CLoadingThread* m_LoadingThread;
-
 public :
-    virtual bool Init() override; 
+    virtual bool Init() override;
     virtual void Update(float DeltaTime) override;
-        
 };
 
 
