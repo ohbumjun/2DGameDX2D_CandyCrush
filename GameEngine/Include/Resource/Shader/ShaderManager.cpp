@@ -10,6 +10,7 @@
 #include "ColliderShader.h"
 #include "PosMeshShader.h"
 #include "WidgetShader.h"
+#include "ProgressBarShader.h"
 
 CShaderManager::CShaderManager()
 {}
@@ -29,6 +30,8 @@ bool CShaderManager::Init()
 	if (!CreateShader<CPosMeshShader>("PosMeshShader"))
 		return false;
 	if (!CreateShader<CWidgetShader>("WidgetShader"))
+		return false;
+	if (!CreateShader<CProgressBarShader>("ProgressBarShader"))
 		return false;
 
 	// 상수 버퍼
