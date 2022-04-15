@@ -396,6 +396,9 @@
     <ClInclude Include="Resource\Shader\ProgressBarConstantBuffer.h">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\06. Widget</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Shader\ProgressBarShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\05. Widget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -616,6 +619,9 @@
     </ClCompile>
     <ClCompile Include="Resource\Shader\ProgressBarConstantBuffer.cpp">
       <Filter>02. Resource\02. Shader\03. ConstantBuffer\06. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\ProgressBarShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\05. Widget</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
