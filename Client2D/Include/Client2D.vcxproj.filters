@@ -63,6 +63,9 @@
     <ClCompile Include="UI\IntroLoadingWidget.cpp">
       <Filter>03. UI</Filter>
     </ClCompile>
+    <ClCompile Include="UI\StartSceneWidget.cpp">
+      <Filter>03. UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -102,6 +105,9 @@
       <Filter>01. SceneMode</Filter>
     </ClInclude>
     <ClInclude Include="UI\IntroLoadingWidget.h">
+      <Filter>03. UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\StartSceneWidget.h">
       <Filter>03. UI</Filter>
     </ClInclude>
   </ItemGroup>

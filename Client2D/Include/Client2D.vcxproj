@@ -167,6 +167,7 @@
     <ClCompile Include="Thread\LoadingThread.cpp" />
     <ClCompile Include="UI\IntroLoadingWidget.cpp" />
     <ClCompile Include="UI\IntroWidget.cpp" />
+    <ClCompile Include="UI\StartSceneWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientManager.h" />
@@ -182,6 +183,7 @@
     <ClInclude Include="Thread\LoadingThread.h" />
     <ClInclude Include="UI\IntroLoadingWidget.h" />
     <ClInclude Include="UI\IntroWidget.h" />
+    <ClInclude Include="UI\StartSceneWidget.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client2D.rc" />
