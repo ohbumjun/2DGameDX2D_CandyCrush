@@ -402,6 +402,9 @@
     <ClInclude Include="UI\UINumber.h">
       <Filter>09. UI\02. Widget</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Shader\NumberShader.h">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\05. Widget</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -628,6 +631,9 @@
     </ClCompile>
     <ClCompile Include="UI\UINumber.cpp">
       <Filter>09. UI\02. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\NumberShader.cpp">
+      <Filter>02. Resource\02. Shader\02. ShaderClass\05. Widget</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

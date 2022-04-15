@@ -215,6 +215,7 @@
     <ClInclude Include="Resource\Shader\GraphicShader.h" />
     <ClInclude Include="Resource\Shader\MaterialConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\Mesh2DShader.h" />
+    <ClInclude Include="Resource\Shader\NumberShader.h" />
     <ClInclude Include="Resource\Shader\PosMeshShader.h" />
     <ClInclude Include="Resource\Shader\ProgressBarConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\ProgressBarShader.h" />
@@ -262,6 +263,7 @@
     <ClCompile Include="Component\SpriteComponent.cpp" />
     <ClCompile Include="Component\StaticMeshComponent.cpp" />
     <ClCompile Include="Component\Transform.cpp" />
+    <ClCompile Include="Resource\Shader\NumberShader.cpp" />
     <ClCompile Include="Resource\Shader\ProgressBarConstantBuffer.cpp" />
     <ClCompile Include="Resource\Shader\ProgressBarShader.cpp" />
     <ClCompile Include="Sync.cpp" />
