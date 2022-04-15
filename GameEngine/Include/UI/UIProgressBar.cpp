@@ -128,7 +128,7 @@
 		if (m_MouseOnCallback)
 			m_MouseOnCallback();
 	}
-	else if (!m_MouseHovered & m_StartMouseOn)
+	else if (!m_MouseHovered && m_StartMouseOn)
 	{
 		m_StartMouseOn = false;
 	}
