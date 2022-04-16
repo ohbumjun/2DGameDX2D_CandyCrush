@@ -205,6 +205,8 @@
     <ClInclude Include="Resource\Mesh\MeshManager.h" />
     <ClInclude Include="Resource\Mesh\SpriteMesh.h" />
     <ClInclude Include="Resource\Mesh\StaticMesh.h" />
+    <ClInclude Include="Resource\Particle\Particle.h" />
+    <ClInclude Include="Resource\Particle\ParticleManager.h" />
     <ClInclude Include="Resource\ResourceManager.h" />
     <ClInclude Include="Resource\Shader\AnimationConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\ColliderConstantBuffer.h" />
@@ -216,7 +218,7 @@
     <ClInclude Include="Resource\Shader\MaterialConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\Mesh2DShader.h" />
     <ClInclude Include="Resource\Shader\NumberShader.h" />
-    <ClInclude Include="Resource\Shader\Particle.h" />
+    <ClInclude Include="Resource\Shader\ParticleConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\PosMeshShader.h" />
     <ClInclude Include="Resource\Shader\ProgressBarConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\ProgressBarShader.h" />
@@ -265,8 +267,10 @@
     <ClCompile Include="Component\SpriteComponent.cpp" />
     <ClCompile Include="Component\StaticMeshComponent.cpp" />
     <ClCompile Include="Component\Transform.cpp" />
+    <ClCompile Include="Resource\Particle\Particle.cpp" />
+    <ClCompile Include="Resource\Particle\ParticleManager.cpp" />
     <ClCompile Include="Resource\Shader\NumberShader.cpp" />
-    <ClCompile Include="Resource\Shader\Particle.cpp" />
+    <ClCompile Include="Resource\Shader\ParticleConstantBuffer.cpp" />
     <ClCompile Include="Resource\Shader\ProgressBarConstantBuffer.cpp" />
     <ClCompile Include="Resource\Shader\ProgressBarShader.cpp" />
     <ClCompile Include="Resource\Shader\StructuredBuffer.cpp" />

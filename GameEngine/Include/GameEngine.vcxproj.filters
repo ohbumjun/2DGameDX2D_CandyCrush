@@ -168,6 +168,9 @@
     <Filter Include="02. Resource\02. Shader\05. StructuredBuffer">
       <UniqueIdentifier>{fba5ae00-2c3d-4521-b73b-86ce4443ec02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\07. Particle">
+      <UniqueIdentifier>{70a40558-8366-4185-a84a-2c6bb5c9ecaa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -414,8 +417,14 @@
     <ClInclude Include="Resource\Shader\StructuredBuffer.h">
       <Filter>02. Resource\02. Shader\05. StructuredBuffer</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\Shader\Particle.h">
-      <Filter>헤더 파일</Filter>
+    <ClInclude Include="Resource\Shader\ParticleConstantBuffer.h">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\07. Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Particle\ParticleManager.h">
+      <Filter>02. Resource\08. Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Particle\Particle.h">
+      <Filter>02. Resource\08. Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -650,7 +659,15 @@
     <ClCompile Include="Resource\Shader\StructuredBuffer.cpp">
       <Filter>02. Resource\02. Shader\05. StructuredBuffer</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\Shader\Particle.cpp" />
+    <ClCompile Include="Resource\Shader\ParticleConstantBuffer.cpp">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\07. Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Particle\ParticleManager.cpp">
+      <Filter>02. Resource\08. Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Particle\Particle.cpp">
+      <Filter>02. Resource\08. Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">
