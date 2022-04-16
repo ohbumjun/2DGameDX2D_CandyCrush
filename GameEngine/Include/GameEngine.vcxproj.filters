@@ -162,6 +162,12 @@
     <Filter Include="01. Engine\08. Thread">
       <UniqueIdentifier>{8594872f-64df-43fd-95e4-b7ace49cff72}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\08. Particle">
+      <UniqueIdentifier>{9ceebcba-7473-4bc1-b7dd-e55caa4cc86f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. Resource\02. Shader\05. StructuredBuffer">
+      <UniqueIdentifier>{fba5ae00-2c3d-4521-b73b-86ce4443ec02}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -405,6 +411,9 @@
     <ClInclude Include="Resource\Shader\NumberShader.h">
       <Filter>02. Resource\02. Shader\02. ShaderClass\05. Widget</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Shader\StructuredBuffer.h">
+      <Filter>02. Resource\02. Shader\05. StructuredBuffer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -634,6 +643,9 @@
     </ClCompile>
     <ClCompile Include="Resource\Shader\NumberShader.cpp">
       <Filter>02. Resource\02. Shader\02. ShaderClass\05. Widget</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\StructuredBuffer.cpp">
+      <Filter>02. Resource\02. Shader\05. StructuredBuffer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

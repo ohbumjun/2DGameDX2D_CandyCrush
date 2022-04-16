@@ -222,6 +222,7 @@
     <ClInclude Include="Resource\Shader\Shader.h" />
     <ClInclude Include="Resource\Shader\ShaderManager.h" />
     <ClInclude Include="Resource\Shader\Standard2DConstantBuffer.h" />
+    <ClInclude Include="Resource\Shader\StructuredBuffer.h" />
     <ClInclude Include="Resource\Shader\TransformConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\WidgetConstantBuffer.h" />
     <ClInclude Include="Resource\Shader\WidgetShader.h" />
@@ -266,6 +267,7 @@
     <ClCompile Include="Resource\Shader\NumberShader.cpp" />
     <ClCompile Include="Resource\Shader\ProgressBarConstantBuffer.cpp" />
     <ClCompile Include="Resource\Shader\ProgressBarShader.cpp" />
+    <ClCompile Include="Resource\Shader\StructuredBuffer.cpp" />
     <ClCompile Include="Sync.cpp" />
     <ClCompile Include="GameObject\GameObject.cpp" />
     <ClCompile Include="Ref.cpp" />
