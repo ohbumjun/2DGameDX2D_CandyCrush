@@ -168,6 +168,27 @@ struct WidgetCBuffer {
 		{}
 };
 
+struct ParticleCBuffer {
+	unsigned int SpawnCountMax;
+	unsigned int SpawnEnable;
+	Vector3 StartMin;
+	Vector3 StartMax;
+	Vector3 ScaleMin;
+	Vector3 ScaleMax;
+	Vector4 ColorMin;
+	Vector4 ColorMax;
+	float LifeTimeMin;
+	float LifeTimeMax;
+	float SpeedMin;
+	float SpeedMax;
+	int Move;
+	int Gravity;
+	int Is2D;
+	Vector3 MoveAngle;
+	Vector3 MoveDir;
+	float Empty;
+};
+
 struct ColliderCBuffer {
 	Vector4 Color;
 	Matrix matWVP;

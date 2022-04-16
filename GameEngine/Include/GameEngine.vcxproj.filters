@@ -414,6 +414,9 @@
     <ClInclude Include="Resource\Shader\StructuredBuffer.h">
       <Filter>02. Resource\02. Shader\05. StructuredBuffer</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Shader\Particle.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -647,6 +650,7 @@
     <ClCompile Include="Resource\Shader\StructuredBuffer.cpp">
       <Filter>02. Resource\02. Shader\05. StructuredBuffer</Filter>
     </ClCompile>
+    <ClCompile Include="Resource\Shader\Particle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameEngine.rc">
@@ -667,6 +671,9 @@
       <Filter>02. Resource\02. Shader\01. HLSL</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\Shader\Widget.fx">
+      <Filter>02. Resource\02. Shader\01. HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\Shader\Particle.fx">
       <Filter>02. Resource\02. Shader\01. HLSL</Filter>
     </FxCompile>
   </ItemGroup>

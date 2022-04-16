@@ -99,7 +99,7 @@
 	 {
 		 AnimationFrameData Data = {};
 		 Data.StartPos = Vector2(0.f, 0.f);
-		 Data.Size = Vector2(m_Info.m_Texture->GetWidth(i), m_Info.m_Texture->GetHeight(i));
+		 Data.Size = Vector2((float)m_Info.m_Texture->GetWidth(i), (float)m_Info.m_Texture->GetHeight(i));
 
 		 m_Info.m_vecFrameData.push_back(Data);
 	}
@@ -135,80 +135,79 @@
 
  void CUINumber::Render()
 {
-
 	 m_vecNumber.clear();
 
 	 if (m_Number == 0)
 		 m_vecNumber.push_back(0);
 	 else
 	 {
-		 // Stack
-		 std::stack<int> stkNums;
+		 std::stack<int> stackNum;
 
-		 int TempNum = m_Number;
+		 int Temp = m_Number;
 
-		 while (TempNum > 0)
-		 {
-			 stkNums.push(TempNum % 10);
-			 TempNum /= 10;
-		 }
+		while (Temp > 0)
+		{
+			stackNum.push(Temp % 10);
+			Temp /= 10;
+		}
 
-		 // Vector
-		 while (!stkNums.empty())
-		 {
-			 m_vecNumber.push_back(stkNums.top());
-			 stkNums.pop();
-		 }
+		while (!stackNum.empty())
+		{
+			m_vecNumber.push_back(stackNum.top());
+			stackNum.pop();
+		}
 	 }
-	
+
 	 m_CBuffer->SetAnimEnable(false);
 
 	 size_t Count = m_vecNumber.size();
 
-	 for (size_t i = 0; i < Count; i++)
+	 for (size_t i = 0; i < Count; ++i)
 	 {
-		 int CurrentNum = m_vecNumber[i];
 		 int Frame = 0;
+
+		 int CurrentNum = m_vecNumber[i];
 
 		 if (m_Info.m_Texture)
 		 {
-			 switch (m_Info.m_Texture->GetImageType())
+			 Image_Type ImageType = m_Info.m_Texture->GetImageType();
+
+			 switch (ImageType)
 			 {
-			 case Image_Type::Atlas :
+			 case Image_Type::Atlas:
 			 {
-				 Vector2 StartPos = m_Info.m_vecFrameData[CurrentNum].StartPos;
+				 Vector2 Start = m_Info.m_vecFrameData[CurrentNum].StartPos;
 				 Vector2 Size = m_Info.m_vecFrameData[CurrentNum].Size;
 
-				 Vector2 StartUV = StartPos /
+				 Vector2 StartUV = Start /
 					 Vector2((float)m_Info.m_Texture->GetWidth(), (float)m_Info.m_Texture->GetHeight());
-				 Vector2 EndUV = (StartPos + Size) /
+				 Vector2 EndUV = (Start + Size) /
 					 Vector2((float)m_Info.m_Texture->GetWidth(), (float)m_Info.m_Texture->GetHeight());
 
 				 m_CBuffer->SetAnimStartUV(StartUV);
-				 m_CBuffer->SetAnimEndUV(EndUV);
+				 m_CBuffer->SetAnimStartUV(EndUV);
 			 }
 			 break;
-			 case Image_Type::Frame :
-			 {
-				Frame = CurrentNum;
-				m_CBuffer->SetAnimStartUV(0.f, 0.f);
-				m_CBuffer->SetAnimEndUV(1.f, 1.f);
-			 }
-			 break;
-			 default:
-				 break;
-			 }
-			 
-			 m_Info.m_Texture->SetShader(0, (int)Buffer_Shader_Type::Pixel, Frame);
 
+			 case Image_Type::Frame:
+			 {
+				 Frame = CurrentNum;
+
+				 m_CBuffer->SetAnimStartUV(0.f, 0.f);
+				 m_CBuffer->SetAnimStartUV(1.f, 1.f);
+			 }
+			 break;
+			 }
+
+			 m_Info.m_Texture->SetShader(0, (int)Buffer_Shader_Type::Pixel, Frame);
 		 }
-		 m_Info.m_Tint = m_Tint;
+
+		 m_Tint = m_Info.m_Tint;
 
 		 m_RenderPos.x += m_Size.x;
 
 		 CUIWidget::Render();
 	 }
-	 
 }
 
  CUINumber* CUINumber::Clone()
