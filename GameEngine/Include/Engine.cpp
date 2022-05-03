@@ -142,14 +142,11 @@ void CEngine::Logic()
 	if (PostUpdate(DeltaTime))
 		return;
 
-	// Global CBuffer
-	void SetDeltaTime(float DeltaTime)
-	{
-		m_BufferData.g_DeltaTime = DeltaTime;
-	}
-	void SetAccTime(float AccTime)
-	{
-		m_BufferData.g_AccTime = AccTime;
+	m_GlobalAccTime += DeltaTime;
+
+	m_GlobalCBuffer->SetAccTime(m_GlobalAccTime);
+	m_GlobalCBuffer->SetDeltaTime(DeltaTime);
+	m_GlobalCBuffer->UpdateCBuffer();
 
 	Render();
 }
