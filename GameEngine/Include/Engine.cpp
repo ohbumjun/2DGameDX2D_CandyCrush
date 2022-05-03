@@ -4,6 +4,7 @@
 #include "PathManager.h"
 #include "Render/DepthStencilState.h"
 #include "Scene/SceneManager.h"
+#include "Resource/Shader/GlobalConstantBuffer.h"
 #include "Resource/ResourceManager.h"
 #include "Render/RenderManager.h"
 
@@ -80,7 +81,20 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd, unsigned Width, unsigned Height, 
 	if (!CSceneManager::GetInst()->Init())
 		return false;
 
-	// Global Noise Texture 세팅하기 
+	// Global Noise Texture 세팅하기
+	m_GlobalCBuffer = new CGlobalConstantBuffer;
+
+	m_GlobalCBuffer->Init();
+
+	Vector2 RS = Vector2((float)m_RS.Width, (float)m_RS.Height);
+	m_GlobalCBuffer->SetResolution(RS);
+
+	// Global Noise Texture 세팅
+	CResourceManager::GetInst()->LoadTexture("NoiseTexture", TEXT("noise_01.png"));
+	m_GlobalNoiseTexture = CResourceManager::GetInst()->FindTexture("NoiseTexture");
+	m_GlobalNoiseTexture->SetShader(100, (int)Buffer_Shader_Type::All, 0);
+	m_GlobalCBuffer->SetNoiseResolution(Vector2((float)m_GlobalNoiseTexture->GetWidth(),
+		(float)m_GlobalNoiseTexture->GetHeight()));
 
 	return true;
 }
@@ -127,6 +141,15 @@ void CEngine::Logic()
 
 	if (PostUpdate(DeltaTime))
 		return;
+
+	// Global CBuffer
+	void SetDeltaTime(float DeltaTime)
+	{
+		m_BufferData.g_DeltaTime = DeltaTime;
+	}
+	void SetAccTime(float AccTime)
+	{
+		m_BufferData.g_AccTime = AccTime;
 
 	Render();
 }

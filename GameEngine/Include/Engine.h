@@ -15,7 +15,9 @@ private :
 	Engine_Space m_Space;
 	float m_ClearColor[4];
 	bool m_Play;
-
+	class CGlobalConstantBuffer* m_GlobalCBuffer;
+	CSharedPtr<class CTexture> m_GlobalNoiseTexture;
+	float m_GlobalAccTime;
 public :
 	bool Init(HINSTANCE hInst, const TCHAR* Name, unsigned int Width, unsigned int Height,
 		int IconID, bool WindowMode = true);
