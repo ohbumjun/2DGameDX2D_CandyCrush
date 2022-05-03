@@ -35,7 +35,7 @@ bool CShaderManager::Init()
 	if (!CreateShader<CProgressBarShader>("ProgressBarShader")) 
 		return false;
 	if (!CreateShader<CNumberShader>("NumberShader"))
-		return false;
+		return false; //
 
 	// 상수 버퍼
 	if (!CreateConstantBuffer("AnimationCBuffer", 0, sizeof(AnimationCBuffer), (int)Buffer_Shader_Type::Graphic))
