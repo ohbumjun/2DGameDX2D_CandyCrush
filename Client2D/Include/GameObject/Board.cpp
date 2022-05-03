@@ -5204,6 +5204,7 @@ void CBoard::Update(float DeltaTime)
 
 	bool IsPossibleMatchExst =  CheckAIAndPossibleMatch(DeltaTime);
 
+	// Match도 없고, 가능한 경우의 수도 없다면.
 	if (!IsMatchExist && !IsPossibleMatchExst)
 	{
 		// 다시 Shuffle 시킨다.
@@ -5344,6 +5345,7 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 				WorldPos.x + m_CellSize.x * 0.1f, 
 				WorldPos.y + m_CellSize.y * 0.1f, 
 				0.f);
+
 			Block->SetWorldPos(WorldPos);
 			// Block->SetWorldPos(BlockWorldPos);
 

@@ -80,6 +80,7 @@ bool CEngine::Init(HINSTANCE hInst, HWND hWnd, unsigned Width, unsigned Height, 
 	if (!CSceneManager::GetInst()->Init())
 		return false;
 
+	// Global Noise Texture 세팅하기 
 
 	return true;
 }

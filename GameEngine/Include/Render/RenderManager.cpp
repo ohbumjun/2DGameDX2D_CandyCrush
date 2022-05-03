@@ -144,6 +144,7 @@ bool CRenderManager::Init()
 	m_RenderLayerList.push_back(Layer);
 
 	m_DepthDisable = FindRenderState("NoDepth");
+
 	if (!m_DepthDisable)
 	{
 		assert(false);
@@ -151,6 +152,7 @@ bool CRenderManager::Init()
 	}
 
 	m_AlphaDisable = FindRenderState("AlphaBlend");
+
 	if (!m_AlphaDisable)
 	{
 		assert(false);

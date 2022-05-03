@@ -19,7 +19,7 @@ public:
     {
         m_BufferData.SpawnCountMax = SpawnCountMax;
     }
-    void SetSpawnEnable(bool SpawnEnable)
+    void SetSpawnEnable(int SpawnEnable)
     {
         m_BufferData.SpawnEnable = SpawnEnable;
     }

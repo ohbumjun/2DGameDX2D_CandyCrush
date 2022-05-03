@@ -171,6 +171,9 @@
     <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\07. Particle">
       <UniqueIdentifier>{70a40558-8366-4185-a84a-2c6bb5c9ecaa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. Resource\02. Shader\03. ConstantBuffer\08. Global">
+      <UniqueIdentifier>{d3886c21-281d-448c-a63b-454d4f3ad0f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -426,6 +429,9 @@
     <ClInclude Include="Resource\Particle\Particle.h">
       <Filter>02. Resource\08. Particle</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Shader\GlobalConstantBuffer.h">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\08. Global</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -667,6 +673,9 @@
     </ClCompile>
     <ClCompile Include="Resource\Particle\Particle.cpp">
       <Filter>02. Resource\08. Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shader\GlobalConstantBuffer.cpp">
+      <Filter>02. Resource\02. Shader\03. ConstantBuffer\08. Global</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -111,14 +111,12 @@ private:
     Match_State CheckColMatch(int RowIndex, int ColIndex, int Index, bool IsClickCell);
 public:
     void SetMatchStateTrue(int Index);
-
     // Destroy Method
 private : 
     bool DestroyHorizontalEffect(int RowIndex);
     bool DestroyVerticalEffect(int ColIndex);
     bool DestroyBagEffect(int RowIndex, int ColIndex, bool IsAfterEffect, bool IsBagAndBagComb = false);
     bool DestroyMirrorBallEffect(int RowIndex, int ColIndex);
-
     // Single Destroy
 private : 
     void JudgeCellDestroyType(int RowIndex, int ColIndex, int Index);
@@ -126,7 +124,6 @@ private :
     void DestroySingleNormalCell(int RowIndex, int ColIndex);
     void DestroySingleBagCell(int RowIndex, int ColIndex, bool IsBagAndBagComb = false);
     void DestroySingleMirrorBallCell(int RowIndex, int ColIndex);
-
     // Combination
 private:
     void ResetCellsPauseGoDownInfo();

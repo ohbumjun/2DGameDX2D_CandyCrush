@@ -47,20 +47,23 @@ private:
     bool m_IsPlacedNew; // 새로운 위치로 이동한 녀석인지
     bool m_IsMoving;
     Vector3 m_ClickDestPos;
-private: // 현재 이미 Special 상태여서, 다음 Match 때 Special Destroy 와 관련된 변수
+private:
+	// 현재 이미 Special 상태여서, 다음 Match 때 Special Destroy 와 관련된 변수
     DestroyMark_State m_DestroyMarkState;
     Destroy_State m_DestroyState;
     bool m_IsSpecialDestroyedBag;
     bool m_IsBagAndBagFirstDestroyed;
     bool m_IsBagCombToBeDestroyed; // Bag Combination로 파괴될 대상인가
     bool m_IsMirrorBallOfBagMirrorBallComb;
-private : // Notice 효과
+private :
+	// Notice 효과
     bool m_IsPossibleMatch;
     float m_OriginPosY;
     float m_NoticePosY;
     bool m_IsNoticeToggleUp;
     float m_ToggleMoveDist;
-private : // 특수 효과
+private :
+	// 특수 효과
     // 특수효과로 사라지는 중인지
     bool m_IsBeingSpecialDestroyed;
     bool m_PauseGoDown; // --> 같은 Column 중에서 아래 녀석이 특수 효과로 사라지고 있다면, 잠시 내려가는 것을 중단한다.
