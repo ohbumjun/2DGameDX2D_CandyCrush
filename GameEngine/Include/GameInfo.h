@@ -197,6 +197,28 @@ struct ParticleCBuffer {
 	float Empty;
 };
 
+struct ParticleInfo {
+	Vector3 WorldPos;
+	Vector3 Dir;
+	float Speed;
+	float LifeTime;
+	float LifeTimeMax;
+	int Alive;
+	float FallTime;
+	float FallStartY;
+};
+
+
+struct ParticleInfoShared
+{
+	int SpawnEnable;
+	Vector3 ScaleMin;
+	Vector3 ScaleMax;
+	Vector4 ColorMin;
+	Vector4 ColorMax;
+	int GravityEnable;
+};
+
 struct ColliderCBuffer {
 	Vector4 Color;
 	Matrix matWVP;

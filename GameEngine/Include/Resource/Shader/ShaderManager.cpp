@@ -39,7 +39,9 @@ bool CShaderManager::Init()
 	if (!CreateShader<CNumberShader>("NumberShader"))
 		return false; //
 	if (!CreateShader<CParticleUpdateShader>("ParticleUpdateShader"))
-		return false; //
+		return false;
+	if (!CreateShader<CParticleRenderShader>("ParticleRenderShader"))
+		return false;
 
 	// 상수 버퍼
 	if (!CreateConstantBuffer("AnimationCBuffer", 0, sizeof(AnimationCBuffer), (int)Buffer_Shader_Type::Graphic))
