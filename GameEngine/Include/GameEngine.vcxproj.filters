@@ -177,6 +177,9 @@
     <Filter Include="02. Resource\02. Shader\02. ShaderClass\06. Particle">
       <UniqueIdentifier>{ad290cb7-df78-403d-a07c-04e94a220259}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Component\01. SceneComponent\04. Particle">
+      <UniqueIdentifier>{7693b411-5630-4ccd-866e-dc310effb573}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -444,6 +447,9 @@
     <ClInclude Include="Resource\Shader\ParticleUpdateShader.h">
       <Filter>02. Resource\02. Shader\02. ShaderClass\06. Particle</Filter>
     </ClInclude>
+    <ClInclude Include="Component\ParticleComponent.h">
+      <Filter>05. Component\01. SceneComponent\04. Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -697,6 +703,9 @@
     </ClCompile>
     <ClCompile Include="Resource\Shader\ParticleUpdateShader.cpp">
       <Filter>02. Resource\02. Shader\02. ShaderClass\06. Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ParticleComponent.cpp">
+      <Filter>05. Component\01. SceneComponent\04. Particle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

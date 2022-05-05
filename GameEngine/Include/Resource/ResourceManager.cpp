@@ -15,6 +15,7 @@ CResourceManager::~CResourceManager()
 	SAFE_DELETE(m_ShaderManager);
 	SAFE_DELETE(m_MaterialManager);
 	SAFE_DELETE(m_FontManager);
+	SAFE_DELETE(m_ParticleManager);
 }
 
 CMesh* CResourceManager::FindMesh(const std::string& Name)
@@ -124,8 +125,18 @@ void CResourceManager::ReleaseMaterial(const std::string& Name)
 	m_MaterialManager->ReleaseMaterial(Name);
 }
 
+bool CResourceManager::CreateParticle(const std::string& Name)
+{
+	return m_ParticleManager->CreateParticle(Name);
+}
+
+CParticle* CResourceManager::FindParticle(const std::string& Name)
+{
+	return m_ParticleManager->FindParticle(Name);
+}
+
 IDWriteTextLayout* CResourceManager::CreateTextLayout(const TCHAR* Text, IDWriteTextFormat* Font, float Width,
-	float Height)
+													  float        Height)
 {
 	return m_FontManager->CreateTextLayout(Text, Font, Width, Height);
 }
@@ -250,6 +261,15 @@ bool CResourceManager::Init()
 	if (!m_FontManager->Init())
 	{
 		SAFE_DELETE(m_FontManager);
+		return false;
+	}
+
+	// Particle
+	m_ParticleManager = new CParticleManager;
+
+	if (!m_ParticleManager->Init())
+	{
+		SAFE_DELETE(m_ParticleManager);
 		return false;
 	}
 

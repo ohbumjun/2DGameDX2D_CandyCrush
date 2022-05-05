@@ -3,6 +3,7 @@
 #include "../Resource/Mesh/Mesh.h"
 #include "../Resource/Material/Material.h"
 #include "../Resource/Texture/Texture.h"
+#include "../Resource/Particle/Particle.h"
 #include "../Resource/Animation/AnimationSequence2D.h"
 
 class CSceneResource
@@ -19,6 +20,7 @@ private :
 	std::unordered_map<std::string, CSharedPtr<CAnimationSequence2D>> m_mapSequence2D;
 	std::unordered_map<std::string, CSharedPtr<class CShader>> m_mapShader;
 	std::unordered_map<std::string, CSharedPtr<CMaterial>> m_mapMaterial;
+	std::unordered_map<std::string, CSharedPtr<CParticle>> m_mapParticle;
 
 public: // ============= Mesh ==============
 	CMesh* FindMesh(const std::string& Name);
@@ -40,6 +42,8 @@ public: // ============= Shader ============
 	class CShader* FindShader(const std::string& Name);
 public: // ============= Material ============
 	CMaterial* FindMaterial(const std::string& Name);
+public: // ============= Particle ===============
+	CParticle* FindParticle(const std::string& Name);
 public:
 	virtual bool Init();
 	virtual void Update(float DeltaTime);

@@ -210,6 +210,29 @@ CMaterial* CSceneResource::FindMaterial(const std::string& Name)
 	return iter->second;
 }
 
+
+CParticle* CSceneResource::FindParticle(const std::string& Name)
+{
+	auto iter = m_mapParticle.find(Name);
+
+	if (iter == m_mapParticle.end())
+	{
+		if (!CResourceManager::GetInst()->CreateParticle(Name))
+			return nullptr;
+
+		CParticle* Particle = CResourceManager::GetInst()->FindParticle(Name);
+
+		if (!Particle)
+			return nullptr;
+
+		m_mapParticle.insert(std::make_pair(Name, Particle));
+
+		return Particle;
+	}
+
+	return iter->second;
+}
+
 bool CSceneResource::Init()
 {
 	return true;

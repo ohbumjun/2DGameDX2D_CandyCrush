@@ -176,6 +176,7 @@
     <ClInclude Include="Component\ColliderComponent.h" />
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="Component\ObjectComponent.h" />
+    <ClInclude Include="Component\ParticleComponent.h" />
     <ClInclude Include="Component\SceneComponent.h" />
     <ClInclude Include="Component\SpriteComponent.h" />
     <ClInclude Include="Component\StaticMeshComponent.h" />
@@ -267,6 +268,7 @@
     <ClCompile Include="Component\ColliderComponent.cpp" />
     <ClCompile Include="Component\Component.cpp" />
     <ClCompile Include="Component\ObjectComponent.cpp" />
+    <ClCompile Include="Component\ParticleComponent.cpp" />
     <ClCompile Include="Component\SceneComponent.cpp" />
     <ClCompile Include="Component\SpriteComponent.cpp" />
     <ClCompile Include="Component\StaticMeshComponent.cpp" />
