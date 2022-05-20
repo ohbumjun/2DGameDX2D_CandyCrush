@@ -7,6 +7,7 @@ template<typename T>
 class CGameObjectPool
 {
     friend class CScene;
+    friend class CBoard;
 private:
     CGameObjectPool();
     CGameObjectPool(int initNum);
