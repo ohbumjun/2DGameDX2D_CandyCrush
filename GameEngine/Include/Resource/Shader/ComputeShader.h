@@ -22,6 +22,5 @@ public :
 		const std::string& PathName);
 	void Execute(unsigned int x, unsigned int y, unsigned int z);
 	virtual void SetShader() override;
-	virtual CComputeShader* Clone();
 };
 

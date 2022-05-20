@@ -117,8 +117,43 @@ void CMesh::Render()
 	}
 }
 
+void CMesh::RenderInstancing(int Count)
+{
+	size_t Size = m_vecContainer.size();
+
+	for (size_t i = 0; i < Size; ++i)
+	{
+		unsigned int Stride = (unsigned int)m_vecContainer[i]->VB.Size;
+		unsigned int Offset = 0;
+
+		CDevice::GetInst()->GetDeviceContext()->IASetPrimitiveTopology(m_vecContainer[i]->Primitive);
+		CDevice::GetInst()->GetDeviceContext()->IASetVertexBuffers(0, 1, &m_vecContainer[i]->VB.Buffer,
+			&Stride, &Offset);
+
+		size_t IdxCount = m_vecContainer[i]->vecIB.size();
+
+		if (IdxCount > 0)
+		{
+			for (size_t j = 0; j < IdxCount; ++j)
+			{
+				CDevice::GetInst()->GetDeviceContext()->IASetIndexBuffer(
+					m_vecContainer[i]->vecIB[j].Buffer,
+					m_vecContainer[i]->vecIB[j].Fmt, 0);
+				CDevice::GetInst()->GetDeviceContext()->DrawIndexedInstanced(
+				m_vecContainer[i]->vecIB[j].Count, Count , 0, 0, 0);
+			}
+		}
+		else
+		{
+			CDevice::GetInst()->GetDeviceContext()->IASetIndexBuffer(nullptr, DXGI_FORMAT_UNKNOWN, 0);
+			CDevice::GetInst()->GetDeviceContext()->DrawInstanced(
+				m_vecContainer[i]->VB.Count, Count, 0, 0);
+		}
+	}
+}
+
 bool CMesh::CreateMesh(void* VtxData, int Size, int    Count, D3D11_USAGE    Usage, D3D11_PRIMITIVE_TOPOLOGY Primitive,
-	void* IdxData, int IdxSize, int IdxCount, D3D11_USAGE IdxUsage, DXGI_FORMAT           Fmt)
+					   void* IdxData, int IdxSize, int IdxCount, D3D11_USAGE IdxUsage, DXGI_FORMAT           Fmt)
 {
 	MeshContainer* Container = new MeshContainer;
 

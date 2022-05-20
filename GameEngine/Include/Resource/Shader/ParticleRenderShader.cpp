@@ -12,9 +12,6 @@ CParticleRenderShader::~CParticleRenderShader()
 
 bool CParticleRenderShader::Init()
 {
-	if (!CGraphicShader::Init())
-		return false;
-
 	LoadVertexShader("ParticleVS", TEXT("Particle.fx"), SHADER_PATH);
 	LoadGeometryShader("ParticleGS", TEXT("Particle.fx"), SHADER_PATH);
 	LoadPixelShader("ParticlePS", TEXT("Particle.fx"), SHADER_PATH);

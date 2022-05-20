@@ -20,6 +20,7 @@ protected:
 public:
 	virtual bool Init();
 	virtual void Render();
+	virtual void RenderInstancing(int Count);
 
 	// 필요한 정점, 색인 버퍼 추가 기능 
 	virtual bool CreateMesh(void* VtxData, int     Size, int Count, D3D11_USAGE Usage,

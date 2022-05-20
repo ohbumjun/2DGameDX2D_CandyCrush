@@ -60,19 +60,19 @@ public:
     {
         m_BufferData.ColorMax = ColorMax;
     }
-    void SetLifeTimeMin(int  LifeTimeMin)
+    void SetLifeTimeMin(float  LifeTimeMin)
     {
         m_BufferData.LifeTimeMin = LifeTimeMin;
     }
-    void SetLifeTimeMax(int  LifeTimeMax)
+    void SetLifeTimeMax(float  LifeTimeMax)
     {
         m_BufferData.LifeTimeMax = LifeTimeMax;
     }
-    void SetSpeedMin(int  SpeedMin)
+    void SetSpeedMin(float  SpeedMin)
     {
         m_BufferData.SpeedMin = SpeedMin;
     }
-    void SetSpeedMax(int  SpeedMax)
+    void SetSpeedMax(float  SpeedMax)
     {
         m_BufferData.SpeedMax = SpeedMax;
     }

@@ -1,7 +1,7 @@
 #include "UIText.h"
 #include "../Resource/ResourceManager.h"
-#include "../../Device.h"
-#include "../../Engine.h"
+#include "../Device.h"
+#include "../Engine.h"
 
 CUIText::CUIText() :
 	m_Text(nullptr),

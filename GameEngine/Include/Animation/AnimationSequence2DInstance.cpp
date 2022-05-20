@@ -1,6 +1,6 @@
 #include "AnimationSequence2DInstance.h"
-#include "../../Scene/Scene.h"
-#include "../../Scene/SceneResource.h"
+#include "../Scene/Scene.h"
+#include "../Scene/SceneResource.h"
 #include "../Component/SpriteComponent.h"
 #include "../Resource/ResourceManager.h"
 #include "../Resource/Shader/AnimationConstantBuffer.h"

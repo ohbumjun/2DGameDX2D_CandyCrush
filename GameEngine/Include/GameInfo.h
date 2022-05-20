@@ -12,6 +12,7 @@
 #include <functional>
 #include <algorithm>
 #include <stack>
+#include <queue>
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <dinput.h>

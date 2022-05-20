@@ -8,7 +8,6 @@
 
  bool CParticleManager::Init()
 {
- 
 	 return true;
  }
 
@@ -27,6 +26,8 @@
 	 }
 
 	 m_mapParticle.insert(std::make_pair(Name, Particle));
+
+	 return true;
  }
 
  CParticle* CParticleManager::FindParticle(const std::string& Name)

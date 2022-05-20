@@ -14,9 +14,6 @@ CParticleUpdateShader::~CParticleUpdateShader()
 
 bool CParticleUpdateShader::Init()
 {
-	if (!CComputeShader::Init())
-		return false;
-
 	if (!LoadComputeShader("ParticleUpdate", TEXT("Particle.fx"), SHADER_PATH))
 		return false;
 

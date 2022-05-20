@@ -190,7 +190,7 @@
 		m_Material->Render();
 
 	// 인스턴싱을 이용하여 Mesh 정점 정보 넘겨주기
-	m_Mesh->RenderInstancing();
+	m_Mesh->RenderInstancing(m_CBuffer->GetSpawnCountMax());
 
 	for (size_t i = 0; i < BufferCount; ++i)
 	{

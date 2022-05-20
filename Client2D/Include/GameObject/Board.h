@@ -2,6 +2,7 @@
 
 #include "GameObject/GameObject.h"
 #include "Block.h"
+#include "GameObjectPool.h"
 #include "Cell.h"
 #include "Component/SpriteComponent.h"
 #include "Component/StaticMeshComponent.h"
@@ -19,6 +20,7 @@ private:
     CSharedPtr<CSpriteComponent> m_BoardBackGround;
     std::vector<CSharedPtr<CCell>> m_vecCells;
     std::vector<CSharedPtr<CBlock>> m_vecBlocks;
+    CGameObjectPool<CCell>* m_ObjectPool;
 
     // Click µÈ Block
     CBlock* m_ClickedBlock;

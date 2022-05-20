@@ -24,6 +24,7 @@ CBoard::CBoard() :
 
 CBoard::~CBoard()
 {
+	SAFE_DELETE(m_ObjectPool);
 }
 
 void CBoard::AddClickCellMoveDone()

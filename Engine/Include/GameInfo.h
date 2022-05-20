@@ -12,6 +12,7 @@
 #include <functional>
 #include <algorithm>
 #include <stack>
+#include <queue>
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <dinput.h>
@@ -168,6 +169,14 @@ struct WidgetCBuffer {
 		{}
 };
 
+struct GlobalCBuffer {
+	float g_DeltaTime;
+	float g_AccTime;
+	Vector2 g_Resolution;
+	Vector2 g_NoiseResolution;
+	Vector2 g_GlobalEmpty;
+};
+
 struct ParticleCBuffer {
 	unsigned int SpawnCountMax;
 	unsigned int SpawnEnable;
@@ -187,6 +196,28 @@ struct ParticleCBuffer {
 	Vector3 MoveAngle;
 	Vector3 MoveDir;
 	float Empty;
+};
+
+struct ParticleInfo {
+	Vector3 WorldPos;
+	Vector3 Dir;
+	float Speed;
+	float LifeTime;
+	float LifeTimeMax;
+	int Alive;
+	float FallTime;
+	float FallStartY;
+};
+
+
+struct ParticleInfoShared
+{
+	int SpawnEnable;
+	Vector3 ScaleMin;
+	Vector3 ScaleMax;
+	Vector4 ColorMin;
+	Vector4 ColorMax;
+	int GravityEnable;
 };
 
 struct ColliderCBuffer {

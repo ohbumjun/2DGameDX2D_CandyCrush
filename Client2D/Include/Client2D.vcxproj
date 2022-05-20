@@ -159,6 +159,7 @@
     <ClCompile Include="GameObject\Block.cpp" />
     <ClCompile Include="GameObject\Board.cpp" />
     <ClCompile Include="GameObject\Cell.cpp" />
+    <ClCompile Include="GameObject\GameObjectPool.cpp" />
     <ClCompile Include="GameObject\Player2D.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Scene\IntroLoadingScene.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="GameObject\Block.h" />
     <ClInclude Include="GameObject\Board.h" />
     <ClInclude Include="GameObject\Cell.h" />
+    <ClInclude Include="GameObject\GameObjectPool.h" />
     <ClInclude Include="GameObject\Player2D.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Scene\IntroLoadingScene.h" />

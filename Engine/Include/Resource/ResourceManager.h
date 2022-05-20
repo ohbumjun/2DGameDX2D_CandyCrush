@@ -9,6 +9,7 @@
 #include "Material/MaterialManager.h"
 #include "Animation/AnimationManager.h"
 #include "Font/FontManager.h"
+#include "Particle/ParticleManager.h"
 
 class CResourceManager
 {
@@ -20,6 +21,8 @@ private :
 	CShaderManager* m_ShaderManager;
 	CMaterialManager* m_MaterialManager;
 	CFontManager* m_FontManager;
+	CParticleManager* m_ParticleManager;
+
 
 public : // ============= Mesh ===============
 	CMesh* FindMesh(const std::string& Name); 
@@ -67,6 +70,9 @@ public: // ============= Material ===============
 	}
 	CMaterial* FindMaterial(const std::string& Name);
 	void ReleaseMaterial(const std::string& Name);
+public: // ============= Particle ===============
+	bool CreateParticle(const std::string& Name);
+	CParticle* FindParticle(const std::string& Name);
 public : // ============= Font ===============
 	IDWriteTextLayout* CreateTextLayout(const TCHAR* Text,
 		IDWriteTextFormat* Font, float Width, float Height);

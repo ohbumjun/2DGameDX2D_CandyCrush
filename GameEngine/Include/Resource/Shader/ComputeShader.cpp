@@ -27,16 +27,15 @@ bool CComputeShader::Init()
 
 	return true;
 }
-
 bool CComputeShader::LoadComputeShader(const char* EntryName, const TCHAR* FileName, const std::string& PathName)
 {
-	SAFE_RELEASE(m_CSBlob);
 	SAFE_RELEASE(m_CSShader);
+	SAFE_RELEASE(m_CSBlob);
 
-	memset(m_EntryName, 0, sizeof(char) * 64);
+	memset(m_EntryName, 0, sizeof(64));
 	strcpy_s(m_EntryName, EntryName);
 
-	memset(m_FileName, 0, sizeof(TCHAR) * 64);
+	memset(m_FileName, 0, sizeof(MAX_PATH));
 	lstrcpy(m_FileName, FileName);
 
 	m_PathName = PathName;
@@ -50,11 +49,9 @@ bool CComputeShader::LoadComputeShader(const char* EntryName, const TCHAR* FileN
 	TCHAR FullPath[MAX_PATH] = {};
 
 	const PathInfo* Path = CPathManager::GetInst()->FindPath(PathName);
-
 	if (Path)
 		lstrcpy(FullPath, Path->Path);
-
-	lstrcpy(FullPath, FileName);
+	lstrcat(FullPath, FileName);
 
 	ID3DBlob* Error = nullptr;
 
@@ -67,12 +64,12 @@ bool CComputeShader::LoadComputeShader(const char* EntryName, const TCHAR* FileN
 		return false;
 	}
 
+	// 해당 Blob으로 Shader 코드를 만든다.
 	if (FAILED(CDevice::GetInst()->GetDevice()->CreateComputeShader(
 		m_CSBlob->GetBufferPointer(),
 		m_CSBlob->GetBufferSize(),
 		nullptr,
-		&m_CSShader
-	)))
+		&m_CSShader)))
 		return false;
 
 	return true;
@@ -92,3 +89,5 @@ void CComputeShader::SetShader()
 {
 	CDevice::GetInst()->GetDeviceContext()->CSSetShader(m_CSShader, nullptr, 0);
 }
+
+

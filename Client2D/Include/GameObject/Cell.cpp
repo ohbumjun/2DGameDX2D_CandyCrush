@@ -606,9 +606,6 @@ void CCell::SequentiallyDestroyCellByDoubleMirrorBallCombEffect(float DeltaTime)
 		{
 			m_IsSameColorWithMirrorBallLineCombOpacityZero = true;
 
-			// 자신의 상태를 바꾼다.
-			int Random = rand() % 2;
-
 			m_Board->SetMatchStateTrue(m_Index);
 		}
 	}
