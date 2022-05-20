@@ -5281,6 +5281,9 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 	// Mouse Offset 세팅하기
 	m_MousePosOffSet = Vector2(0.5f, 0.5f) * m_CellSize;
 
+	// 실제 Cell 생성하기
+	m_ObjectPool = new CGameObjectPool<CCell>(m_TotCount);
+
 	for (int row = 0; row < m_RowCount; row++)
 	{
 		for (int col = 0; col < m_ColCount; col++)

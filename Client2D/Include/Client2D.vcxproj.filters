@@ -25,6 +25,9 @@
     <Filter Include="04. Thread">
       <UniqueIdentifier>{4dabc5ac-0ad5-4cd3-8e71-f2e04ee2c5eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05. Factory">
+      <UniqueIdentifier>{e8d82f12-c3aa-4f4a-b09c-c212ece2fdef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -67,6 +70,9 @@
       <Filter>03. UI</Filter>
     </ClCompile>
     <ClCompile Include="GameObject\GameObjectPool.cpp">
+      <Filter>02. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\GameObjectFactory.cpp">
       <Filter>02. Object</Filter>
     </ClCompile>
   </ItemGroup>
@@ -115,6 +121,12 @@
     </ClInclude>
     <ClInclude Include="GameObject\GameObjectPool.h">
       <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\GameObjectFactory.h">
+      <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Utils.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

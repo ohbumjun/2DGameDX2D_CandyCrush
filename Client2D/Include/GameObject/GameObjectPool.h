@@ -42,6 +42,7 @@ T* CGameObjectPool<T>::GetFromPool()
         AddPool();
 
     T* Object = queueObjects.front();
+    Object->SetEnable(true);
     queueObjects.pop();
 
     return Object;
@@ -50,6 +51,7 @@ T* CGameObjectPool<T>::GetFromPool()
 template <typename T>
 void CGameObjectPool<T>::ReturnToPool(T* Object)
 {
+    Object->SetEnable(false);
     queueObjects.push(Object);
 }
 
@@ -58,6 +60,8 @@ void CGameObjectPool<T>::AddPool(int numElement)
 {
     for (int i = 0; i < numElement; ++i)
     {
-        queueObjects.push(new T);
+        T* Object = new T;
+        Object->SetEnable(false);
+        queueObjects.push(Object);
     }
 }
