@@ -1,5 +1,6 @@
 #include "GameObjectFactory.h"
 
+DEFINITION_SINGLE(CGameObjectFactory);
 
 CGameObjectFactory::CGameObjectFactory()
 {}
@@ -12,11 +13,13 @@ CGameObject* CGameObjectFactory::CreateObjectFromFactory(int type)
 {
 	CGameObject* p = nullptr;
 
-	if (m_mapObjectCreator[type] != nullptr)
+	if (m_mapObjectCreator[type] == nullptr)
 	{
 		assert(false);
-		p = m_mapObjectCreator[type]();
+		return p;
 	}
+
+	p = m_mapObjectCreator[type]();
 
 	return p;
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameInfo.h"
+#include "GameObjectFactory.h"
 #include <queue>
 
 template<typename T>
@@ -9,10 +10,10 @@ class CGameObjectPool
     friend class CScene;
     friend class CBoard;
 private:
-    CGameObjectPool();
-    CGameObjectPool(int initNum);
+    CGameObjectPool(int FactoryRegisterNum, int initNum = 10);
     virtual ~CGameObjectPool();
 private :
+    int m_FactoryRegisterNum;
     std::queue<T*> queueObjects;
     T* GetFromPool();
     void ReturnToPool(T* Object);
@@ -20,20 +21,26 @@ private :
 };
 
 template <typename T>
-CGameObjectPool<T>::CGameObjectPool()
+CGameObjectPool<T>::CGameObjectPool(int FactoryRegisterNum, int initNum)
 {
-    AddPool(10);
-}
-
-template <typename T>
-CGameObjectPool<T>::CGameObjectPool(int initNum)
-{
+    m_FactoryRegisterNum = FactoryRegisterNum;
+    CGameObjectFactory::GetInst()->RegisterShapeToFactory(FactoryRegisterNum, &T::CreateObject);
     AddPool(initNum);
 }
 
 template <typename T>
 CGameObjectPool<T>::~CGameObjectPool()
-{}
+{
+	while (!queueObjects.empty())
+	{
+        T* Object = queueObjects.front();
+
+        // SAFE_DELETE(Object);
+        CGameObjectFactory::GetInst()->DeleteObject(Object);
+
+        queueObjects.pop();
+	}
+}
 
 template <typename T>
 T* CGameObjectPool<T>::GetFromPool()
@@ -60,7 +67,13 @@ void CGameObjectPool<T>::AddPool(int numElement)
 {
     for (int i = 0; i < numElement; ++i)
     {
-        T* Object = new T;
+        T* Object = dynamic_cast<T*>(CGameObjectFactory::GetInst()->CreateObjectFromFactory(m_FactoryRegisterNum));
+        if (!Object)
+        {
+            // 해당 Key 값이 등록되어 있지 않다는 의미
+            assert(false);
+            return;
+        }
         Object->SetEnable(false);
         queueObjects.push(Object);
     }

@@ -20,7 +20,8 @@ private:
     CSharedPtr<CSpriteComponent> m_BoardBackGround;
     std::vector<CSharedPtr<CCell>> m_vecCells;
     std::vector<CSharedPtr<CBlock>> m_vecBlocks;
-    CGameObjectPool<CCell>* m_ObjectPool;
+    CGameObjectPool<CCell>* m_CellObjectPool;
+    CGameObjectPool<CBlock>* m_BlockObjectPool;
 
     // Click µÈ Block
     CBlock* m_ClickedBlock;

@@ -44,6 +44,10 @@ public :
 		return m_ViewPort;
 	}
 	CGameObject* FindGameObject(const std::string& Name);
+	void AddObjectToList(CGameObject* Object)
+	{
+		m_ObjList.push_back(Object);
+	}
 public :
 	virtual bool Init();
 	virtual void Start();

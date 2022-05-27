@@ -16,5 +16,10 @@ public :
 }
 	CGameObject* CreateObjectFromFactory(int type);
 
+	void DeleteObject(CGameObject* Object)
+	{
+		SAFE_DELETE(Object);
+	}
+
 	DECLARE_SINGLE(CGameObjectFactory);
 };

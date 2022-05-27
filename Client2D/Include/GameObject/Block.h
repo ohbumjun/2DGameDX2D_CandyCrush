@@ -21,6 +21,9 @@ private :
 	int m_Index;
 	int m_RowIndex;
 	int m_ColIndex;
+
+public:
+	static CBlock* CreateObject() { return new CBlock; }
 public :
 	bool IsStopBlock() const
 	{

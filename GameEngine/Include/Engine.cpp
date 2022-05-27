@@ -24,12 +24,15 @@ m_ClearColor {0,0,1,1}
 CEngine::~CEngine()
 {
 	SAFE_DELETE(m_Timer);
+	SAFE_DELETE(m_GlobalCBuffer);
+
 	CInput::DestroyInst();
 	CDevice::DestroyInst();
 	CSceneManager::DestroyInst();
 	CPathManager::DestroyInst();
 	CRenderManager::DestroyInst();
 	CResourceManager::DestroyInst(); // 가장 마지막에 지워주자 ..!
+
 }
 
 bool CEngine::Init(HINSTANCE hInst, const TCHAR* Name, 

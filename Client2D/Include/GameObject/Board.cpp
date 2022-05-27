@@ -24,7 +24,8 @@ CBoard::CBoard() :
 
 CBoard::~CBoard()
 {
-	SAFE_DELETE(m_ObjectPool); //
+	SAFE_DELETE(m_CellObjectPool); //
+	SAFE_DELETE(m_BlockObjectPool); //
 }
 
 void CBoard::AddClickCellMoveDone()
@@ -168,7 +169,7 @@ void CBoard::CreateNewCellsAboveShownArea()
 			sprintf_s(Name, "Cell%d", RowIndex * m_ColCount + col);
 
 			// CreateSingleNewCell(Name, RowIndex, col, WorldPos,NewYPos, (Cell_Type)Type, 0.1f, false, CellState);
-			CreateSingleNewCell(Name, RowIndex, col, WorldPos,NewYPos, CellBType, 0.1f, false, CellState);
+			CreateSingleNewCell(Name, RowIndex, col, WorldPos, NewYPos, CellBType, 0.1f, false, CellState);
 		}
 	}
 
@@ -186,14 +187,20 @@ void CBoard::CreateNewCellsAboveShownArea()
 	ResetMatchStateInfo();
 }
 
-CCell* CBoard::CreateSingleNewCell(const std::string& Name, int RowIndex, int ColIndex, 
+CCell* CBoard::CreateSingleNewCell(const std::string& Name, int RowIndex, int ColIndex,
 	const Vector3& WorldPos, float NewYPos, Cell_Type_Binary Type,
 	float Opacity, bool ShowEnable, Cell_State State)
 {
 	int Index = RowIndex * m_ColCount + ColIndex;
 
-	// CCell* Cell = CSceneManager::GetInst()->GetScene()->CreateGameObject<CCell>(Name);
 	CCell* Cell = m_Scene->CreateGameObject<CCell>(Name);
+
+	// CCell* Cell = m_CellObjectPool->GetFromPool();
+	// Cell->SetScene(m_Scene);
+	// Cell->Init();
+	// Cell->Start();
+	// 
+	// m_Scene->AddObjectToList(Cell);
 
 	Vector3 BoardStartPos = GetWorldPos();
 
@@ -470,7 +477,7 @@ bool CBoard::IsPossibleMatchExistForCells()
 	return false;
 }
 
-bool CBoard::IsPossibleRowMatch(int OriginRowIdx, int OriginColIdx, 
+bool CBoard::IsPossibleRowMatch(int OriginRowIdx, int OriginColIdx,
 	int NewRowIdx, int NewColIdx)
 {
 	int MinCheckLength = 3, MaxCheckLength = m_VisualRowCount;
@@ -769,7 +776,7 @@ bool CBoard::IsMatchExistForCells(std::vector<CSharedPtr<CCell>>& pVecCells)
 	return false;
 }
 
-bool CBoard::CheckCombination(CCell* FirstCell,CCell* SecondCell)
+bool CBoard::CheckCombination(CCell* FirstCell, CCell* SecondCell)
 {
 	Cell_State FirstCellState = FirstCell->GetCellState();
 	Cell_State SecondCellState = SecondCell->GetCellState();
@@ -880,7 +887,7 @@ bool CBoard::CheckBagAndBagComb(CCell* FirstCell, CCell* SecondCell)
 
 		m_vecCells[FirstCell->GetIndex()]->SetIsBagCombToBeDestroyed(true);
 		m_vecCells[SecondCell->GetIndex()]->SetIsBagCombToBeDestroyed(true);
-		
+
 
 		// Bag Destroy 범위 정보를 세팅해준다.
 		// m_vecCells[FirstCell->GetIndex()]->SetDestroyBagIndexInfos(TopRowIdx, BottomRowIdx, LeftColIdx, RightColIdx);
@@ -901,7 +908,7 @@ bool CBoard::CheckBagAndRowLineComb(CCell* FirstCell, CCell* SecondCell)
 
 		return true;
 	}
-	else if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::RowLine && 
+	else if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::RowLine &&
 		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::Bag)
 	{
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndRowLine);
@@ -1132,7 +1139,7 @@ void CBoard::DestroyBagLineComb(int RowIndex, int ColIndex)
 bool CBoard::CheckBagAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 {
 	// 1) Bag 색상에 있는 녀석들
-	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::Bag && 
+	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::Bag &&
 		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall)
 	{
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndMirrorBall_Bag);
@@ -1146,7 +1153,7 @@ bool CBoard::CheckBagAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 
 		return true;
 	}
-	else if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall && 
+	else if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall &&
 		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::Bag)
 	{
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndMirrorBall_Mirror);
@@ -1160,7 +1167,7 @@ bool CBoard::CheckBagAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 
 bool CBoard::CheckLineAndLineComb(CCell* FirstCell, CCell* SecondCell)
 {
-	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::RowLine && 
+	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::RowLine &&
 		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::ColLine)
 	{
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::Horizontal);
@@ -1200,7 +1207,7 @@ bool CBoard::CheckLineAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 {
 	// 1) Bag 색상에 있는 녀석들
 	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall &&
-		(m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::RowLine || 
+		(m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::RowLine ||
 			m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::ColLine))
 	{
 		// 1. 이렇게 세팅된 녀석을 발견하면
@@ -1211,7 +1218,7 @@ bool CBoard::CheckLineAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 		return true;
 	}
 	if (m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall &&
-		(m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::RowLine || 
+		(m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::RowLine ||
 			m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::ColLine))
 	{
 		m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::LineAndMirrorBall_Line);
@@ -1253,7 +1260,7 @@ bool CBoard::DestroyLineAndMirrorBallComb(int RowIndex, int ColIndex, int LineIn
 	// 자기 자신은 점점 Opacity를 줄여나가고
 	m_vecCells[LineIndex]->SetIsLineOfLineMirrorBallComb(true);
 	m_vecCells[MirrorBallIndex]->SetIsLineOfLineMirrorBallComb(true);
-	
+
 
 	return true;
 }
@@ -1268,7 +1275,7 @@ void CBoard::TriggerLineAndMirrorBallCombEffect(int OriginRowIdx, int OriginColI
 		{
 			if (row == OriginRowIdx && col == OriginColIdx)
 				continue;
-			
+
 			if (m_vecCells[row * m_ColCount + col]->GetCellType() == CellType &&
 				m_vecCells[row * m_ColCount + col]->GetCellState() != Cell_State::MirrorBall)
 			{
@@ -1282,7 +1289,7 @@ void CBoard::TriggerLineAndMirrorBallCombEffect(int OriginRowIdx, int OriginColI
 bool CBoard::CheckMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell)
 {
 	// 1) Bag 색상에 있는 녀석들
-	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall && 
+	if (m_vecCells[FirstCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall &&
 		m_vecCells[SecondCell->GetIndex()]->GetCellState() == Cell_State::MirrorBall)
 	{
 		m_vecCells[FirstCell->GetIndex()]->SetDestroyState(Destroy_State::MirrorBallAndMirrorBall);
@@ -1354,12 +1361,12 @@ void CBoard::DestroyCells()
 	for (int Index = 0; Index < DestroyTargetEndIdx; Index++)
 	{
 		// BagAfter 의 경우, 그냥 Match 여부와 관계없이 터뜨린다.
-		 if (m_vecCells[Index]->GetDestroyState() == Destroy_State::BagAfter)
+		if (m_vecCells[Index]->GetDestroyState() == Destroy_State::BagAfter)
 		{
-			 int RowIndex = m_vecCells[Index]->GetRowIndex();
-			 int ColIndex = m_vecCells[Index]->GetColIndex();
+			int RowIndex = m_vecCells[Index]->GetRowIndex();
+			int ColIndex = m_vecCells[Index]->GetColIndex();
 
-		 	 DestroyBagEffect(RowIndex, ColIndex, true);
+			DestroyBagEffect(RowIndex, ColIndex, true);
 
 			// 이 녀석에 대해서는 더이상 Match 여부를 고려하지 않아도 되지 않을까 ?
 			// continue;
@@ -1367,13 +1374,13 @@ void CBoard::DestroyCells()
 
 		// Mirror Ball + Bag 조합 중에서
 		// Mirror Ball 에 해당하는 녀석을 터뜨린다.
-		 DestroyMirrorBallOfBagMirrorBallComb(Index);
-		
+		DestroyMirrorBallOfBagMirrorBallComb(Index);
+
 		// 만약 Match 된 녀석이라면 
 		if (m_vecCellIsMatch[Index])
 		{
 			int RowIndex = m_vecCells[Index]->GetRowIndex();
-			int ColIndex   = m_vecCells[Index]->GetColIndex();
+			int ColIndex = m_vecCells[Index]->GetColIndex();
 
 			// 만약 Destroy_State 라면 --> 즉, 현재 터뜨려야 할 녀석이 있다면
 			// if ((int)m_vecDestroyState[Index] > (int)Destroy_State::None)
@@ -1392,7 +1399,7 @@ void CBoard::DestroyCells()
 				m_vecCells[Index]->SetDestroyMarkState(ChangeMatchStateToDestroyMarkState(m_vecMatchState[Index]));
 			}
 			// 그게 아니라면, 제거 이후, 해당 Col 에서의 제거개수 + 1 을 해주면 된다.
-			else 
+			else
 			{
 				// 화면에서 제거해주고
 				DestroySingleCell(RowIndex, ColIndex);
@@ -1435,7 +1442,7 @@ void CBoard::DestroyCells()
 		// m_vecDestroyState[i] = Destroy_State::None;
 		if (m_vecCells[i]->GetDestroyState() == Destroy_State::BagAfter)
 			continue;
-		m_vecCells[i]->SetDestroyState(Destroy_State::None); 
+		m_vecCells[i]->SetDestroyState(Destroy_State::None);
 	}
 
 	//m_vecCellDownNums 정보 초기화
@@ -1676,7 +1683,7 @@ Cell_State CBoard::ChangeMatchStateToCellState(Match_State State)
 {
 	switch (State)
 	{
-	case Match_State::NoMatch :
+	case Match_State::NoMatch:
 		return Cell_State::Normal;
 
 	case Match_State::Normal:
@@ -1830,7 +1837,7 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 {
 	if (!FirstClickCell || !SecClickCell)
 		return false;
-	
+
 	Match_State FCellResult;
 	Match_State FCellRowResult = Match_State::NoMatch;
 	Match_State FCellColResult = Match_State::NoMatch;
@@ -1842,9 +1849,9 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	Match_State SCellBagResult = Match_State::NoMatch;
 
 	// 1번째 Click Cell에 대한 검사 먼저 하기
-	FCellRowResult = CheckRowMatch(FirstClickCell->GetRowIndex(), 
+	FCellRowResult = CheckRowMatch(FirstClickCell->GetRowIndex(),
 		FirstClickCell->GetColIndex(), FirstClickCell->GetIndex(), true);
-	FCellColResult = CheckColMatch(FirstClickCell->GetRowIndex(), 
+	FCellColResult = CheckColMatch(FirstClickCell->GetRowIndex(),
 		FirstClickCell->GetColIndex(), FirstClickCell->GetIndex(), true);
 
 	// todo :  Row, Column을 다 확인한 이후
@@ -1854,7 +1861,7 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	FCellResult = (int)FCellColResult > (int)FCellRowResult ? FCellColResult : FCellRowResult;
 
 	// Bag 조합 검사하기
-	FCellBagResult = CheckBagMatch(FirstClickCell->GetRowIndex(), 
+	FCellBagResult = CheckBagMatch(FirstClickCell->GetRowIndex(),
 		FirstClickCell->GetColIndex(), FirstClickCell->GetIndex(), false) ? Match_State::Bag : Match_State::NoMatch;
 
 	// 최종 결과
@@ -1871,17 +1878,17 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 	// 같은 Row를 또 다시 검사해줄 필요는 없기 때문이다
 	// 다른 Row 혹은 다른 Col을 조사할 것이다. --> 아니다. 둘다 조사는 해야 한다.
 	// if (FirstClickCell->GetColIndex() != SecClickCell->GetColIndex())
-	SCellRowResult = CheckRowMatch(SecClickCell->GetRowIndex(), 
+	SCellRowResult = CheckRowMatch(SecClickCell->GetRowIndex(),
 		SecClickCell->GetColIndex(), SecClickCell->GetIndex(), true);
 
 	// if (FirstClickCell->GetRowIndex() != SecClickCell->GetRowIndex())
-	SCellColResult = CheckColMatch(SecClickCell->GetRowIndex(), 
+	SCellColResult = CheckColMatch(SecClickCell->GetRowIndex(),
 		SecClickCell->GetColIndex(), SecClickCell->GetIndex(), true);
 
 	SCellResult = (int)SCellColResult > (int)SCellRowResult ? SCellColResult : SCellRowResult;
 
 	// Bag 조합 검사하기
-	SCellBagResult = CheckBagMatch(SecClickCell->GetRowIndex(), 
+	SCellBagResult = CheckBagMatch(SecClickCell->GetRowIndex(),
 		SecClickCell->GetColIndex(), SecClickCell->GetIndex(), false) ? Match_State::Bag : Match_State::NoMatch;
 
 	// 최종 결과
@@ -1935,7 +1942,7 @@ bool CBoard::CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell)
 		else if (m_SecClickCell->GetCellState() == Cell_State::MirrorBall)
 		{
 			Cell_Type_Binary NextCellType = m_FirstClickCell->GetCellType();
-			
+
 			SetMirrorBallDestroyInfo(m_SecClickCell->GetIndex(), NextCellType);
 
 			return true;
@@ -2108,7 +2115,7 @@ Match_State CBoard::CheckRowMatch(int RowIndex, int ColIndex, int Index, bool Is
 						}
 					}
 				}
-				
+
 
 				// 2) Match State 처리를 해준다.
 				if (CheckMatchNum == 3)
@@ -2419,7 +2426,7 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 						}
 					}
 				}
-				
+
 
 				// 2) Match State 처리를 해준다.
 				if (CheckMatchNum == 3)
@@ -2443,7 +2450,7 @@ Match_State CBoard::CheckColMatch(int RowIndex, int ColIndex, int Index, bool Is
 					if ((int)ColResultState > (int)Match_State::Normal)
 						ColResultState = Match_State::Normal;
 				}
-				
+
 			}
 			// Click 해서 Match 된 Cell 이 아니라 실시간 Match Cell 이라면
 			else
@@ -2581,7 +2588,7 @@ bool CBoard::DestroyHorizontalEffect(int RowIndex)
 {
 	for (int col = 0; col < m_ColCount; col++)
 	{
-		if (m_vecCells[RowIndex * m_ColCount + col]->GetCellState() == Cell_State::Bag || 
+		if (m_vecCells[RowIndex * m_ColCount + col]->GetCellState() == Cell_State::Bag ||
 			m_vecCells[RowIndex * m_ColCount + col]->GetCellState() == Cell_State::MirrorBall)
 		{
 			DestroySingleCell(RowIndex, col);
@@ -2636,7 +2643,7 @@ bool CBoard::DestroyVerticalEffect(int ColIndex)
 
 bool CBoard::DestroyBagEffect(int RowIndex, int ColIndex, bool IsAfterEffect, bool IsBagAndBagComb)
 {
-	int StRowIndex   = RowIndex - 1;
+	int StRowIndex = RowIndex - 1;
 	int EndRowIndex = RowIndex + 1;
 
 	while (StRowIndex < 0)
@@ -2645,7 +2652,7 @@ bool CBoard::DestroyBagEffect(int RowIndex, int ColIndex, bool IsAfterEffect, bo
 	while (EndRowIndex >= m_VisualRowCount)
 		EndRowIndex -= 1;
 
-	int StColIndex   = ColIndex - 1;
+	int StColIndex = ColIndex - 1;
 	int EndColIndex = ColIndex + 1;
 
 	while (StColIndex < 0)
@@ -2672,7 +2679,7 @@ bool CBoard::DestroyBagEffect(int RowIndex, int ColIndex, bool IsAfterEffect, bo
 	return true;
 }
 
-bool CBoard::DestroyMirrorBallEffect (int RowIndex, int ColIndex)
+bool CBoard::DestroyMirrorBallEffect(int RowIndex, int ColIndex)
 {
 	if (!m_vecCells[RowIndex * m_ColCount + ColIndex]->IsActive())
 		return true;
@@ -2741,18 +2748,18 @@ void CBoard::JudgeCellDestroyType(int RowIndex, int ColIndex, int Index)
 		DestroyBagLineComb(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex());
 		break;
 	case Destroy_State::BagAndMirrorBall_Bag:
-		{
-			Cell_Type_Binary Type = m_vecCells[RowIndex * m_ColCount + ColIndex]->GetCellType();
-			m_vecCells[RowIndex * m_ColCount + ColIndex]->SetMirrorBallDestroyType(Type);
-			DestroyMirrorBallEffect(RowIndex, ColIndex);
-			break;
-			// m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndMirrorBall_Mirror);
-		}
+	{
+		Cell_Type_Binary Type = m_vecCells[RowIndex * m_ColCount + ColIndex]->GetCellType();
+		m_vecCells[RowIndex * m_ColCount + ColIndex]->SetMirrorBallDestroyType(Type);
+		DestroyMirrorBallEffect(RowIndex, ColIndex);
 		break;
+		// m_vecCells[SecondCell->GetIndex()]->SetDestroyState(Destroy_State::BagAndMirrorBall_Mirror);
+	}
+	break;
 	case Destroy_State::LineAndMirrorBall_Line:
 		DestroyLineAndMirrorBallComb(m_vecCells[Index]->GetRowIndex(), m_vecCells[Index]->GetColIndex(), Index);
 		break;
-	case Destroy_State::MirrorBallAndMirrorBall :
+	case Destroy_State::MirrorBallAndMirrorBall:
 		DestroyMirrorBallOfBagMirrorBallComb(Index);
 		break;
 	}
@@ -2836,7 +2843,7 @@ void CBoard::DestroySingleBagCell(int RowIndex, int ColIndex, bool IsBagAndBagCo
 	// 2) 즉, 결과적으로 Destroy_State 가 Bag After 가 될 때만, 제거할 수 있어야 한다.
 
 	// 3) 단, 중복으로 Special Destroy 가 발생하여, 여기 함수에 , 같은 Cell 에 대해 2번 이상 들어올 수 있다.
-	if (m_vecCells[Index]->GetDestroyState() != Destroy_State::BagAfter )
+	if (m_vecCells[Index]->GetDestroyState() != Destroy_State::BagAfter)
 	{
 		// 일반 특수효과 --> Bag Destroy 효과를 준 이후, Bag After 형태로 바꿔야 할 때
 		if (m_vecCells[Index]->GetDestroyState() != Destroy_State::BagAndBag)
@@ -2851,7 +2858,7 @@ void CBoard::DestroySingleBagCell(int RowIndex, int ColIndex, bool IsBagAndBagCo
 		{
 			// 여기서 한번 더 터뜨려야 하는 것인지
 			// 이미 한번 터진 것이라면 
-			bool Result =  m_vecCells[Index]->IsBagAndBagFirstDestroyed();
+			bool Result = m_vecCells[Index]->IsBagAndBagFirstDestroyed();
 			if (m_vecCells[Index]->IsBagAndBagFirstDestroyed())
 			{
 				// m_vecCells[Index]->SetIsBagAndBagDestroyed(false);
@@ -4388,7 +4395,7 @@ bool CBoard::CheckAIAndPossibleMatch(float DeltaTime)
 	// 그렇게 해서, Match 일 때의 점수 구하고
 	// 각 cell 에 대해 4방향 이동
 	int nRow = -1, nCol = -1;
-	
+
 	for (int row = 0; row < m_VisualRowCount; row++)
 	{
 		for (int col = 0; col < m_ColCount; col++)
@@ -4396,7 +4403,7 @@ bool CBoard::CheckAIAndPossibleMatch(float DeltaTime)
 			for (int k = 0; k < 4; k++)
 			{
 				nRow = row + m_DRow[k];
-				nCol   = col + m_DCol[k];
+				nCol = col + m_DCol[k];
 
 				// 범위 제한
 				if (nRow < 0 || nRow >= m_VisualRowCount || nCol < 0 || nCol >= m_ColCount)
@@ -4414,7 +4421,7 @@ bool CBoard::CheckAIAndPossibleMatch(float DeltaTime)
 				// 1) Row Match
 				// 사실상 row, col 애들이 nRow, nCol 으로 가서, Match 여부를 검사하게 되는 것이므로 
 				// std::pair<int, bool> RowMatchResult = CheckAIRowMatch(nRow,nCol, row, col, TempMatchedIdxs);
-				std::pair<int, bool> RowMatchResult = CheckAIRowMatch(row,col,nRow,nCol, TempMatchedIdxs);
+				std::pair<int, bool> RowMatchResult = CheckAIRowMatch(row, col, nRow, nCol, TempMatchedIdxs);
 
 				if (RowMatchResult.second == true)
 				{
@@ -4490,7 +4497,7 @@ bool CBoard::CheckAIAndPossibleMatch(float DeltaTime)
 			for (int k = 0; k < 4; k++)
 			{
 				nRow = row + m_DRow[k];
-				nCol  = col + m_DCol[k];
+				nCol = col + m_DCol[k];
 
 				// 범위 제한
 				if (nRow < 0 || nRow >= m_VisualRowCount || nCol < 0 || nCol >= m_ColCount)
@@ -4510,7 +4517,7 @@ bool CBoard::CheckAIAndPossibleMatch(float DeltaTime)
 					{
 						TotalCombMaxScore = CurrentCombScore;
 
-						vecCombMatchIdx = std::vector<int>{ CurIndex , NxtIndex};
+						vecCombMatchIdx = std::vector<int>{ CurIndex , NxtIndex };
 					}
 				}
 			}
@@ -4567,7 +4574,7 @@ int CBoard::CalculateAICombScore(CCell* FirstCell, CCell* SecondCell)
 	MirrorBall + MirrorBall ==> 70
 	 */
 
-	// 줄무늬 + 줄무늬 
+	 // 줄무늬 + 줄무늬 
 	if ((FirstCell->GetCellState() == Cell_State::RowLine || FirstCell->GetCellState() == Cell_State::ColLine) ||
 		(SecondCell->GetCellState() == Cell_State::RowLine || SecondCell->GetCellState() == Cell_State::ColLine))
 		return 20;
@@ -4613,14 +4620,14 @@ int CBoard::CalculateAISpecialCellScore(CCell* Cell)
 {
 	switch (Cell->GetCellState())
 	{
-	case Cell_State::ColLine :
-	case Cell_State::RowLine :
+	case Cell_State::ColLine:
+	case Cell_State::RowLine:
 		return 5;
 
-	case Cell_State::Bag :
+	case Cell_State::Bag:
 		return 6;
 
-	case Cell_State::MirrorBall :
+	case Cell_State::MirrorBall:
 		return 7;
 	}
 
@@ -4628,11 +4635,11 @@ int CBoard::CalculateAISpecialCellScore(CCell* Cell)
 }
 
 std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
-							 int NewRowIdx, int    NewColIdx, std::vector<int>& MatchedIdxs)
+	int NewRowIdx, int    NewColIdx, std::vector<int>& MatchedIdxs)
 {
 	// Match 된 Idx 정보들을 담을 배열 --> 이것은 그냥 외부에서 얻어온다.
 	MatchedIdxs.clear();
-	
+
 	// MatchedIdxs.reserve(m_VisualRowCount);
 
 	// int NewPosIndex = NewRowIdx * m_ColCount + NewColIdx;
@@ -4688,7 +4695,7 @@ std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 			}
 
 			// 아래서 위로 한칸 옮겨놨더니, 비교 시작 Col 이고, 비교 범위 밖
-			if (NewRowIdx  == CheckStartRow && OriginRowIdx == NewRowIdx - 1)
+			if (NewRowIdx == CheckStartRow && OriginRowIdx == NewRowIdx - 1)
 			{
 				InitCellType = m_vecCells[OriginRowIdx * m_ColCount + NewColIdx]->GetCellType();
 			}
@@ -4744,7 +4751,7 @@ std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 						NxtIndex = (StRow + 1) * m_ColCount + OriginColIdx;
 					}
 
-					if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal && 
+					if ((int)m_vecCells[CurIndex]->GetCellState() > (int)Cell_State::Normal &&
 						(int)m_vecCells[NxtIndex]->GetCellState() > (int)Cell_State::Normal)
 					{
 						int CurrentCombScore = CalculateAICombScore(m_vecCells[CurIndex], m_vecCells[NxtIndex]);
@@ -4793,7 +4800,7 @@ std::pair<int, bool> CBoard::CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
 					{
 						MatchIdx = row * m_ColCount + OriginColIdx;
 					}
-					
+
 					MatchedIdxs.push_back(MatchIdx);
 				}
 
@@ -4886,7 +4893,7 @@ std::pair<int, bool> CBoard::CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
 				// 오른쪽에서 왼쪽으로 옮겨놨더니, OriginColIdx가 검사 범위 안
 				if (StCol == OriginColIdx)
 				{
-					CurIndex = OriginRowIdx* m_ColCount + StCol;
+					CurIndex = OriginRowIdx * m_ColCount + StCol;
 				}
 
 				Cell_Type_Binary CurCellType = m_vecCells[CurIndex]->GetCellType();
@@ -5010,7 +5017,7 @@ std::pair<int, bool> CBoard::CheckAIBagMatch(int OriginRowIdx, int OriginColIdx,
 		TempMatchMaxScore = BoolRightDown.first;
 	}
 
-	std::pair<int, bool> BoolRightUp = CheckBagRightUpMatch(OriginRowIdx, OriginColIdx, 
+	std::pair<int, bool> BoolRightUp = CheckBagRightUpMatch(OriginRowIdx, OriginColIdx,
 		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolRightUp.second)
@@ -5025,7 +5032,7 @@ std::pair<int, bool> CBoard::CheckAIBagMatch(int OriginRowIdx, int OriginColIdx,
 		FinalMatch = true;
 	}
 
-	std::pair<int, bool> BoolLeftDown = CheckBagLeftDownMatch(OriginRowIdx, OriginColIdx, 
+	std::pair<int, bool> BoolLeftDown = CheckBagLeftDownMatch(OriginRowIdx, OriginColIdx,
 		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolLeftDown.second)
@@ -5040,7 +5047,7 @@ std::pair<int, bool> CBoard::CheckAIBagMatch(int OriginRowIdx, int OriginColIdx,
 		FinalMatch = true;
 	}
 
-	std::pair<int, bool> BoolLeftUp = CheckBagLeftUpMatch(OriginRowIdx, OriginColIdx, 
+	std::pair<int, bool> BoolLeftUp = CheckBagLeftUpMatch(OriginRowIdx, OriginColIdx,
 		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolLeftUp.second)
@@ -5055,7 +5062,7 @@ std::pair<int, bool> CBoard::CheckAIBagMatch(int OriginRowIdx, int OriginColIdx,
 		FinalMatch = true;
 	}
 
-	std::pair<int, bool> BoolCenterRight = CheckBagCenterRightMatch(OriginRowIdx, OriginColIdx, 
+	std::pair<int, bool> BoolCenterRight = CheckBagCenterRightMatch(OriginRowIdx, OriginColIdx,
 		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolCenterRight.second)
@@ -5070,8 +5077,8 @@ std::pair<int, bool> CBoard::CheckAIBagMatch(int OriginRowIdx, int OriginColIdx,
 		FinalMatch = true;
 	}
 
-	std::pair<int, bool> BoolCenterLeft = CheckBagCenterLeftMatch(OriginRowIdx, OriginColIdx, 
-NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
+	std::pair<int, bool> BoolCenterLeft = CheckBagCenterLeftMatch(OriginRowIdx, OriginColIdx,
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolCenterLeft.second)
 	{
@@ -5085,8 +5092,8 @@ NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 		FinalMatch = true;
 	}
 
-	std::pair<int, bool> BoolCenterDown = CheckBagCenterDownMatch(OriginRowIdx, OriginColIdx, 
-NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
+	std::pair<int, bool> BoolCenterDown = CheckBagCenterDownMatch(OriginRowIdx, OriginColIdx,
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolCenterDown.second)
 	{
@@ -5100,8 +5107,8 @@ NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 		FinalMatch = true;
 	}
 
-	std::pair<int, bool> BoolCenterUp = CheckBagCenterUpMatch(OriginRowIdx, OriginColIdx, 
-NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
+	std::pair<int, bool> BoolCenterUp = CheckBagCenterUpMatch(OriginRowIdx, OriginColIdx,
+		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolCenterUp.second)
 	{
@@ -5169,13 +5176,13 @@ bool CBoard::Init()
 
 
 	// Input Callback 세팅
-	CInput::GetInst()->SetKeyCallback("BoardCellClick", Key_State::Key_Down, this, 
+	CInput::GetInst()->SetKeyCallback("BoardCellClick", Key_State::Key_Down, this,
 		&CBoard::ClickCell);
 
 	CInput::GetInst()->SetKeyCallback("ChangeToMirrorBall", Key_State::Key_Down, this,
 		&CBoard::ChangeToMirrorBallCell);
 
-	
+
 
 	m_DRow = { -1, 1, 0, 0 };
 	m_DCol = { 0, 0, 1, -1 };
@@ -5203,7 +5210,7 @@ void CBoard::Update(float DeltaTime)
 
 	bool IsMatchExist = FindMatchUpdate();
 
-	bool IsPossibleMatchExst =  CheckAIAndPossibleMatch(DeltaTime);
+	bool IsPossibleMatchExst = CheckAIAndPossibleMatch(DeltaTime);
 
 	// Match도 없고, 가능한 경우의 수도 없다면.
 	if (!IsMatchExist && !IsPossibleMatchExst)
@@ -5272,17 +5279,18 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 
 	// BackGround Pos, Scale 조정하기
 	Vector3 BoardWorldScale = m_Sprite->GetWorldScale();
-	Vector3 BoardImaeScale = Vector3(BoardWorldScale.x + CellSize.x * 2.f , BoardWorldScale.y * 0.5f + CellSize.y * 2.f, BoardWorldScale.z);
+	Vector3 BoardImaeScale = Vector3(BoardWorldScale.x + CellSize.x * 2.f, BoardWorldScale.y * 0.5f + CellSize.y * 2.f, BoardWorldScale.z);
 
 	m_BoardBackGround->SetWorldScale(BoardImaeScale);
 	m_BoardBackGround->SetRelativePos(Vector3(CellSize.x * -1.f, CellSize.y * -1.f, 1.f));
-	m_BoardBackGround->AddWorldPos(Vector3(CellSize.x * -0.5f, CellSize.y * - 0.5f, 0.f));
+	m_BoardBackGround->AddWorldPos(Vector3(CellSize.x * -0.5f, CellSize.y * -0.5f, 0.f));
 
 	// Mouse Offset 세팅하기
 	m_MousePosOffSet = Vector2(0.5f, 0.5f) * m_CellSize;
 
 	// 실제 Cell 생성하기
-	m_ObjectPool = new CGameObjectPool<CCell>(m_TotCount);
+	//m_BlockObjectPool = new CGameObjectPool<CBlock>(BlockRegisterNum, m_TotCount);
+	m_CellObjectPool = new CGameObjectPool<CCell>(CellRegisterNum, m_TotCount);
 
 	for (int row = 0; row < m_RowCount; row++)
 	{
@@ -5303,7 +5311,7 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 			sprintf_s(Name, "Cell%d", row * m_ColCount + col);
 
 			// CCell* NewCell =  CreateSingleNewCell(Name, row, col, WorldPos, NewYPos, (Cell_Type)Type, 1.f,true, CellState);
-			CCell* NewCell =  CreateSingleNewCell(Name, row, col, WorldPos, NewYPos, CellBType, 1.f,true, CellState);
+			CCell* NewCell = CreateSingleNewCell(Name, row, col, WorldPos, NewYPos, CellBType, 1.f, true, CellState);
 
 			if (CellWorldYPos >= BoardStartPos.y + m_CellSize.y * m_VisualRowCount)
 			{
@@ -5346,8 +5354,8 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 
 			// x는 열, y는 행
 			Vector3 BlockWorldPos = Vector3(
-				WorldPos.x + m_CellSize.x * 0.1f, 
-				WorldPos.y + m_CellSize.y * 0.1f, 
+				WorldPos.x + m_CellSize.x * 0.1f,
+				WorldPos.y + m_CellSize.y * 0.1f,
 				0.f);
 
 			Block->SetWorldPos(WorldPos);

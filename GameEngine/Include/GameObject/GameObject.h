@@ -6,6 +6,7 @@
 class CGameObject : public CRef
 {
 	friend class CScene;
+	friend class CGameObjectFactory;
 protected:
 	CGameObject();
 	CGameObject(const CGameObject& Object);

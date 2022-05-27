@@ -73,7 +73,7 @@
       <Filter>02. Object</Filter>
     </ClCompile>
     <ClCompile Include="GameObject\GameObjectFactory.cpp">
-      <Filter>02. Object</Filter>
+      <Filter>05. Factory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -122,11 +122,11 @@
     <ClInclude Include="GameObject\GameObjectPool.h">
       <Filter>02. Object</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject\GameObjectFactory.h">
-      <Filter>02. Object</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject\Utils.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\GameObjectFactory.h">
+      <Filter>05. Factory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

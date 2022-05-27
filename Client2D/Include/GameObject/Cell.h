@@ -8,8 +8,9 @@ class CCell :
     public CGameObject
 {
     friend class CScene;
+    friend class CGameObjectFactory;
     friend class CBoard;
-private:
+public:
     CCell();
     CCell(const CCell& Player2D);
     virtual ~CCell();
@@ -118,6 +119,10 @@ private : // 특수 효과
     // MirrorBall + MirrorBall
     void ApplyDoubleMirrorBallCombEffect(float DeltaTime);
     void SequentiallyDestroyCellByDoubleMirrorBallCombEffect(float DeltaTime);
+
+public:
+    static CGameObject* CreateObject() { return new CCell; }
+
 // Getter 
 public:
     bool IsBeingSpecialDestroyed() const

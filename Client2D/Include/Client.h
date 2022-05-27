@@ -2,6 +2,9 @@
 
 #include <string>
 
+static constexpr int CellRegisterNum = 1;
+static constexpr int BlockRegisterNum = 1;
+
 struct LoadingMessage {
 	bool Complete;
 	float Percent;
