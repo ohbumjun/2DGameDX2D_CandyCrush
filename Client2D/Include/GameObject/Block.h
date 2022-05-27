@@ -23,7 +23,7 @@ private :
 	int m_ColIndex;
 
 public:
-	static CBlock* CreateObject() { return new CBlock; }
+	static CGameObject* CreateObject() { return new CBlock; }
 public :
 	bool IsStopBlock() const
 	{

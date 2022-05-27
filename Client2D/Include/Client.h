@@ -2,8 +2,13 @@
 
 #include <string>
 
+enum class FactoryRegisterNum {
+	CellRegisterNum,
+	BlockRegisterNum
+};
+
 static constexpr int CellRegisterNum = 1;
-static constexpr int BlockRegisterNum = 1;
+static constexpr int BlockRegisterNum = 2;
 
 struct LoadingMessage {
 	bool Complete;

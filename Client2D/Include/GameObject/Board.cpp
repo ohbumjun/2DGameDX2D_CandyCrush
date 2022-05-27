@@ -193,14 +193,14 @@ CCell* CBoard::CreateSingleNewCell(const std::string& Name, int RowIndex, int Co
 {
 	int Index = RowIndex * m_ColCount + ColIndex;
 
-	CCell* Cell = m_Scene->CreateGameObject<CCell>(Name);
+	// CCell* Cell = m_Scene->CreateGameObject<CCell>(Name);
 
-	// CCell* Cell = m_CellObjectPool->GetFromPool();
-	// Cell->SetScene(m_Scene);
-	// Cell->Init();
-	// Cell->Start();
+	CCell* Cell = m_CellObjectPool->GetFromPool();
+	Cell->SetScene(m_Scene);
+	Cell->Init();
+	Cell->Start();
 	// 
-	// m_Scene->AddObjectToList(Cell);
+	m_Scene->AddObjectToList(Cell);
 
 	Vector3 BoardStartPos = GetWorldPos();
 
@@ -5290,7 +5290,7 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 
 	// 실제 Cell 생성하기
 	//m_BlockObjectPool = new CGameObjectPool<CBlock>(BlockRegisterNum, m_TotCount);
-	m_CellObjectPool = new CGameObjectPool<CCell>(CellRegisterNum, m_TotCount);
+	m_CellObjectPool = new CGameObjectPool<CCell>((int)FactoryRegisterNum::CellRegisterNum, m_TotCount);
 
 	for (int row = 0; row < m_RowCount; row++)
 	{
@@ -5330,6 +5330,8 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 
 	// Block 만들기 -------------------------------------------------------------------
 	m_vecBlocks.resize((int)(m_TotCount * 0.5f));
+
+	m_BlockObjectPool = new CGameObjectPool<CBlock>((int)FactoryRegisterNum::BlockRegisterNum, m_TotCount);
 
 	for (int row = 0; row < m_VisualRowCount; row++)
 	{
