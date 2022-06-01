@@ -8,6 +8,7 @@ class CBlock :  public CGameObject
 {
 	friend class CScene;
 	friend class CBoard;
+	friend class CBlockObjectPool;
 protected :
 	CBlock();
 	CBlock(const CBlock& Block);

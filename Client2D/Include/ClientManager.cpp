@@ -5,7 +5,6 @@
 #include "Scene/StartScene.h"
 #include "Scene/IntroScene.h"
 #include "Input.h"
-#include "GameObject/GameObjectFactory.h"
 
 DEFINITION_SINGLE(CClientManager)
 
@@ -16,7 +15,6 @@ CClientManager::CClientManager()
 CClientManager::~CClientManager()
 {
 	CEngine::DestroyInst();
-	CGameObjectFactory::DestroyInst();
 }
 
 bool CClientManager::Init(HINSTANCE hInst)

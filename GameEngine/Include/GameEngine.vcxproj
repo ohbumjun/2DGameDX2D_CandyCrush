@@ -187,6 +187,8 @@
     <ClInclude Include="Flag.h" />
     <ClInclude Include="GameInfo.h" />
     <ClInclude Include="GameObject\GameObject.h" />
+    <ClInclude Include="GameObject\GameObjectFactory.h" />
+    <ClInclude Include="GameObject\GameObjectPool.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="PathManager.h" />
@@ -273,6 +275,8 @@
     <ClCompile Include="Component\SpriteComponent.cpp" />
     <ClCompile Include="Component\StaticMeshComponent.cpp" />
     <ClCompile Include="Component\Transform.cpp" />
+    <ClCompile Include="GameObject\GameObjectFactory.cpp" />
+    <ClCompile Include="GameObject\GameObjectPool.cpp" />
     <ClCompile Include="Resource\Particle\Particle.cpp" />
     <ClCompile Include="Resource\Particle\ParticleManager.cpp" />
     <ClCompile Include="Resource\Shader\ComputeShader.cpp" />

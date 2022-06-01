@@ -22,6 +22,8 @@ protected :
 	CViewPort* m_ViewPort;
 	bool m_Start;
 	std::list<CSharedPtr<class CGameObject>> m_ObjList;
+	// std::unordered_map<std::string, CGameObjectPool<CGameObject>*> m_mapObjectPool;
+	std::list<class CGameObjectPool*> m_ObjectPoolList;
 public :
 	CCameraManager* GetCameraManager() const
 {
@@ -43,11 +45,11 @@ public :
 	{
 		return m_ViewPort;
 	}
+	void AddObjectToList(CGameObject* Object);
+public :
 	CGameObject* FindGameObject(const std::string& Name);
-	void AddObjectToList(CGameObject* Object)
-	{
-		m_ObjList.push_back(Object);
-	}
+	void DeleteCellFromObjectList(CGameObject* Object);
+	CGameObjectPool* FindGameObjectPool(const std::string& Name);
 public :
 	virtual bool Init();
 	virtual void Start();
@@ -72,6 +74,15 @@ public :
 
 	return Object;
 }
+	template<typename T>
+	void CreateObjectPool(const char* Name,  int FactoryRegisterNum, int initNum)
+	{
+		T* NewObjectPool = new T;
+		NewObjectPool->SetName(Name);
+		NewObjectPool->Init(FactoryRegisterNum, initNum);
+		m_ObjectPoolList.push_back(NewObjectPool);
+		// m_mapObjectPool.insert(mapKey, new CGameObjectPool<T>(FactoryRegisterNum, initNum));
+	}
 private :
 	template<typename T>
 	bool CreateSceneMode()

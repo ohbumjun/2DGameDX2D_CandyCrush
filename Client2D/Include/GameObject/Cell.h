@@ -8,8 +8,8 @@ class CCell :
     public CGameObject
 {
     friend class CScene;
-    friend class CGameObjectFactory;
     friend class CBoard;
+    friend class CCellObjectPool;
 public:
     CCell();
     CCell(const CCell& Player2D);

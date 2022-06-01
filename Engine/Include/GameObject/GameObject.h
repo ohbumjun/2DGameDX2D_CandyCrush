@@ -13,6 +13,7 @@ protected:
 	virtual ~CGameObject() override;
 protected:
 	class CScene* m_Scene;
+	class CGameObjectPool* m_ObjectPool;
 public:
 	class CScene* GetScene() const
 	{
@@ -25,6 +26,7 @@ public:
 	}
 public:
 	virtual void Destroy() override;
+	void SetGameObjectPool(CGameObjectPool* Pool);
 protected:
 	CSharedPtr<CSceneComponent> m_RootComponent;
 	std::list<CSceneComponent*> m_SceneComponentList;

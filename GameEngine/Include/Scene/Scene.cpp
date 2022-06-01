@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "CameraManager.h"
+#include "../GameObject/GameObjectPool.h"
 
 CScene::CScene() :
 	m_Change(false),
@@ -31,6 +32,25 @@ CScene::~CScene()
 	SAFE_DELETE(m_SceneResource);
 	SAFE_DELETE(m_ViewPort);
 	SAFE_DELETE(m_CameraManager);
+
+	auto iter = m_ObjectPoolList.begin();
+	auto iterEnd = m_ObjectPoolList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		SAFE_DELETE(*iter);
+	}
+}
+
+void  CScene::AddObjectToList(CGameObject* Object)
+{
+	// 중복 방지
+	auto iter = std::find(m_ObjList.begin(), m_ObjList.end(), Object);
+
+	if (iter != m_ObjList.end())
+		return;
+
+	m_ObjList.push_back(Object);
 }
 
 CGameObject* CScene::FindGameObject(const std::string& Name)
@@ -46,6 +66,40 @@ CGameObject* CScene::FindGameObject(const std::string& Name)
 	return nullptr;
 }
 
+void CScene::DeleteCellFromObjectList(CGameObject* Object)
+{
+	auto iter = m_ObjList.begin();
+	auto iterEnd = m_ObjList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter) == Object)
+		{
+			// (*iter)->m_RefCount += 1;
+
+			// 아래 erase 를 해버리면, Ref Count가 0이 되어, 메모리에서 해제된다.
+			// 그런데 해제된 메모리를 가리키는 포인터에 대한 정보가 Object Pool 에 남아있게 된다.
+			// 따라서, erase 해주기 이전에 RefCount를 1 증가시켜줄 것이다.
+			m_ObjList.erase(iter);
+			break;
+		}
+	}
+}
+
+CGameObjectPool* CScene::FindGameObjectPool(const std::string& Name)
+{
+	auto iter = m_ObjectPoolList.begin();
+	auto iterEnd = m_ObjectPoolList.end();
+
+	for (; iter != iterEnd; ++iter)
+	{
+		if ((*iter)->GetName() == Name)
+		{
+			return (*iter);
+		}
+	}
+	return nullptr;
+}
 
 void CScene::Start()
 {
@@ -92,6 +146,10 @@ void CScene::Update(float DeltaTime)
 		if (!(*iter)->IsActive())
 		{
 			// SAFE_DELETE((*iter));
+			// SAFE_DELETE((*iter));
+			if ((*iter)->m_ObjectPool)
+				(*iter)->m_ObjectPool->ReturnToPool((*iter));
+
 			iter = m_ObjList.erase(iter);
 			iterEnd = m_ObjList.end();
 			continue;
@@ -118,6 +176,9 @@ void CScene::PostUpdate(float DeltaTime)
 		if (!(*iter)->IsActive())
 		{
 			// SAFE_DELETE((*iter));
+			if ((*iter)->m_ObjectPool)
+			 	(*iter)->m_ObjectPool->ReturnToPool((*iter));
+
 			iter = m_ObjList.erase(iter);
 			iterEnd = m_ObjList.end();
 			continue;
@@ -151,6 +212,8 @@ void CScene::SetAutoChange(bool Change)
 {
 	m_Change = Change;
 }
+
+
 
 bool CScene::Init()
 {

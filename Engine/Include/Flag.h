@@ -115,3 +115,9 @@ enum class ProgressBar_Dir {
 	TopToBottom,
 	BottomToTop
 };
+
+
+enum class GameObjectPoolKeyNumber {
+	CellObjectPoolKey,
+	BlockObjectPoolKey
+};

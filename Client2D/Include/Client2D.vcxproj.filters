@@ -69,11 +69,11 @@
     <ClCompile Include="UI\StartSceneWidget.cpp">
       <Filter>03. UI</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject\GameObjectPool.cpp">
+    <ClCompile Include="GameObject\CellObjectPool.cpp">
       <Filter>02. Object</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject\GameObjectFactory.cpp">
-      <Filter>05. Factory</Filter>
+    <ClCompile Include="GameObject\BlockObjectPool.cpp">
+      <Filter>02. Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -119,14 +119,14 @@
     <ClInclude Include="UI\StartSceneWidget.h">
       <Filter>03. UI</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject\GameObjectPool.h">
-      <Filter>02. Object</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject\Utils.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject\GameObjectFactory.h">
-      <Filter>05. Factory</Filter>
+    <ClInclude Include="GameObject\CellObjectPool.h">
+      <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\BlockObjectPool.h">
+      <Filter>02. Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

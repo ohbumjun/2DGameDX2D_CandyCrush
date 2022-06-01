@@ -24,8 +24,6 @@ CBoard::CBoard() :
 
 CBoard::~CBoard()
 {
-	SAFE_DELETE(m_CellObjectPool); //
-	SAFE_DELETE(m_BlockObjectPool); //
 }
 
 void CBoard::AddClickCellMoveDone()
@@ -195,12 +193,23 @@ CCell* CBoard::CreateSingleNewCell(const std::string& Name, int RowIndex, int Co
 
 	// CCell* Cell = m_Scene->CreateGameObject<CCell>(Name);
 
-	CCell* Cell = m_CellObjectPool->GetFromPool();
+	CCell* Cell = dynamic_cast<CCell*>(m_CellObjectPool->GetFromPool());
+
+	// Cell 의 Ref Cnt 를 1 감소시킨다.
+
 	Cell->SetScene(m_Scene);
 	Cell->Init();
 	Cell->Start();
-	// 
+	
+	// 여기에 추가하면 Ref Cnt 가 1 증가한다.
 	m_Scene->AddObjectToList(Cell);
+
+	// 그런데 이제 Scene의 Obj List 에 추가된 순간, Scene 내의 Obj List 에서
+	// 제거될 때, 같이 해당 Cell 도 사라져야 한다.
+	// 더 이상, Object Pool 에서 해당 Cell 정보를 관리하지 않기 때문에
+	// 따라서, Scene 의 Obj List 에서 해당 Cell 이 제거될 때, 알아서 Memory 해제가 되게 하기 위해서
+	// 여기서 미리 Ref Cnt 를 1 감소 시켜준다.
+	Cell->Release();
 
 	Vector3 BoardStartPos = GetWorldPos();
 
@@ -2818,6 +2827,8 @@ void CBoard::DestroySingleNormalCell(int RowIndex, int ColIndex)
 
 	// Destroy 처리 
 	m_vecCells[Index]->Destroy();
+	// m_CellObjectPool->ReturnToPool(m_vecCells[Index]);
+	// m_vecCells[Index]->Destroy();
 
 	// Destroy Mark State 초기화 
 	m_vecCells[Index]->SetDestroyMarkState(DestroyMark_State::None);
@@ -5172,8 +5183,9 @@ bool CBoard::Init()
 
 	m_Sprite->AddChild(m_BoardBackGround);
 
-	// 이미지 세팅
-
+	// ObjectPool 세팅
+	m_CellObjectPool = m_Scene->FindGameObjectPool("CellObjectPool");
+	m_BlockObjectPool = m_Scene->FindGameObjectPool("BlockObjectPool");
 
 	// Input Callback 세팅
 	CInput::GetInst()->SetKeyCallback("BoardCellClick", Key_State::Key_Down, this,
@@ -5290,7 +5302,7 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 
 	// 실제 Cell 생성하기
 	//m_BlockObjectPool = new CGameObjectPool<CBlock>(BlockRegisterNum, m_TotCount);
-	m_CellObjectPool = new CGameObjectPool<CCell>((int)FactoryRegisterNum::CellRegisterNum, m_TotCount);
+	// m_CellObjectPool = new CGameObjectPool<CCell>((int)FactoryRegisterNum::CellRegisterNum, m_TotCount);
 
 	for (int row = 0; row < m_RowCount; row++)
 	{
@@ -5331,7 +5343,7 @@ bool CBoard::CreateBoard(int CountRow, int CountCol, float WidthRatio, float Hei
 	// Block 만들기 -------------------------------------------------------------------
 	m_vecBlocks.resize((int)(m_TotCount * 0.5f));
 
-	m_BlockObjectPool = new CGameObjectPool<CBlock>((int)FactoryRegisterNum::BlockRegisterNum, m_TotCount);
+	// m_BlockObjectPool = new CGameObjectPool<CBlock>((int)FactoryRegisterNum::BlockRegisterNum, m_TotCount);
 
 	for (int row = 0; row < m_VisualRowCount; row++)
 	{

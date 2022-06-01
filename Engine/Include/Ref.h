@@ -56,6 +56,10 @@ public :
 {
 		m_Enable = Enable;
 }
+	void Activate()
+{
+		m_Active = true;
+}
 	virtual void Destroy()
 {
 		m_Active = false;

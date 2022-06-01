@@ -2,8 +2,10 @@
 
 #include "GameObject/GameObject.h"
 #include "Block.h"
-#include "GameObjectPool.h"
+#include "GameObject/GameObjectPool.h"
 #include "Cell.h"
+#include "CellObjectPool.h"
+#include "BlockObjectPool.h"
 #include "Component/SpriteComponent.h"
 #include "Component/StaticMeshComponent.h"
 
@@ -20,9 +22,8 @@ private:
     CSharedPtr<CSpriteComponent> m_BoardBackGround;
     std::vector<CSharedPtr<CCell>> m_vecCells;
     std::vector<CSharedPtr<CBlock>> m_vecBlocks;
-    CGameObjectPool<CCell>* m_CellObjectPool;
-    CGameObjectPool<CBlock>* m_BlockObjectPool;
-
+    CGameObjectPool* m_CellObjectPool;
+    CGameObjectPool* m_BlockObjectPool;
     // Click µÈ Block
     CBlock* m_ClickedBlock;
 

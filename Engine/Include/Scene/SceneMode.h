@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../Ref.h"
+#include "../GameObject/GameObject.h"
 
 class CSceneMode :
 	public CRef

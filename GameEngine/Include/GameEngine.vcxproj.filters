@@ -180,6 +180,12 @@
     <Filter Include="05. Component\01. SceneComponent\04. Particle">
       <UniqueIdentifier>{7693b411-5630-4ccd-866e-dc310effb573}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. GameObject\01. ObjectPool">
+      <UniqueIdentifier>{90cf81a2-dc25-41e0-a58c-c59356324e57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04. GameObject\02. ObjectFactory">
+      <UniqueIdentifier>{a3e6a920-496d-4e24-977e-145799719953}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -208,9 +214,6 @@
     </ClInclude>
     <ClInclude Include="Input.h">
       <Filter>01. Engine\04. Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Flag.h">
-      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Ref.h">
       <Filter>01. Engine\06. Ref</Filter>
@@ -449,6 +452,15 @@
     </ClInclude>
     <ClInclude Include="Component\ParticleComponent.h">
       <Filter>05. Component\01. SceneComponent\04. Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\GameObjectPool.h">
+      <Filter>04. GameObject\01. ObjectPool</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\GameObjectFactory.h">
+      <Filter>04. GameObject\02. ObjectFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="Flag.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -706,6 +718,12 @@
     </ClCompile>
     <ClCompile Include="Component\ParticleComponent.cpp">
       <Filter>05. Component\01. SceneComponent\04. Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\GameObjectPool.cpp">
+      <Filter>04. GameObject\01. ObjectPool</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\GameObjectFactory.cpp">
+      <Filter>04. GameObject\02. ObjectFactory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

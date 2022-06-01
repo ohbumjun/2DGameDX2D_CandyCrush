@@ -52,6 +52,11 @@ void CGameObject::Destroy()
 	}
 }
 
+void CGameObject::SetGameObjectPool(CGameObjectPool* Pool)
+{
+	m_ObjectPool = Pool;
+}
+
 CSceneComponent* CGameObject::FindSceneComponent(const std::string& Name) const
 {
 	auto iter = m_SceneComponentList.begin();

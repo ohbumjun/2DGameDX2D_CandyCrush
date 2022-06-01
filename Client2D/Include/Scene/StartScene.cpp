@@ -5,6 +5,8 @@
 #include "../GameObject/Board.h"
 #include "Engine.h"
 #include "../UI/StartSceneWidget.h"
+#include "../GameObject/CellObjectPool.h"
+#include "../GameObject/BlockObjectPool.h"
 
 CStartScene::CStartScene() :
 	m_PlayTimeFull(30.f),
@@ -28,8 +30,11 @@ bool CStartScene::Init()
 
 	m_StartWidget = m_Scene->GetViewPort()->CreateUIWindow<CStartSceneWidget>("StartSceneWidget");
 
-	// CPlayer2D* Player2D = m_Scene->CreateGameObject<CPlayer2D>("Player");
-	// SetPlayerObject(Player2D);
+	// Make Factory For Cell, Block
+	// m_Scene->CreateObjectPool<CCell>("CellObjectPool", (int)FactoryRegisterNum::CellRegisterNum, 100);
+	m_Scene->CreateObjectPool<CCellObjectPool>("CellObjectPool",(int)FactoryRegisterNum::CellRegisterNum, 100);
+	// m_Scene->CreateObjectPool<CBlock>("BlockObjectPool", (int)FactoryRegisterNum::BlockRegisterNum, 100);
+	m_Scene->CreateObjectPool<CBlockObjectPool>("BlockObjectPool", (int)FactoryRegisterNum::BlockRegisterNum, 100);
 
 	Resolution RS = CEngine::GetInst()->GetResolution();
 
