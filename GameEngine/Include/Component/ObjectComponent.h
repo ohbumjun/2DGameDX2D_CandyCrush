@@ -5,7 +5,7 @@ class CObjectComponent :
 {
 	friend class CGameObject;
 	friend class CRenderManager;
-private:
+public :
 	CObjectComponent();
 	CObjectComponent(const  CObjectComponent& Component);
 	virtual ~CObjectComponent() = 0;

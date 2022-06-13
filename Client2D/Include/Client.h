@@ -7,6 +7,12 @@ enum class FactoryRegisterNum {
 	BlockRegisterNum
 };
 
+static struct DirSpace
+{
+	std::array<int, 4> m_DRow{ -1, 1, 0, 0 };
+	std::array<int, 4> m_DCol{ 0, 0, 1, -1 };
+} DirectionSpace;
+
 static constexpr int CellRegisterNum = 1;
 static constexpr int BlockRegisterNum = 2;
 

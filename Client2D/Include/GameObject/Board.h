@@ -20,21 +20,20 @@ private:
     // 별다른 Animation이 없을 것이므로 Static Mesh로 세팅
     CSharedPtr<CStaticMeshComponent> m_Sprite;
     CSharedPtr<CSpriteComponent> m_BoardBackGround;
-    std::vector<CSharedPtr<CCell>> m_vecCells;
-    std::vector<CSharedPtr<CBlock>> m_vecBlocks;
+    // std::vector<CSharedPtr<CCell>> m_vecCells;
+    std::vector<CCell*> m_vecCells;
+    // std::vector<CSharedPtr<CBlock>> m_vecBlocks;
+    std::vector<CBlock*> m_vecBlocks;
     CGameObjectPool* m_CellObjectPool;
     CGameObjectPool* m_BlockObjectPool;
     // Click 된 Block
     CBlock* m_ClickedBlock;
-
     int m_TotCount;
     int m_RowCount;
     int m_ColCount;
     int m_VisualRowCount;
     int m_IndexOffset;
     Vector2 m_CellSize;
-    std::array<int, 4> m_DRow;
-    std::array<int, 4> m_DCol;
 
     // 새로운 Cell Index 세팅 --> 각 Cell이 몇개 내려가야 하는지
     std::vector<int> m_vecCellDownNums;
@@ -53,9 +52,9 @@ private:
     bool m_CellsMoving;
 
     // AI Check는 딱 한번만 하게 하기 위함이다
-    bool m_IsAIChecked;
-    float m_AICheckDelayTime;
-    float m_AICheckDelayTimeMax;
+    //  bool m_IsAIChecked;
+    //  float m_AICheckDelayTime;
+    //  float m_AICheckDelayTimeMax;
 
     // Mouse Click
     Mouse_Click m_MouseClick;
@@ -77,11 +76,46 @@ private:
 
     // 현재 Special Destroy 되고 있는 상태인지
     bool m_IsBeingSpecialDestroyed;
+private:
+    class CBoardAILogicComponent* m_AILogicComponent;
 public :
+    // 이 녀석은 수정할 수 있게 세팅할 것이다.
+     std::vector<CCell*>& GetVecCells ()
+    {
+        return m_vecCells;
+    }
+    const std::vector<bool>& GetVecCellsMatch() const 
+    {
+        return m_vecCellIsMatch;
+    }
     Vector2 GetCellSize () const
 {
         return m_CellSize;
 }
+    int GetVisualRowCount() const
+    {
+        return m_VisualRowCount;
+    }
+    int GetColCount() const
+    {
+        return m_ColCount;
+    }
+    bool IsMatchExist() const
+    {
+        return m_IsMatchExist;
+    }
+    bool IsCellsMoving() const
+    {
+        return m_CellsMoving;
+    }
+    class CCell* GetFirstClickCell() const
+    {
+        return m_FirstClickCell;
+    }
+    class CCell* GetSecClickCell() const
+    {
+        return m_SecClickCell;
+    };
 public:
     void SetCellsMoving(bool Moving)
     {
@@ -138,7 +172,6 @@ private:
     // 줄무늬 + 줄무늬 --> 가로 + 세로로 1줄씩  제거해준다.
     // 줄무늬 + Mirror Ball --> 해당 색상의 모든 Cell 들을 Horizontal 혹은 Vertical 로 바꾼다음, 그에 맞게 다 터뜨린다.
     // MirrorBall  + MirrorBall --> 화면 상의 모든 Cell 들을 제거 한다.
-    void CompareCombination(int FirstCellIdx, int SecCellIdx);
     bool CheckCombination(CCell* FirstCell, CCell* SecondCell);
     void ManageDestroyedBagInfo(int Index);
     bool CheckBagAndBagComb(CCell* FirstCell, CCell* SecondCell);
@@ -161,7 +194,7 @@ public :
 private : 
     void SetMirrorBallDestroyInfo(int Index, Cell_Type_Binary DestroyType);
     // BagMatch
-private: 
+public : 
     bool CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked);
     std::pair<int, bool> CheckBagRightDownMatch(int OriginRowIndex, int OriginColIndex,
         int NewRowIndex, int NewColIndex, int Index, std::vector<int>& MatchIdxList, bool IsAI);
@@ -183,17 +216,6 @@ private:
 
     // AI
 private : 
-    bool CheckMatchExist();
-    bool CheckAIAndPossibleMatch(float DeltaTime);
-    int CalculateAICombScore(CCell* FirstCell, CCell* SecondCell); 
-    int CalculateAISpecialCellScore(CCell* FirstCell); 
-    // Match 여부와 Score 를 리턴한다.
-    std::pair<int, bool>CheckAIRowMatch(int OriginRowIdx, int OriginColIdx,
-        int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs);
-    std::pair<int, bool> CheckAIColMatch(int OriginRowIdx, int OriginColIdx,
-        int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs); 
-    std::pair<int, bool> CheckAIBagMatch(int OriginRowIdx, int OriginColIdx,
-        int NewRowIdx, int NewColIdx, std::vector<int>& MatchedIdxs);
     void ResetAINoticeState();
 
     // Create New Cell
@@ -213,8 +235,8 @@ private:
         int NewRowIdx, int NewColIdx);
     bool IsPossibleBagMatch(int OriginRowIdx, int OriginColIdx, 
         int NewRowIdx, int NewColIdx);
-    bool IsMatchExistForCells(std::vector<CSharedPtr<CCell>>& vecCells);
-    void ShuffleRandom(std::vector<CSharedPtr<CCell>>& vecCells);
+    bool IsMatchExistForCells(std::vector<CCell*>& vecCells);
+    void ShuffleRandom(std::vector<CCell*>& vecCells);
     // Destroy Cells  + 재조정
 private :
     void SetFindMatchCellsDone();

@@ -156,6 +156,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ClientManager.cpp" />
+    <ClCompile Include="Component\BoardAILogicComponent.cpp" />
+    <ClCompile Include="Component\CellLogicComponent.cpp" />
     <ClCompile Include="GameObject\Block.cpp" />
     <ClCompile Include="GameObject\BlockObjectPool.cpp" />
     <ClCompile Include="GameObject\Board.cpp" />
@@ -174,6 +176,8 @@
   <ItemGroup>
     <ClInclude Include="ClientManager.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Component\BoardAILogicComponent.h" />
+    <ClInclude Include="Component\CellLogicComponent.h" />
     <ClInclude Include="GameObject\Block.h" />
     <ClInclude Include="GameObject\BlockObjectPool.h" />
     <ClInclude Include="GameObject\Board.h" />

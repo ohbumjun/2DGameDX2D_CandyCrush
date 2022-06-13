@@ -10,5 +10,6 @@ private:
     virtual ~CBlockObjectPool() override;
 public:
     virtual void Init(int factoryRegisterNum, int initNum) override;
+    virtual void ResetInfo(CGameObject* Object);
 };
 

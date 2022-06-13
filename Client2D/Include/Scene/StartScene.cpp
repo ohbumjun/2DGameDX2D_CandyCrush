@@ -42,8 +42,8 @@ bool CStartScene::Init()
 
 	SetPlayerObject(Board);
 
-	Board->CreateBoard(6, 6, 60, 80, 
-		Vector3((float)RS.Width * 0.2f, (float)RS.Height * 0.15f, 1.f));
+	Board->CreateBoard(6, 6, 60, 40, 
+		Vector3((float)RS.Width * 0.2f, (float)RS.Height * 0.1f, 1.f));
 
 	return true;
 }

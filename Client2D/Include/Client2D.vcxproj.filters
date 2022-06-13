@@ -28,6 +28,9 @@
     <Filter Include="05. Factory">
       <UniqueIdentifier>{e8d82f12-c3aa-4f4a-b09c-c212ece2fdef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06. Component">
+      <UniqueIdentifier>{6eae736c-c5b8-4f62-8b98-c2c1b56f8ca9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -74,6 +77,12 @@
     </ClCompile>
     <ClCompile Include="GameObject\BlockObjectPool.cpp">
       <Filter>02. Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\BoardAILogicComponent.cpp">
+      <Filter>06. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\CellLogicComponent.cpp">
+      <Filter>06. Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +136,12 @@
     </ClInclude>
     <ClInclude Include="GameObject\BlockObjectPool.h">
       <Filter>02. Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\BoardAILogicComponent.h">
+      <Filter>06. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\CellLogicComponent.h">
+      <Filter>06. Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
