@@ -1,4 +1,5 @@
 #include "BoardAILogicComponent.h"
+#include "BoardBagLogicComponent.h"
 #include "../GameObject/Board.h"
 #include "../Client.h"
 
@@ -718,7 +719,7 @@ std::pair<int, bool> CBoardAILogicComponent::CheckAIBagMatch(int OriginRowIdx, i
 
 	int Index = NewRowIdx * m_Board->GetColCount() + NewColIdx;
 
-	std::pair<int, bool> BoolRightDown = m_Board->CheckBagRightDownMatch(OriginRowIdx, OriginColIdx,
+	std::pair<int, bool> BoolRightDown = m_BagLogicComponent->CheckBagRightDownMatch(OriginRowIdx, OriginColIdx,
 		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolRightDown.second)
@@ -730,7 +731,7 @@ std::pair<int, bool> CBoardAILogicComponent::CheckAIBagMatch(int OriginRowIdx, i
 		TempMatchMaxScore = BoolRightDown.first;
 	}
 
-	std::pair<int, bool> BoolRightUp = m_Board->CheckBagRightUpMatch(OriginRowIdx, OriginColIdx,
+	std::pair<int, bool> BoolRightUp = m_BagLogicComponent->CheckBagRightUpMatch(OriginRowIdx, OriginColIdx,
 		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolRightUp.second)
@@ -745,7 +746,7 @@ std::pair<int, bool> CBoardAILogicComponent::CheckAIBagMatch(int OriginRowIdx, i
 		FinalMatch = true;
 	}
 
-	std::pair<int, bool> BoolLeftDown = m_Board->CheckBagLeftDownMatch(OriginRowIdx, OriginColIdx,
+	std::pair<int, bool> BoolLeftDown = m_BagLogicComponent->CheckBagLeftDownMatch(OriginRowIdx, OriginColIdx,
 		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolLeftDown.second)
@@ -760,7 +761,7 @@ std::pair<int, bool> CBoardAILogicComponent::CheckAIBagMatch(int OriginRowIdx, i
 		FinalMatch = true;
 	}
 
-	std::pair<int, bool> BoolLeftUp = m_Board->CheckBagLeftUpMatch(OriginRowIdx, OriginColIdx,
+	std::pair<int, bool> BoolLeftUp = m_BagLogicComponent->CheckBagLeftUpMatch(OriginRowIdx, OriginColIdx,
 		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolLeftUp.second)
@@ -775,7 +776,7 @@ std::pair<int, bool> CBoardAILogicComponent::CheckAIBagMatch(int OriginRowIdx, i
 		FinalMatch = true;
 	}
 
-	std::pair<int, bool> BoolCenterRight = m_Board->CheckBagCenterRightMatch(OriginRowIdx, OriginColIdx,
+	std::pair<int, bool> BoolCenterRight = m_BagLogicComponent->CheckBagCenterRightMatch(OriginRowIdx, OriginColIdx,
 		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolCenterRight.second)
@@ -790,7 +791,7 @@ std::pair<int, bool> CBoardAILogicComponent::CheckAIBagMatch(int OriginRowIdx, i
 		FinalMatch = true;
 	}
 
-	std::pair<int, bool> BoolCenterLeft = m_Board->CheckBagCenterLeftMatch(OriginRowIdx, OriginColIdx,
+	std::pair<int, bool> BoolCenterLeft = m_BagLogicComponent->CheckBagCenterLeftMatch(OriginRowIdx, OriginColIdx,
 		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolCenterLeft.second)
@@ -805,7 +806,7 @@ std::pair<int, bool> CBoardAILogicComponent::CheckAIBagMatch(int OriginRowIdx, i
 		FinalMatch = true;
 	}
 
-	std::pair<int, bool> BoolCenterDown = m_Board->CheckBagCenterDownMatch(OriginRowIdx, OriginColIdx,
+	std::pair<int, bool> BoolCenterDown = m_BagLogicComponent->CheckBagCenterDownMatch(OriginRowIdx, OriginColIdx,
 		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolCenterDown.second)
@@ -820,7 +821,7 @@ std::pair<int, bool> CBoardAILogicComponent::CheckAIBagMatch(int OriginRowIdx, i
 		FinalMatch = true;
 	}
 
-	std::pair<int, bool> BoolCenterUp = m_Board->CheckBagCenterUpMatch(OriginRowIdx, OriginColIdx,
+	std::pair<int, bool> BoolCenterUp = m_BagLogicComponent->CheckBagCenterUpMatch(OriginRowIdx, OriginColIdx,
 		NewRowIdx, NewColIdx, Index, TempMatchIdxList, true);
 
 	if (BoolCenterUp.second)

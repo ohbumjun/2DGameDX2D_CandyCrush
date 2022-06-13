@@ -6,11 +6,14 @@ class CBoardAILogicComponent :
 {
     friend class CBoard;
     friend class CGameObject;
+    friend class CBoardBagLogicComponent;
 protected:
     CBoardAILogicComponent();
     virtual ~CBoardAILogicComponent();
 private :
     class CBoard* m_Board;
+    class CBoardBagLogicComponent* m_BagLogicComponent;
+private :
     float m_AICheckDelayTime;
     float m_AICheckDelayTimeMax;
     bool m_IsAIChecked;

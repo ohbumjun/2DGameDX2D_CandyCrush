@@ -78,8 +78,17 @@ private:
     bool m_IsBeingSpecialDestroyed;
 private:
     class CBoardAILogicComponent* m_AILogicComponent;
+    class CBoardBagLogicComponent* m_BagLogicComponent;
 public :
+    const std::vector<Match_State>& GetVecMatchState() const 
+    {
+        return m_vecMatchState;
+    }
     // 이 녀석은 수정할 수 있게 세팅할 것이다.
+      std::vector<bool>& GetVecCellsIsMatch() 
+    {
+        return m_vecCellIsMatch;
+    }
      std::vector<CCell*>& GetVecCells ()
     {
         return m_vecCells;
@@ -195,25 +204,6 @@ private :
     void SetMirrorBallDestroyInfo(int Index, Cell_Type_Binary DestroyType);
     // BagMatch
 public : 
-    bool CheckBagMatch(int RowIndex, int ColIndex, int Index, bool IsClicked);
-    std::pair<int, bool> CheckBagRightDownMatch(int OriginRowIndex, int OriginColIndex,
-        int NewRowIndex, int NewColIndex, int Index, std::vector<int>& MatchIdxList, bool IsAI);
-    std::pair<int, bool> CheckBagRightUpMatch(int OriginRowIndex, int OriginColIndex,
-		int NewRowIndex, int NewColIndex, int Index, std::vector<int>& MatchIdxList, bool IsAI);
-    std::pair<int, bool> CheckBagLeftDownMatch(int OriginRowIndex, int OriginColIndex,
-        int NewRowIndex, int NewColIndex, int Index, std::vector<int>& MatchIdxList, bool IsAI);
-    std::pair<int, bool> CheckBagLeftUpMatch(int OriginRowIndex, int OriginColIndex,
-        int NewRowIndex, int NewColIndex, int Index, std::vector<int>& MatchIdxList, bool IsAI);
-    std::pair<int, bool> CheckBagCenterRightMatch(int OriginRowIndex, int OriginColIndex,
-        int NewRowIndex, int NewColIndex, int Index, std::vector<int>& MatchIdxList, bool IsAI);
-    std::pair<int, bool> CheckBagCenterLeftMatch(int OriginRowIndex, int OriginColIndex,
-        int NewRowIndex, int NewColIndex, int Index, std::vector<int>& MatchIdxList, bool IsAI);
-    std::pair<int, bool> CheckBagCenterDownMatch(int OriginRowIndex, int OriginColIndex,
-        int NewRowIndex, int NewColIndex, int Index, std::vector<int>& MatchIdxList, bool IsAI);
-    std::pair<int, bool> CheckBagCenterUpMatch(int OriginRowIndex, int OriginColIndex,
-        int NewRowIndex, int NewColIndex, int Index, std::vector<int>& MatchIdxList, bool IsAI);
-    void SetBagAfterState();
-
     // AI
 private : 
     void ResetAINoticeState();
