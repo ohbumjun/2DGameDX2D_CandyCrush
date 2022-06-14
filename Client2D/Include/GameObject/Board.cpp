@@ -1000,7 +1000,7 @@ bool CBoard::Init()
 	m_DestroyLogicComponent = CreateComponent<CBoardDestroyLogicComponent>("BoardDestroyLogic");//
 	m_DestroyLogicComponent->m_Board = this;
 	
-	m_CombLogicComponent = CreateComponent<CBoardCombLogicComponent>("BoardCombLogic");
+	m_CombLogicComponent = CreateComponent<CBoardCombLogicComponent>("BoardCombLogic"); //
 	m_CombLogicComponent->m_Board = this;
 	
 	m_MatchLogicComponent = CreateComponent<CBoardMatchLogicComponent>("BoardMatchLogic");
