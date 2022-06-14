@@ -1,6 +1,7 @@
 #include "Cell.h"
 #include "Resource/ResourceManager.h"
 #include "Animation/AnimationSequence2DInstance.h"
+#include "../Component/BoardCombLogicComponent.h"
 #include "Board.h"
 
 CCell::CCell() :
@@ -502,7 +503,7 @@ void CCell::DecreaseOpacityAndDestroyLineMirrorBallComb(float DeltaTime)
 			// Board의 콜백 함수 호출
 			if (m_CellState != Cell_State::MirrorBall)
 			{
-				m_Board->TriggerLineAndMirrorBallCombEffect(m_RowIndex, m_ColIndex, m_Index);
+				m_Board->GetCombLogicComponent()->TriggerLineAndMirrorBallCombEffect(m_RowIndex, m_ColIndex, m_Index);
 			}
 
 			// Match State를 true로 만들어준다 --> 그러면 Board의 DestroyCells 함수에서 해당 Cell을 지워줄 것이다.
@@ -573,7 +574,7 @@ void CCell::ApplyDoubleMirrorBallCombEffect(float DeltaTime)
 			m_IsMoving = false;
 
 			// Board의 콜백 함수 호출
-			m_Board->TriggerDoubleMirrorBallCombEffect(m_RowIndex, m_ColIndex, m_Index);
+			m_Board->GetCombLogicComponent()->TriggerDoubleMirrorBallCombEffect(m_RowIndex, m_ColIndex, m_Index);
 
 			// Match State를 true로 만들어준다 --> 그러면 Board의 DestroyCells 함수에서 해당 Cell을 지워줄 것이다.
 			m_Board->SetMatchStateTrue(m_Index);

@@ -97,7 +97,6 @@ public:
     void SetDestroyBagIndexInfos(int TopIdx, int BottomIdx, int LeftIdx, int RightIdx);
     void ResetDestroyBagIndexInfos();
 public:
-private:
     void SetIndexInfo(int Index, int RowIndex, int ColIndex);
     void GoDown(float DeltaTime);
     void SwitchMove(float DeltaTime);
@@ -244,6 +243,10 @@ public:
     int GetBagDestroyBottomIdx() const
     {
         return m_BagCombDestroyBottomIdx;
+    }
+    bool IsDoubleMirrorBallCombEffectApplied() const
+    {
+        return m_IsDoubleMirrorBallCombEffectApplied;
     }
 	// Setter
 public :

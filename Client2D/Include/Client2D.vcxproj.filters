@@ -87,6 +87,15 @@
     <ClCompile Include="Component\BoardBagLogicComponent.cpp">
       <Filter>06. Component</Filter>
     </ClCompile>
+    <ClCompile Include="Component\BoardCombLogicComponent.cpp">
+      <Filter>06. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\BoardDestroyLogicComponent.cpp">
+      <Filter>06. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\BoardMatchLogicComponent.cpp">
+      <Filter>06. Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -147,6 +156,15 @@
       <Filter>06. Component</Filter>
     </ClInclude>
     <ClInclude Include="Component\BoardBagLogicComponent.h">
+      <Filter>06. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\BoardCombLogicComponent.h">
+      <Filter>06. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\BoardDestroyLogicComponent.h">
+      <Filter>06. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\BoardMatchLogicComponent.h">
       <Filter>06. Component</Filter>
     </ClInclude>
   </ItemGroup>

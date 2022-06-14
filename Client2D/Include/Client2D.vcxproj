@@ -158,6 +158,9 @@
     <ClCompile Include="ClientManager.cpp" />
     <ClCompile Include="Component\BoardAILogicComponent.cpp" />
     <ClCompile Include="Component\BoardBagLogicComponent.cpp" />
+    <ClCompile Include="Component\BoardCombLogicComponent.cpp" />
+    <ClCompile Include="Component\BoardDestroyLogicComponent.cpp" />
+    <ClCompile Include="Component\BoardMatchLogicComponent.cpp" />
     <ClCompile Include="Component\CellLogicComponent.cpp" />
     <ClCompile Include="GameObject\Block.cpp" />
     <ClCompile Include="GameObject\BlockObjectPool.cpp" />
@@ -179,6 +182,9 @@
     <ClInclude Include="Client.h" />
     <ClInclude Include="Component\BoardAILogicComponent.h" />
     <ClInclude Include="Component\BoardBagLogicComponent.h" />
+    <ClInclude Include="Component\BoardCombLogicComponent.h" />
+    <ClInclude Include="Component\BoardDestroyLogicComponent.h" />
+    <ClInclude Include="Component\BoardMatchLogicComponent.h" />
     <ClInclude Include="Component\CellLogicComponent.h" />
     <ClInclude Include="GameObject\Block.h" />
     <ClInclude Include="GameObject\BlockObjectPool.h" />

@@ -79,12 +79,19 @@ private:
 private:
     class CBoardAILogicComponent* m_AILogicComponent;
     class CBoardBagLogicComponent* m_BagLogicComponent;
+    class CBoardDestroyLogicComponent* m_DestroyLogicComponent;
+    class CBoardCombLogicComponent* m_CombLogicComponent;
+    class CBoardMatchLogicComponent* m_MatchLogicComponent;
+public :
+    class CBoardCombLogicComponent* GetCombLogicComponent() const
+    {
+        return m_CombLogicComponent;
+    }
 public :
     const std::vector<Match_State>& GetVecMatchState() const 
     {
         return m_vecMatchState;
     }
-    // 이 녀석은 수정할 수 있게 세팅할 것이다.
       std::vector<bool>& GetVecCellsIsMatch() 
     {
         return m_vecCellIsMatch;
@@ -93,6 +100,10 @@ public :
     {
         return m_vecCells;
     }
+     std::vector<int>& GetVecColNewCellNums() 
+     {
+         return m_vecColNewCellNums;
+     }
     const std::vector<bool>& GetVecCellsMatch() const 
     {
         return m_vecCellIsMatch;
@@ -104,6 +115,10 @@ public :
     int GetVisualRowCount() const
     {
         return m_VisualRowCount;
+    }
+    int GetRowCount() const
+    {
+        return m_RowCount;
     }
     int GetColCount() const
     {
@@ -154,78 +169,22 @@ public:
 private:
     bool CheckMatchUpdate();
     bool CheckMatchAfterTwoClick(CCell* FirstClickCell, CCell* SecClickCell);
-    Match_State CheckRowMatch(int RowIndex, int ColIndex, int Index, bool IsClickCell);
-    Match_State CheckColMatch(int RowIndex, int ColIndex, int Index, bool IsClickCell);
 public:
     void SetMatchStateTrue(int Index);
-    // Destroy Method
-private : 
-    bool DestroyHorizontalEffect(int RowIndex);
-    bool DestroyVerticalEffect(int ColIndex);
-    bool DestroyBagEffect(int RowIndex, int ColIndex, bool IsAfterEffect, bool IsBagAndBagComb = false);
-    bool DestroyMirrorBallEffect(int RowIndex, int ColIndex);
-    // Single Destroy
-private : 
-    void JudgeCellDestroyType(int RowIndex, int ColIndex, int Index);
-    void DestroySingleCell(int RowIndex, int ColIndex);
-    void DestroySingleNormalCell(int RowIndex, int ColIndex);
-    void DestroySingleBagCell(int RowIndex, int ColIndex, bool IsBagAndBagComb = false);
-    void DestroySingleMirrorBallCell(int RowIndex, int ColIndex);
-    // Combination
+    void SetMirrorBallDestroyInfo(int Index, Cell_Type_Binary DestroyType);
 private:
     void ResetCellsPauseGoDownInfo();
     bool CheckIsCellBeingSpecialDestroyed();
-    // 봉지 + 봉지 --> 주변 2개 터진다 + 2번 연속으로 
-    // 봉지 + 줄무늬 --> 좌우 상하로 3줄씩 없애준다.
-    // 봉지 + Mirror Ball --> 해당 봉지 Type 의 Cell 들 모두 제거 + 이후 2번째에는 MirrorBall에 의해 Random Cell 모두 제거
-    // 줄무늬 + 줄무늬 --> 가로 + 세로로 1줄씩  제거해준다.
-    // 줄무늬 + Mirror Ball --> 해당 색상의 모든 Cell 들을 Horizontal 혹은 Vertical 로 바꾼다음, 그에 맞게 다 터뜨린다.
-    // MirrorBall  + MirrorBall --> 화면 상의 모든 Cell 들을 제거 한다.
-    bool CheckCombination(CCell* FirstCell, CCell* SecondCell);
     void ManageDestroyedBagInfo(int Index);
-    bool CheckBagAndBagComb(CCell* FirstCell, CCell* SecondCell);
-    void DestroyBagAndBagComb(CCell* FirstCell);
-    void DestroyBagLineComb(int RowIndex, int ColIndex);
-    bool CheckBagAndRowLineComb(CCell* FirstCell, CCell* SecondCell);//
-    bool CheckBagAndColLineComb(CCell* FirstCell, CCell* SecondCell);
-    bool CheckBagAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
-    void ManageBagAndMirrorBallComb(int Index);
-    void DestroyMirrorBallOfBagMirrorBallComb(int Index);
-    bool CheckLineAndLineComb(CCell* FirstCell, CCell* SecondCell);
-    bool CheckLineAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
-    bool DestroyLineAndMirrorBallComb(int RowIndex, int ColIndex, int Index);
-    bool CheckMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
-    bool DestroyMirrorBallAndMirrorBallComb(CCell* FirstCell, CCell* SecondCell);
-public :
-    void TriggerLineAndMirrorBallCombEffect(int OriginRowIdx, int OriginColIdx, int OriginIdx);
-    void TriggerDoubleMirrorBallCombEffect(int OriginRowIdx, int OriginColIdx, int OriginIdx);
-    // MirrorBall Match
-private : 
-    void SetMirrorBallDestroyInfo(int Index, Cell_Type_Binary DestroyType);
-    // BagMatch
-public : 
-    // AI
 private : 
     void ResetAINoticeState();
-
     // Create New Cell
  private: 
     void CreateNewCellsAboveShownArea();
     CCell* CreateSingleNewCell(const std::string& Name, int RowIndex, int ColIndex, const Vector3& WorldPos, float NewYPos,
         Cell_Type_Binary Type, float Opacity, bool ShowEnable, Cell_State State);
-
     // Shuffle Random
 private:
-    bool IsRowMatch(int RowIndex, int ColIndex, int Index);
-    bool IsColMatch(int RowIndex, int ColIndex, int Index);
-    bool IsPossibleMatchExistForCells();
-	bool IsPossibleRowMatch(int OriginRowIdx, int OriginColIdx, 
-        int NewRowIdx, int NewColIdx);
-    bool IsPossibleColMatch(int OriginRowIdx, int OriginColIdx, 
-        int NewRowIdx, int NewColIdx);
-    bool IsPossibleBagMatch(int OriginRowIdx, int OriginColIdx, 
-        int NewRowIdx, int NewColIdx);
-    bool IsMatchExistForCells(std::vector<CCell*>& vecCells);
     void ShuffleRandom(std::vector<CCell*>& vecCells);
     // Destroy Cells  + 재조정
 private :
@@ -242,12 +201,12 @@ private :
     void ResetCellDownNumsInfo();
     void ResetPlacedNewInfo();
     void ResetCellStateInfo();
-
     // Match State 를 그에 대응하는 Cell_State 로 바꿔주는 함수
 private : 
     Cell_State ChangeMatchStateToCellState(Match_State State);
     Destroy_State ChangeMatchStateToDestroyState(Match_State State);
-    Destroy_State ChangeDestroyMarkStateToDestroyState(DestroyMark_State State);
     DestroyMark_State ChangeMatchStateToDestroyMarkState(Match_State State);
+  public :
+    Destroy_State ChangeDestroyMarkStateToDestroyState(DestroyMark_State State);
     Cell_Type_Binary ChangeCellTypeToCellBinaryType(Cell_Type Type);
 };
