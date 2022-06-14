@@ -997,7 +997,7 @@ bool CBoard::Init()
 	m_BagLogicComponent = CreateComponent<CBoardBagLogicComponent>("BoardBagLogic");
 	m_BagLogicComponent->m_Board = this;
 
-	m_DestroyLogicComponent = CreateComponent<CBoardDestroyLogicComponent>("BoardDestroyLogic");
+	m_DestroyLogicComponent = CreateComponent<CBoardDestroyLogicComponent>("BoardDestroyLogic");//
 	m_DestroyLogicComponent->m_Board = this;
 	
 	m_CombLogicComponent = CreateComponent<CBoardCombLogicComponent>("BoardCombLogic");
