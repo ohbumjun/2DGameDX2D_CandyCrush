@@ -17,6 +17,7 @@ void CCellObjectPool::Init(int FactoryRegisterNum, int initNum)
 	CGameObjectPool::Initialize(initNum);
 }
 
-// void CCellObjectPool::ResetInfo(CGameObject* Object)
-// {
-// }
+void CCellObjectPool::ResetInfo(CGameObject* Object)
+{
+	dynamic_cast<CCell*>(Object)->SetIndexInfo(-1, -1, -1);
+}

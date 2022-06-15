@@ -55,102 +55,183 @@ Match_State CBoardMatchLogicComponent::CheckRowMatch(int RowIndex, int ColIndex,
 	// 최소 3개까지 조사, 최대 조사 개수는 Row // Col 여부에 따라 달라지게 될 것이다.
 	int MinCheckLength = 3, MaxCheckLength = m_Board->GetVisualRowCount();
 
-	// Index : 현재 검사하는 Cell의 Index
-	int CurIndex = -1;
-
-	int CheckStartRow = -1, CheckEndRow = -1;
-
 	// Matched CellType
 	Cell_Type_Binary MatchedCellType = {};
 
 	// Match 결과
 	bool Match = false;
 
-	// 최대 --> 최소 길이 순으로 조사하기
-	for (int CheckMatchNum = MaxCheckLength; CheckMatchNum >= MinCheckLength; CheckMatchNum--)
+	int RowMatchNum = 1;
+
+	// 220 Frame
+	// 아래에서부터, 위로 선형탐색
+	// 3개 이상일 때만 Match St, Ed Row 값 설정
+	// Mirror Ball 특성 반영하기
+	// 1) Match X, 다른 Cell 나오면, 그것을 CheckStRow 로 지정
+	// 2) 지금까지 Match O , 중간에 새로운 Cell 이 나오거나, Row 끝까지 도달한다면 -> 현재 검사하는 Cell 이 해당 Match Set 에 도달하는지 확인하기
+	int CheckStartRow = 0;
+	int CheckEndRow = -1; // -1 이라는 것
+
+	// 현재 Match 검사 Set 에서 , 검사 시작 Row
+	int TempCheckStartRow = 0;
+
+	// -1 이라는 것은, Match 가 없다는 의미이다.
+	int CheckMatchNum = -1;
+
+	// 현재 해당 Cell 이 포함되어 있을 때만 실질적인 Match 라고 해야 한다.
+	// 해당 Row 전체 중에서 Match 가 있다고 하더라도, 현재 검사하는 Cell 이 그 Match에 속해야 하기 때문이다.
+
+	Cell_Type_Binary InitCellType = m_Board->GetVecCells()[CheckStartRow * m_Board->GetColCount() + ColIndex]->GetCellType();
+
+	for (int TempCurRow = 1; TempCurRow < m_Board->GetVisualRowCount(); TempCurRow++)
 	{
-		// 특정 길이에서의 Row Match 여부 
-		bool IsResultRowMatch = false;
+		int CurIndex = TempCurRow * m_Board->GetColCount() + ColIndex;
+		
+		Cell_Type_Binary CurCellType = m_Board->GetVecCells()[CurIndex]->GetCellType();
+		bool Result = (int)(CurCellType) & (int)(InitCellType);
 
-		for (int StartRowOffset = 0; StartRowOffset <= CheckMatchNum - 1; StartRowOffset++)
+		// Mirror Ball 이 검사 시작 Cell
+		if (TempCurRow != TempCheckStartRow && Result)
+			InitCellType = CurCellType;
+
+		// Match
+		if (Result)
 		{
-			bool IsPartRowMatch = true;
-
-			// 현재 ClickCell 이 포함된 Row 범위에 대해서만 조사할 것이다.
-			// 아래 범위에서, 위로 올라가면서 검사 시작 Row 를 설정해줄 것이다.
-			CheckStartRow = (RowIndex + StartRowOffset) - (CheckMatchNum - 1);
-
-			// 아래로 범위가 벗어난 경우
-			if (CheckStartRow < 0)
+			if (TempCurRow - TempCheckStartRow >= 2)
 			{
-				IsPartRowMatch = false;
-				continue;
-			}
+				CheckEndRow = TempCurRow;
 
-			// 위로 범위가 벗어난 경우
-			CheckEndRow = CheckStartRow + (CheckMatchNum - 1);
-
-			if (CheckEndRow >= m_Board->GetVisualRowCount())
-			{
-				IsPartRowMatch = false;
-				// continue;
-				// 어차피 여기예 계속 걸릴 것이므로 ( 왜냐하면, CheckEndRow는 계속 증가 ) --> continue 가 아니라 break 세팅
-				break;
-			}
-
-			Cell_Type_Binary InitCellType = m_Board->GetVecCells()[CheckStartRow * m_Board->GetColCount() + ColIndex]->GetCellType();
-
-			// Match 가 있는지 조사한다.
-			// 해당 길이로 아래 --> 위쪽 순서로 조사한다.
-			for (int StRow = CheckStartRow + 1; StRow <= CheckEndRow; StRow++)
-			{
-				// 첫번째와 나머지 녀석들이 같은지 체크한다 + Sliding Window 개념을 적용한다.
-				CurIndex = StRow * m_Board->GetColCount() + ColIndex;
-
-				Cell_Type_Binary CurCellType = m_Board->GetVecCells()[CurIndex]->GetCellType();
-
-				bool Result = (int)(m_Board->GetVecCells()[CurIndex]->GetCellType()) & (int)(InitCellType);
-
-				// Mirror Ball일 경우, 어떤 Type이던 일치하게 세팅해야 한다. 따라서 MirrorBall은
-				// Type은 다르더라도 Match로 판단하게 한다.
-				if (((int)m_Board->GetVecCells()[CurIndex]->GetCellType() & (int)InitCellType) == false)
+				// Match 개수 Update (현재 Match 에 검사하는 Cell 이 속하는가)
+				if (RowIndex >= CheckStartRow && RowIndex <= TempCurRow)
 				{
-					IsPartRowMatch = false;
-					break;
-				}
-
-				// 최초 Cell이 MirrorBall 일 때는 중간 중간 Cell Type을 Update 해줘야 한다.
-				if (InitCellType == Cell_Type_Binary::All)
-				{
-					InitCellType = m_Board->GetVecCells()[CurIndex]->GetCellType();
-				}
-			}
-
-			// 만약 해당 Row(세로)가 Match 라면, 해당 Cell 들을 Match 상태로 바꿔준다.
-			// 그리고 For 문을 나간다.
-			if (IsPartRowMatch)
-			{
-				for (int MatchedRow = CheckStartRow; MatchedRow <= CheckEndRow; MatchedRow++)
-				{
-					if (!m_Board->GetVecCellsIsMatch()[MatchedRow * m_Board->GetColCount() + ColIndex])
-						m_Board->GetVecCellsIsMatch()[MatchedRow * m_Board->GetColCount() + ColIndex] = true;
+					CheckMatchNum = TempCurRow - CheckStartRow + 1;
 				}
 
 				MatchedCellType = InitCellType;
-
-				IsResultRowMatch = true;
-
-				// For 문을 빠져나간다.
-				break;
 			}
 		}
-
-		if (IsResultRowMatch)
+		else
 		{
-			if (IsClickCell)
-			{
-				bool MarkStateFound = false;
+			InitCellType = CurCellType;
+			TempCheckStartRow = TempCurRow;
 
+			// 지금까지 현재 검사하는 Cell 이 속한 Match가 없었다면
+			if (CheckMatchNum == -1)
+			{
+				// CheckStartRow : 최종 Match 중에서 시작 Row
+				CheckStartRow = TempCurRow;
+			}
+		}
+	}
+
+	// Match 가 존재한다면
+	if (CheckMatchNum != -1)
+	{
+		for (int MatchedRow = CheckStartRow; MatchedRow <= CheckEndRow; MatchedRow++)
+		{
+			if (!m_Board->GetVecCellsIsMatch()[MatchedRow * m_Board->GetColCount() + ColIndex])
+				m_Board->GetVecCellsIsMatch()[MatchedRow * m_Board->GetColCount() + ColIndex] = true;
+		}
+
+		if (IsClickCell)
+		{
+			bool MarkStateFound = false;
+
+			// 1) Match 이면서 + 조합이 되는지 확인한다.
+			bool CombinationFound = false;
+
+			// 2개씩 비교 한다 + 여러 개의 조합이 겹치는 경우는 우선 건너 뛴다. ( 그럴 확률이 매우 적으므로 )
+			for (int row = CheckStartRow; row < CheckEndRow; row++)
+			{
+				int CurIndex = row * m_Board->GetColCount() + ColIndex;
+				int NxtIndex = (row + 1) * m_Board->GetColCount() + ColIndex;
+
+				// CheckCombination 함수를 통해서 곧바로 Destroy State 가 세팅될 것이다.
+				if (m_CombLogicComponent->CheckCombination(m_Board->GetVecCells()[CurIndex], m_Board->GetVecCells()[NxtIndex]))
+				{
+					MarkStateFound = true;
+					CombinationFound = true;
+
+					// 아래의 코드를 해주는 이유는 , 현재 Match Set 에서는 조합으로 세팅되었는데
+					// ex) 세로 줄
+					// 같은 위치, 가로 줄에서 Match가 되었다는 이유로,
+					// Special Cell 들에 대해  다시 Destroy 상태를 바꿔버릴 수도 있으므로
+					m_Board->GetVecCells()[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
+					m_Board->GetVecCells()[NxtIndex]->SetDestroyMarkState(DestroyMark_State::None);
+
+					break;
+				}
+			}
+
+			// 2) Special Candy가 이미 만들어져 있는지 확인 + 조합이 없을 때만 !
+			if (CombinationFound == false)
+			{
+				for (int row = CheckStartRow; row <= CheckEndRow; row++)
+				{
+					int CurIndex = row * m_Board->GetColCount() + ColIndex;
+
+					// 아래와 괄호에 들어오려면
+					// 1) 이전에 Match State 가 Special 로 되어서, Destroy_State 가 Setting  ( DestroyCells 함수)
+					// 2) 따라서 여기 걸린 것은, 이미 Special Candy 라는 의미
+					// if ((int)m_vecDestroyMarkState[CurIndex] > (int)DestroyMark_State::None)
+					if ((int)m_Board->GetVecCells()[CurIndex]->GetDestroyMarkState() > (int)DestroyMark_State::None)
+					{
+						// 파괴 상태로 세팅하고 
+						// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecDestroyMarkState[CurIndex]);
+						// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_Board->GetVecCells()[CurIndex]->GetDestroyMarkState());
+						m_Board->GetVecCells()[CurIndex]->SetDestroyState(m_Board->ChangeDestroyMarkStateToDestroyState(m_Board->GetVecCells()[CurIndex]->GetDestroyMarkState()));
+
+						// MirrorBall 일 경우,
+						if (m_Board->GetVecCells()[CurIndex]->GetDestroyMarkState() == DestroyMark_State::MirrorBall)
+						{
+							m_Board->SetMirrorBallDestroyInfo(CurIndex, MatchedCellType);
+						}
+
+						// Mark 찾았음 표시하고 
+						MarkStateFound = true;
+
+						// Destroy State 원상태
+						// m_vecDestroyMarkState[CurIndex] = DestroyMark_State::None;
+						m_Board->GetVecCells()[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
+					}
+				}
+			}
+
+
+			// 2) Match State 처리를 해준다.
+			if (CheckMatchNum == 3)
+			{
+				RowResultState = Match_State::Normal;
+			}
+			if (CheckMatchNum == 4)
+			{
+				RowResultState = Match_State::ColLine;
+			}
+			if (CheckMatchNum >= 5)
+				RowResultState = Match_State::MirrorBall;
+			/*
+			if (CheckMatchNum >= 4)
+				RowResultState = Match_State::MirrorBall;
+			*/
+
+			// 3) 만약 Special Candy가 만들어져 있었다면
+			// - 새로운 Special Candy는 해당 위치에 만들어져서는 안된다.
+			// - 따라서 ColResultState 는 반드시 Normal로 세팅
+			if (MarkStateFound)
+			{
+				if ((int)RowResultState > (int)Match_State::Normal)
+					RowResultState = Match_State::Normal;
+			}
+
+		}
+		// Click 해서 Match 된 Cell 이 아니라 실시간 Match Cell 이라면
+		else
+		{
+			bool MarkStateFound = false;
+
+			// 자신이 시작 Cell 이라면
+			if (CheckStartRow == RowIndex)
+			{
 				// 1) Match 이면서 + 조합이 되는지 확인한다.
 				bool CombinationFound = false;
 
@@ -173,11 +254,12 @@ Match_State CBoardMatchLogicComponent::CheckRowMatch(int RowIndex, int ColIndex,
 						m_Board->GetVecCells()[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
 						m_Board->GetVecCells()[NxtIndex]->SetDestroyMarkState(DestroyMark_State::None);
 
+
 						break;
 					}
 				}
 
-				// 2) Special Candy가 이미 만들어져 있는지 확인 + 조합이 없을 때만 !
+				// 1) Special Candy가 이미 만들어져 있는지 확인
 				if (CombinationFound == false)
 				{
 					for (int row = CheckStartRow; row <= CheckEndRow; row++)
@@ -191,7 +273,6 @@ Match_State CBoardMatchLogicComponent::CheckRowMatch(int RowIndex, int ColIndex,
 						if ((int)m_Board->GetVecCells()[CurIndex]->GetDestroyMarkState() > (int)DestroyMark_State::None)
 						{
 							// 파괴 상태로 세팅하고 
-							// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_vecDestroyMarkState[CurIndex]);
 							// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_Board->GetVecCells()[CurIndex]->GetDestroyMarkState());
 							m_Board->GetVecCells()[CurIndex]->SetDestroyState(m_Board->ChangeDestroyMarkStateToDestroyState(m_Board->GetVecCells()[CurIndex]->GetDestroyMarkState()));
 
@@ -210,149 +291,54 @@ Match_State CBoardMatchLogicComponent::CheckRowMatch(int RowIndex, int ColIndex,
 						}
 					}
 				}
-
-
-				// 2) Match State 처리를 해준다.
-				if (CheckMatchNum == 3)
-				{
-					RowResultState = Match_State::Normal;
-				}
-				if (CheckMatchNum == 4)
-				{
-					RowResultState = Match_State::ColLine;
-				}
-				if (CheckMatchNum >= 5)
-					RowResultState = Match_State::MirrorBall;
-				/*
-				if (CheckMatchNum >= 4)
-					RowResultState = Match_State::MirrorBall;
-				*/
-
-				// 3) 만약 Special Candy가 만들어져 있었다면
-				// - 새로운 Special Candy는 해당 위치에 만들어져서는 안된다.
-				// - 따라서 ColResultState 는 반드시 Normal로 세팅
-				if (MarkStateFound)
-				{
-					if ((int)RowResultState > (int)Match_State::Normal)
-						RowResultState = Match_State::Normal;
-				}
-
 			}
-			// Click 해서 Match 된 Cell 이 아니라 실시간 Match Cell 이라면
-			else
+			// 3개짜리 일때도 Special Destroy인 해야 하는것 아닌가 ?
+			if (CheckMatchNum == 3)
 			{
-				bool MarkStateFound = false;
+				// RowResultState = Match_State::ColLine;
+				RowResultState = Match_State::Normal;
+			}
 
+			// 4개 이상이라면, Special Candy를 만들거나, Special Destroy 세팅을 해야 한다.
+			else if (CheckMatchNum >= 4)
+			{
 				// 자신이 시작 Cell 이라면
 				if (CheckStartRow == RowIndex)
 				{
-					// 1) Match 이면서 + 조합이 되는지 확인한다.
-					bool CombinationFound = false;
-
-					// 2개씩 비교 한다 + 여러 개의 조합이 겹치는 경우는 우선 건너 뛴다. ( 그럴 확률이 매우 적으므로 )
-					for (int row = CheckStartRow; row < CheckEndRow; row++)
+					if (MarkStateFound)
 					{
-						int CurIndex = row * m_Board->GetColCount() + ColIndex;
-						int NxtIndex = (row + 1) * m_Board->GetColCount() + ColIndex;
-
-						// CheckCombination 함수를 통해서 곧바로 Destroy State 가 세팅될 것이다.
-						if (m_CombLogicComponent->CheckCombination(m_Board->GetVecCells()[CurIndex], m_Board->GetVecCells()[NxtIndex]))
-						{
-							MarkStateFound = true;
-							CombinationFound = true;
-
-							// 아래의 코드를 해주는 이유는 , 현재 Match Set 에서는 조합으로 세팅되었는데
-							// ex) 세로 줄
-							// 같은 위치, 가로 줄에서 Match가 되었다는 이유로,
-							// Special Cell 들에 대해  다시 Destroy 상태를 바꿔버릴 수도 있으므로
-							m_Board->GetVecCells()[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
-							m_Board->GetVecCells()[NxtIndex]->SetDestroyMarkState(DestroyMark_State::None);
-
-
-							break;
-						}
-					}
-
-					// 1) Special Candy가 이미 만들어져 있는지 확인
-					if (CombinationFound == false)
-					{
-						for (int row = CheckStartRow; row <= CheckEndRow; row++)
-						{
-							int CurIndex = row * m_Board->GetColCount() + ColIndex;
-
-							// 아래와 괄호에 들어오려면
-							// 1) 이전에 Match State 가 Special 로 되어서, Destroy_State 가 Setting  ( DestroyCells 함수)
-							// 2) 따라서 여기 걸린 것은, 이미 Special Candy 라는 의미
-							// if ((int)m_vecDestroyMarkState[CurIndex] > (int)DestroyMark_State::None)
-							if ((int)m_Board->GetVecCells()[CurIndex]->GetDestroyMarkState() > (int)DestroyMark_State::None)
-							{
-								// 파괴 상태로 세팅하고 
-								// m_vecDestroyState[CurIndex] = ChangeDestroyMarkStateToDestroyState(m_Board->GetVecCells()[CurIndex]->GetDestroyMarkState());
-								m_Board->GetVecCells()[CurIndex]->SetDestroyState(m_Board->ChangeDestroyMarkStateToDestroyState(m_Board->GetVecCells()[CurIndex]->GetDestroyMarkState()));
-
-								// MirrorBall 일 경우,
-								if (m_Board->GetVecCells()[CurIndex]->GetDestroyMarkState() == DestroyMark_State::MirrorBall)
-								{
-									m_Board->SetMirrorBallDestroyInfo(CurIndex, MatchedCellType);
-								}
-
-								// Mark 찾았음 표시하고 
-								MarkStateFound = true;
-
-								// Destroy State 원상태
-								// m_vecDestroyMarkState[CurIndex] = DestroyMark_State::None;
-								m_Board->GetVecCells()[CurIndex]->SetDestroyMarkState(DestroyMark_State::None);
-							}
-						}
-					}
-				}
-				// 3개짜리 일때도 Special Destroy인 해야 하는것 아닌가 ?
-				if (CheckMatchNum == 3)
-				{
-					// RowResultState = Match_State::ColLine;
-					RowResultState = Match_State::Normal;
-				}
-
-				// 4개 이상이라면, Special Candy를 만들거나, Special Destroy 세팅을 해야 한다.
-				else if (CheckMatchNum >= 4)
-				{
-					// 자신이 시작 Cell 이라면
-					if (CheckStartRow == RowIndex)
-					{
-						if (MarkStateFound)
-						{
-							// Special Candy를 생성하지 않는다.
-							RowResultState = Match_State::Normal;
-						}
-						else
-						{
-							if (CheckMatchNum == 4)
-							{
-								RowResultState = Match_State::ColLine;
-							}
-							if (CheckMatchNum >= 5)
-								RowResultState = Match_State::MirrorBall;
-							/*
-							if (CheckMatchNum >= 4)
-								RowResultState = Match_State::MirrorBall;
-							*/
-						}
-					}
-					// 아니라면, 그냥 여전히 Normal 로 세팅한다.
-					else
-					{
+						// Special Candy를 생성하지 않는다.
 						RowResultState = Match_State::Normal;
 					}
+					else
+					{
+						if (CheckMatchNum == 4)
+						{
+							RowResultState = Match_State::ColLine;
+						}
+						if (CheckMatchNum >= 5)
+							RowResultState = Match_State::MirrorBall;
+						/*
+						if (CheckMatchNum >= 4)
+							RowResultState = Match_State::MirrorBall;
+						*/
+					}
+				}
+				// 아니라면, 그냥 여전히 Normal 로 세팅한다.
+				else
+				{
+					RowResultState = Match_State::Normal;
 				}
 			}
-
-			// Match 결과 true로 세팅
-			Match = true;
-
-			// For 문 나가기 --> 제일 높은 숫자부터, 아래숫자로 검사하는 것이기 때문이다.
-			break;
 		}
+
+		// Match 결과 true로 세팅
+		Match = true;
+
+		// For 문 나가기 --> 제일 높은 숫자부터, 아래숫자로 검사하는 것이기 때문이다.
+		// break;
 	}
+
 
 	if (!Match)
 		RowResultState = Match_State::NoMatch;

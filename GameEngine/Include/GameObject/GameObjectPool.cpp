@@ -15,8 +15,8 @@ CGameObjectPool::~CGameObjectPool()
 
        // 아래 pop 을 하면서 Ref Cnt가 1 감소할 것이다.
        // Ref Cnt가 0이 되어서 사라져야 하는데, 이를 위해서 Ref Cnt 를 1로 만들어줄 것이다.
-       while (Object->GetRefCount() > 1)
-           Object->Release();
+       // while (Object->GetRefCount() > 1)
+       //     Object->Release();
    
        queueObjects.pop();
    }
@@ -30,7 +30,7 @@ CGameObject* CGameObjectPool::GetFromPool()
     CGameObject* Object = queueObjects.front();
 
     // Object->SetEnable(true);
-    if (Object == InitObj || !Object->IsActive())
+    if (Object == InitObj)
     {
         ReturnN = 2;
     }
@@ -56,6 +56,8 @@ void CGameObjectPool::ReturnToPool(CGameObject* Object)
     }
 
     Object->Destroy();
+
+    ResetInfo(Object);
 
     queueObjects.push(Object);
 }

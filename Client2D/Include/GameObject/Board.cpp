@@ -27,6 +27,11 @@ CBoard::CBoard() :
 
 CBoard::~CBoard()
 {
+	SAFE_DELETE(m_AILogicComponent);
+	SAFE_DELETE(m_BagLogicComponent);
+	SAFE_DELETE(m_DestroyLogicComponent);
+	SAFE_DELETE(m_CombLogicComponent);
+	SAFE_DELETE(m_MatchLogicComponent);
 }
 
 void CBoard::AddClickCellMoveDone()
@@ -201,7 +206,7 @@ CCell* CBoard::CreateSingleNewCell(const std::string& Name, int RowIndex, int Co
 	CCell* Cell = dynamic_cast<CCell*>(ObjectFromPool);
 
 	// Cell 의 Ref Cnt 를 1 감소시킨다.
-
+	// Scene 세팅 
 	Cell->SetScene(m_Scene);
 	Cell->Init();
 	Cell->Start();
@@ -223,9 +228,6 @@ CCell* CBoard::CreateSingleNewCell(const std::string& Name, int RowIndex, int Co
 
 	// Owner 세팅 
 	Cell->m_Board = this;
-
-	// Scene 세팅 
-	Cell->SetScene(m_Scene);
 
 	// x는 열, y는 행
 	Cell->SetWorldPos(WorldPos);

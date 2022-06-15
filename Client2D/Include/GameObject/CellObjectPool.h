@@ -9,5 +9,6 @@ private:
     virtual ~CCellObjectPool() override;
 public :
     virtual void Init(int factoryRegisterNum, int initNlum) ;
+    virtual void ResetInfo(CGameObject* Object) override;
 };
 

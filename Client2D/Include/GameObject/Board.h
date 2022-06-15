@@ -82,69 +82,6 @@ private:
     class CBoardDestroyLogicComponent* m_DestroyLogicComponent;
     class CBoardCombLogicComponent* m_CombLogicComponent;
     class CBoardMatchLogicComponent* m_MatchLogicComponent;
-public :
-    class CBoardCombLogicComponent* GetCombLogicComponent() const
-    {
-        return m_CombLogicComponent;
-    }
-public :
-    const std::vector<Match_State>& GetVecMatchState() const 
-    {
-        return m_vecMatchState;
-    }
-      std::vector<bool>& GetVecCellsIsMatch() 
-    {
-        return m_vecCellIsMatch;
-    }
-     std::vector<CCell*>& GetVecCells ()
-    {
-        return m_vecCells;
-    }
-     std::vector<int>& GetVecColNewCellNums() 
-     {
-         return m_vecColNewCellNums;
-     }
-    const std::vector<bool>& GetVecCellsMatch() const 
-    {
-        return m_vecCellIsMatch;
-    }
-    Vector2 GetCellSize () const
-{
-        return m_CellSize;
-}
-    int GetVisualRowCount() const
-    {
-        return m_VisualRowCount;
-    }
-    int GetRowCount() const
-    {
-        return m_RowCount;
-    }
-    int GetColCount() const
-    {
-        return m_ColCount;
-    }
-    bool IsMatchExist() const
-    {
-        return m_IsMatchExist;
-    }
-    bool IsCellsMoving() const
-    {
-        return m_CellsMoving;
-    }
-    class CCell* GetFirstClickCell() const
-    {
-        return m_FirstClickCell;
-    }
-    class CCell* GetSecClickCell() const
-    {
-        return m_SecClickCell;
-    };
-public:
-    void SetCellsMoving(bool Moving)
-    {
-        m_CellsMoving = Moving;
-    }
 public:
     virtual bool Init() override;
     virtual void Update(float DeltaTime) override;
@@ -209,4 +146,69 @@ private :
   public :
     Destroy_State ChangeDestroyMarkStateToDestroyState(DestroyMark_State State);
     Cell_Type_Binary ChangeCellTypeToCellBinaryType(Cell_Type Type);
+
+    // Getter, Setter
+public:
+    class CBoardCombLogicComponent* GetCombLogicComponent() const
+    {
+        return m_CombLogicComponent;
+    }
+public:
+    const std::vector<Match_State>& GetVecMatchState() const
+    {
+        return m_vecMatchState;
+    }
+    std::vector<bool>& GetVecCellsIsMatch()
+    {
+        return m_vecCellIsMatch;
+    }
+    std::vector<CCell*>& GetVecCells()
+    {
+        return m_vecCells;
+    }
+    std::vector<int>& GetVecColNewCellNums()
+    {
+        return m_vecColNewCellNums;
+    }
+    const std::vector<bool>& GetVecCellsMatch() const
+    {
+        return m_vecCellIsMatch;
+    }
+    Vector2 GetCellSize() const
+    {
+        return m_CellSize;
+    }
+    int GetVisualRowCount() const
+    {
+        return m_VisualRowCount;
+    }
+    int GetRowCount() const
+    {
+        return m_RowCount;
+    }
+    int GetColCount() const
+    {
+        return m_ColCount;
+    }
+    bool IsMatchExist() const
+    {
+        return m_IsMatchExist;
+    }
+    bool IsCellsMoving() const
+    {
+        return m_CellsMoving;
+    }
+    class CCell* GetFirstClickCell() const
+    {
+        return m_FirstClickCell;
+    }
+    class CCell* GetSecClickCell() const
+    {
+        return m_SecClickCell;
+    };
+public:
+    void SetCellsMoving(bool Moving)
+    {
+        m_CellsMoving = Moving;
+    }
 };
