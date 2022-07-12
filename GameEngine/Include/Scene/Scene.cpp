@@ -153,8 +153,8 @@ void CScene::Update(float DeltaTime)
 		{
 			// SAFE_DELETE((*iter));
 			// SAFE_DELETE((*iter));
-			// if ((*iter)->m_ObjectPool)
-			// 	(*iter)->m_ObjectPool->ReturnToPool((*iter));
+			if ((*iter)->m_ObjectPool)
+			 	(*iter)->m_ObjectPool->ReturnToPool((*iter));
 
 			iter = m_ObjList.erase(iter);
 			iterEnd = m_ObjList.end();

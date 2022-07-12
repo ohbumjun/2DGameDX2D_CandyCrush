@@ -89,6 +89,8 @@ private :
     bool m_IsDoubleMirrorBallComb;
     bool m_IsDoubleMirrorBallCombEffectApplied;
     float m_SequentialDestroyTime;
+public :
+    virtual void ResetObjectInfo();
 public:
     void SetCellType(Cell_Type_Binary Type);
     void SetCellState(Cell_State State);

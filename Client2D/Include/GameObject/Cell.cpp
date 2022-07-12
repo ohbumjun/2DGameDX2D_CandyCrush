@@ -29,7 +29,10 @@ CCell::CCell() :
 	m_BagCombDestroyBottomIdx(-1),
 	m_IsPossibleMatch(false),
 	m_IsNoticeToggleUp(false),
+	m_IsBeingSpecialDestroyed(false),
 	m_ToggleMoveDist(7.f)
+
+	// 새롭게 생성자 추가 요소
 {
 }
 
@@ -52,6 +55,44 @@ CCell::CCell(const CCell& Player2D) :
 
 CCell::~CCell()
 {}
+
+void CCell::ResetObjectInfo()
+{
+	m_IsPlacedNew = false;
+	m_IsMoving = false;
+
+	m_IsShownEnable = false;
+	m_IsGoingBack = false;
+	m_IsLineOfLineBagComb = false;
+	m_IsLineDestroyedCell = false;
+	m_IsLineBagCombDestroyedCell = false;
+	m_IsSwitch = false;
+	m_PauseGoDown = false;
+	m_IsSpecialDestroyedBag = false;
+	m_IsBagAndBagFirstDestroyed = false;
+	m_IsBagCombToBeDestroyed = false;
+	m_IsMirrorBallDestroyedCell = false;
+	m_IsMirrorBallOfBagMirrorBallComb = false;
+	m_IsSameColorWithMirrorBallLineComb = false;
+	m_IsSameColorWithMirrorBallLineCombOpacityZero = false;
+	m_IsDoubleMirrorBallComb = false;
+	m_IsLineOfLineMirrorBallComb = false;
+	m_IsDoubleMirrorBallCombEffectApplied = false;
+	m_BagCombDestroyLeftIdx = -1;
+	m_BagCombDestroyRightIdx = -1;
+	m_BagCombDestroyTopIdx = -1;
+	m_BagCombDestroyBottomIdx = -1;
+	m_IsPossibleMatch = false;
+	m_IsNoticeToggleUp = false;
+	m_ToggleMoveDist = 7.f;
+	m_IsBeingSpecialDestroyed = false;
+
+	m_CellState = Cell_State::Normal;
+	
+	// Mirror Ball Match 할때 Rot 하게 된다.
+	// 이를 다시 원상태로
+	SetWorldRotation(0.f, 0.f, 0.f);
+}
 
 void CCell::SetCellType(Cell_Type_Binary Type)
 {

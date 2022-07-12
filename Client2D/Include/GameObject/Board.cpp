@@ -199,6 +199,8 @@ CCell* CBoard::CreateSingleNewCell(const std::string& Name, int RowIndex, int Co
 {
 	int Index = RowIndex * m_ColCount + ColIndex;
 
+	assert(Index < m_vecCellIsMatch.size() * 2);
+
 	// CCell* Cell = m_Scene->CreateGameObject<CCell>(Name);
 
 	CGameObject* ObjectFromPool = m_CellObjectPool->GetFromPool();
@@ -208,8 +210,14 @@ CCell* CBoard::CreateSingleNewCell(const std::string& Name, int RowIndex, int Co
 	// Cell 의 Ref Cnt 를 1 감소시킨다.
 	// Scene 세팅 
 	Cell->SetScene(m_Scene);
-	Cell->Init();
-	Cell->Start();
+
+	// Cell 의 Root Component 가 없다는 것은, 아직 Init 함수를 
+	// 호출하지 않았다는 것이다
+	if (Cell->GetRootComponent() == nullptr)
+	{
+		Cell->Init();
+		Cell->Start();
+	}
 	
 	// 여기에 추가하면 Ref Cnt 가 1 증가한다.
 	m_Scene->AddObjectToList(Cell);

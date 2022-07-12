@@ -121,6 +121,10 @@ Match_State CBoardMatchLogicComponent::CheckRowMatch(int RowIndex, int ColIndex,
 		}
 	}
 
+
+	// Match 검사 로직은, Visual 영역 안에서만 이루어져야 한다.
+	assert(CheckEndRow < m_Board->GetVisualRowCount());
+
 	// Match 가 존재한다면
 	if (CheckMatchNum != -1)
 	{
@@ -360,6 +364,9 @@ Match_State CBoardMatchLogicComponent::CheckColMatch(int RowIndex, int ColIndex,
 	int CheckMatchNum = -1;
 
 	int TempCheckStartCol = 0;
+
+	// Match 검사 로직은, Visual 영역 안에서만 이루어져야 한다.
+	assert(RowIndex < m_Board->GetVisualRowCount());
 
 	Cell_Type_Binary InitCellType = m_Board->GetVecCells()[RowIndex * m_Board->GetColCount() + CheckStartCol]->GetCellType();
 

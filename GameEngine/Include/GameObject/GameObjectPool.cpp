@@ -25,7 +25,9 @@ CGameObjectPool::~CGameObjectPool()
 CGameObject* CGameObjectPool::GetFromPool()
 {
     if (stackObjects.empty())
+    {
         Initialize();
+    }
 
     CGameObject* Object = stackObjects.top();
 
