@@ -58,7 +58,7 @@ bool CShaderManager::Init()
 		return false;
 	if (!CreateConstantBuffer("ProgressBarCBuffer", 6, sizeof(ProgressBarCBuffer), (int)Buffer_Shader_Type::Graphic))
 		return false;
-	if (!CreateConstantBuffer("ParticleCBuffer", 7, sizeof(ParticleCBuffer), (int)Buffer_Shader_Type::Graphic))
+	if (!CreateConstantBuffer("ParticleCBuffer", 11, sizeof(ParticleCBuffer), (int)Buffer_Shader_Type::Graphic))
 		return false;
 	if (!CreateConstantBuffer("GlobalCBuffer", 8, sizeof(GlobalCBuffer), (int)Buffer_Shader_Type::Graphic))
 		return false;

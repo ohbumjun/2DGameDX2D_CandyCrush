@@ -24,6 +24,10 @@ CScene::CScene() :
 	m_CameraManager->m_Scene = this;
 	m_CameraManager->Init();
 
+	m_ObjectPoolManager = new CObjectPoolManager;
+	m_ObjectPoolManager->m_Scene = this;
+	// m_ObjectPoolManager->Init();
+
 }
 
 CScene::~CScene()
@@ -32,25 +36,8 @@ CScene::~CScene()
 	SAFE_DELETE(m_SceneResource);
 	SAFE_DELETE(m_ViewPort);
 	SAFE_DELETE(m_CameraManager);
+	SAFE_DELETE(m_ObjectPoolManager);
 
-	auto iter = m_ObjectPoolList.begin();
-	auto iterEnd = m_ObjectPoolList.end();
-
-	for (; iter != iterEnd; ++iter)
-	{
-		SAFE_DELETE(*iter);
-	}
-}
-
-void  CScene::AddObjectToList(CGameObject* Object)
-{
-	// 중복 방지
-	auto iter = std::find(m_ObjList.begin(), m_ObjList.end(), Object);
-
-	if (iter != m_ObjList.end())
-		return;
-
-	m_ObjList.push_back(Object);
 }
 
 CGameObject* CScene::FindGameObject(const std::string& Name)
@@ -86,6 +73,24 @@ void CScene::DeleteCellFromObjectList(CGameObject* Object)
 	}
 }
 
+CGameObjectPool* CScene::FindGameObjectPool(const size_t ObjectTypeID)
+{
+	return m_ObjectPoolManager->FindGameObjectPool(ObjectTypeID);
+}
+
+void  CScene::AddObjectToList(CGameObject* Object)
+{
+	// 중복 방지
+	auto iter = std::find(m_ObjList.begin(), m_ObjList.end(), Object);
+
+	if (iter != m_ObjList.end())
+		return;
+
+	m_ObjList.push_back(Object);
+}
+
+
+/*
 CGameObjectPool* CScene::FindGameObjectPool(const std::string& Name)
 {
 	auto iter = m_ObjectPoolList.begin();
@@ -100,6 +105,7 @@ CGameObjectPool* CScene::FindGameObjectPool(const std::string& Name)
 	}
 	return nullptr;
 }
+*/
 
 void CScene::Start()
 {

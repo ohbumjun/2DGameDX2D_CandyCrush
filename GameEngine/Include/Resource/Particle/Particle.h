@@ -2,51 +2,52 @@
 
 #include "../../Ref.h"
 #include "../Material/Material.h"
-#include "../Shader/ParticleConstantBuffer.h"
-#include "../Shader/StructuredBuffer.h"
 #include "../Shader/ParticleUpdateShader.h"
+#include "../Shader/ParticleConstantBuffer.h"
 
-class CParticle : public CRef
+class CParticle :
+	public CRef
 {
 	friend class CParticleManager;
+
 private:
 	CParticle();
 	CParticle(const CParticle& particle);
 	~CParticle();
-private :
-	class CScene* m_Scene;
-	// Instancing Setting -> 여러개의 구조화 버퍼를 들고 있게 세팅한다.
-	std::vector<CStructuredBuffer*> m_vecStructuredBuffer;
-	ParticleInfo m_Info;
-	ParticleInfoShared m_InfoShared;
-	// 계산셰이더
-	CSharedPtr<CParticleUpdateShader> m_UpdateShader;
-	// 상수 버퍼
-	CParticleConstantBuffer* m_CBuffer;
-	// Rendering
-	CSharedPtr<CMaterial> m_Material;
 
-	float m_SpawnTime;
-	bool m_2D;
-	int m_SpawnCountMax;
+private:
+	class CScene* m_Scene;
+	std::vector<class CStructuredBuffer*>   m_vecStructuredBuffer;
+	CSharedPtr<CMaterial>                   m_Material;
+	CSharedPtr<CParticleUpdateShader>		m_UpdateShader;
+	ParticleInfo							m_Info;
+	ParticleInfoShared						m_InfoShare;
+	CParticleConstantBuffer* m_CBuffer;
+	float									m_SpawnTime;
+	bool									m_2D;
+	int										m_SpawnCountMax;
 
 public:
 	CMaterial* CloneMaterial()	const
 	{
 		return m_Material->Clone();
 	}
+
 	CParticleUpdateShader* GetUpdateShader()	const
 	{
 		return m_UpdateShader;
 	}
+
 	CParticleUpdateShader* CloneUpdateShader()	const
 	{
 		return m_UpdateShader->Clone();
 	}
+
 	CParticleConstantBuffer* CloneConstantBuffer()	const
 	{
 		return m_CBuffer->Clone();
 	}
+
 	float GetSpawnTime()	const
 	{
 		return m_SpawnTime;
@@ -54,13 +55,15 @@ public:
 
 public:
 	bool Init();
-public :
-	bool AddStructuredBuffer(const std::string& Name, unsigned int Size, unsigned int Count,
-		int Register, bool Dynamic = false, int StructuredBufferShaderType = (int)Buffer_Shader_Type::Compute);
-	bool ResizeBuffer(const std::string& Name, unsigned int Size, unsigned int Count,
-		int Register, bool Dynamic = false, int StructuredBufferShaderType = (int)Buffer_Shader_Type::Compute);
-	void CloneStructuredBuffer(std::vector<CStructuredBuffer*>& vecBuffer);
 
+public:
+	void AddStructuredBuffer(const std::string& Name, unsigned int Size, unsigned int Count,
+		int Register, bool Dynamic = false,
+		int StructuredBufferShaderType = (int)Buffer_Shader_Type::Compute);
+	bool ResizeBuffer(const std::string& Name, unsigned int Size, unsigned int Count,
+		int Register, bool Dynamic = false,
+		int StructuredBufferShaderType = (int)Buffer_Shader_Type::Compute);
+	void CloneStructuredBuffer(std::vector<CStructuredBuffer*>& vecBuffer);
 
 public:
 	CParticleConstantBuffer* GetCBuffer()	const
@@ -159,7 +162,7 @@ public:
 	void Set2D(bool Is2D)
 	{
 		m_2D = Is2D;
-		m_CBuffer->SetIs2D(Is2D);
+		m_CBuffer->Set2D(Is2D);
 	}
 
 	void SetMoveAngle(const Vector3& MoveAngle)
@@ -167,5 +170,4 @@ public:
 		m_CBuffer->SetMoveAngle(MoveAngle);
 	}
 };
-
 

@@ -163,10 +163,9 @@
     <ClCompile Include="Component\BoardMatchLogicComponent.cpp" />
     <ClCompile Include="Component\CellLogicComponent.cpp" />
     <ClCompile Include="GameObject\Block.cpp" />
-    <ClCompile Include="GameObject\BlockObjectPool.cpp" />
     <ClCompile Include="GameObject\Board.cpp" />
+    <ClCompile Include="GameObject\BubbleParticle.cpp" />
     <ClCompile Include="GameObject\Cell.cpp" />
-    <ClCompile Include="GameObject\CellObjectPool.cpp" />
     <ClCompile Include="GameObject\Player2D.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Scene\IntroLoadingScene.cpp" />
@@ -187,10 +186,9 @@
     <ClInclude Include="Component\BoardMatchLogicComponent.h" />
     <ClInclude Include="Component\CellLogicComponent.h" />
     <ClInclude Include="GameObject\Block.h" />
-    <ClInclude Include="GameObject\BlockObjectPool.h" />
     <ClInclude Include="GameObject\Board.h" />
+    <ClInclude Include="GameObject\BubbleParticle.h" />
     <ClInclude Include="GameObject\Cell.h" />
-    <ClInclude Include="GameObject\CellObjectPool.h" />
     <ClInclude Include="GameObject\Player2D.h" />
     <ClInclude Include="GameObject\Utils.h" />
     <ClInclude Include="resource.h" />

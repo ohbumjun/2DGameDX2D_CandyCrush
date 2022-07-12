@@ -9,7 +9,7 @@ class CCell :
 {
     friend class CScene;
     friend class CBoard;
-    friend class CCellObjectPool;
+    friend class CGameObjectPool;
 public:
     CCell();
     CCell(const CCell& Player2D);

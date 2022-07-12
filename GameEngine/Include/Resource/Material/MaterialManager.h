@@ -39,6 +39,16 @@ public :
 		return true;
 }
 
+	template <typename T>
+	T* CreateMaterialEmpty()
+	{
+		T* Material = new T;
+
+		Material->SetConstantBuffer(m_CBuffer);
+
+		return Material;
+	}
+
 public :
 	DECLARE_SINGLE(CMaterialManager);
 };

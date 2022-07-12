@@ -68,6 +68,11 @@ public: // ============= Material ===============
 	{
 		return m_MaterialManager->CreateMaterial<T>(Name);
 	}
+	template <typename T>
+	T* CreateMaterialEmpty()
+	{
+		return m_MaterialManager->CreateMaterialEmpty<T>();
+	}
 	CMaterial* FindMaterial(const std::string& Name);
 	void ReleaseMaterial(const std::string& Name);
 public: // ============= Particle ===============

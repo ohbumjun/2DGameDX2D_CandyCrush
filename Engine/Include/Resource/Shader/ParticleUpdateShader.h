@@ -11,7 +11,6 @@ private:
     virtual ~CParticleUpdateShader() override;
 public :
     virtual bool Init() override;
-    virtual void SetShader() override;
     virtual CParticleUpdateShader* Clone() ;
 };
 

@@ -16,6 +16,7 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <dinput.h>
+#include <type_traits>
 #include <process.h> // Thread
 
 // DWrite
@@ -177,47 +178,48 @@ struct GlobalCBuffer {
 	Vector2 g_GlobalEmpty;
 };
 
-struct ParticleCBuffer {
-	unsigned int SpawnCountMax;
-	unsigned int SpawnEnable;
-	Vector3 StartMin;
-	Vector3 StartMax;
-	Vector3 ScaleMin;
-	Vector3 ScaleMax;
-	Vector4 ColorMin;
-	Vector4 ColorMax;
-	float LifeTimeMin;
-	float LifeTimeMax;
-	float SpeedMin;
-	float SpeedMax;
-	int Move;
-	int Gravity;
-	int Is2D;
-	Vector3 MoveAngle;
-	Vector3 MoveDir;
-	float Empty;
+struct	ParticleCBuffer
+{
+	unsigned int	SpawnEnable;	// 현재 파티클 생성 여부
+	Vector3	StartMin;		// 파티클이 생성될 영역의 Min
+	Vector3	StartMax;		// 파티클이 생성될 영역의 Max
+	unsigned int	SpawnCountMax;	// 생성될 파티클의 최대
+	Vector3	ScaleMin;		// 생성될 파티클 크기의 Min
+	float	LifeTimeMin;	// 생성될 파티클이 살아있을 최소시간
+	Vector3	ScaleMax;		// 새성될 파티클 크기의 Max
+	float	LifeTimeMax;	// 생성될 파티클이 살아있을 최대시간
+	Vector4	ColorMin;		// 생성될 파티클의 색상 Min
+	Vector4	ColorMax;		// 생성될 파티클의 색상 Max
+	float	SpeedMin;		// 파티클의 최소 이동속도
+	float	SpeedMax;		// 파티클의 최대 이동속도
+	int		Move;			// 이동을 하는지 안하는지
+	int		Gravity;		// 중력 적용을 받는지 안받는지
+	Vector3	MoveDir;		// 이동을 한다면 기준이 될 이동 방향
+	int		Is2D;			// 2D용 파티클인지
+	Vector3	MoveAngle;	// 이동을 한다면 기준이 될 방향으로부터 x, y, z 에 저장된 각도만큼 틀어진 랜덤한 방향을 구한다.
+	float	Empty;
 };
 
-struct ParticleInfo {
-	Vector3 WorldPos;
-	Vector3 Dir;
-	float Speed;
-	float LifeTime;
-	float LifeTimeMax;
-	int Alive;
-	float FallTime;
-	float FallStartY;
+struct ParticleInfo
+{
+	Vector3	WorldPos;
+	Vector3	Dir;
+	float	Speed;
+	float	LifeTime;
+	float	LifeTimeMax;
+	int		Alive;
+	float	FallTime;
+	float	FallStartY;
 };
-
 
 struct ParticleInfoShared
 {
-	int SpawnEnable;
-	Vector3 ScaleMin;
-	Vector3 ScaleMax;
-	Vector4 ColorMin;
-	Vector4 ColorMax;
-	int GravityEnable;
+	unsigned int	SpawnEnable;
+	Vector3	ScaleMin;
+	Vector3	ScaleMax;
+	Vector4	ColorMin;
+	Vector4	ColorMax;
+	int		GravityEnable;
 };
 
 struct ColliderCBuffer {

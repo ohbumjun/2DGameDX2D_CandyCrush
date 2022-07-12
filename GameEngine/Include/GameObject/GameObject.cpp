@@ -57,6 +57,10 @@ void CGameObject::SetGameObjectPool(CGameObjectPool* Pool)
 	m_ObjectPool = Pool;
 }
 
+void CGameObject::ResetObjectInfo()
+{
+}
+
 CSceneComponent* CGameObject::FindSceneComponent(const std::string& Name) const
 {
 	auto iter = m_SceneComponentList.begin();
@@ -109,6 +113,17 @@ void CGameObject::Start()
 
 void CGameObject::Update(float DeltaTime)
 {
+	if (m_LifeSpan > 0.f)
+	{
+		m_LifeSpan -= DeltaTime;
+
+		if (m_LifeSpan <= 0.f)
+		{
+			Destroy();
+			return;
+		}
+	}
+
 	if (m_RootComponent)
 		m_RootComponent->Update(DeltaTime);
 

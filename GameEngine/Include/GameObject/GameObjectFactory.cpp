@@ -8,7 +8,6 @@ CGameObjectFactory::CGameObjectFactory()
 CGameObjectFactory::~CGameObjectFactory()
 {}
 
-
 CGameObject* CGameObjectFactory::CreateObjectFromFactory(int type)
 {
 	CGameObject* p = nullptr;

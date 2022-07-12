@@ -982,8 +982,8 @@ bool CBoard::Init()
 	m_Sprite->AddChild(m_BoardBackGround);
 
 	// ObjectPool 세팅
-	m_CellObjectPool = m_Scene->FindGameObjectPool("CellObjectPool");
-	m_BlockObjectPool = m_Scene->FindGameObjectPool("BlockObjectPool");
+	m_CellObjectPool = m_Scene->FindGameObjectPool(typeid(CCell).hash_code());
+	m_BlockObjectPool = m_Scene->FindGameObjectPool(typeid(CBlock).hash_code());
 
 	// Input Callback 세팅
 	CInput::GetInst()->SetKeyCallback("BoardCellClick", Key_State::Key_Down, this,

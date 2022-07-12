@@ -186,6 +186,9 @@
     <Filter Include="04. GameObject\02. ObjectFactory">
       <UniqueIdentifier>{a3e6a920-496d-4e24-977e-145799719953}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. GameObject\03. MemoryPool">
+      <UniqueIdentifier>{dd20e86d-64fe-41f2-8ae4-99a4afaac5d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -462,6 +465,9 @@
     <ClInclude Include="Flag.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject\ObjectPoolManager.h">
+      <Filter>04. GameObject\01. ObjectPool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -724,6 +730,9 @@
     </ClCompile>
     <ClCompile Include="GameObject\GameObjectFactory.cpp">
       <Filter>04. GameObject\02. ObjectFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\ObjectPoolManager.cpp">
+      <Filter>04. GameObject\01. ObjectPool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

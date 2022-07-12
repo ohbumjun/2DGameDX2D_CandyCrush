@@ -233,6 +233,19 @@ CParticle* CSceneResource::FindParticle(const std::string& Name)
 	return iter->second;
 }
 
+bool CSceneResource::CreateParticle(const std::string& Name)
+{
+	if (FindParticle(Name))
+		return true;
+
+	if (!CResourceManager::GetInst()->CreateParticle(Name))
+		return false;
+
+	m_mapParticle.insert(std::make_pair(Name, CResourceManager::GetInst()->FindParticle(Name)));
+
+	return true;
+}
+
 bool CSceneResource::Init()
 {
 	return true;

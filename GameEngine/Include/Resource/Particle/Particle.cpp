@@ -1,23 +1,28 @@
+
 #include "Particle.h"
-#include "../../Resource/ResourceManager.h"
+#include "../Shader/StructuredBuffer.h"
+#include "../Shader/ShaderManager.h"
 #include "../../Scene/Scene.h"
+#include "../../Scene/SceneResource.h"
+#include "../ResourceManager.h"
 
 CParticle::CParticle() :
-m_CBuffer(nullptr),
-m_SpawnTime(0.001f),
-m_2D(true),
-m_SpawnCountMax(100)
-{}
+	m_CBuffer(nullptr),
+	m_SpawnTime(0.001f),
+	m_2D(true),
+	m_SpawnCountMax(100)
+{
+}
 
- CParticle::CParticle(const CParticle& particle)
- {
-	 m_CBuffer = particle.m_CBuffer->Clone();
-	 m_UpdateShader = particle.m_UpdateShader;
- }
+CParticle::CParticle(const CParticle& particle)
+{
+	m_CBuffer = particle.m_CBuffer->Clone();
+	m_UpdateShader = particle.m_UpdateShader;
+}
 
- CParticle::~CParticle()
- {
-	 size_t BufferCount = m_vecStructuredBuffer.size();
+CParticle::~CParticle()
+{
+	size_t	BufferCount = m_vecStructuredBuffer.size();
 
 	for (size_t i = 0; i < BufferCount; ++i)
 	{
@@ -25,53 +30,52 @@ m_SpawnCountMax(100)
 	}
 
 	SAFE_DELETE(m_CBuffer);
- }
+}
 
- bool CParticle::Init()
- {
-	 m_CBuffer = new CParticleConstantBuffer;
-
-	 if (!m_CBuffer->Init())
-		 return false;
-
-	 if (m_Scene)
-		 m_UpdateShader = (CParticleUpdateShader*)m_Scene->GetSceneResource()->FindShader("ParticleUpdateShader");
-	 else
-		 m_UpdateShader = (CParticleUpdateShader*)CResourceManager::GetInst()->FindShader("ParticleUpdateShader");
-
-	 AddStructuredBuffer("ParticleInfo", sizeof(ParticleInfo), m_SpawnCountMax, 0);
-	 AddStructuredBuffer("ParticleInfoShared", sizeof(ParticleInfoShared), 1, 1);
-
-	 return true;
- }
-
- bool CParticle::AddStructuredBuffer(const std::string& Name, unsigned Size, unsigned Count, int Register,
-	bool Dynamic, int StructuredBufferShaderType)
+bool CParticle::Init()
 {
-	 CStructuredBuffer* Buffer = new CStructuredBuffer;
+	m_CBuffer = new CParticleConstantBuffer;
 
-	if (!Buffer->Init(Name, Size, Count, Register, Dynamic, StructuredBufferShaderType))
-	{
-		SAFE_DELETE(Buffer);
+	if (!m_CBuffer->Init())
 		return false;
-	}
 
-	m_vecStructuredBuffer.push_back(Buffer);
+	if (m_Scene)
+		m_UpdateShader = (CParticleUpdateShader*)m_Scene->GetSceneResource()->FindShader("ParticleUpdateShader");
+
+	else
+		m_UpdateShader = (CParticleUpdateShader*)CResourceManager::GetInst()->FindShader("ParticleUpdateShader");
+
+	AddStructuredBuffer("ParticleInfo", sizeof(ParticleInfo), m_SpawnCountMax, 0);
+	AddStructuredBuffer("ParticleInfoShared", sizeof(ParticleInfoShared), 1, 1);
 
 	return true;
 }
 
- bool CParticle::ResizeBuffer(const std::string& Name, unsigned Size, unsigned Count, int Register, bool Dynamic,
-	int StructuredBufferShaderType)
+void CParticle::AddStructuredBuffer(const std::string& Name, unsigned int Size, unsigned int Count,
+	int Register, bool Dynamic, int StructuredBufferShaderType)
 {
-	 size_t BufferCount = m_vecStructuredBuffer.size();
+	CStructuredBuffer* Buffer = new CStructuredBuffer;
+
+	if (!Buffer->Init(Name, Size, Count, Register, Dynamic, StructuredBufferShaderType))
+	{
+		SAFE_DELETE(Buffer);
+		return;
+	}
+
+	m_vecStructuredBuffer.push_back(Buffer);
+
+}
+
+bool CParticle::ResizeBuffer(const std::string& Name, unsigned int Size, unsigned int Count,
+	int Register, bool Dynamic, int StructuredBufferShaderType)
+{
+	size_t	BufferCount = m_vecStructuredBuffer.size();
 
 	for (size_t i = 0; i < BufferCount; ++i)
 	{
 		if (m_vecStructuredBuffer[i]->GetName() == Name)
 		{
-			if (!m_vecStructuredBuffer[i]->Init(Name, Size, Count, Register, Dynamic, StructuredBufferShaderType))
-				return false;
+			m_vecStructuredBuffer[i]->Init(Name, Size, Count, Register, Dynamic, StructuredBufferShaderType);
 
 			return true;
 		}
@@ -80,28 +84,23 @@ m_SpawnCountMax(100)
 	return false;
 }
 
- void CParticle::CloneStructuredBuffer(std::vector<CStructuredBuffer*>& vecBuffer)
+void CParticle::CloneStructuredBuffer(std::vector<CStructuredBuffer*>& vecBuffer)
 {
-	 size_t BufferCount = m_vecStructuredBuffer.size();
+	size_t	BufferCount = m_vecStructuredBuffer.size();
 
 	for (size_t i = 0; i < BufferCount; ++i)
 	{
-		SAFE_DELETE(m_vecStructuredBuffer[i]);
-	}
+		CStructuredBuffer* Buffer = m_vecStructuredBuffer[i]->Clone();
 
-	BufferCount = vecBuffer.size();
-
-	for (size_t i = 0; i < BufferCount; ++i)
-	{
-		m_vecStructuredBuffer.push_back(vecBuffer[i]->Clone());
+		vecBuffer.push_back(Buffer);
 	}
 }
 
- void CParticle::SetSpawnCountMax(unsigned Count)
+void CParticle::SetSpawnCountMax(unsigned int Count)
 {
-	 m_CBuffer->SetSpawnCountMax(Count);
+	m_CBuffer->SetSpawnCountMax(Count);
 
-	 m_SpawnCountMax = Count;
+	m_SpawnCountMax = Count;
 
-	 ResizeBuffer("ParticleInfo", sizeof(ParticleInfo), Count, 0);
+	ResizeBuffer("ParticleInfo", sizeof(ParticleInfo), m_SpawnCountMax, 0);
 }

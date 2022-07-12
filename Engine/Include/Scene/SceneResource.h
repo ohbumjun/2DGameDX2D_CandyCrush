@@ -5,6 +5,7 @@
 #include "../Resource/Texture/Texture.h"
 #include "../Resource/Particle/Particle.h"
 #include "../Resource/Animation/AnimationSequence2D.h"
+#include "../Resource/ResourceManager.h"
 
 class CSceneResource
 {
@@ -42,8 +43,28 @@ public: // ============= Shader ============
 	class CShader* FindShader(const std::string& Name);
 public: // ============= Material ============
 	CMaterial* FindMaterial(const std::string& Name);
+	template <typename T>
+	bool CreateMaterial(const std::string& Name)
+	{
+		if (FindMaterial(Name))
+			return true;
+
+		if (!CResourceManager::GetInst()->CreateMaterial<T>(Name))
+			return false;
+
+		m_mapMaterial.insert(std::make_pair(Name, CResourceManager::GetInst()->FindMaterial(Name)));
+
+		return true;
+	}
+
+	template <typename T>
+	T* CreateMaterialEmpty()
+	{
+		return CResourceManager::GetInst()->CreateMaterialEmpty<T>();
+	}
 public: // ============= Particle ===============
 	CParticle* FindParticle(const std::string& Name);
+	bool CreateParticle(const std::string& Name);
 public:
 	virtual bool Init();
 	virtual void Update(float DeltaTime);

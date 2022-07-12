@@ -6,9 +6,9 @@ CGameObjectPool::CGameObjectPool()
 
 CGameObjectPool::~CGameObjectPool()
 {
-   while (!queueObjects.empty())
+   while (!stackObjects.empty())
    {
-       CGameObject* Object = queueObjects.front();
+       CGameObject* Object = stackObjects.top();
    
        // SAFE_DELETE(Object);
        // CGameObjectFactory::GetInst()->DeleteObject(Object);
@@ -18,16 +18,16 @@ CGameObjectPool::~CGameObjectPool()
        // while (Object->GetRefCount() > 1)
        //     Object->Release();
    
-       queueObjects.pop();
+       stackObjects.pop();
    }
 }
 
 CGameObject* CGameObjectPool::GetFromPool()
 {
-    if (queueObjects.empty())
+    if (stackObjects.empty())
         Initialize();
 
-    CGameObject* Object = queueObjects.front();
+    CGameObject* Object = stackObjects.top();
 
     // Object->SetEnable(true);
     if (Object == InitObj)
@@ -40,7 +40,7 @@ CGameObject* CGameObjectPool::GetFromPool()
 
     Object->Activate();
     
-    queueObjects.pop();
+    stackObjects.pop();
 
     return Object;
 }
@@ -55,11 +55,11 @@ void CGameObjectPool::ReturnToPool(CGameObject* Object)
         ReturnN += 1;
     }
 
-    Object->Destroy();
+    // Object->Destroy();
 
     ResetInfo(Object);
 
-    queueObjects.push(Object);
+    stackObjects.push(Object);
 }
 
 void CGameObjectPool::Initialize(int numElement)
@@ -77,10 +77,14 @@ void CGameObjectPool::Initialize(int numElement)
 
         Object->SetGameObjectPool(this);
 
-        queueObjects.push(Object);
+        stackObjects.push(Object);
     }
 }
 void CGameObjectPool::ResetInfo(CGameObject* Object)
 {
+    if (!Object)
+        return;
+
+    Object->ResetObjectInfo();
 }
 ;

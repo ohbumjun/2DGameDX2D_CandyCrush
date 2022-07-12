@@ -364,7 +364,7 @@ Match_State CBoardMatchLogicComponent::CheckColMatch(int RowIndex, int ColIndex,
 	Cell_Type_Binary InitCellType = m_Board->GetVecCells()[RowIndex * m_Board->GetColCount() + CheckStartCol]->GetCellType();
 
 	// 해당 길이로 왼쪽 --> 오른쪽 순서로 조사한다.
-	for (int TempCurCol = 1; TempCurCol <= m_Board->GetColCount(); TempCurCol++)
+	for (int TempCurCol = 1; TempCurCol < m_Board->GetColCount(); TempCurCol++)
 	{
 		int CurIndex = RowIndex * m_Board->GetColCount() + TempCurCol;
 

@@ -18,5 +18,6 @@ public:
 
 	void DeleteObject(CGameObject* Object);
 
+	// Single Ton À¸·Î µÐ´Ù.
 	DECLARE_SINGLE(CGameObjectFactory);
 };

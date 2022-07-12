@@ -6,6 +6,7 @@
 #include "SceneResource.h"
 #include "ViewPort.h"
 #include "../GameObject/GameObject.h"
+#include "../GameObject/ObjectPoolManager.h"
 
 class CScene
 {
@@ -22,8 +23,7 @@ protected :
 	CViewPort* m_ViewPort;
 	bool m_Start;
 	std::list<CSharedPtr<class CGameObject>> m_ObjList;
-	// std::unordered_map<std::string, CGameObjectPool<CGameObject>*> m_mapObjectPool;
-	std::list<class CGameObjectPool*> m_ObjectPoolList;
+	CObjectPoolManager* m_ObjectPoolManager;
 public :
 	CCameraManager* GetCameraManager() const
 {
@@ -49,7 +49,8 @@ public :
 public :
 	CGameObject* FindGameObject(const std::string& Name);
 	void DeleteCellFromObjectList(CGameObject* Object);
-	CGameObjectPool* FindGameObjectPool(const std::string& Name);
+	// Object 의 TypeID 로 찾아내게 한다.
+	CGameObjectPool* FindGameObjectPool(const size_t ObjectTypeID);
 public :
 	virtual bool Init();
 	virtual void Start();
@@ -58,6 +59,11 @@ public :
 private :
 	void SetAutoChange(bool Change);
 public :
+	template<typename T>
+	void CreateObjectPool(const char* Name, int FactoryRegisterNum, int initNum)
+	{
+		return m_ObjectPoolManager->CreateObjectPool<T>(Name, FactoryRegisterNum, initNum);
+	}
 	template<typename T>
 	T* CreateGameObject(const std::string& Name)
 {
@@ -74,15 +80,6 @@ public :
 
 	return Object;
 }
-	template<typename T>
-	void CreateObjectPool(const char* Name,  int FactoryRegisterNum, int initNum)
-	{
-		T* NewObjectPool = new T;
-		NewObjectPool->SetName(Name);
-		NewObjectPool->Init(FactoryRegisterNum, initNum);
-		m_ObjectPoolList.push_back(NewObjectPool);
-		// m_mapObjectPool.insert(mapKey, new CGameObjectPool<T>(FactoryRegisterNum, initNum));
-	}
 private :
 	template<typename T>
 	bool CreateSceneMode()

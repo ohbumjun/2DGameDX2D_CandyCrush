@@ -15,6 +15,8 @@ private :
 public :
     virtual bool Init() override;
     void CreateAnimationSequence();
+    void CreateMaterial();
+    void CreateParticle();
 private :
     void UpdatePlayTime(float DeltaTime);
 private :

@@ -24,15 +24,23 @@ public:
 	{
 		m_Scene = Scene;
 	}
+	void SetLifeSpan(float LifeSpan)
+	{
+		m_LifeSpan = LifeSpan;
+	}
 public:
 	virtual void Destroy() override;
-	void SetGameObjectPool(CGameObjectPool* Pool);
 protected:
 	CSharedPtr<CSceneComponent> m_RootComponent;
 	std::list<CSceneComponent*> m_SceneComponentList;
 	std::vector<CSharedPtr<CObjectComponent>> m_vecObjectComponent;
 	CGameObject* m_Parent;
 	std::vector<CSharedPtr<CGameObject>> m_vecChildObject;
+	float		m_LifeSpan;
+	// Pool Related
+public:
+	void SetGameObjectPool(CGameObjectPool* Pool);
+	virtual void ResetObjectInfo();
 public:
 	void SetRootComponent(CSceneComponent* Component)
 	{

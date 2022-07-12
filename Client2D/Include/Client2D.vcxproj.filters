@@ -72,12 +72,6 @@
     <ClCompile Include="UI\StartSceneWidget.cpp">
       <Filter>03. UI</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject\CellObjectPool.cpp">
-      <Filter>02. Object</Filter>
-    </ClCompile>
-    <ClCompile Include="GameObject\BlockObjectPool.cpp">
-      <Filter>02. Object</Filter>
-    </ClCompile>
     <ClCompile Include="Component\BoardAILogicComponent.cpp">
       <Filter>06. Component</Filter>
     </ClCompile>
@@ -95,6 +89,9 @@
     </ClCompile>
     <ClCompile Include="Component\BoardMatchLogicComponent.cpp">
       <Filter>06. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\BubbleParticle.cpp">
+      <Filter>02. Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -143,12 +140,6 @@
     <ClInclude Include="GameObject\Utils.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject\CellObjectPool.h">
-      <Filter>02. Object</Filter>
-    </ClInclude>
-    <ClInclude Include="GameObject\BlockObjectPool.h">
-      <Filter>02. Object</Filter>
-    </ClInclude>
     <ClInclude Include="Component\BoardAILogicComponent.h">
       <Filter>06. Component</Filter>
     </ClInclude>
@@ -166,6 +157,9 @@
     </ClInclude>
     <ClInclude Include="Component\BoardMatchLogicComponent.h">
       <Filter>06. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\BubbleParticle.h">
+      <Filter>02. Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
