@@ -337,9 +337,13 @@ void CCell::ApplyNoticeEffect(float DeltaTime)
 
 		float WorldPosY = GetWorldPos().y;
 
+		// AI 상태라면, Toon Shading 효과를 적용한다.
+		m_Sprite->GetMaterial()->GetMaterialCBuffer()->SetShaderEfect(MaterialShaderEffect::Toon);
+
 		if (GetWorldPos().y >= m_NoticePosY - 1.f)
 		{
 			m_IsNoticeToggleUp = false;
+			m_Sprite->GetMaterial()->GetMaterialCBuffer()->SetShaderEfect(MaterialShaderEffect::None);
 		}
 	}
 	else

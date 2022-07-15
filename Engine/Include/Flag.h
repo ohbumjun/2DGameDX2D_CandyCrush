@@ -121,3 +121,14 @@ enum class GameObjectPoolKeyNumber {
 	CellObjectPoolKey,
 	BlockObjectPoolKey
 };
+
+enum class MaterialShaderEffect
+{
+	None,
+	Toon = 1,
+	Shapia , // 셰피아 효과
+	Gray,
+	EdgeDetection, // 외곽선
+	Embossing, // 양각 효과
+	Max
+};

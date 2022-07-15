@@ -4,6 +4,9 @@ CMaterialConstantBuffer::CMaterialConstantBuffer()
 {
 	m_BufferData.Opacity = 1.f;
 	m_BufferData.BaseColor = Vector4(1.f, 1.f, 1.f, 1.f);
+
+	// 처음에는 그 어떤 Shader 효과도 주지 않는다
+	m_BufferData.MtrlShaderEffect = 0;
 }
 
 CMaterialConstantBuffer::CMaterialConstantBuffer(const CMaterialConstantBuffer& Buffer) :

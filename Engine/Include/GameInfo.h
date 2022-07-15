@@ -229,8 +229,11 @@ struct ColliderCBuffer {
 
 struct MaterialCBuffer {
 	Vector4 BaseColor;
+
 	float Opacity;
-	Vector3 Empty;
+	// MaterialShaderEffect MtrlShaderEffect;
+	int MtrlShaderEffect;
+	Vector2 Empty;
 };
 
 // 정점 버퍼

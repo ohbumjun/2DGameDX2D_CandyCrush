@@ -84,7 +84,14 @@ public:
 	{
 		m_CBuffer = Buffer->Clone();
 	}
-
+	class CMaterialConstantBuffer* GetMaterialCBuffer() const
+	{
+		return m_CBuffer;
+	}
+	float GetOpacity() const
+	{
+		return m_Opacity;
+	}
 public:
 	void SetRenderState(class CRenderState* State);
 	void SetRenderState(const std::string& Name);
