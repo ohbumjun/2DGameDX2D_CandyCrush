@@ -15,6 +15,11 @@ public:
     virtual void UpdateCBuffer();
     virtual CMaterialConstantBuffer* Clone();
 public :
+    int GetShaderEffect() const
+    {
+        return m_BufferData.MtrlShaderEffect;
+    }
+public :
     void SetShaderEffect(int Effect)
     {
         if (Effect >= (int)MaterialShaderEffect::Max)

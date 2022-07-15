@@ -88,10 +88,16 @@ void CCell::ResetObjectInfo()
 	m_IsBeingSpecialDestroyed = false;
 
 	m_CellState = Cell_State::Normal;
+
+	m_DestroyMarkState = DestroyMark_State::None;
+	m_DestroyState = Destroy_State::None;
 	
 	// Mirror Ball Match 할때 Rot 하게 된다.
 	// 이를 다시 원상태로
 	SetWorldRotation(0.f, 0.f, 0.f);
+
+	// Shader Effect 도 원래대로 세팅한다
+	m_Sprite->GetMaterial()->GetMaterialCBuffer()->SetShaderEfect(MaterialShaderEffect::None);
 }
 
 void CCell::SetCellType(Cell_Type_Binary Type)
@@ -325,7 +331,14 @@ void CCell::SwitchMove(float DeltaTime)
 void CCell::ApplyNoticeEffect(float DeltaTime)
 {
 	if (!m_IsPossibleMatch)
+	{
+		// 여전히 Toon Shading 효과가 적용되고 있다면 원상 복구 시켜주기
+		if (m_Sprite->GetMaterial()->GetMaterialCBuffer()->GetShaderEffect() == (int)MaterialShaderEffect::Toon)
+		{
+			m_Sprite->GetMaterial()->GetMaterialCBuffer()->SetShaderEfect(MaterialShaderEffect::None);
+		}
 		return;
+	}
 
 	m_OriginPosY = m_NewDownPosY;
 	m_NoticePosY = m_NewDownPosY + m_ToggleMoveDist;
@@ -479,7 +492,7 @@ void CCell::DestroyedByLineMatch(float DeltaTime)
 	{
 		m_LineDestroyDelayTime -= DeltaTime;
 
-		m_Sprite->SetOpacity(m_LineDestroyDelayTime / m_LineDestroyInitDelayTime);
+		// m_Sprite->SetOpacity(m_LineDestroyDelayTime / m_LineDestroyInitDelayTime);
 
 		m_IsMoving = true;
 
@@ -487,6 +500,9 @@ void CCell::DestroyedByLineMatch(float DeltaTime)
 
 		return;
 	}
+
+	// Shading Effect (흑백) 를 준다.
+	m_Sprite->GetMaterial()->GetMaterialCBuffer()->SetShaderEfect(MaterialShaderEffect::Gray);
 
 	m_IsLineDestroyedCell = false;
 
