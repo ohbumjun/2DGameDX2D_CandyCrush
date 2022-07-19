@@ -167,7 +167,7 @@ bool CBoardDestroyLogicComponent::DestroyMirrorBallEffect(int RowIndex, int ColI
 				if (m_Board->GetVecCells()[Index]->GetCellState() == Cell_State::MirrorBall)
 					continue;
 
-				DelayTime += 0.5f;
+				DelayTime += 0.2f;
 
 				m_Board->GetVecCells()[row * m_Board->GetColCount() + col]->SetBeingSpecialDestroyed(true);
 				m_Board->GetVecCells()[row * m_Board->GetColCount() + col]->SetIsMirrorBallDestroyedCell(true);

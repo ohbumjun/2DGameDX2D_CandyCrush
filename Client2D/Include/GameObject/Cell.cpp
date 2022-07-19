@@ -457,17 +457,25 @@ void CCell::DestroyMirrorBallEffect(float DeltaTime)
 	if (!m_IsMirrorBallDestroyedCell)
 		return;
 
+	float PrevMirrorBallDestroyDelayTime = m_MirrorBallDestroyDelayTime;
+
 	if (m_MirrorBallDestroyDelayTime > 0.f)
 	{
 		m_MirrorBallDestroyDelayTime -= DeltaTime;
 
-		m_Sprite->SetOpacity(m_MirrorBallDestroyDelayTime / m_MirrorBallDestroyInitDelayTime);
 
 		m_IsMoving = true;
 
 		m_IsBeingSpecialDestroyed = true;
 
-		AddRelativeRotation(0.f, 0.f, 50.f * -1.f * DeltaTime);
+		// Shading Effect (Shapia) ¸¦ ÁØ´Ù.
+		if (PrevMirrorBallDestroyDelayTime >= 0.15f && m_MirrorBallDestroyDelayTime < 0.15f)
+		{
+			m_Sprite->GetMaterial()->GetMaterialCBuffer()->SetShaderEfect(MaterialShaderEffect::Shapia);
+		}
+
+		// m_Sprite->SetOpacity(m_MirrorBallDestroyDelayTime / m_MirrorBallDestroyInitDelayTime);
+		// AddRelativeRotation(0.f, 0.f, 50.f * -1.f * DeltaTime);
 
 		return;
 	}
