@@ -488,11 +488,19 @@ void CCell::DestroyedByLineMatch(float DeltaTime)
 	if (!m_IsLineDestroyedCell)
 		return;
 
+	float PrevLineDestroyDelayTime = m_LineDestroyDelayTime;
+
 	if (m_LineDestroyDelayTime > 0.f)
 	{
 		m_LineDestroyDelayTime -= DeltaTime;
 
 		// m_Sprite->SetOpacity(m_LineDestroyDelayTime / m_LineDestroyInitDelayTime);
+
+		if (m_LineDestroyDelayTime < 0.1f && PrevLineDestroyDelayTime> 0.1f)
+		{
+			// Shading Effect (Èæ¹é) ¸¦ ÁØ´Ù.
+			m_Sprite->GetMaterial()->GetMaterialCBuffer()->SetShaderEfect(MaterialShaderEffect::Gray);
+		}
 
 		m_IsMoving = true;
 
@@ -500,9 +508,6 @@ void CCell::DestroyedByLineMatch(float DeltaTime)
 
 		return;
 	}
-
-	// Shading Effect (Èæ¹é) ¸¦ ÁØ´Ù.
-	m_Sprite->GetMaterial()->GetMaterialCBuffer()->SetShaderEfect(MaterialShaderEffect::Gray);
 
 	m_IsLineDestroyedCell = false;
 
