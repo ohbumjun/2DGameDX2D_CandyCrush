@@ -60,7 +60,7 @@ bool CBoardDestroyLogicComponent::DestroyHorizontalEffect(int RowIndex)
 		{
 			m_Board->GetVecCells()[RowIndex * m_Board->GetColCount() + col]->SetBeingSpecialDestroyed(true);
 			m_Board->GetVecCells()[RowIndex * m_Board->GetColCount() + col]->SetIsLineDestroyedCell(true);
-			m_Board->GetVecCells()[RowIndex * m_Board->GetColCount() + col]->SetLineDestroyDelayTime(0.1f + col * 0.1f);
+			m_Board->GetVecCells()[RowIndex * m_Board->GetColCount() + col]->SetLineDestroyDelayTime(0.2f + col * 0.2f);
 		}
 		// 해당 Column의 그 위 Cell 들로 하여금 내려오는 것을 잠시 멈추도록 세팅한다
 		for (int row = RowIndex + 1; row < m_Board->GetRowCount(); row++)
@@ -86,7 +86,7 @@ bool CBoardDestroyLogicComponent::DestroyVerticalEffect(int ColIndex)
 		{
 			m_Board->GetVecCells()[row * m_Board->GetColCount() + ColIndex]->SetBeingSpecialDestroyed(true);
 			m_Board->GetVecCells()[row * m_Board->GetColCount() + ColIndex]->SetIsLineDestroyedCell(true);
-			m_Board->GetVecCells()[row * m_Board->GetColCount() + ColIndex]->SetLineDestroyDelayTime(0.1f + row * 0.1f);
+			m_Board->GetVecCells()[row * m_Board->GetColCount() + ColIndex]->SetLineDestroyDelayTime(0.2f + row * 0.2f);
 		}
 
 		// DestroySingleCell(row, ColIndex);
@@ -167,7 +167,7 @@ bool CBoardDestroyLogicComponent::DestroyMirrorBallEffect(int RowIndex, int ColI
 				if (m_Board->GetVecCells()[Index]->GetCellState() == Cell_State::MirrorBall)
 					continue;
 
-				DelayTime += 0.2f;
+				DelayTime += 0.3f;
 
 				m_Board->GetVecCells()[row * m_Board->GetColCount() + col]->SetBeingSpecialDestroyed(true);
 				m_Board->GetVecCells()[row * m_Board->GetColCount() + col]->SetIsMirrorBallDestroyedCell(true);

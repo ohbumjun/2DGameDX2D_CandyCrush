@@ -303,7 +303,7 @@ void CBoardCombLogicComponent::DestroyBagLineComb(int RowIndex, int ColIndex)
 	{
 		for (int col = 0; col < m_Board->GetColCount(); col++)
 		{
-			DelayTime = 0.1f + col * 0.1f;
+			DelayTime = 0.1f + col * 0.2f;
 
 			// Bag Line Combo의 Bag 라면, 계속 크기를 키우는 효과를 준다
 			if (m_Board->GetVecCells()[row * m_Board->GetColCount() + col]->GetCellState() == Cell_State::Bag)
@@ -353,7 +353,7 @@ void CBoardCombLogicComponent::DestroyBagLineComb(int RowIndex, int ColIndex)
 	{
 		for (int row = 0; row < m_Board->GetVisualRowCount(); row++)
 		{
-			DelayTime = LastDelayTime + row * 0.1f;
+			DelayTime = LastDelayTime + row * 0.2f;
 
 			if (m_Board->GetVecCells()[row * m_Board->GetColCount() + col]->GetCellState() == Cell_State::Bag ||
 				m_Board->GetVecCells()[row * m_Board->GetColCount() + col]->GetCellState() == Cell_State::MirrorBall)

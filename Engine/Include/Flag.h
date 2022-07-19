@@ -130,5 +130,6 @@ enum class MaterialShaderEffect
 	Gray,
 	EdgeDetection, // 외곽선
 	Embossing, // 양각 효과
+	Sin,
 	Max
 };

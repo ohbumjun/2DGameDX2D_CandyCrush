@@ -469,7 +469,7 @@ void CCell::DestroyMirrorBallEffect(float DeltaTime)
 		m_IsBeingSpecialDestroyed = true;
 
 		// Shading Effect (Shapia) 를 준다.
-		if (PrevMirrorBallDestroyDelayTime >= 0.15f && m_MirrorBallDestroyDelayTime < 0.15f)
+		if (PrevMirrorBallDestroyDelayTime >= 0.3f && m_MirrorBallDestroyDelayTime < 0.3f)
 		{
 			m_Sprite->GetMaterial()->GetMaterialCBuffer()->SetShaderEfect(MaterialShaderEffect::Shapia);
 		}
@@ -504,7 +504,7 @@ void CCell::DestroyedByLineMatch(float DeltaTime)
 
 		// m_Sprite->SetOpacity(m_LineDestroyDelayTime / m_LineDestroyInitDelayTime);
 
-		if (m_LineDestroyDelayTime < 0.1f && PrevLineDestroyDelayTime> 0.1f)
+		if (m_LineDestroyDelayTime < 0.2f && PrevLineDestroyDelayTime>= 0.2f)
 		{
 			// Shading Effect (흑백) 를 준다.
 			m_Sprite->GetMaterial()->GetMaterialCBuffer()->SetShaderEfect(MaterialShaderEffect::Gray);
@@ -533,11 +533,19 @@ void CCell::DestroyedByLineAndBagMatch(float DeltaTime)
 	if (!m_IsLineBagCombDestroyedCell)
 		return;
 
+	float PrevLineAndBagDestroyDelayTime = m_LineBagCombDestroyDelayTime;
+
 	if (m_LineBagCombDestroyDelayTime > 0.f)
 	{
 		m_LineBagCombDestroyDelayTime -= DeltaTime;
 
-		m_Sprite->SetOpacity(m_LineBagCombDestroyDelayTime / m_LineBagCombDestroyInitDelayTime);
+		// m_Sprite->SetOpacity(m_LineBagCombDestroyDelayTime / m_LineBagCombDestroyInitDelayTime);
+
+		// Shading Effect (흑백) 를 준다.
+		if (m_LineBagCombDestroyDelayTime < 0.2f && PrevLineAndBagDestroyDelayTime >= 0.2f)
+		{
+			m_Sprite->GetMaterial()->GetMaterialCBuffer()->SetShaderEfect(MaterialShaderEffect::EdgeDetection);
+		}
 
 		m_IsMoving = true;
 
