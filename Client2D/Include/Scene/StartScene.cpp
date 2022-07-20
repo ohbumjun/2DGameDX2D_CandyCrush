@@ -88,7 +88,7 @@ void CStartScene::CreateParticle()
 	Particle->SetColorMin(Vector4(0.8f, 0.1f, 0.8f, 1.f));
 	Particle->SetColorMax(Vector4(0.8f, 0.1f, 0.8f, 1.f));
 	Particle->SetMoveAngle(Vector3(0.f, 0.f, 30.f));
-	Particle->SetGravity(false);
+	Particle->SetGravity(true);
 	Particle->SetMove(true);
 }
 

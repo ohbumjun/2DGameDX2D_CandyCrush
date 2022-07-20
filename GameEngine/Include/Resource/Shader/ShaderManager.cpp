@@ -46,9 +46,9 @@ bool CShaderManager::Init()
 	// 상수 버퍼
 	if (!CreateConstantBuffer("AnimationCBuffer", 0, sizeof(AnimationCBuffer), (int)Buffer_Shader_Type::Graphic))
 		return false;
-	if (!CreateConstantBuffer("MaterialCBuffer", 1, sizeof(MaterialCBuffer), (int)Buffer_Shader_Type::Graphic))
+	if (!CreateConstantBuffer("MaterialCBuffer", 1, sizeof(MaterialCBuffer), (int)Buffer_Shader_Type::All))
 		return false;
-	if (!CreateConstantBuffer("TransformCBuffer", 2, sizeof(TransformCBuffer), (int)Buffer_Shader_Type::Graphic))
+	if (!CreateConstantBuffer("TransformCBuffer", 2, sizeof(TransformCBuffer), (int)Buffer_Shader_Type::All))
 		return false;
 	if (!CreateConstantBuffer("Standard2DCBuffer", 3, sizeof(Standard2DCBuffer), (int)Buffer_Shader_Type::Graphic))
 		return false;
@@ -62,7 +62,7 @@ bool CShaderManager::Init()
 	// Particle 상수 버퍼 정보는 Graphic + Compute 에 모두 넘어가야 한다.
 	if (!CreateConstantBuffer("ParticleCBuffer", 7, sizeof(ParticleCBuffer), (int)Buffer_Shader_Type::All))
 		return false;
-	if (!CreateConstantBuffer("GlobalCBuffer", 8, sizeof(GlobalCBuffer), (int)Buffer_Shader_Type::Graphic))
+	if (!CreateConstantBuffer("GlobalCBuffer", 8, sizeof(GlobalCBuffer), (int)Buffer_Shader_Type::All))
 		return false;
 
 	return true;
