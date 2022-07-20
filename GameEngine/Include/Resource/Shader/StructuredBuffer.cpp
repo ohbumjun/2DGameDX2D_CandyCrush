@@ -179,10 +179,48 @@
 }
 
  void CStructuredBuffer::SetShader(int Register, int StructuredBufferShaderType)
-{}
+{
+	 if (StructuredBufferShaderType & (int)Buffer_Shader_Type::Vertex)
+		 CDevice::GetInst()->GetDeviceContext()->VSSetShaderResources(Register, 1, &m_SRV);
+
+	 if (StructuredBufferShaderType & (int)Buffer_Shader_Type::Pixel)
+		 CDevice::GetInst()->GetDeviceContext()->PSSetShaderResources(Register, 1, &m_SRV);
+
+	 if (StructuredBufferShaderType & (int)Buffer_Shader_Type::Domain)
+		 CDevice::GetInst()->GetDeviceContext()->DSSetShaderResources(Register, 1, &m_SRV);
+
+	 if (StructuredBufferShaderType & (int)Buffer_Shader_Type::Hull)
+		 CDevice::GetInst()->GetDeviceContext()->HSSetShaderResources(Register, 1, &m_SRV);
+
+	 if (StructuredBufferShaderType & (int)Buffer_Shader_Type::Geometry)
+		 CDevice::GetInst()->GetDeviceContext()->GSSetShaderResources(Register, 1, &m_SRV);
+
+	 if (StructuredBufferShaderType & (int)Buffer_Shader_Type::Compute)
+		 CDevice::GetInst()->GetDeviceContext()->CSSetShaderResources(Register, 1, &m_SRV);
+ }
 
  void CStructuredBuffer::ResetShader(int Register, int StructuredBufferShaderType)
-{}
+{
+	 ID3D11ShaderResourceView* SRV = nullptr;
+
+	 if (StructuredBufferShaderType & (int)Buffer_Shader_Type::Vertex)
+		 CDevice::GetInst()->GetDeviceContext()->VSSetShaderResources(Register, 1, &SRV);
+
+	 if (StructuredBufferShaderType & (int)Buffer_Shader_Type::Pixel)
+		 CDevice::GetInst()->GetDeviceContext()->PSSetShaderResources(Register, 1, &SRV);
+
+	 if (StructuredBufferShaderType & (int)Buffer_Shader_Type::Domain)
+		 CDevice::GetInst()->GetDeviceContext()->DSSetShaderResources(Register, 1, &SRV);
+
+	 if (StructuredBufferShaderType & (int)Buffer_Shader_Type::Hull)
+		 CDevice::GetInst()->GetDeviceContext()->HSSetShaderResources(Register, 1, &SRV);
+
+	 if (StructuredBufferShaderType & (int)Buffer_Shader_Type::Geometry)
+		 CDevice::GetInst()->GetDeviceContext()->GSSetShaderResources(Register, 1, &SRV);
+
+	 if (StructuredBufferShaderType & (int)Buffer_Shader_Type::Compute)
+		 CDevice::GetInst()->GetDeviceContext()->CSSetShaderResources(Register, 1, &SRV);
+ }
 
  void CStructuredBuffer::CopyData(void* Data)
 {

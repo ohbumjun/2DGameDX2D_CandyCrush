@@ -26,6 +26,7 @@ private:
     Cell_Type_Binary m_MirrorBallDestroyType;
     Cell_State m_CellState;
     CSharedPtr<CSpriteComponent> m_Sprite;
+    CSharedPtr<class CParticleComponent>    m_ParticleComponent;
     class CBoard* m_Board;
     int m_Index;
     int m_RowIndex;

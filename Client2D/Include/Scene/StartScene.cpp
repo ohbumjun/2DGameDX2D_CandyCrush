@@ -32,22 +32,20 @@ bool CStartScene::Init()
 	// m_StartWidget = m_Scene->GetViewPort()->CreateUIWindow<CStartSceneWidget>("StartSceneWidget");
 
 	// Make Factory For Cell, Block
-	// m_Scene->CreateObjectPool<CCell>("CellObjectPool", (int)FactoryRegisterNum::CellRegisterNum, 100);
-	m_Scene->CreateObjectPool<CCell>("CellObjectPool",(int)FactoryRegisterNum::CellRegisterNum, 100);
-	// m_Scene->CreateObjectPool<CBlock>("BlockObjectPool", (int)FactoryRegisterNum::BlockRegisterNum, 100);
-	m_Scene->CreateObjectPool<CBlock>("BlockObjectPool", (int)FactoryRegisterNum::BlockRegisterNum, 100);
+	m_Scene->CreateObjectPool<CCell>("CellObjectPool",(int)typeid(CCell).hash_code(), 100);
+	m_Scene->CreateObjectPool<CBlock>("BlockObjectPool", (int)typeid(CBlock).hash_code(), 100);
 
 	Resolution RS = CEngine::GetInst()->GetResolution();
 
 	CBoard* Board = m_Scene->CreateGameObject<CBoard>("Board");
 
 	SetPlayerObject(Board);
-
+	
 	Board->CreateBoard(6, 6, 60, 40, 
-		Vector3((float)RS.Width * 0.2f, (float)RS.Height * 0.1f, 1.f));
+	Vector3((float)RS.Width * 0.2f, (float)RS.Height * 0.1f, 1.f));
 
 	CBubbleParticle* BubbleParticle = m_Scene->CreateGameObject<CBubbleParticle>("BubbleParticle");
-	BubbleParticle->SetWorldPos(50.f, 30.f, 0.f);
+	BubbleParticle->SetWorldPos(50.f, 30.f * 2.f, 1.f);
 
 	return true;
 }
@@ -65,16 +63,15 @@ void CStartScene::CreateMaterial()
 	m_Scene->GetSceneResource()->CreateMaterial<CMaterial>("Bubble");
 	CMaterial* Material = m_Scene->GetSceneResource()->FindMaterial("Bubble");
 
-	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Bubble", TEXT("Particle/Bubbles99px.png"));
+	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Bubble", TEXT("Particle/Bubbles50px.png"));
 	Material->SetShader("ParticleRenderShader");
-	Material->SetRenderState("AlphaBlend");
+	// Material->SetRenderState("AlphaBlend");
 }
 
 void CStartScene::CreateParticle()
 {
 	m_Scene->GetSceneResource()->CreateParticle("Bubble");
 	CParticle* Particle = m_Scene->GetSceneResource()->FindParticle("Bubble");
-
 	CMaterial* Material = m_Scene->GetSceneResource()->FindMaterial("Bubble");
 
 	Particle->SetMaterial(Material);
@@ -91,7 +88,7 @@ void CStartScene::CreateParticle()
 	Particle->SetColorMin(Vector4(0.8f, 0.1f, 0.8f, 1.f));
 	Particle->SetColorMax(Vector4(0.8f, 0.1f, 0.8f, 1.f));
 	Particle->SetMoveAngle(Vector3(0.f, 0.f, 30.f));
-	Particle->SetGravity(true);
+	Particle->SetGravity(false);
 	Particle->SetMove(true);
 }
 

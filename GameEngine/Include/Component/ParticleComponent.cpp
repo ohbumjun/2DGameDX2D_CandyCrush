@@ -117,7 +117,7 @@ void CParticleComponent::Update(float DeltaTime)
 
 	if (m_SpawnTime >= m_SpawnTimeMax)
 	{
-		m_SpawnTime -= m_SpawnTimeMax;
+		m_SpawnTime = 0;
 		m_CBuffer->SetSpawnEnable(1);
 	}
 
@@ -155,7 +155,7 @@ void CParticleComponent::PostUpdate(float DeltaTime)
 	// 100개일 경우 그룹은 2개가 생성된다. 이때 스레드는 128개가 되므로 100개를 제외한 나머지 28개는 처리가 안되게
 	// 막아주면 되는것이다.
 	int	GroupCount = m_Particle->GetSpawnCountMax() / 64 + 1;
-	m_UpdateShader->Execute(GroupCount, 1, 1);
+	m_UpdateShader->Excute(GroupCount, 1, 1);
 
 
 	for (size_t i = 0; i < BufferCount; ++i)

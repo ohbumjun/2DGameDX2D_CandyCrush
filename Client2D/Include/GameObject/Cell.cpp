@@ -2,6 +2,7 @@
 #include "Resource/ResourceManager.h"
 #include "Animation/AnimationSequence2DInstance.h"
 #include "../Component/BoardCombLogicComponent.h"
+#include "Component/ParticleComponent.h"
 #include "Board.h"
 
 CCell::CCell() :
@@ -60,17 +61,26 @@ void CCell::ResetObjectInfo()
 {
 	m_IsPlacedNew = false;
 	m_IsMoving = false;
+	m_PauseGoDown = false;
 
+	// 2번의 Click 에 의해 Swith 되고 있는가 
+	m_IsSwitch = false;
+
+	// 현재 보여지는 Cell 인가 
 	m_IsShownEnable = false;
 	m_IsGoingBack = false;
+
+	// Line Destroy Cell
 	m_IsLineOfLineBagComb = false;
 	m_IsLineDestroyedCell = false;
 	m_IsLineBagCombDestroyedCell = false;
-	m_IsSwitch = false;
-	m_PauseGoDown = false;
+
+	// Bag Destroy
 	m_IsSpecialDestroyedBag = false;
 	m_IsBagAndBagFirstDestroyed = false;
 	m_IsBagCombToBeDestroyed = false;
+
+	// Mirror Ball
 	m_IsMirrorBallDestroyedCell = false;
 	m_IsMirrorBallOfBagMirrorBallComb = false;
 	m_IsSameColorWithMirrorBallLineComb = false;
@@ -78,17 +88,25 @@ void CCell::ResetObjectInfo()
 	m_IsDoubleMirrorBallComb = false;
 	m_IsLineOfLineMirrorBallComb = false;
 	m_IsDoubleMirrorBallCombEffectApplied = false;
+
+	// Bag Combination Destory 조사 Idx
 	m_BagCombDestroyLeftIdx = -1;
 	m_BagCombDestroyRightIdx = -1;
 	m_BagCombDestroyTopIdx = -1;
 	m_BagCombDestroyBottomIdx = -1;
+
+	// Possible Match 여부
 	m_IsPossibleMatch = false;
+
+	// AI
 	m_IsNoticeToggleUp = false;
 	m_ToggleMoveDist = 7.f;
 	m_IsBeingSpecialDestroyed = false;
 
+	// Cell State
 	m_CellState = Cell_State::Normal;
 
+	// Destroy 여부 
 	m_DestroyMarkState = DestroyMark_State::None;
 	m_DestroyState = Destroy_State::None;
 	
@@ -393,6 +411,16 @@ bool CCell::Init()
 	// Alpha Blend 적용하기
 	m_Sprite->SetRenderState("AlphaBlend");
 
+	// m_ParticleComponent = CreateComponent<CParticleComponent>("ParticleComponent");
+	// 
+	// // SetRootComponent(m_ParticleComponent);
+	// 
+	// // m_ParticleComponent->SetRelativePos(30.f, 30.f, 1.f);
+	// 
+	// m_ParticleComponent->SetParticle("Bubble");
+	// 
+	// m_ParticleComponent->SetWorldScale(Vector3(30.f, 30.f, 0.f));
+
 	return true;
 }
 
@@ -417,6 +445,8 @@ void CCell::Update(float DeltaTime)
 
 	if (m_IsLineOfLineBagComb)
 	{
+		// m_Sprite->GetMaterial()->GetMaterialCBuffer()->SetShaderEfect(MaterialShaderEffect::Embossing);
+
 		AddWorldScale(Vector3(100.f, 100.f, 0.f) * DeltaTime);
 	}
 
@@ -429,7 +459,7 @@ void CCell::Update(float DeltaTime)
 	// Line + Bag Comb 
 	DestroyedByLineAndBagMatch(DeltaTime);
 
-	// Line ++ MirrorBall
+	// Line + MirrorBall
 	DecreaseOpacityAndDestroyLineMirrorBallComb(DeltaTime);
 	ChangeStateSameColorWithLineMirrorBallComb(DeltaTime);
 

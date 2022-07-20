@@ -1,3 +1,4 @@
+
 #include "BubbleParticle.h"
 #include "Component/ParticleComponent.h"
 
@@ -6,8 +7,10 @@ CBubbleParticle::CBubbleParticle()
 	SetTypeID<CBubbleParticle>();
 }
 
-CBubbleParticle::CBubbleParticle(const CBubbleParticle& Particle)
+CBubbleParticle::CBubbleParticle(const CBubbleParticle& obj) :
+	CGameObject(obj)
 {
+	m_ParticleComponent = (CParticleComponent*)FindComponent("Particle");
 }
 
 CBubbleParticle::~CBubbleParticle()
@@ -20,7 +23,7 @@ bool CBubbleParticle::Init()
 
 	SetRootComponent(m_ParticleComponent);
 
-	// m_ParticleComponent->SetRelativePos(200.f, 50.f, 0.f);
+	m_ParticleComponent->SetWorldPos(50.f, 50.f, 1.f);
 
 	m_ParticleComponent->SetParticle("Bubble");
 
@@ -32,5 +35,5 @@ bool CBubbleParticle::Init()
 
 CBubbleParticle* CBubbleParticle::Clone()
 {
-	return nullptr;
+	return new CBubbleParticle(*this);
 }

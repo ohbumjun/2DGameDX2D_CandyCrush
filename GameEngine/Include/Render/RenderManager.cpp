@@ -134,13 +134,13 @@ bool CRenderManager::Init()
 	// 이러한 것을 방지하기 위해서 이다.
 	Layer = new RenderLayer;
 	Layer->Name = "ScreenWidgetComponent";
-	Layer->LayerPriority = 4;
+	Layer->LayerPriority = 5;
 	m_RenderLayerList.push_back(Layer);
 
 	// Particle Layer
 	Layer = new RenderLayer;
 	Layer->Name = "Particle";
-	Layer->LayerPriority = 5;
+	Layer->LayerPriority = 6;
 	m_RenderLayerList.push_back(Layer);
 
 	m_DepthDisable = FindRenderState("NoDepth");

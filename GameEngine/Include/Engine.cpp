@@ -17,8 +17,8 @@ CEngine::CEngine() :
 m_Start(false),
 m_Play(true),
 m_Space(Engine_Space::Space2D),
-m_ClearColor {0,0,1,1}
-// m_ClearColor{}
+// m_ClearColor {0,0,1,1}
+m_ClearColor{}
 {}
 
 CEngine::~CEngine()

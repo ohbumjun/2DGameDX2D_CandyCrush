@@ -58,7 +58,9 @@ bool CShaderManager::Init()
 		return false;
 	if (!CreateConstantBuffer("ProgressBarCBuffer", 6, sizeof(ProgressBarCBuffer), (int)Buffer_Shader_Type::Graphic))
 		return false;
-	if (!CreateConstantBuffer("ParticleCBuffer", 11, sizeof(ParticleCBuffer), (int)Buffer_Shader_Type::Graphic))
+
+	// Particle 상수 버퍼 정보는 Graphic + Compute 에 모두 넘어가야 한다.
+	if (!CreateConstantBuffer("ParticleCBuffer", 7, sizeof(ParticleCBuffer), (int)Buffer_Shader_Type::All))
 		return false;
 	if (!CreateConstantBuffer("GlobalCBuffer", 8, sizeof(GlobalCBuffer), (int)Buffer_Shader_Type::Graphic))
 		return false;
