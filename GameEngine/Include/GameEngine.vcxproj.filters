@@ -189,6 +189,9 @@
     <Filter Include="04. GameObject\03. MemoryPool">
       <UniqueIdentifier>{dd20e86d-64fe-41f2-8ae4-99a4afaac5d1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="04. GameObject\04. DataStructure">
+      <UniqueIdentifier>{a50765eb-ee94-4856-90c4-a12cd7e20f01}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -468,6 +471,15 @@
     <ClInclude Include="GameObject\ObjectPoolManager.h">
       <Filter>04. GameObject\01. ObjectPool</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject\MemoryPoolAllocator.h">
+      <Filter>04. GameObject\03. MemoryPool</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\PoolAllocator.h">
+      <Filter>04. GameObject\03. MemoryPool</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\StackLinkedList.h">
+      <Filter>04. GameObject\04. DataStructure</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -733,6 +745,12 @@
     </ClCompile>
     <ClCompile Include="GameObject\ObjectPoolManager.cpp">
       <Filter>04. GameObject\01. ObjectPool</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\MemoryPoolAllocator.cpp">
+      <Filter>04. GameObject\03. MemoryPool</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\PoolAllocator.cpp">
+      <Filter>04. GameObject\03. MemoryPool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
