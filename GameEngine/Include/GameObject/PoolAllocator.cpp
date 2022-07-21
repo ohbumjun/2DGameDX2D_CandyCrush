@@ -1,10 +1,11 @@
 #include "PoolAllocator.h"
 
 CPoolAllocator::CPoolAllocator(const size_t totalSize, const size_t chunkSize)
-: CMemoryPoolAllocator(totalSize),
-m_ChunkSize(chunkSize){
-	assert(chunkSize >= 8);
+	: CMemoryPoolAllocator(totalSize),
+	m_ChunkSize(chunkSize)
+{
 	assert(totalSize % chunkSize == 0);
+	assert(totalSize % 8 == 0);
 }
 
 CPoolAllocator::~CPoolAllocator()
@@ -18,27 +19,27 @@ void* CPoolAllocator::Allocate(const size_t allocateSize, const size_t alignment
 
 	Node* PopNode = m_FreeList->pop();
 
-	// 더이상 남아있는 메모리가 존재하지 않는 것
 	if (!PopNode)
 	{
-		size_t chunkN = m_TotalSize / m_ChunkSize;
+		size_t PrevTotalSize = m_TotalSize;
 
-		for (size_t i = 0; i < chunkN; ++i)
-		{
-			const size_t address = (size_t)m_StartPtr + i;
-			m_FreeList->push((Node*)address);
-		}
-
-		// totalSize 를 2배로 키워야 한다.
+		// 메모리 재할당
 		m_TotalSize *= 2;
 
 		void* NewStartPtr = malloc(m_TotalSize);
 
-		memcpy(NewStartPtr, m_StartPtr, m_TotalSize << 2);
-
-		free(m_StartPtr);
+		memcpy(NewStartPtr, m_StartPtr, PrevTotalSize);
 
 		m_StartPtr = NewStartPtr;
+
+		// Free List 공간 추가할당
+		size_t ExtraChunkSize = PrevTotalSize / m_ChunkSize;
+
+		for (size_t i = 0; i < ExtraChunkSize; ++i)
+		{
+			size_t address = PrevTotalSize + i * m_ChunkSize;
+			m_FreeList->push((Node*)address);
+		}
 
 		PopNode = m_FreeList->pop();
 	}
@@ -52,7 +53,6 @@ void* CPoolAllocator::Allocate(const size_t allocateSize, const size_t alignment
 void CPoolAllocator::Free(void* ptr)
 {
 	m_FreeList->push((Node*)ptr);
-
 	m_Used -= m_ChunkSize;
 	m_Peak = max(m_Used, m_Peak);
 }
@@ -69,7 +69,7 @@ void CPoolAllocator::Reset()
 
 	for (size_t i = 0; i < chunkN; ++i)
 	{
-		const size_t address = (size_t)m_StartPtr + i;
+		const size_t address = (size_t)m_StartPtr + i * m_ChunkSize;
 		m_FreeList->push((Node*)address);
 	}
 }

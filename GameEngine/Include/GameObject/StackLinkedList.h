@@ -1,15 +1,15 @@
 #pragma once
 
-
 template<typename T>
 class CStackLinkedList
 {
+public :
 	struct Node
 	{
 		T data;
 		Node* Next;
 	};
-
+private:
 	Node* m_Head;
 public :
 	CStackLinkedList() = default;
@@ -25,10 +25,10 @@ inline void CStackLinkedList<T>::push(Node* newNode)
 		return;
 	newNode->Next = m_Head;
 	m_Head = newNode;
-}
+};
 
 template<typename T>
-inline Node* CStackLinkedList<T>::pop()
+inline typename CStackLinkedList<T>::Node* CStackLinkedList<T>::pop()
 {
 	if (!m_Head)
 		return nullptr;
@@ -37,4 +37,4 @@ inline Node* CStackLinkedList<T>::pop()
 
 	m_Head = m_Head->Next;
 	return PopNode;
-}
+};
