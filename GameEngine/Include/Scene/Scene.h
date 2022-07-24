@@ -7,6 +7,7 @@
 #include "ViewPort.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/ObjectPoolManager.h"
+#include "../GameObject/MemoryPoolManager.h"
 
 class CScene
 {
@@ -24,6 +25,7 @@ protected :
 	bool m_Start;
 	std::list<CSharedPtr<class CGameObject>> m_ObjList;
 	CObjectPoolManager* m_ObjectPoolManager;
+	CMemoryPoolManager* m_MemoryPoolManager;
 public :
 	CCameraManager* GetCameraManager() const
 {
@@ -51,6 +53,7 @@ public :
 	void DeleteCellFromObjectList(CGameObject* Object);
 	// Object 의 TypeID 로 찾아내게 한다.
 	CGameObjectPool* FindGameObjectPool(const size_t ObjectTypeID);
+	class CMemoryPool* FindMemoryPool(const size_t ObjectTypeID);
 public :
 	virtual bool Init();
 	virtual void Start();
@@ -60,9 +63,14 @@ private :
 	void SetAutoChange(bool Change);
 public :
 	template<typename T>
-	void CreateObjectPool(const char* Name, int FactoryRegisterNum, int initNum)
+	void CreateObjectPool(const char* Name, int initNum)
 	{
-		return m_ObjectPoolManager->CreateObjectPool<T>(Name, FactoryRegisterNum, initNum);
+		return m_ObjectPoolManager->CreateObjectPool<T>(Name, initNum);
+	}
+	template<typename T>
+	void CreateMemoryPool(const char* Name, int initNum, MemoryPoolType Type)
+	{
+		return m_MemoryPoolManager->CreateMemoryPool<T>(Name, initNum, Type);
 	}
 	template<typename T>
 	T* CreateGameObject(const std::string& Name)
@@ -80,6 +88,27 @@ public :
 
 	return Object;
 }
+	template<typename T>
+	T* CreateGameObjectFromMemoryPool(const std::string& Name)
+	{
+		CMemoryPool* MemoryPool = CSceneManager::GetInst()->GetScene()->FindMemoryPool(typeid(T).hash_code());
+
+		T* Object = MemoryPool->Allocate();
+
+		Object->CallConstructor();
+
+		Object->SetName(Name);
+		Object->SetScene(this);
+		if (!Object->Init())
+		{
+			SAFE_DELETE(Object);
+			return nullptr;
+		}
+
+		m_ObjList.push_back(Object);
+
+		return Object;
+	}
 private :
 	template<typename T>
 	bool CreateSceneMode()

@@ -27,7 +27,7 @@ bool CBubbleParticle::Init()
 
 	m_ParticleComponent->SetParticle("Bubble");
 
-	// SetLifeSpan(5.f);
+	SetLifeSpan(5.f);
 	//m_Particle->SetSpawnTime(0.1f);
 
 	return true;

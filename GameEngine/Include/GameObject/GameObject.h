@@ -30,6 +30,13 @@ public:
 	}
 public:
 	virtual void Destroy() override;
+	virtual void CallConstructor() override
+	{
+		CRef::CallConstructor();
+		m_Scene = nullptr;
+		m_Parent = nullptr;
+		SetTypeID<CGameObject>();
+	}
 protected:
 	CSharedPtr<CSceneComponent> m_RootComponent;
 	std::list<CSceneComponent*> m_SceneComponentList;

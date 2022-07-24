@@ -157,12 +157,10 @@ void CParticleComponent::PostUpdate(float DeltaTime)
 	int	GroupCount = m_Particle->GetSpawnCountMax() / 64 + 1;
 	m_UpdateShader->Excute(GroupCount, 1, 1);
 
-
 	for (size_t i = 0; i < BufferCount; ++i)
 	{
 		m_vecStructuredBuffer[i]->ResetShader();
 	}
-
 
 	// 여기에서 Data를 CopyResource로 복제해서 테스트 해볼것.
 }

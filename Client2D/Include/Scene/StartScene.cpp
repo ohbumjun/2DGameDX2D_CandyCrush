@@ -29,11 +29,15 @@ bool CStartScene::Init()
 
 	Sleep(2000);
 
+	// Widget
 	// m_StartWidget = m_Scene->GetViewPort()->CreateUIWindow<CStartSceneWidget>("StartSceneWidget");
 
-	// Make Factory For Cell, Block
+	// Object Pool
 	m_Scene->CreateObjectPool<CCell>("CellObjectPool", 100);
 	m_Scene->CreateObjectPool<CBlock>("BlockObjectPool", 100);
+
+	// Memory Pool
+	m_Scene->CreateMemoryPool<CBubbleParticle>("BubbleParticleMemoryPool", 100, MemoryPoolType::Pool);
 
 	Resolution RS = CEngine::GetInst()->GetResolution();
 
@@ -44,8 +48,8 @@ bool CStartScene::Init()
 	Board->CreateBoard(6, 6, 60, 40, 
 	Vector3((float)RS.Width * 0.2f, (float)RS.Height * 0.1f, 1.f));
 
-	CBubbleParticle* BubbleParticle = m_Scene->CreateGameObject<CBubbleParticle>("BubbleParticle");
-	BubbleParticle->SetWorldPos(50.f, 30.f * 2.f, 1.f);
+	// CBubbleParticle* BubbleParticle = m_Scene->CreateGameObject<CBubbleParticle>("BubbleParticle");
+	// BubbleParticle->SetWorldPos(50.f, 30.f * 2.f, 1.f);
 
 	return true;
 }
@@ -76,19 +80,20 @@ void CStartScene::CreateParticle()
 
 	Particle->SetMaterial(Material);
 	Particle->SetSpawnCountMax(1000);
-	Particle->SetLifeTimeMin(3.f);
-	Particle->SetLifeTimeMax(5.f);
+	Particle->SetSpawnTime(1.f);
+	Particle->SetLifeTimeMin(0.5f);
+	Particle->SetLifeTimeMax(1.f);
 	Particle->SetScaleMin(Vector3(20.f, 20.f, 1.f));
 	Particle->SetScaleMax(Vector3(50.f, 50.f, 1.f));
-	Particle->SetSpeedMin(100.f);
-	Particle->SetSpeedMax(300.f);
+	Particle->SetSpeedMin(50.f);
+	Particle->SetSpeedMax(100.f);
 	Particle->SetMoveDir(Vector3(0.f, 1.f, 0.f));
-	Particle->SetStartMin(Vector3(-10.f, -10.f, 0.f));
-	Particle->SetStartMax(Vector3(10.f, 10.f, 0.f));
-	Particle->SetColorMin(Vector4(0.8f, 0.1f, 0.8f, 1.f));
-	Particle->SetColorMax(Vector4(0.8f, 0.1f, 0.8f, 1.f));
-	Particle->SetMoveAngle(Vector3(0.f, 0.f, 30.f));
-	Particle->SetGravity(true);
+	Particle->SetStartMin(Vector3(-20.f, -20.f, 0.f));
+	Particle->SetStartMax(Vector3(20.f, 20.f, 0.f));
+	Particle->SetColorMin(Vector4(0.1f, 0.1f, 0.8f, 1.f));
+	Particle->SetColorMax(Vector4(0.1f, 0.5f, 0.5f, 1.f));
+	Particle->SetMoveAngle(Vector3(0.f, 0.f, -30.f));
+	Particle->SetGravity(false);
 	Particle->SetMove(true);
 }
 

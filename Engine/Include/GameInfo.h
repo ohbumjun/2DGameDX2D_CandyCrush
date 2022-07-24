@@ -14,6 +14,7 @@
 #include <stack>
 #include <queue>
 #include <d3d11.h>
+#include <memory>
 #include <d3dcompiler.h>
 #include <dinput.h>
 #include <type_traits>

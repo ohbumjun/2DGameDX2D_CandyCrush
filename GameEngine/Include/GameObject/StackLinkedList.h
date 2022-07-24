@@ -3,6 +3,7 @@
 template<typename T>
 class CStackLinkedList
 {
+	friend class CPoolAllocator;
 public :
 	struct Node
 	{

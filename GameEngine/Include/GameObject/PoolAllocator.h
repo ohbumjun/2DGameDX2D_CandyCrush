@@ -10,7 +10,7 @@ class CPoolAllocator :
 private :
     struct FreeHeader{};
     typedef CStackLinkedList<FreeHeader>::Node Node;
-    CStackLinkedList<FreeHeader>* m_FreeList;
+    CStackLinkedList<FreeHeader> m_FreeList;
     void* m_StartPtr;
     size_t m_ChunkSize;
 public :

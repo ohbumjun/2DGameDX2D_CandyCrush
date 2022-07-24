@@ -53,19 +53,24 @@ public :
 	void DeleteCellFromObjectList(CGameObject* Object);
 	// Object 의 TypeID 로 찾아내게 한다.
 	CGameObjectPool* FindGameObjectPool(const size_t ObjectTypeID);
+	class CMemoryPool* FindMemoryPool(const size_t ObjectTypeID);
 public :
 	virtual bool Init();
 	virtual void Start();
 	virtual void Update(float DeltaTime);
-	virtual void PostUpdate(float DeltaTime); 
+	virtual void PostUpdate(float DeltaTime);
 private :
 	void SetAutoChange(bool Change);
 public :
 	template<typename T>
-	// void CreateObjectPool(const char* Name, int FactoryRegisterNum, int initNum)
-	void CreateObjectPool(const char* Name, int InitNum)
+	void CreateObjectPool(const char* Name, int initNum)
 	{
-		return m_ObjectPoolManager->CreateObjectPool<T>(Name, InitNum);
+		return m_ObjectPoolManager->CreateObjectPool<T>(Name, initNum);
+	}
+	template<typename T>
+	void CreateMemoryPool(const char* Name, int initNum, MemoryPoolType Type)
+	{
+		return m_MemoryPoolManager->CreateMemoryPool<T>(Name, initNum, Type);
 	}
 	template<typename T>
 	T* CreateGameObject(const std::string& Name)
@@ -83,6 +88,29 @@ public :
 
 	return Object;
 }
+	template<typename T>
+	T* CreateGameObjectFromMemoryPool(const std::string& Name)
+	{
+		CMemoryPool* MemoryPool = CSceneManager::GetInst()->GetScene()->FindMemoryPool(typeid(T).hash_code());
+
+		// T* NewVal = new (std::addressof(poolChunk->value)) T(std::forward<Arguments>(args)...);
+		T* Object = new ((T*)MemoryPool->Allocate()) T();
+		// T* Object = reinterpret_cast<T*>();
+
+		Object->CallConstructor();
+		Object->SetScene(this);
+		Object->SetName(Name);
+		
+		if (!Object->Init())
+		{
+			SAFE_DELETE(Object);
+			return nullptr;
+		}
+
+		m_ObjList.push_back(Object);
+
+		return Object;
+	}
 private :
 	template<typename T>
 	bool CreateSceneMode()

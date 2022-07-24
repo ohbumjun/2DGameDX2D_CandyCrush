@@ -52,6 +52,8 @@ void CGameObject::Destroy()
 	}
 }
 
+
+
 void CGameObject::SetGameObjectPool(CGameObjectPool* Pool)
 {
 	m_ObjectPool = Pool;

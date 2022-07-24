@@ -15,15 +15,14 @@ class CMemoryPool :
 protected:
     CMemoryPool();
     virtual ~CMemoryPool();
-
-protected:
-    void* Allocate(const size_t allocateSize);
+public:
+    // void* Allocate(const size_t allocateSize);
+    void* Allocate();
     void Free(void* ptr);
 protected:
-    // 해당 Memory Pool 이 Factory 에 등록된 함수 중에서, 어떤 Object 를 생성해서 가져오는가 
-    int m_FactoryRegisterNum;
     int m_Alignment;
     int m_AllocNumber; // 몇개의 Object 를 할당할 것인가
+    size_t m_SingleDataSize; 
     class CMemoryPoolAllocator* m_Allocator;
     MemoryPoolType m_AllocatorType;
 protected:
@@ -62,12 +61,12 @@ protected:
 
         m_AllocatorType = Type;
 
+        m_Alignment = MemoryPoolInfo::ALIGNMENT;
+
         if (m_Allocator == nullptr)
             assert(false);
 
-        m_FactoryRegisterNum = typeid(T).hash_code();
-
-        CGameObjectFactory::GetInst()->RegisterShapeToFactory(m_FactoryRegisterNum, &T::CreateObject);
+        m_SingleDataSize = sizeof(T);
 
         m_Allocator->Init();
 

@@ -12,7 +12,6 @@ protected:
     CGameObjectPool();
     virtual ~CGameObjectPool();
 public :
-
     CGameObject* GetFromPool();
     void ReturnToPool(CGameObject* Object);
 protected:
@@ -31,10 +30,10 @@ protected:
     // void Init(int FactoryRegisterNum, int initNum)
     void Init(int initNum)
     {
-        m_FactoryRegisterNum = typeid(T).hash_code();
+        m_FactoryRegisterNum = (int)typeid(T).hash_code();
 
         // CGameObjectFactory::GetInst()->RegisterShapeToFactory(FactoryRegisterNum, &T::CreateObject);
-        CGameObjectFactory::GetInst()->RegisterShapeToFactory(typeid(T).hash_code(), &T::CreateObject);
+        CGameObjectFactory::GetInst()->RegisterShapeToFactory(m_FactoryRegisterNum, &T::CreateObject);
 
         CGameObjectPool::Initialize(initNum);
     }

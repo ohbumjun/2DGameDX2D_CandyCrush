@@ -17,7 +17,7 @@ void* CPoolAllocator::Allocate(const size_t allocateSize, const size_t alignment
 {
 	assert(m_ChunkSize == allocateSize);
 
-	Node* PopNode = m_FreeList->pop();
+	Node* PopNode = m_FreeList.pop();
 
 	if (!PopNode)
 	{
@@ -38,10 +38,10 @@ void* CPoolAllocator::Allocate(const size_t allocateSize, const size_t alignment
 		for (size_t i = 0; i < ExtraChunkSize; ++i)
 		{
 			size_t address = PrevTotalSize + i * m_ChunkSize;
-			m_FreeList->push((Node*)address);
+			m_FreeList.push((Node*)address);
 		}
 
-		PopNode = m_FreeList->pop();
+		PopNode = m_FreeList.pop();
 	}
 
 	m_Used += m_ChunkSize;
@@ -52,7 +52,7 @@ void* CPoolAllocator::Allocate(const size_t allocateSize, const size_t alignment
 
 void CPoolAllocator::Free(void* ptr)
 {
-	m_FreeList->push((Node*)ptr);
+	m_FreeList.push((Node*)ptr);
 	m_Used -= m_ChunkSize;
 	m_Peak = max(m_Used, m_Peak);
 }
@@ -69,7 +69,7 @@ void CPoolAllocator::Reset()
 
 	for (size_t i = 0; i < chunkN; ++i)
 	{
-		const size_t address = (size_t)m_StartPtr + i * m_ChunkSize;
-		m_FreeList->push((Node*)address);
+		size_t address = (size_t)m_StartPtr + i * m_ChunkSize;
+		m_FreeList.push((Node*)address);
 	}
 }

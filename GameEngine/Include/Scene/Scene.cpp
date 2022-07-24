@@ -26,8 +26,9 @@ CScene::CScene() :
 
 	m_ObjectPoolManager = new CObjectPoolManager;
 	m_ObjectPoolManager->m_Scene = this;
-	// m_ObjectPoolManager->Init();
 
+	m_MemoryPoolManager = new CMemoryPoolManager;
+	m_MemoryPoolManager->m_Scene = this;
 }
 
 CScene::~CScene()
@@ -37,6 +38,7 @@ CScene::~CScene()
 	SAFE_DELETE(m_ViewPort);
 	SAFE_DELETE(m_CameraManager);
 	SAFE_DELETE(m_ObjectPoolManager);
+	SAFE_DELETE(m_MemoryPoolManager);
 
 }
 
@@ -76,6 +78,11 @@ void CScene::DeleteCellFromObjectList(CGameObject* Object)
 CGameObjectPool* CScene::FindGameObjectPool(const size_t ObjectTypeID)
 {
 	return m_ObjectPoolManager->FindGameObjectPool(ObjectTypeID);
+}
+
+CMemoryPool* CScene::FindMemoryPool(const size_t ObjectTypeID)
+{
+	return m_MemoryPoolManager->FindMemoryPool(ObjectTypeID);
 }
 
 void  CScene::AddObjectToList(CGameObject* Object)

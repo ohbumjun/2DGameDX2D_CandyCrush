@@ -2,6 +2,10 @@
 #include "BoardCombLogicComponent.h"
 #include "../GameObject/Board.h"
 #include "../GameObject/Cell.h"
+#include "../GameObject/BubbleParticle.h"
+#include "Scene/Scene.h"
+#include "Scene/SceneManager.h"
+#include "GameObject/MemoryPool.h"
 
 CBoardDestroyLogicComponent::CBoardDestroyLogicComponent()
 {
@@ -250,6 +254,11 @@ void CBoardDestroyLogicComponent::DestroySingleCell(int RowIndex, int ColIndex)
 	if (!m_Board->GetVecCells()[Index]->IsActive())
 		return;
 
+	CScene* CurrentScene = CSceneManager::GetInst()->GetScene();
+
+	const Vector3& CellWorldPos = m_Board->GetVecCells()[Index]->GetWorldPos();
+	const Vector3& CellWorldScale = m_Board->GetVecCells()[Index]->GetWorldScale();
+
 	// Bag Cell 과 그 외 Cell 의 Destroy 방식을 다르게 세팅한다.
 	if (m_Board->GetVecCells()[Index]->GetCellState() == Cell_State::Bag)
 	{
@@ -262,14 +271,27 @@ void CBoardDestroyLogicComponent::DestroySingleCell(int RowIndex, int ColIndex)
 			return;
 
 		DestroySingleBagCell(RowIndex, ColIndex);
+
+		CBubbleParticle* BubbleParticle = CurrentScene->CreateGameObjectFromMemoryPool<CBubbleParticle>("Bubble");
+
+		// CBubbleParticle* BubbleParticle = CSceneManager::GetInst()->GetScene()->CreateGameObject<CBubbleParticle>("BubbleParticle");
+		BubbleParticle->SetWorldPos(CellWorldPos.x, CellWorldPos.y - CellWorldScale.y * 0.5f, CellWorldPos.z);
 	}
 	else if (m_Board->GetVecCells()[Index]->GetCellState() == Cell_State::MirrorBall)
 	{
 		DestroyMirrorBallEffect(RowIndex, ColIndex);
+
+		CBubbleParticle* BubbleParticle = CurrentScene->CreateGameObjectFromMemoryPool<CBubbleParticle>("Bubble");
+		//  CBubbleParticle* BubbleParticle = CSceneManager::GetInst()->GetScene()->CreateGameObject<CBubbleParticle>("BubbleParticle");
+		BubbleParticle->SetWorldPos(CellWorldPos.x, CellWorldPos.y - CellWorldScale.y * 0.5f, CellWorldPos.z);
 	}
 	else
 	{
 		DestroySingleNormalCell(RowIndex, ColIndex);
+
+		CBubbleParticle* BubbleParticle = CurrentScene->CreateGameObjectFromMemoryPool<CBubbleParticle>("Bubble");
+		// CBubbleParticle* BubbleParticle = CSceneManager::GetInst()->GetScene()->CreateGameObject<CBubbleParticle>("BubbleParticle");
+		BubbleParticle->SetWorldPos(CellWorldPos.x, CellWorldPos.y - CellWorldScale.y * 0.5f, CellWorldPos.z);
 	}
 	/*
 	*/
