@@ -1,5 +1,17 @@
 #pragma once
 
+struct MemoryPoolInfo
+{
+	static const int ALIGNMENT = 8;
+};
+
+enum class MemoryPoolType
+{
+	Pool,
+	FreeList,
+	Stack
+};
+
 enum AXIS {
 	AXIS_X,
 	AXIS_Y,
@@ -139,3 +151,5 @@ enum class FreeListAllocatorPlacementPolicy
 	FIND_FIRST,
 	FIND_BEST
 };
+
+

@@ -3,7 +3,6 @@
 #include "../Ref.h"
 #include "../GameInfo.h"
 #include "GameObjectFactory.h"
-#include <queue>
 
 class CGameObjectPool : public CRef
 {
@@ -17,8 +16,6 @@ public :
     CGameObject* GetFromPool();
     void ReturnToPool(CGameObject* Object);
 protected:
-    CGameObject* InitObj;
-    int ReturnN;
     // 해당 Object Pool 이 Factory 에 등록된 함수 중에서, 어떤 Object 를 생성해서 가져오는가 
     int m_FactoryRegisterNum;
     // std::queue<T*> queueObjects;
@@ -31,11 +28,13 @@ protected :
 protected:
     // T 가 CreateObject 라는 함수가 있을 경우에만 인자로 받게 한다.
     template<typename T>
-    void Init(int FactoryRegisterNum, int initNum)
+    // void Init(int FactoryRegisterNum, int initNum)
+    void Init(int initNum)
     {
-        m_FactoryRegisterNum = FactoryRegisterNum;
+        m_FactoryRegisterNum = typeid(T).hash_code();
 
-        CGameObjectFactory::GetInst()->RegisterShapeToFactory(FactoryRegisterNum, &T::CreateObject);
+        // CGameObjectFactory::GetInst()->RegisterShapeToFactory(FactoryRegisterNum, &T::CreateObject);
+        CGameObjectFactory::GetInst()->RegisterShapeToFactory(typeid(T).hash_code(), &T::CreateObject);
 
         CGameObjectPool::Initialize(initNum);
     }

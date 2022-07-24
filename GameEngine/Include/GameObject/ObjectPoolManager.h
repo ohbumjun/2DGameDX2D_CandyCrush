@@ -18,13 +18,14 @@ private :
 public :
 	template<typename T,
 		typename = decltype(std::declval<T>().CreateObject())>
-	void CreateObjectPool(const char* Name, int FactoryRegisterNum, int initNum)
+	// void CreateObjectPool(const char* Name, int FactoryRegisterNum, int initNum)
+	void CreateObjectPool(const char* Name, int initNum)
 	{
 		CGameObjectPool* NewObjectPool = new CGameObjectPool;
 
 		NewObjectPool->SetName(Name);
 
-		NewObjectPool->Init<T>(FactoryRegisterNum, initNum);
+		NewObjectPool->Init<T>(initNum);
 
 		// m_ObjectPoolList.push_back(NewObjectPool);
 		// m_mapObjectPool.insert(mapKey, new CGameObjectPool<T>(FactoryRegisterNum, initNum));

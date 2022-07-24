@@ -6,6 +6,7 @@
 class CStackAllocator :
     public CMemoryPoolAllocator
 {
+    friend class CMemoryPool;
 public :
     CStackAllocator(size_t totalSize);
     ~CStackAllocator();
@@ -18,7 +19,8 @@ private :
     void* m_StartPtr;
     struct AllocationHeader
     {
-        char padding;
+        // char padding;
+        size_t padding;
         AllocationHeader(size_t pad) : padding(pad){}
     };
 };

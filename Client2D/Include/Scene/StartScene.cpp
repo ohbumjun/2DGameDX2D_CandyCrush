@@ -32,8 +32,8 @@ bool CStartScene::Init()
 	// m_StartWidget = m_Scene->GetViewPort()->CreateUIWindow<CStartSceneWidget>("StartSceneWidget");
 
 	// Make Factory For Cell, Block
-	m_Scene->CreateObjectPool<CCell>("CellObjectPool",(int)typeid(CCell).hash_code(), 100);
-	m_Scene->CreateObjectPool<CBlock>("BlockObjectPool", (int)typeid(CBlock).hash_code(), 100);
+	m_Scene->CreateObjectPool<CCell>("CellObjectPool", 100);
+	m_Scene->CreateObjectPool<CBlock>("BlockObjectPool", 100);
 
 	Resolution RS = CEngine::GetInst()->GetResolution();
 

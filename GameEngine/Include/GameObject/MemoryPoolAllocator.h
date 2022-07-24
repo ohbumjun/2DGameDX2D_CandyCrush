@@ -4,6 +4,7 @@
 
 class CMemoryPoolAllocator
 {
+	friend class CMemoryPool;
 protected :
 	size_t m_TotalSize;
 	size_t m_Used;

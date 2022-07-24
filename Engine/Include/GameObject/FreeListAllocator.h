@@ -5,6 +5,7 @@
 class CFreeListAllocator :
     public CMemoryPoolAllocator
 {
+    friend class CMemoryPool;
 private :
     struct FreeHeader
     {

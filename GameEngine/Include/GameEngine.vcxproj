@@ -181,6 +181,8 @@
     <ClInclude Include="Component\SpriteComponent.h" />
     <ClInclude Include="Component\StaticMeshComponent.h" />
     <ClInclude Include="Component\Transform.h" />
+    <ClInclude Include="GameObject\MemoryPool.h" />
+    <ClInclude Include="GameObject\MemoryPoolManager.h" />
     <ClInclude Include="SinglyLinkedList.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="Engine.h" />
@@ -286,7 +288,9 @@
     <ClCompile Include="GameObject\FreeListAllocator.cpp" />
     <ClCompile Include="GameObject\GameObjectFactory.cpp" />
     <ClCompile Include="GameObject\GameObjectPool.cpp" />
+    <ClCompile Include="GameObject\MemoryPool.cpp" />
     <ClCompile Include="GameObject\MemoryPoolAllocator.cpp" />
+    <ClCompile Include="GameObject\MemoryPoolManager.cpp" />
     <ClCompile Include="GameObject\ObjectPoolManager.cpp" />
     <ClCompile Include="GameObject\PoolAllocator.cpp" />
     <ClCompile Include="GameObject\StackAllocator.cpp" />

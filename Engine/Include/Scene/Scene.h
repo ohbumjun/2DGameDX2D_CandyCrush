@@ -7,6 +7,7 @@
 #include "ViewPort.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/ObjectPoolManager.h"
+#include "../GameObject/MemoryPoolManager.h"
 
 class CScene
 {
@@ -24,6 +25,7 @@ protected :
 	bool m_Start;
 	std::list<CSharedPtr<class CGameObject>> m_ObjList;
 	CObjectPoolManager* m_ObjectPoolManager;
+	CMemoryPoolManager* m_MemoryPoolManager;
 public :
 	CCameraManager* GetCameraManager() const
 {
@@ -60,9 +62,10 @@ private :
 	void SetAutoChange(bool Change);
 public :
 	template<typename T>
-	void CreateObjectPool(const char* Name, int FactoryRegisterNum, int initNum)
+	// void CreateObjectPool(const char* Name, int FactoryRegisterNum, int initNum)
+	void CreateObjectPool(const char* Name, int InitNum)
 	{
-		return m_ObjectPoolManager->CreateObjectPool<T>(Name, FactoryRegisterNum, initNum);
+		return m_ObjectPoolManager->CreateObjectPool<T>(Name, InitNum);
 	}
 	template<typename T>
 	T* CreateGameObject(const std::string& Name)

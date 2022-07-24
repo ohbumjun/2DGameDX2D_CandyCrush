@@ -6,6 +6,7 @@
 class CPoolAllocator :
     public CMemoryPoolAllocator
 {
+    friend class CMemoryPool;
 private :
     struct FreeHeader{};
     typedef CStackLinkedList<FreeHeader>::Node Node;

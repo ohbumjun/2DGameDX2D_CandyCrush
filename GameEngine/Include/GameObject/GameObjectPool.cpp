@@ -31,12 +31,6 @@ CGameObject* CGameObjectPool::GetFromPool()
 
     CGameObject* Object = stackObjects.top();
 
-    // Object->SetEnable(true);
-    if (Object == InitObj)
-    {
-        ReturnN = 2;
-    }
-
     // Ref Cnt 증가 (아래 pop 하는 순간, Ref Cnt 가 1 감소하게 되기 때문이다.)
     Object->AddRef();
 
@@ -50,13 +44,6 @@ CGameObject* CGameObjectPool::GetFromPool()
 void CGameObjectPool::ReturnToPool(CGameObject* Object)
 {
     // Object->SetEnable(false);
-
-    if (ReturnN == 0)
-    {
-        InitObj = Object;
-        ReturnN += 1;
-    }
-
     // Object->Destroy();
 
     ResetInfo(Object);
