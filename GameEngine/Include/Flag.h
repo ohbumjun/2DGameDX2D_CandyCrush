@@ -133,3 +133,9 @@ enum class MaterialShaderEffect
 	Sin,
 	Max
 };
+
+enum class FreeListAllocatorPlacementPolicy
+{
+	FIND_FIRST,
+	FIND_BEST
+};

@@ -486,6 +486,12 @@
     <ClInclude Include="EngineUtil.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="SinglyLinkedList.h">
+      <Filter>04. GameObject\04. DataStructure</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\FreeListAllocator.h">
+      <Filter>04. GameObject\03. MemoryPool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -759,6 +765,9 @@
       <Filter>04. GameObject\03. MemoryPool</Filter>
     </ClCompile>
     <ClCompile Include="GameObject\StackAllocator.cpp">
+      <Filter>04. GameObject\03. MemoryPool</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\FreeListAllocator.cpp">
       <Filter>04. GameObject\03. MemoryPool</Filter>
     </ClCompile>
   </ItemGroup>

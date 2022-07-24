@@ -181,12 +181,14 @@
     <ClInclude Include="Component\SpriteComponent.h" />
     <ClInclude Include="Component\StaticMeshComponent.h" />
     <ClInclude Include="Component\Transform.h" />
+    <ClInclude Include="SinglyLinkedList.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="EngineMath.h" />
     <ClInclude Include="EngineUtil.h" />
     <ClInclude Include="Flag.h" />
     <ClInclude Include="GameInfo.h" />
+    <ClInclude Include="GameObject\FreeListAllocator.h" />
     <ClInclude Include="GameObject\GameObject.h" />
     <ClInclude Include="GameObject\GameObjectFactory.h" />
     <ClInclude Include="GameObject\GameObjectPool.h" />
@@ -281,6 +283,7 @@
     <ClCompile Include="Component\SpriteComponent.cpp" />
     <ClCompile Include="Component\StaticMeshComponent.cpp" />
     <ClCompile Include="Component\Transform.cpp" />
+    <ClCompile Include="GameObject\FreeListAllocator.cpp" />
     <ClCompile Include="GameObject\GameObjectFactory.cpp" />
     <ClCompile Include="GameObject\GameObjectPool.cpp" />
     <ClCompile Include="GameObject\MemoryPoolAllocator.cpp" />

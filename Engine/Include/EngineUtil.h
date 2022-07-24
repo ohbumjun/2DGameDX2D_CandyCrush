@@ -2,7 +2,7 @@
 
 #include <cstddef>
 
-class Utils
+class CEngineUtil
 {
 public :
 	static const size_t CalculatePadding(const size_t baseAddress,
