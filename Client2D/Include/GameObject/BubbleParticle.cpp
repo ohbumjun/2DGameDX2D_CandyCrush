@@ -19,6 +19,8 @@ CBubbleParticle::~CBubbleParticle()
 
 bool CBubbleParticle::Init()
 {
+	CGameObject::Init();
+
 	m_ParticleComponent = CreateComponent<CParticleComponent>("Particle");
 
 	SetRootComponent(m_ParticleComponent);

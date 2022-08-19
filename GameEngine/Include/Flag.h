@@ -5,6 +5,13 @@ struct MemoryPoolInfo
 	static const int ALIGNMENT = 8;
 };
 
+enum class ObjectAllocateType
+{
+	None,
+	ObjectPool,
+	MemoryPool
+};
+
 enum class MemoryPoolType
 {
 	Pool,

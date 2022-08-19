@@ -2,7 +2,10 @@
 
 CGameObject::CGameObject() :
 	m_Scene(nullptr),
-m_Parent(nullptr)
+m_Parent(nullptr),
+m_AllocateType(ObjectAllocateType::None),
+m_ObjectPool(nullptr),
+m_MemoryPool(nullptr)
 {
 	SetTypeID<CGameObject>();
 }
@@ -50,13 +53,6 @@ void CGameObject::Destroy()
 	{
 		m_vecChildObject[i]->Destroy();
 	}
-}
-
-
-
-void CGameObject::SetGameObjectPool(CGameObjectPool* Pool)
-{
-	m_ObjectPool = Pool;
 }
 
 void CGameObject::ResetObjectInfo()

@@ -1,4 +1,5 @@
 #include "PoolAllocator.h"
+#include "GameObject.h"
 
 CPoolAllocator::CPoolAllocator(const size_t totalSize, const size_t chunkSize)
 	: CMemoryPoolAllocator(totalSize),
@@ -47,11 +48,21 @@ void* CPoolAllocator::Allocate(const size_t allocateSize, const size_t alignment
 	m_Used += m_ChunkSize;
 	m_Peak = max(m_Used, m_Peak);
 
+	void* VoidPopNode = (void*)PopNode;
+
+	CGameObject* Object = new ((CGameObject*)VoidPopNode) CGameObject();
+	void* OriginalNode = (void*)Object;
+
+
 	return (void*)PopNode;
 }
 
 void CPoolAllocator::Free(void* ptr)
 {
+	Node* FreedMemory = (Node*)ptr;
+
+	// m_FreeList 를 사용하면 안된다.
+	// ptr 
 	m_FreeList.push((Node*)ptr);
 	m_Used -= m_ChunkSize;
 	m_Peak = max(m_Used, m_Peak);
@@ -70,6 +81,10 @@ void CPoolAllocator::Reset()
 	for (size_t i = 0; i < chunkN; ++i)
 	{
 		size_t address = (size_t)m_StartPtr + i * m_ChunkSize;
+		
+		Node* NewNode = (Node*)address;
+		NewNode->Next = nullptr;
+
 		m_FreeList.push((Node*)address);
 	}
 }

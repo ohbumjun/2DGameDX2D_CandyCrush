@@ -8,12 +8,13 @@ public :
 	struct Node
 	{
 		T data;
-		Node* Next;
+		Node* Next = nullptr;
 	};
 private:
+	int m_TestSize;
 	Node* m_Head;
 public :
-	CStackLinkedList() = default;
+	CStackLinkedList() : m_Head(nullptr){}
 	CStackLinkedList(CStackLinkedList& List) = delete;
 	void push(Node* newNode);
 	Node* pop();
@@ -26,16 +27,19 @@ inline void CStackLinkedList<T>::push(Node* newNode)
 		return;
 	newNode->Next = m_Head;
 	m_Head = newNode;
+	
+	m_TestSize += 1;
 };
 
 template<typename T>
 inline typename CStackLinkedList<T>::Node* CStackLinkedList<T>::pop()
 {
-	if (!m_Head)
-		return nullptr;
+	m_TestSize -= 1;
 
 	Node* PopNode = m_Head;
 
-	m_Head = m_Head->Next;
+	if (m_Head)
+		m_Head = m_Head->Next;
+
 	return PopNode;
 };

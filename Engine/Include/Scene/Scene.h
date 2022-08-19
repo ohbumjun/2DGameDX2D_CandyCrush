@@ -93,14 +93,17 @@ public :
 	{
 		CMemoryPool* MemoryPool = CSceneManager::GetInst()->GetScene()->FindMemoryPool(typeid(T).hash_code());
 
-		// T* NewVal = new (std::addressof(poolChunk->value)) T(std::forward<Arguments>(args)...);
-		T* Object = new ((T*)MemoryPool->Allocate()) T();
-		// T* Object = reinterpret_cast<T*>();
+		void* PoppedMemory = MemoryPool->Allocate();
 
-		Object->CallConstructor();
-		Object->SetScene(this);
+		T* Object = new ((T*)PoppedMemory) T();
+		Object->m_MemoryPoolInitPtr = PoppedMemory;
+
+		Object->SetMemoryPool(MemoryPool);
+		Object->SetAllocateType(ObjectAllocateType::MemoryPool);
 		Object->SetName(Name);
-		
+		Object->SetScene(this);
+		Object->AddRef(); // 차후 Scene 의 ObjList 에서 erase 될 때, Release 과정에서 delete 되지 않게 하기 위함
+
 		if (!Object->Init())
 		{
 			SAFE_DELETE(Object);

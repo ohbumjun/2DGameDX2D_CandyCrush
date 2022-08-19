@@ -27,7 +27,7 @@ public:
 		Msg.Complete = Complete;
 		Msg.Percent = Percent;
 
-		m_Queue.push(Msg);
+		m_Queue.push_back(Msg);
 	}
 
 public:

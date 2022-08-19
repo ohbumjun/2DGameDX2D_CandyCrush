@@ -6,6 +6,7 @@
 class CGameObject : public CRef
 {
 	friend class CScene;
+	friend class CPoolAllocator; // Test ¿ë
 	friend class CGameObjectFactory;
 protected:
 	CGameObject();
@@ -14,12 +15,27 @@ protected:
 protected:
 	class CScene* m_Scene;
 	class CGameObjectPool* m_ObjectPool;
+	class CMemoryPool* m_MemoryPool;
+	void* m_MemoryPoolInitPtr;
+	ObjectAllocateType m_AllocateType;
 public:
 	class CScene* GetScene() const
 	{
 		return m_Scene;
 	}
+	ObjectAllocateType GetAllocateType() const
+	{
+		return m_AllocateType;
+	}
+	CSceneComponent* GetRootComponent() const
+	{
+		return m_RootComponent;
+	}
 public:
+	void SetAllocateType(ObjectAllocateType AllocateType)
+	{
+		m_AllocateType = AllocateType;
+	}
 	void SetScene(class CScene* Scene)
 	{
 		m_Scene = Scene;
@@ -28,15 +44,25 @@ public:
 	{
 		m_LifeSpan = LifeSpan;
 	}
+	void SetGameObjectPool(CGameObjectPool* Pool)
+	{
+		m_ObjectPool = Pool;
+	}
+	void SetMemoryPool(CMemoryPool* Pool)
+	{
+		m_MemoryPool = Pool;
+	}
+	void SetRootComponent(CSceneComponent* Component)
+	{
+		m_RootComponent = Component;
+	}
+
+	void AddSceneComponent(CSceneComponent* Component)
+	{
+		m_SceneComponentList.push_back(Component);
+	}
 public:
 	virtual void Destroy() override;
-	virtual void CallConstructor() override
-	{
-		CRef::CallConstructor();
-		m_Scene = nullptr;
-		m_Parent = nullptr;
-		SetTypeID<CGameObject>();
-	}
 protected:
 	CSharedPtr<CSceneComponent> m_RootComponent;
 	std::list<CSceneComponent*> m_SceneComponentList;
@@ -46,21 +72,8 @@ protected:
 	float		m_LifeSpan;
 	// Pool Related
 public:
-	void SetGameObjectPool(CGameObjectPool* Pool);
 	virtual void ResetObjectInfo();
-public:
-	void SetRootComponent(CSceneComponent* Component)
-	{
-		m_RootComponent = Component;
-	}
-	CSceneComponent* GetRootComponent() const
-	{
-		return m_RootComponent;
-	}
-	void AddSceneComponent(CSceneComponent* Component)
-	{
-		m_SceneComponentList.push_back(Component);
-	}
+public :
 	CSceneComponent* FindSceneComponent(const std::string& Name) const;
 	CComponent* FindComponent(const std::string& Name) const;
 public :

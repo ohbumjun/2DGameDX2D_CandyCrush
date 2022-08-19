@@ -158,10 +158,28 @@ void CScene::Update(float DeltaTime)
 	{
 		if (!(*iter)->IsActive())
 		{
-			// SAFE_DELETE((*iter));
-			// SAFE_DELETE((*iter));
-			if ((*iter)->m_ObjectPool)
-			 	(*iter)->m_ObjectPool->ReturnToPool((*iter));
+			CGameObject* DeleteObject = (*iter);
+
+			ObjectAllocateType AllocType = DeleteObject->GetAllocateType();
+			
+			switch (AllocType)
+			{
+			case ObjectAllocateType::ObjectPool :
+			{
+				if (DeleteObject->m_ObjectPool == nullptr)
+					assert(false);
+				DeleteObject->m_ObjectPool->ReturnToPool(DeleteObject);
+			}
+			break;
+			case ObjectAllocateType::MemoryPool:
+			{
+				if (DeleteObject->m_MemoryPool == nullptr)
+					assert(false);
+				// (*iter)->AddRef();
+				DeleteObject->m_MemoryPool->Free(DeleteObject->m_MemoryPoolInitPtr);
+			}
+			break;
+			}
 
 			iter = m_ObjList.erase(iter);
 			iterEnd = m_ObjList.end();
@@ -188,14 +206,34 @@ void CScene::PostUpdate(float DeltaTime)
 	{
 		if (!(*iter)->IsActive())
 		{
-			// SAFE_DELETE((*iter));
-			// if ((*iter)->m_ObjectPool)
-			//  	(*iter)->m_ObjectPool->ReturnToPool((*iter));
+			CGameObject* DeleteObject = (*iter);
+
+			ObjectAllocateType AllocType = DeleteObject->GetAllocateType();
+
+			switch (AllocType)
+			{
+			case ObjectAllocateType::ObjectPool:
+			{
+				if (DeleteObject->m_ObjectPool == nullptr)
+					assert(false);
+				DeleteObject->m_ObjectPool->ReturnToPool(DeleteObject);
+			}
+			break;
+			case ObjectAllocateType::MemoryPool:
+			{
+				if (DeleteObject->m_MemoryPool == nullptr)
+					assert(false);
+				// (*iter)->AddRef();
+				DeleteObject->m_MemoryPool->Free(DeleteObject->m_MemoryPoolInitPtr);
+			}
+			break;
+			}
 
 			iter = m_ObjList.erase(iter);
 			iterEnd = m_ObjList.end();
 			continue;
 		}
+
 		if (!(*iter)->IsEnable())
 		{
 			++iter;

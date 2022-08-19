@@ -93,12 +93,12 @@ public :
 	{
 		CMemoryPool* MemoryPool = CSceneManager::GetInst()->GetScene()->FindMemoryPool(typeid(T).hash_code());
 
-		T* Object = MemoryPool->Allocate();
+		T* Object = new ((T*)MemoryPool->Allocate()) T();
 
-		Object->CallConstructor();
-
+		Object->SetMemoryPool(MemoryPool);
 		Object->SetName(Name);
 		Object->SetScene(this);
+
 		if (!Object->Init())
 		{
 			SAFE_DELETE(Object);

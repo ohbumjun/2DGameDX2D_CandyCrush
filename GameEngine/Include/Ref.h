@@ -74,12 +74,4 @@ public :
 {
 		return m_TypeID == typeid(T).hash_code();
 }
-public :
-	virtual void CallConstructor()
-	{
-		m_RefCount = 0;
-		m_Active = true;
-		m_Enable = true;
-		m_TypeID = 0;
-	}
 };

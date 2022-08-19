@@ -65,6 +65,7 @@ void CGameObjectPool::Initialize(int numElement)
         }
 
         Object->SetGameObjectPool(this);
+        Object->SetAllocateType(ObjectAllocateType::ObjectPool);
 
         stackObjects.push(Object);
     }

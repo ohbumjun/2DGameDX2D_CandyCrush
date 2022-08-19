@@ -33,7 +33,7 @@ void CIntroLoadingScene::Update(float DeltaTime)
 	while (!Queue->empty())
 	{
 		LoadingMessage Msg = Queue->front();
-		Queue->pop();
+		Queue->pop_back();
 
 		// m_LoadingWidget->SetLoadingPercent(Msg.Percent);
 
