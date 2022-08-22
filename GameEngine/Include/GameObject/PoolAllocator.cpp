@@ -48,22 +48,17 @@ void* CPoolAllocator::Allocate(const size_t allocateSize, const size_t alignment
 	m_Used += m_ChunkSize;
 	m_Peak = max(m_Used, m_Peak);
 
-	void* VoidPopNode = (void*)PopNode;
-
-	CGameObject* Object = new ((CGameObject*)VoidPopNode) CGameObject();
-	void* OriginalNode = (void*)Object;
-
-
 	return (void*)PopNode;
 }
 
 void CPoolAllocator::Free(void* ptr)
 {
-	Node* FreedMemory = (Node*)ptr;
+	// Node* FreedMemory = (Node*)ptr;
+	Node* FreedMemory = reinterpret_cast<Node*>(ptr);
 
 	// m_FreeList 를 사용하면 안된다.
 	// ptr 
-	m_FreeList.push((Node*)ptr);
+	m_FreeList.push(FreedMemory);
 	m_Used -= m_ChunkSize;
 	m_Peak = max(m_Used, m_Peak);
 }
@@ -71,6 +66,7 @@ void CPoolAllocator::Free(void* ptr)
 void CPoolAllocator::Init()
 {
 	m_StartPtr = malloc(m_TotalSize);
+
 	Reset();
 }
 

@@ -21,7 +21,9 @@ bool CIntroLoadingScene::Init()
 
 	m_LoadingThread = CThread::CreateThread<CLoadingThread>("LoadingThread");
 
-	m_LoadingThread->Start();
+	// 기존에 Event 기반 동기화에서, 수동 Timer 기반 동기화로 변경
+	// 설정한 시간 후에 바로 실행될 것이다.
+	// m_LoadingThread->Start();
 
 	return true;
 }

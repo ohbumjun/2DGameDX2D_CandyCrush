@@ -1,34 +1,22 @@
 #pragma once
 
-#include <cstddef>
+#include "GameInfo.h"
+#include <filesystem>
 
 class CEngineUtil
 {
 public :
 	static const size_t CalculatePadding(const size_t baseAddress,
-		const size_t alignment)
-	{
-		const size_t multiplier = (baseAddress) / alignment + 1;
-		const size_t alignedAddress = (multiplier * alignment);
-		const size_t padding = alignedAddress - multiplier;
-		return padding;
-	}
+		const size_t alignment);
+	
 	static const size_t CalculatePaddingWithHeader(const size_t baseAddress,
-		const size_t alignment, const size_t HeaderSize)
-	{
-		size_t padding = CalculatePadding(baseAddress, alignment);
+		const size_t alignment, const size_t HeaderSize);
+	
+	static const void ExtractFilePathAfterPathName(const std::string& PathName, std::string_view FullPath, 
+		std::string_view Extracted);
 
-		if (HeaderSize > padding)
-		{
-			size_t neededSpace = HeaderSize - padding;
+	static const void ExtractFilePathAfterPathName(const std::wstring& PathName, std::wstring_view FullPath,
+		std::wstring_view Extracted);
 
-			if (neededSpace % alignment > 0)
-				padding += (alignment * (neededSpace / alignment + 1));
-			else
-				padding += (alignment * (neededSpace / alignment));
-		}
-
-		return padding;
-	}
-
+	static const void ExtractFullPathFromFileName(std::wstring_view PathName, std::wstring_view FileName, std::wstring& ExtractedPath);
 };

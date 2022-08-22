@@ -8,7 +8,8 @@ protected:
 	CThread();
 	virtual ~CThread();
 private :
-	HANDLE m_Event;
+	HANDLE m_Event; // 이벤트 동기화 기법
+	HANDLE m_Timer; // 타이머 기반 동기화 기법
 	HANDLE m_Thread;
 	bool m_Loop;
 	std::string m_Name;
@@ -26,6 +27,7 @@ public :
 	virtual bool  Init();
 private :
 	void WaitEvent();
+	void WaitTimer();
 public :
 	static unsigned int __stdcall ThreadFunction(void* Arg);
 

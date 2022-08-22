@@ -195,6 +195,9 @@
     <Filter Include="04. GameObject\03. MemoryPool\1. Allocator">
       <UniqueIdentifier>{d9638971-1b31-43c7-a4aa-c06d4b0ba704}</UniqueIdentifier>
     </Filter>
+    <Filter Include="10. Util">
+      <UniqueIdentifier>{3e323f18-8aa0-4ed2-966a-b1db875143af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -477,9 +480,6 @@
     <ClInclude Include="GameObject\StackLinkedList.h">
       <Filter>04. GameObject\04. DataStructure</Filter>
     </ClInclude>
-    <ClInclude Include="EngineUtil.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="SinglyLinkedList.h">
       <Filter>04. GameObject\04. DataStructure</Filter>
     </ClInclude>
@@ -500,6 +500,9 @@
     </ClInclude>
     <ClInclude Include="GameObject\MemoryPoolAllocator.h">
       <Filter>04. GameObject\03. MemoryPool\1. Allocator</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineUtil.h">
+      <Filter>10. Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -784,6 +787,9 @@
     </ClCompile>
     <ClCompile Include="GameObject\MemoryPoolAllocator.cpp">
       <Filter>04. GameObject\03. MemoryPool\1. Allocator</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineUtil.cpp">
+      <Filter>10. Util</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

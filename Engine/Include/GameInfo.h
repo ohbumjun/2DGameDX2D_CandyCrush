@@ -4,7 +4,10 @@
 
 // Engine에서 쓸 수 있게 세팅해두기 
 #include <Windows.h>
+#include <windows.h>
 #include <list>
+#include <stdio.h>
+#include <tchar.h>
 #include <vector>
 #include <array>
 #include <unordered_map>

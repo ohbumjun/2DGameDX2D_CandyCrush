@@ -25,6 +25,7 @@ inline void CStackLinkedList<T>::push(Node* newNode)
 {
 	if (!newNode)
 		return;
+
 	newNode->Next = m_Head;
 	m_Head = newNode;
 	

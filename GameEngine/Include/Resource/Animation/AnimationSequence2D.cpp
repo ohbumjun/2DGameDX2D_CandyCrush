@@ -1,7 +1,9 @@
 #include "AnimationSequence2D.h"
 #include "../../Scene/Scene.h"
 #include "../../Scene/SceneResource.h"
+#include "../../EngineUtil.h"
 #include "../../Resource/ResourceManager.h"
+#include "../../PathManager.h"
 
 CAnimationSequence2D::CAnimationSequence2D() :
 	m_IsFrameReverse(false)
@@ -128,6 +130,8 @@ void CAnimationSequence2D::Load(FILE* pFile)
 			vecFileName.push_back(FileName);
 		}
 
+		const PathInfo* TexturePathName = CPathManager::GetInst()->FindPath(TEXTURE_PATH);
+
 		switch (ImageType)
 		{
 		case Image_Type::Atlas:
@@ -136,12 +140,26 @@ void CAnimationSequence2D::Load(FILE* pFile)
 			{
 				if (m_Scene)
 				{
-					m_Scene->GetSceneResource()->LoadTextureFullPath(TexName, vecFullPath[0].c_str());
+					// vecFileName 을 이용하여, FullPath 정보를 추출해낼 것이다.
+
+					// m_Scene->GetSceneResource()->LoadTextureFullPath(TexName, vecFullPath[0].c_str());
+					std::wstring ExtractedFullPath;
+
+					CEngineUtil::ExtractFullPathFromFileName(TexturePathName->Path, vecFileName[0], ExtractedFullPath);
+
+					m_Scene->GetSceneResource()->LoadTextureFullPath(TexName, ExtractedFullPath.c_str());
+
 					m_Texture = m_Scene->GetSceneResource()->FindTexture(TexName);
 				}
 				else
 				{
-					CResourceManager::GetInst()->LoadTextureFullPath(TexName, vecFullPath[0].c_str());
+					// CResourceManager::GetInst()->LoadTextureFullPath(TexName, vecFullPath[0].c_str());
+					std::wstring ExtractedFullPath;
+
+					CEngineUtil::ExtractFullPathFromFileName(TexturePathName->Path, vecFileName[0], ExtractedFullPath);
+
+					CResourceManager::GetInst()->LoadTextureFullPath(TexName, ExtractedFullPath.c_str());
+
 					m_Texture = CResourceManager::GetInst()->FindTexture(TexName);
 				}
 			}
