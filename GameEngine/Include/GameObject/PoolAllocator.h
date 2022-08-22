@@ -11,6 +11,7 @@ private :
     struct FreeHeader{};
     typedef CStackLinkedList<FreeHeader>::Node Node;
     CStackLinkedList<FreeHeader> m_FreeList;
+    std::stack<size_t> m_StkAddress;
     void* m_StartPtr;
     size_t m_ChunkSize;
 public :

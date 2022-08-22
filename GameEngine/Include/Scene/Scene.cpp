@@ -176,7 +176,7 @@ void CScene::Update(float DeltaTime)
 				if (DeleteObject->m_MemoryPool == nullptr)
 					assert(false);
 				// (*iter)->AddRef();
-				DeleteObject->m_MemoryPool->Free(DeleteObject->m_MemoryPoolInitPtr);
+				DeleteObject->m_MemoryPool->Free<CGameObject>((CGameObject*)(DeleteObject->m_MemoryPoolInitPtr));
 			}
 			break;
 			}
@@ -224,7 +224,7 @@ void CScene::PostUpdate(float DeltaTime)
 				if (DeleteObject->m_MemoryPool == nullptr)
 					assert(false);
 				// (*iter)->AddRef();
-				DeleteObject->m_MemoryPool->Free(DeleteObject->m_MemoryPoolInitPtr);
+				DeleteObject->m_MemoryPool->Free<CGameObject>((CGameObject*)(DeleteObject->m_MemoryPoolInitPtr));
 			}
 			break;
 			}

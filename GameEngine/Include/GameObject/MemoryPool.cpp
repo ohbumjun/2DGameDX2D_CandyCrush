@@ -16,7 +16,9 @@ void* CMemoryPool::Allocate()
 	return m_Allocator->Allocate(m_SingleDataSize, MemoryPoolInfo::ALIGNMENT);
 }
 
+/*
 void CMemoryPool::Free(void* ptr)
 {
 	m_Allocator->Free(ptr);
 }
+*/

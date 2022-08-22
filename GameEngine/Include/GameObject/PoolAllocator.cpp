@@ -18,47 +18,62 @@ void* CPoolAllocator::Allocate(const size_t allocateSize, const size_t alignment
 {
 	assert(m_ChunkSize == allocateSize);
 
-	Node* PopNode = m_FreeList.pop();
+	// Node* PopNode = m_FreeList.pop();
+	
+	// if (m_StkAddress)
+	// 
+	// if (!PopNode)
+	// {
+	// 	size_t PrevTotalSize = m_TotalSize;
+	// 
+	// 	// 메모리 재할당
+	// 	m_TotalSize *= 2;
+	// 
+	// 	void* NewStartPtr = malloc(m_TotalSize);
+	// 
+	// 	memcpy(NewStartPtr, m_StartPtr, PrevTotalSize);
+	// 
+	// 	m_StartPtr = NewStartPtr;
+	// 
+	// 	// Free List 공간 추가할당
+	// 	size_t ExtraChunkSize = PrevTotalSize / m_ChunkSize;
+	// 
+	// 	for (size_t i = 0; i < ExtraChunkSize; ++i)
+	// 	{
+	// 		size_t address = PrevTotalSize + i * m_ChunkSize;
+	// 		stkAddress.push(address);
+	// 		// m_FreeList.push((Node*)address);
+	// 	}
+	// 
+	// 	// PopNode = m_FreeList.pop();
+	// 	PopNode = stkAddress
+	// }
+	// 
 
-	if (!PopNode)
-	{
-		size_t PrevTotalSize = m_TotalSize;
+	if (m_StkAddress.empty())
+		assert(false);
 
-		// 메모리 재할당
-		m_TotalSize *= 2;
+	// 현재 할당할 수 있는 주소값 정보
+	size_t AllocAddress = m_StkAddress.top();
 
-		void* NewStartPtr = malloc(m_TotalSize);
-
-		memcpy(NewStartPtr, m_StartPtr, PrevTotalSize);
-
-		m_StartPtr = NewStartPtr;
-
-		// Free List 공간 추가할당
-		size_t ExtraChunkSize = PrevTotalSize / m_ChunkSize;
-
-		for (size_t i = 0; i < ExtraChunkSize; ++i)
-		{
-			size_t address = PrevTotalSize + i * m_ChunkSize;
-			m_FreeList.push((Node*)address);
-		}
-
-		PopNode = m_FreeList.pop();
-	}
+	m_StkAddress.pop();
 
 	m_Used += m_ChunkSize;
 	m_Peak = max(m_Used, m_Peak);
 
-	return (void*)PopNode;
+	return (void*)AllocAddress;
 }
 
 void CPoolAllocator::Free(void* ptr)
 {
 	// Node* FreedMemory = (Node*)ptr;
-	Node* FreedMemory = reinterpret_cast<Node*>(ptr);
+	// Node* FreedMemory = reinterpret_cast<Node*>(ptr); //
+	// Node* FreedMemory = new ((Node*)ptr) Node();
 
 	// m_FreeList 를 사용하면 안된다.
-	// ptr 
-	m_FreeList.push(FreedMemory);
+	// m_FreeList.push(FreedMemory);
+	m_StkAddress.push((size_t)ptr);
+
 	m_Used -= m_ChunkSize;
 	m_Peak = max(m_Used, m_Peak);
 }
@@ -77,10 +92,11 @@ void CPoolAllocator::Reset()
 	for (size_t i = 0; i < chunkN; ++i)
 	{
 		size_t address = (size_t)m_StartPtr + i * m_ChunkSize;
-		
-		Node* NewNode = (Node*)address;
-		NewNode->Next = nullptr;
 
-		m_FreeList.push((Node*)address);
+		m_StkAddress.push(address);
+		// Node* NewNode = (Node*)address;
+		// NewNode->Next = nullptr;
+		// 
+		// m_FreeList.push((Node*)address);
 	}
 }

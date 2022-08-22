@@ -6,7 +6,7 @@
 class CGameObject : public CRef
 {
 	friend class CScene;
-	friend class CPoolAllocator; // Test ¿ë
+	friend class CMemoryPool; // Test ¿ë
 	friend class CGameObjectFactory;
 protected:
 	CGameObject();

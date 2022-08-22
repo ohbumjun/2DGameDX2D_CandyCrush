@@ -18,7 +18,14 @@ protected:
 public:
     // void* Allocate(const size_t allocateSize);
     void* Allocate();
-    void Free(void* ptr);
+    template<typename T>
+    void Free(T* ptr)
+    {
+        // 소멸자 호출
+        ptr->~T();
+
+        m_Allocator->Free(ptr);
+    }
 protected:
     int m_Alignment;
     int m_AllocNumber; // 몇개의 Object 를 할당할 것인가
