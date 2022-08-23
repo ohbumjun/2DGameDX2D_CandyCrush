@@ -39,6 +39,10 @@ public:
 	void SetScene(class CScene* Scene)
 	{
 		m_Scene = Scene;
+
+		// Component List 를 돌면서 모두 세팅한다.
+		if (m_RootComponent)
+			m_RootComponent->SetScene(m_Scene);
 	}
 	void SetLifeSpan(float LifeSpan)
 	{

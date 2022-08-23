@@ -1,11 +1,12 @@
 #pragma once
 #include "../GameInfo.h"
-#include "../GameObject/GameObject.h"
-#include "../GameObject/GameObjectPool.h"
+#include "GameObject.h"
+#include "GameObjectPool.h"
 
 class CObjectPoolManager
 {
 	friend class CScene;
+	friend class CGameObjectFactory;
 	protected:
 		CObjectPoolManager();
 		virtual ~CObjectPoolManager();
@@ -16,9 +17,9 @@ private :
 private :
 	CGameObjectPool* FindGameObjectPool(const size_t ObjectTypeID);
 public :
+	// void CreateObjectPool(const char* Name, int FactoryRegisterNum, int initNum)
 	template<typename T,
 		typename = decltype(std::declval<T>().CreateObject())>
-	// void CreateObjectPool(const char* Name, int FactoryRegisterNum, int initNum)
 	void CreateObjectPool(const char* Name, int initNum)
 	{
 		CGameObjectPool* NewObjectPool = new CGameObjectPool;

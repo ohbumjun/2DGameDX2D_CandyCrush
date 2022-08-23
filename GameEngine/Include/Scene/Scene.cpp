@@ -24,11 +24,9 @@ CScene::CScene() :
 	m_CameraManager->m_Scene = this;
 	m_CameraManager->Init();
 
+
 	m_ObjectPoolManager = new CObjectPoolManager;
 	m_ObjectPoolManager->m_Scene = this;
-
-	m_MemoryPoolManager = new CMemoryPoolManager;
-	m_MemoryPoolManager->m_Scene = this;
 }
 
 CScene::~CScene()
@@ -38,8 +36,6 @@ CScene::~CScene()
 	SAFE_DELETE(m_ViewPort);
 	SAFE_DELETE(m_CameraManager);
 	SAFE_DELETE(m_ObjectPoolManager);
-	SAFE_DELETE(m_MemoryPoolManager);
-
 }
 
 CGameObject* CScene::FindGameObject(const std::string& Name)
@@ -75,15 +71,6 @@ void CScene::DeleteCellFromObjectList(CGameObject* Object)
 	}
 }
 
-CGameObjectPool* CScene::FindGameObjectPool(const size_t ObjectTypeID)
-{
-	return m_ObjectPoolManager->FindGameObjectPool(ObjectTypeID);
-}
-
-CMemoryPool* CScene::FindMemoryPool(const size_t ObjectTypeID)
-{
-	return m_MemoryPoolManager->FindMemoryPool(ObjectTypeID);
-}
 
 void  CScene::AddObjectToList(CGameObject* Object)
 {
@@ -142,7 +129,11 @@ void CScene::Start()
 			m_CameraManager->SetCurrentCamera(Camera);
 		}
 	}
+}
 
+CGameObjectPool* CScene::FindGameObjectPool(const size_t ObjectTypeID)
+{
+	return m_ObjectPoolManager->FindGameObjectPool(ObjectTypeID);
 }
 
 void CScene::Update(float DeltaTime)
@@ -194,6 +185,9 @@ void CScene::Update(float DeltaTime)
 		++iter;
 	}
 
+	// GameObject Factory 의 Object 들을 Update 한다.
+	CGameObjectFactory::GetInst()->Update(DeltaTime);
+
 	m_ViewPort->Update(DeltaTime);
 }
 
@@ -223,7 +217,9 @@ void CScene::PostUpdate(float DeltaTime)
 			{
 				if (DeleteObject->m_MemoryPool == nullptr)
 					assert(false);
+
 				// (*iter)->AddRef();
+
 				DeleteObject->m_MemoryPool->Free<CGameObject>((CGameObject*)(DeleteObject->m_MemoryPoolInitPtr));
 			}
 			break;
@@ -243,6 +239,8 @@ void CScene::PostUpdate(float DeltaTime)
 		++iter;
 	}
 
+	CGameObjectFactory::GetInst()->PostUpdate(DeltaTime);
+
 	m_ViewPort->PostUpdate(DeltaTime);
 
 	// 충돌체들을 충돌 영역에 포함시킨다.
@@ -253,6 +251,9 @@ void CScene::PostUpdate(float DeltaTime)
 	{
 		(*iter)->AddCollision();
 	}
+
+	// GameObject Factory가 관리하는 Object 들을 PostUpdate 시킨다.
+
 
 	// 충돌체들을 이용해서
 	// 충돌 처리를 진행한다.

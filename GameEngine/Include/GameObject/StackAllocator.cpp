@@ -23,7 +23,8 @@ void* CStackAllocator::Allocate(const size_t allocSize, const size_t alignment)
 	// 의도대로 라면, m_StartPtr 초기 위치에
 	// 메모리를 재할당해줘야 한다.
 	// 하지만, malloc 을 이용해서, 특정 위치에 메모리를 동적 할당할 수 없다. (placement new X)
-	if (currentAddress + padding + allocSize > m_TotalSize)
+	// if (currentAddress + padding + allocSize > m_TotalSize)
+	if (m_Offset + padding + allocSize > m_TotalSize)
 	{
 		assert(false);
 		return nullptr;
@@ -47,6 +48,7 @@ void* CStackAllocator::Allocate(const size_t allocSize, const size_t alignment)
 void CStackAllocator::Free(void* ptr)
 {
 	const size_t freeAddress = (size_t)ptr;
+
 	AllocationHeader* headerAddress = (AllocationHeader*)(freeAddress - sizeof(AllocationHeader));
 
 	m_Offset = freeAddress - headerAddress->padding - (size_t)m_StartPtr;

@@ -11,6 +11,7 @@
 #include "../Component/BoardCombLogicComponent.h"
 #include "../Component/BoardMatchLogicComponent.h"
 #include "../Client.h"
+#include "GameObject/GameObjectFactory.h"
 
 CBoard::CBoard() :
 	m_CellsMoving(false),

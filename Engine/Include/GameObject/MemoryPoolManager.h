@@ -6,25 +6,29 @@
 class CMemoryPoolManager
 {
 	friend class CScene;
+	friend class CGameObjectFactory;
 protected:
 	CMemoryPoolManager();
 	virtual ~CMemoryPoolManager();
 private:
-	std::unordered_map<size_t, CMemoryPool*> m_mapMemoryPool;
+	std::unordered_map<size_t, CMemoryPool*> m_mapPoolAllocPool;
+	CMemoryPool* m_StackMemoryPool;
+	CMemoryPool* m_FreeListMemoryPool;
 	class CScene* m_Scene;
 private:
-	CMemoryPool* FindMemoryPool(const size_t ObjectTypeID);
+	CMemoryPool* FindPoolAllocMemoryPool(const size_t ObjectTypeID);
+	CMemoryPool* FindMemoryPool(MemoryPoolType Type);
 
 	template<typename T>
-		void CreateMemoryPool(const char* Name, int initNum, MemoryPoolType Type)
+		void CreatePoolAllocMemoryPool(const char* Name, int initNum, MemoryPoolType Type)
 	{
 		CMemoryPool* NewMemoryPool = new CMemoryPool;
 
 		NewMemoryPool->SetName(Name);
 
-		NewMemoryPool->Init<T>(initNum, Type);
+		NewMemoryPool->InitPoolAlloc<T>(initNum);
 
-		m_mapMemoryPool.insert(std::make_pair(typeid(T).hash_code(), NewMemoryPool));
+		m_mapPoolAllocPool.insert(std::make_pair(typeid(T).hash_code(), NewMemoryPool));
 	}
 };
 

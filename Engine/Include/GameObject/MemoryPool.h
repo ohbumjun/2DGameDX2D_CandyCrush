@@ -1,6 +1,5 @@
 #pragma once
 #include "../Ref.h"
-#include "GameObjectFactory.h"
 #include "../GameInfo.h"
 #include "MemoryPoolAllocator.h"
 #include "PoolAllocator.h"
@@ -11,13 +10,15 @@ class CMemoryPool :
     public CRef
 {
     friend class CScene;
+    friend class CGameObjectFactory;
     friend class CMemoryPoolManager;
 protected:
     CMemoryPool();
     virtual ~CMemoryPool();
 public:
     // void* Allocate(const size_t allocateSize);
-    void* Allocate();
+    void* AllocateFromPoolAlloc();
+    void* Allocate(const size_t allocateSize);
     template<typename T>
     void Free(T* ptr)
     {
@@ -35,6 +36,11 @@ protected:
 protected:
     FreeListAllocatorPlacementPolicy m_FreeListPlacementPolicy;
 public :
+    MemoryPoolType GetAllocatorType()
+    {
+        return m_AllocatorType;
+    }
+public :
     // 한번 세팅한 MemoryPoolType 은 중간에 바뀌지 않게 세팅할 것이다.
     //void SetAllocatorType(MemoryPoolType Type)
     //{
@@ -44,29 +50,40 @@ public :
     {
         m_FreeListPlacementPolicy = Policy;
     }
-protected:
-    template<typename T>
-    bool Init(const int TotalNumber, MemoryPoolType Type = MemoryPoolType::Pool,
-        const int alignment = MemoryPoolInfo::ALIGNMENT)
+protected :
+    bool InitAlloc(const int TotalMemorySize, MemoryPoolType Type, const int alignment = MemoryPoolInfo::ALIGNMENT)
     {
-        size_t AllocTotalSize = (size_t)(TotalNumber * sizeof(T));
-
         switch (Type)
         {
-        case MemoryPoolType::Pool:
-            m_Allocator = new CPoolAllocator(AllocTotalSize, sizeof(T));
-            break;
         case MemoryPoolType::FreeList:
-            m_Allocator = new CFreeListAllocator(AllocTotalSize, m_FreeListPlacementPolicy);
+            m_Allocator = new CFreeListAllocator(TotalMemorySize, m_FreeListPlacementPolicy);
             break;
         case MemoryPoolType::Stack:
-            m_Allocator = new CStackAllocator(AllocTotalSize);
+            m_Allocator = new CStackAllocator(TotalMemorySize);
             break;
         default:
+            assert(false);
             break;
         }
 
-        m_AllocatorType = Type;
+        m_Alignment = MemoryPoolInfo::ALIGNMENT;
+
+        if (m_Allocator == nullptr)
+            assert(false);
+
+        m_Allocator->Init();
+
+        return true;
+    }
+protected:
+    template<typename T>
+    bool InitPoolAlloc(const int TotalNumber)
+    {
+        size_t AllocTotalSize = (size_t)(TotalNumber * sizeof(T));
+
+        m_Allocator = new CPoolAllocator(AllocTotalSize, sizeof(T));
+
+        m_AllocatorType = MemoryPoolType::Pool;
 
         m_Alignment = MemoryPoolInfo::ALIGNMENT;
 

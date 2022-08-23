@@ -10,10 +10,14 @@ CMemoryPool::~CMemoryPool()
 	SAFE_DELETE(m_Allocator);
 }
 
-// void* CMemoryPool::Allocate(const size_t allocateSize)
-void* CMemoryPool::Allocate()
+void* CMemoryPool::AllocateFromPoolAlloc()
 {
 	return m_Allocator->Allocate(m_SingleDataSize, MemoryPoolInfo::ALIGNMENT);
+}
+
+void* CMemoryPool::Allocate(const size_t allocateSize)
+{
+	return m_Allocator->Allocate(allocateSize, MemoryPoolInfo::ALIGNMENT);
 }
 
 /*

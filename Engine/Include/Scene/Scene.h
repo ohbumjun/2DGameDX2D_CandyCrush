@@ -7,7 +7,6 @@
 #include "ViewPort.h"
 #include "../GameObject/GameObject.h"
 #include "../GameObject/ObjectPoolManager.h"
-#include "../GameObject/MemoryPoolManager.h"
 
 class CScene
 {
@@ -25,7 +24,7 @@ protected :
 	bool m_Start;
 	std::list<CSharedPtr<class CGameObject>> m_ObjList;
 	CObjectPoolManager* m_ObjectPoolManager;
-	CMemoryPoolManager* m_MemoryPoolManager;
+
 public :
 	CCameraManager* GetCameraManager() const
 {
@@ -49,11 +48,10 @@ public :
 	}
 	void AddObjectToList(CGameObject* Object);
 public :
+	CGameObjectPool* FindGameObjectPool(const size_t ObjectTypeID);
 	CGameObject* FindGameObject(const std::string& Name);
 	void DeleteCellFromObjectList(CGameObject* Object);
 	// Object 의 TypeID 로 찾아내게 한다.
-	CGameObjectPool* FindGameObjectPool(const size_t ObjectTypeID);
-	class CMemoryPool* FindMemoryPool(const size_t ObjectTypeID);
 public :
 	virtual bool Init();
 	virtual void Start();
@@ -66,11 +64,6 @@ public :
 	void CreateObjectPool(const char* Name, int initNum)
 	{
 		return m_ObjectPoolManager->CreateObjectPool<T>(Name, initNum);
-	}
-	template<typename T>
-	void CreateMemoryPool(const char* Name, int initNum, MemoryPoolType Type)
-	{
-		return m_MemoryPoolManager->CreateMemoryPool<T>(Name, initNum, Type);
 	}
 	template<typename T>
 	T* CreateGameObject(const std::string& Name)
@@ -88,32 +81,6 @@ public :
 
 	return Object;
 }
-	template<typename T>
-	T* CreateGameObjectFromMemoryPool(const std::string& Name)
-	{
-		CMemoryPool* MemoryPool = CSceneManager::GetInst()->GetScene()->FindMemoryPool(typeid(T).hash_code());
-
-		void* PoppedMemory = MemoryPool->Allocate();
-
-		T* Object = new ((T*)PoppedMemory) T();
-		Object->m_MemoryPoolInitPtr = PoppedMemory;
-
-		Object->SetMemoryPool(MemoryPool);
-		Object->SetAllocateType(ObjectAllocateType::MemoryPool);
-		Object->SetName(Name);
-		Object->SetScene(this);
-		Object->AddRef(); // 차후 Scene 의 ObjList 에서 erase 될 때, Release 과정에서 delete 되지 않게 하기 위함
-
-		if (!Object->Init())
-		{
-			SAFE_DELETE(Object);
-			return nullptr;
-		}
-
-		m_ObjList.push_back(Object);
-
-		return Object;
-	}
 private :
 	template<typename T>
 	bool CreateSceneMode()

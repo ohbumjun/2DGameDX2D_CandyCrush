@@ -1,6 +1,7 @@
 
 #include "ParticleComponent.h"
 #include "../Scene/Scene.h"
+#include "../Scene/SceneManager.h"
 #include "../Scene/SceneResource.h"
 #include "../Resource/Shader/StructuredBuffer.h"
 
@@ -61,7 +62,8 @@ CParticleComponent::~CParticleComponent()
 
 void CParticleComponent::SetParticle(const std::string& Name)
 {
-	SetParticle(m_Scene->GetSceneResource()->FindParticle(Name));
+	// SetParticle(m_Scene->GetSceneResource()->FindParticle(Name));
+	SetParticle(CSceneManager::GetInst()->GetScene()->GetSceneResource()->FindParticle(Name));
 }
 
 void CParticleComponent::SetParticle(CParticle* Particle)
@@ -83,7 +85,8 @@ void CParticleComponent::SetParticle(CParticle* Particle)
 
 	m_Particle->CloneStructuredBuffer(m_vecStructuredBuffer);
 
-	m_UpdateShader = m_Particle->CloneUpdateShader();
+	// m_UpdateShader = m_Particle->CloneUpdateShader();
+	m_UpdateShader = m_Particle->GetUpdateShader();
 
 	m_CBuffer = m_Particle->CloneConstantBuffer();
 
@@ -104,7 +107,8 @@ void CParticleComponent::Start()
 
 bool CParticleComponent::Init()
 {
-	m_Mesh = m_Scene->GetSceneResource()->FindMesh("ParticlePointMesh");
+	// m_Mesh = m_Scene->GetSceneResource()->FindMesh("ParticlePointMesh");
+	m_Mesh = CSceneManager::GetInst()->GetScene()->GetSceneResource()->FindMesh("ParticlePointMesh");
 
 	return true;
 }

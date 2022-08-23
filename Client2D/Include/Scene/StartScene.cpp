@@ -6,6 +6,7 @@
 #include "Engine.h"
 #include "../UI/StartSceneWidget.h"
 #include "../GameObject/BubbleParticle.h"
+#include "GameObject/GameObjectFactory.h"
 
 CStartScene::CStartScene() :
 	m_PlayTimeFull(30.f),
@@ -37,7 +38,7 @@ bool CStartScene::Init()
 	m_Scene->CreateObjectPool<CBlock>("BlockObjectPool", 100);
 
 	// Memory Pool
-	m_Scene->CreateMemoryPool<CBubbleParticle>("BubbleParticleMemoryPool", 
+	CGameObjectFactory::GetInst()->CreatePoolAllocMemoryPool<CBubbleParticle>("BubbleParticleMemoryPool",
 		100, MemoryPoolType::Pool);
 
 	Resolution RS = CEngine::GetInst()->GetResolution();

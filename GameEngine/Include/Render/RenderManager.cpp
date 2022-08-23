@@ -9,6 +9,7 @@
 #include "../Scene/Scene.h"
 #include "../Scene/ViewPort.h"
 #include "../Scene/ViewPort.h"
+#include "../GameObject/GameObjectFactory.h"
 
 DEFINITION_SINGLE(CRenderManager)
 
@@ -187,6 +188,25 @@ void CRenderManager::Render()
 
 		for (; iter != iterEnd; ++iter)
 		{
+			(*iter)->PrevRender();
+		}
+	}
+
+	// Factory 에서 만들어낸 Object (Memory Pool)
+	{
+		const std::list<class CGameObject*>& MemoryPoolMadeObjects = CGameObjectFactory::GetInst()->GetFactoryObjectList();
+	
+		auto iter = MemoryPoolMadeObjects.begin(); 
+		auto iterEnd = MemoryPoolMadeObjects.end();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			// Scene 이 세팅되어 있지 않다면 Scene 을 세팅해준다.
+			if ((*iter)->GetScene() == nullptr)
+			{
+				(*iter)->SetScene(CSceneManager::GetInst()->GetScene());
+			}
+
 			(*iter)->PrevRender();
 		}
 	}

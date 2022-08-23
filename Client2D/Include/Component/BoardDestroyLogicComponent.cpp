@@ -6,6 +6,7 @@
 #include "Scene/Scene.h"
 #include "Scene/SceneManager.h"
 #include "GameObject/MemoryPool.h"
+#include "GameObject/GameObjectFactory.h"
 
 CBoardDestroyLogicComponent::CBoardDestroyLogicComponent()
 {
@@ -272,7 +273,8 @@ void CBoardDestroyLogicComponent::DestroySingleCell(int RowIndex, int ColIndex)
 
 		DestroySingleBagCell(RowIndex, ColIndex);
 
-		CBubbleParticle* BubbleParticle = CurrentScene->CreateGameObjectFromMemoryPool<CBubbleParticle>("Bubble");
+		// CBubbleParticle* BubbleParticle = CurrentScene->CreateGameObjectFromMemoryPool<CBubbleParticle>("Bubble", MemoryPoolType::Pool);
+		CBubbleParticle* BubbleParticle = CGameObjectFactory::GetInst()->CreateGameObjectFromMemoryPool<CBubbleParticle>("Bubble", MemoryPoolType::Pool);
 
 		// CBubbleParticle* BubbleParticle = CSceneManager::GetInst()->GetScene()->CreateGameObject<CBubbleParticle>("BubbleParticle");
 		BubbleParticle->SetWorldPos(CellWorldPos.x, CellWorldPos.y - CellWorldScale.y * 0.5f, CellWorldPos.z);
@@ -281,7 +283,7 @@ void CBoardDestroyLogicComponent::DestroySingleCell(int RowIndex, int ColIndex)
 	{
 		DestroyMirrorBallEffect(RowIndex, ColIndex);
 
-		CBubbleParticle* BubbleParticle = CurrentScene->CreateGameObjectFromMemoryPool<CBubbleParticle>("Bubble");
+		CBubbleParticle* BubbleParticle = CGameObjectFactory::GetInst()->CreateGameObjectFromMemoryPool<CBubbleParticle>("Bubble", MemoryPoolType::Pool);
 		//  CBubbleParticle* BubbleParticle = CSceneManager::GetInst()->GetScene()->CreateGameObject<CBubbleParticle>("BubbleParticle");
 		BubbleParticle->SetWorldPos(CellWorldPos.x, CellWorldPos.y - CellWorldScale.y * 0.5f, CellWorldPos.z);
 	}
@@ -289,7 +291,7 @@ void CBoardDestroyLogicComponent::DestroySingleCell(int RowIndex, int ColIndex)
 	{
 		DestroySingleNormalCell(RowIndex, ColIndex);
 
-		CBubbleParticle* BubbleParticle = CurrentScene->CreateGameObjectFromMemoryPool<CBubbleParticle>("Bubble");
+		CBubbleParticle* BubbleParticle = CGameObjectFactory::GetInst()->CreateGameObjectFromMemoryPool<CBubbleParticle>("Bubble", MemoryPoolType::Pool);
 		// CBubbleParticle* BubbleParticle = CSceneManager::GetInst()->GetScene()->CreateGameObject<CBubbleParticle>("BubbleParticle");
 		BubbleParticle->SetWorldPos(CellWorldPos.x, CellWorldPos.y - CellWorldScale.y * 0.5f, CellWorldPos.z);
 	}
