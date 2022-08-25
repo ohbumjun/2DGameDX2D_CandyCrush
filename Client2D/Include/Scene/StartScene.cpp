@@ -47,7 +47,7 @@ bool CStartScene::Init()
 
 	SetPlayerObject(Board);
 	
-	Board->CreateBoard(6, 6, 60, 40, 
+	Board->CreateBoard(6, 6, 60, 95, 
 	Vector3((float)RS.Width * 0.2f, (float)RS.Height * 0.1f, 1.f));
 
 	// CBubbleParticle* BubbleParticle = m_Scene->CreateGameObject<CBubbleParticle>("BubbleParticle");
@@ -69,7 +69,8 @@ void CStartScene::CreateMaterial()
 	m_Scene->GetSceneResource()->CreateMaterial<CMaterial>("Bubble");
 	CMaterial* Material = m_Scene->GetSceneResource()->FindMaterial("Bubble");
 
-	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Bubble", TEXT("Particle/Bubbles50px.png"));
+	// Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Bubble", TEXT("Particle/Bubbles50px.png"));
+	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Bubble", TEXT("Particle/particle_00.png"));
 	Material->SetShader("ParticleRenderShader");
 	// Material->SetRenderState("AlphaBlend");
 }
@@ -82,11 +83,12 @@ void CStartScene::CreateParticle()
 
 	Particle->SetMaterial(Material);
 	Particle->SetSpawnCountMax(1000);
-	Particle->SetSpawnTime(1.f);
+	// Particle->SetSpawnTime(1.f);
+	Particle->SetSpawnTime(0.1f);
 	Particle->SetLifeTimeMin(0.5f);
 	Particle->SetLifeTimeMax(1.f);
-	Particle->SetScaleMin(Vector3(20.f, 20.f, 1.f));
-	Particle->SetScaleMax(Vector3(50.f, 50.f, 1.f));
+	Particle->SetScaleMin(Vector3(3.f, 3.f, 1.f));
+	Particle->SetScaleMax(Vector3(10.f, 10.f, 1.f));
 	Particle->SetSpeedMin(50.f);
 	Particle->SetSpeedMax(100.f);
 	Particle->SetMoveDir(Vector3(0.f, 1.f, 0.f));

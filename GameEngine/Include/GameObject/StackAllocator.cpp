@@ -38,7 +38,10 @@ void* CStackAllocator::Allocate(const size_t allocSize, const size_t alignment)
 	vecAdds.push_back(nextAddres);
 
 	AllocationHeader* allocheaderAddress = (AllocationHeader*)headerAddress;
+
+	// AllocationHeader alloc(padding)
 	// allocheaderAddress = &alloc;
+
 	allocheaderAddress->padding = padding;
 
 	m_Offset += (padding + allocSize);
@@ -56,7 +59,6 @@ void CStackAllocator::Free(void* ptr)
 	// 이미 Allocator::Free 에서 해당 메모리를 통해 만들어낸 Object 에 대한 소멸자는 호출해준 상태이다.
 	// 여기서는 할당한 메모리 위치 및 Header 정보를 이용해서
 	// m_Offset 정보를 적절하게 조정해나가면 되는 것이다.
-
 	const std::size_t currentAddress = (std::size_t)ptr;
 	const std::size_t headerAddress = currentAddress - sizeof(AllocationHeader);
 	const AllocationHeader* allocationHeader{ (AllocationHeader*)headerAddress };

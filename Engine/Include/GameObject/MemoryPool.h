@@ -15,6 +15,15 @@ class CMemoryPool :
 protected:
     CMemoryPool();
     virtual ~CMemoryPool();
+
+protected:
+    int m_Alignment;
+    int m_AllocNumber; // 몇개의 Object 를 할당할 것인가
+    size_t m_SingleDataSize; 
+    class CMemoryPoolAllocator* m_Allocator;
+    MemoryPoolType m_AllocatorType;
+protected:
+    FreeListAllocatorPlacementPolicy m_FreeListPlacementPolicy;
 public:
     // void* Allocate(const size_t allocateSize);
     void* AllocateFromPoolAlloc();
@@ -27,14 +36,6 @@ public:
 
         m_Allocator->Free(ptr);
     }
-protected:
-    int m_Alignment;
-    int m_AllocNumber; // 몇개의 Object 를 할당할 것인가
-    size_t m_SingleDataSize; 
-    class CMemoryPoolAllocator* m_Allocator;
-    MemoryPoolType m_AllocatorType;
-protected:
-    FreeListAllocatorPlacementPolicy m_FreeListPlacementPolicy;
 public :
     MemoryPoolType GetAllocatorType()
     {
