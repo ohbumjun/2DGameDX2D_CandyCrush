@@ -29,17 +29,13 @@ void* CStackAllocator::Allocate(const size_t allocSize, const size_t alignment)
 	if (m_Offset + padding + allocSize > m_TotalSize)
 	{
 		// 메모리 재할당
-
-		assert(false);
-		return nullptr;
+		ResizeAlloc();
 	}
 
 	const size_t nextAddres = currentAddress + padding;
 	const size_t headerAddress = nextAddres - sizeof(AllocationHeader);
 
 	vecAdds.push_back(nextAddres);
-
-	AllocationHeader alloc(padding);
 
 	AllocationHeader* allocheaderAddress = (AllocationHeader*)headerAddress;
 	// allocheaderAddress = &alloc;
@@ -65,7 +61,12 @@ void CStackAllocator::Free(void* ptr)
 	const std::size_t headerAddress = currentAddress - sizeof(AllocationHeader);
 	const AllocationHeader* allocationHeader{ (AllocationHeader*)headerAddress };
 
+	size_t PrevOffset = m_Offset;
+
 	m_Offset = currentAddress - allocationHeader->padding - (std::size_t)m_StartPtr;
+
+	if (PrevOffset < m_Offset)
+		assert(false);
 	
 	m_Used = m_Offset;
 
@@ -85,4 +86,20 @@ void CStackAllocator::Reset()
 	m_Offset = 0;
 	m_Peak = 0;
 	m_Used = 0;
+}
+
+void CStackAllocator::ResizeAlloc()
+{
+	// 현재 m_TotalSize 위치에 새롭게 추가적으로 메모리를 할당할 것이다.
+	size_t NewTotalSize = m_TotalSize * 2;
+
+	byte* NewAlloc = new byte[NewTotalSize];
+
+	memcpy(NewAlloc, m_StartPtr, NewTotalSize);
+
+	m_StartPtr = new (m_StartPtr) byte[NewTotalSize];
+
+	memcpy(m_StartPtr, NewAlloc, NewTotalSize);
+
+	m_TotalSize *= 2;
 }

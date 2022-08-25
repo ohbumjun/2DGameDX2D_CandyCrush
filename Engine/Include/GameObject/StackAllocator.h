@@ -24,6 +24,7 @@ public :
     virtual void Free(void* ptr) override;
     virtual void Init() override;
     void Reset();
+    void ResizeAlloc();
 private :
     size_t m_Offset;
      //  void* m_StartPtr;

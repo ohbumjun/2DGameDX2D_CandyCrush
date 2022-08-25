@@ -91,32 +91,51 @@ void CGameObjectFactory::Update(float DeltaTime)
 	}
 
 	// Stack Allocator
-	auto stkIter = m_StkMemoryPoolObjList.begin();
-	auto stkIterEnd = m_StkMemoryPoolObjList.end();
 
-	for (; stkIter != stkIterEnd;)
+	// 1) 가장 마지막에 할당한 녀석을 
+	// 가장 먼저 메모리 해제해주어야 한다.
+	// 2) 그리고 현재 Stack Allocator 를 통해서 m_StkMemoryPoolObjectList 에 push_front 해주고 있다.
+	// 즉, 가장 최근에 할당된 녀석이 가장 앞쪽에 위치하는 것이다.
+	// 3) 현재는 Particle 의 경우에만 적용해주고 있고, 모두 동일한 LifeTime을 적용받고 있으므로
+	// 해당 List 에서 가장 뒤에 있는 녀석, 즉, 가장 먼저 할당된 녀석부터, Active False 처리되어 있을 것이다.
+	// 단, 해제는, 가장 최근에 할당된 녀석, 즉, 가장 첫번째 원소부터 해제해주어야 한다.
+	// 4) 따라서, 첫번째 원소가 해제된 상태라면, 그때 모든 원소를 해제해줄 것이다.
 	{
-		if (!(*stkIter)->IsActive())
+		auto stkIter = m_StkMemoryPoolObjList.begin();
+		auto stkIterEnd = m_StkMemoryPoolObjList.end();
+
+		for (; stkIter != stkIterEnd;)
 		{
-			if ((*stkIter)->m_MemoryPool == nullptr)
-				assert(false);
+			if (!(*stkIter)->IsEnable() || !(*stkIter)->IsActive())
+			{
+				++stkIter;
+				continue;
+			}
 
-			(*stkIter)->m_MemoryPool->Free<CGameObject>((CGameObject*)((*stkIter)->m_MemoryPoolInitPtr));
+			(*stkIter)->Update(DeltaTime);
 
-			stkIter = m_StkMemoryPoolObjList.erase(stkIter);
-			stkIterEnd = m_StkMemoryPoolObjList.end();
-
-			continue;
-		}
-		if (!(*stkIter)->IsEnable())
-		{
 			++stkIter;
-			continue;
 		}
+	}
 
-		(*stkIter)->Update(DeltaTime);
 
-		++stkIter;
+	{
+		if (m_StkMemoryPoolObjList.size() > 0)
+		{
+			auto stkIter = m_StkMemoryPoolObjList.begin();
+
+			// 첫번째 원소가 Active False 라면 건너뛴다.
+			if ((*stkIter)->IsActive())
+				return;
+
+			while (stkIter != m_StkMemoryPoolObjList.end())
+			{
+				(*stkIter)->m_MemoryPool->Free<CGameObject>((CGameObject*)((*stkIter)->m_MemoryPoolInitPtr));
+				stkIter++;
+			}
+
+			m_StkMemoryPoolObjList.clear();
+		}
 	}
 }
 
@@ -163,32 +182,41 @@ void CGameObjectFactory::PostUpdate(float DeltaTime)
 	}
 
 	// Stack Allocator
-	auto stkIter = m_StkMemoryPoolObjList.begin();
-	auto stkIterEnd = m_StkMemoryPoolObjList.end();
-
-	for (; stkIter != stkIterEnd;)
 	{
-		if (!(*stkIter)->IsActive())
+		auto stkIter = m_StkMemoryPoolObjList.begin();
+		auto stkIterEnd = m_StkMemoryPoolObjList.end();
+
+		for (; stkIter != stkIterEnd;)
 		{
-			if ((*stkIter)->m_MemoryPool == nullptr)
-				assert(false);
+			if (!(*stkIter)->IsEnable() || !(*stkIter)->IsActive())
+			{
+				++stkIter;
+				continue;
+			}
 
-			(*stkIter)->m_MemoryPool->Free<CGameObject>((CGameObject*)((*stkIter)->m_MemoryPoolInitPtr));
+			(*stkIter)->PostUpdate(DeltaTime);
 
-			stkIter = m_StkMemoryPoolObjList.erase(stkIter);
-			stkIterEnd = m_StkMemoryPoolObjList.end();
-
-			continue;
-		}
-		if (!(*stkIter)->IsEnable())
-		{
 			++stkIter;
-			continue;
 		}
+	}
 
-		(*stkIter)->PostUpdate(DeltaTime);
+	{
+		if (m_StkMemoryPoolObjList.size() > 0)
+		{
+			auto stkIter = m_StkMemoryPoolObjList.begin();
 
-		++stkIter;
+			// 첫번째 원소가 Active False 라면 건너뛴다.
+			if ((*stkIter)->IsActive())
+				return;
+
+			while (stkIter != m_StkMemoryPoolObjList.end())
+			{
+				(*stkIter)->m_MemoryPool->Free<CGameObject>((CGameObject*)((*stkIter)->m_MemoryPoolInitPtr));
+				stkIter++;
+			}
+
+			m_StkMemoryPoolObjList.clear();
+		}
 	}
 }
 

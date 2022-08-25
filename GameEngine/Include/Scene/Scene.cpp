@@ -140,6 +140,16 @@ void CScene::Update(float DeltaTime)
 	// Scene Mode
 	m_SceneMode->Update(DeltaTime);
 
+	// GameObject Factory 의 Object 들을 Update 한다.
+	// 단, ObjList 보다 먼저 할 것이다.
+	// 확실하지는 않지만, StackAllocator 들을 활용한 Memory Pool Particle 들 때문이다.
+	// 아래 ObjList 를 돌면서, 분면 StakAllocatorObjList 에 push_front 를 해줄 것이다.
+	// 그런데 이 녀석들은, 새롭게 살아나는 Particle 들이다.
+	// 그런데 StakAllocator Memory Pool Object 들은, 맨 앞 녀석이 죽을 때까지 기다리다가
+	// 맨 앞 녀석이 죽으면 한꺼번에 사라진다.
+	// 즉, 로직상, 없앨 것들을 깔끔하게 없애고, 그 다음 생성하고자 하는 원리이다.
+	CGameObjectFactory::GetInst()->Update(DeltaTime);
+
 	// Object
 	auto iter = m_ObjList.begin();
 	auto iterEnd = m_ObjList.end();
@@ -184,14 +194,14 @@ void CScene::Update(float DeltaTime)
 		++iter;
 	}
 
-	// GameObject Factory 의 Object 들을 Update 한다.
-	CGameObjectFactory::GetInst()->Update(DeltaTime);
 
 	m_ViewPort->Update(DeltaTime);
 }
 
 void CScene::PostUpdate(float DeltaTime)
 {
+	CGameObjectFactory::GetInst()->PostUpdate(DeltaTime);
+
 	auto iter = m_ObjList.begin();
 	auto iterEnd = m_ObjList.end();
 
@@ -238,7 +248,6 @@ void CScene::PostUpdate(float DeltaTime)
 		++iter;
 	}
 
-	CGameObjectFactory::GetInst()->PostUpdate(DeltaTime);
 
 	m_ViewPort->PostUpdate(DeltaTime);
 

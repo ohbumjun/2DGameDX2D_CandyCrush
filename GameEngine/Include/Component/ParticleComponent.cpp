@@ -100,6 +100,11 @@ void CParticleComponent::SetSpawnTime(float Time)
 	//m_Particle->SetSpawnTime(m_SpawnTimeMax);
 }
 
+void CParticleComponent::SetInitSpawnMax()
+{
+	m_SpawnTime = m_SpawnTimeMax;
+}
+
 void CParticleComponent::Start()
 {
 	CSceneComponent::Start();

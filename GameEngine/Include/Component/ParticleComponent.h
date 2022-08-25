@@ -35,6 +35,8 @@ public:
 	void SetParticle(CParticle* Particle);
 	void SetSpawnTime(float Time);
 
+	// m_SpawnTime 을 m_SpawnTimeMax 에 맞춰주는 함수
+	void SetInitSpawnMax();
 
 public:
 	virtual void Start();
