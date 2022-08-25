@@ -17,7 +17,7 @@ void* CMemoryPool::AllocateFromPoolAlloc()
 
 void* CMemoryPool::Allocate(const size_t allocateSize)
 {
-	return m_Allocator->Allocate(allocateSize, MemoryPoolInfo::ALIGNMENT);
+	return m_Allocator->Allocate(allocateSize,m_Alignment);
 }
 
 /*

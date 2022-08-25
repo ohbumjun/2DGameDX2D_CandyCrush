@@ -24,7 +24,6 @@ CScene::CScene() :
 	m_CameraManager->m_Scene = this;
 	m_CameraManager->Init();
 
-
 	m_ObjectPoolManager = new CObjectPoolManager;
 	m_ObjectPoolManager->m_Scene = this;
 }

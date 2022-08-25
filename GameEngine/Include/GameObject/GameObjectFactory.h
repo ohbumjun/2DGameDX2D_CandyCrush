@@ -10,7 +10,8 @@ class CGameObjectFactory {
 	typedef CGameObject* (*CREATOR)();
 private :
 	std::unordered_map<int, CREATOR> m_mapObjectCreator;
-	std::list<class CGameObject*> m_MemoryPoolMadeObjList;
+	std::list<class CGameObject*> m_MemoryPoolObjList;
+	std::list<class CGameObject*> m_StkMemoryPoolObjList;
 	CMemoryPoolManager* m_MemoryPoolManager;
 public:
 	void RegisterShapeToFactory(int type, CREATOR creator)
@@ -21,13 +22,19 @@ public:
 	
 	CGameObject* CreateObjectFromFactory(int type);
 
-	const std::list<class CGameObject*>& GetFactoryObjectList() const
+	const std::list<class CGameObject*>& GetMemoryPoolObjectList() const
 	{
-		return m_MemoryPoolMadeObjList;
+		return m_MemoryPoolObjList;
+	}
+
+	const std::list<class CGameObject*>& GetStkMemoryPoolObjectList() const
+	{
+		return m_StkMemoryPoolObjList;
 	}
 public :
 	// Object 의 TypeID 로 찾아내게 한다.
-	class CMemoryPool* FindPoolAllocMemoryPool(const size_t ObjectTypeID);
+	// class CMemoryPool* FindPoolAllocMemoryPool(const size_t ObjectTypeID);
+	class CMemoryPool* FindPoolAllocMemoryPool(const std::string& TypeName);
 	class CMemoryPool* FindMemoryPool(MemoryPoolType Type);
 
 	template<typename T>
@@ -46,7 +53,8 @@ public :
 		{
 		case MemoryPoolType::Pool:
 		{
-			MemoryPool = FindPoolAllocMemoryPool(typeid(T).hash_code());
+			// MemoryPool = FindPoolAllocMemoryPool(typeid(T).hash_code());
+			MemoryPool = FindPoolAllocMemoryPool(typeid(T).name());
 			InitMemoryPoolPtr = MemoryPool->AllocateFromPoolAlloc();
 		}
 		break;
@@ -82,7 +90,11 @@ public :
 			return nullptr;
 		}
 
-		m_MemoryPoolMadeObjList.push_back(Object);
+		if (Type == MemoryPoolType::Stack)
+			m_StkMemoryPoolObjList.push_front(Object); // push_front ! -> 차후, 할당된 순서가 늦은 순서 -> 빠른 순서. 방향으로 Update 를 돌며 메모리 해제
+		else
+			m_MemoryPoolObjList.push_back(Object);
+
 
 		return Object;
 	}

@@ -4,9 +4,9 @@ namespace fs = std::filesystem;
 
 const size_t CEngineUtil::CalculatePadding(const size_t baseAddress, const size_t alignment)
 {
-	const size_t multiplier = (baseAddress) / alignment + 1;
+	const size_t multiplier = (baseAddress / alignment) + 1;
 	const size_t alignedAddress = (multiplier * alignment);
-	const size_t padding = alignedAddress - multiplier;
+	const size_t padding = alignedAddress - baseAddress;
 	return padding;
 }
 
@@ -14,14 +14,16 @@ const size_t CEngineUtil::CalculatePaddingWithHeader(const size_t baseAddress, c
 {
 	size_t padding = CalculatePadding(baseAddress, alignment);
 
-	if (HeaderSize > padding)
+	size_t neededSpace = HeaderSize;
+
+	if (neededSpace > padding)
 	{
-		size_t neededSpace = HeaderSize - padding;
+		neededSpace = neededSpace - padding;
 
 		if (neededSpace % alignment > 0)
-			padding += (alignment * (neededSpace / alignment + 1));
+			padding += alignment * (1 + (neededSpace / alignment));
 		else
-			padding += (alignment * (neededSpace / alignment));
+			padding += alignment * (neededSpace / alignment);
 	}
 
 	return padding;

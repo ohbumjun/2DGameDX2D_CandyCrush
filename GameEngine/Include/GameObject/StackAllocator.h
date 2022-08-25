@@ -6,6 +6,16 @@
 class CStackAllocator :
     public CMemoryPoolAllocator
 {
+    typedef unsigned char byte;
+
+    struct AllocationHeader
+    {
+        // char padding;
+        size_t padding;
+
+        AllocationHeader(size_t pad) : padding(pad) {}
+    };
+
     friend class CMemoryPool;
 public :
     CStackAllocator(size_t totalSize);
@@ -16,12 +26,9 @@ public :
     void Reset();
 private :
     size_t m_Offset;
-    void* m_StartPtr;
-    struct AllocationHeader
-    {
-        // char padding;
-        size_t padding;
-        AllocationHeader(size_t pad) : padding(pad){}
-    };
+     //  void* m_StartPtr;
+    byte* m_StartPtr;
+    //char m_LastPadding;
+    std::vector<size_t> vecAdds;
 };
 

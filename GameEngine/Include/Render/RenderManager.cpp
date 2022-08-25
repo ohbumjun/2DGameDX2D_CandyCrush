@@ -194,10 +194,29 @@ void CRenderManager::Render()
 
 	// Factory 에서 만들어낸 Object (Memory Pool)
 	{
-		const std::list<class CGameObject*>& MemoryPoolMadeObjects = CGameObjectFactory::GetInst()->GetFactoryObjectList();
+		const std::list<class CGameObject*>& MemoryPoolMadeObjects = CGameObjectFactory::GetInst()->GetMemoryPoolObjectList();
 	
 		auto iter = MemoryPoolMadeObjects.begin(); 
 		auto iterEnd = MemoryPoolMadeObjects.end();
+
+		for (; iter != iterEnd; ++iter)
+		{
+			// Scene 이 세팅되어 있지 않다면 Scene 을 세팅해준다.
+			if ((*iter)->GetScene() == nullptr)
+			{
+				(*iter)->SetScene(CSceneManager::GetInst()->GetScene());
+			}
+
+			(*iter)->PrevRender();
+		}
+	}
+
+	// Factory 에서 만들어낸 Stack Allocator 형식 Memory Pool
+	{
+		const std::list<class CGameObject*>& StkPoolMadeObjects = CGameObjectFactory::GetInst()->GetStkMemoryPoolObjectList();
+
+		auto iter = StkPoolMadeObjects.begin();
+		auto iterEnd = StkPoolMadeObjects.end();
 
 		for (; iter != iterEnd; ++iter)
 		{

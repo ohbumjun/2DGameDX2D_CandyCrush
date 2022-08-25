@@ -66,7 +66,7 @@ protected :
             break;
         }
 
-        m_Alignment = MemoryPoolInfo::ALIGNMENT;
+        m_Alignment = alignment;
 
         if (m_Allocator == nullptr)
             assert(false);

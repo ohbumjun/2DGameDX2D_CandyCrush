@@ -39,7 +39,7 @@ bool CStartScene::Init()
 
 	// Memory Pool
 	CGameObjectFactory::GetInst()->CreatePoolAllocMemoryPool<CBubbleParticle>("BubbleParticleMemoryPool",
-		100, MemoryPoolType::Pool);
+		10, MemoryPoolType::Pool);
 
 	Resolution RS = CEngine::GetInst()->GetResolution();
 

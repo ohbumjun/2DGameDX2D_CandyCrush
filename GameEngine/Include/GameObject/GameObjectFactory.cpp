@@ -30,9 +30,11 @@ CGameObject* CGameObjectFactory::CreateObjectFromFactory(int type)
 	return p;
 }
 
-CMemoryPool* CGameObjectFactory::FindPoolAllocMemoryPool(const size_t ObjectTypeID)
+// CMemoryPool* CGameObjectFactory::FindPoolAllocMemoryPool(const size_t ObjectTypeID)
+CMemoryPool* CGameObjectFactory::FindPoolAllocMemoryPool(const std::string& TypeName)
 {
-	return m_MemoryPoolManager->FindPoolAllocMemoryPool(ObjectTypeID);
+	// return m_MemoryPoolManager->FindPoolAllocMemoryPool(ObjectTypeID);
+	return m_MemoryPoolManager->FindPoolAllocMemoryPool(TypeName);
 }
 
 
@@ -48,8 +50,9 @@ CMemoryPool* CGameObjectFactory::FindMemoryPool(MemoryPoolType Type)
 
 void CGameObjectFactory::Update(float DeltaTime)
 {
-	auto iter = m_MemoryPoolMadeObjList.begin();
-	auto iterEnd = m_MemoryPoolMadeObjList.end();
+	// Pool, Free List Allocator
+	auto iter = m_MemoryPoolObjList.begin();
+	auto iterEnd = m_MemoryPoolObjList.end();
 
 	for (; iter != iterEnd;)
 	{
@@ -61,13 +64,6 @@ void CGameObjectFactory::Update(float DeltaTime)
 
 			switch (AllocType)
 			{
-			case ObjectAllocateType::ObjectPool:
-			{
-				if (DeleteObject->m_ObjectPool == nullptr)
-					assert(false);
-				DeleteObject->m_ObjectPool->ReturnToPool(DeleteObject);
-			}
-			break;
 			case ObjectAllocateType::MemoryPool:
 			{
 				if (DeleteObject->m_MemoryPool == nullptr)
@@ -80,8 +76,8 @@ void CGameObjectFactory::Update(float DeltaTime)
 
 			// SAFE_DELETE((*iter));
 
-			iter = m_MemoryPoolMadeObjList.erase(iter);
-			iterEnd = m_MemoryPoolMadeObjList.end();
+			iter = m_MemoryPoolObjList.erase(iter);
+			iterEnd = m_MemoryPoolObjList.end();
 
 			continue;
 		}
@@ -93,12 +89,42 @@ void CGameObjectFactory::Update(float DeltaTime)
 		(*iter)->Update(DeltaTime);
 		++iter;
 	}
+
+	// Stack Allocator
+	auto stkIter = m_StkMemoryPoolObjList.begin();
+	auto stkIterEnd = m_StkMemoryPoolObjList.end();
+
+	for (; stkIter != stkIterEnd;)
+	{
+		if (!(*stkIter)->IsActive())
+		{
+			if ((*stkIter)->m_MemoryPool == nullptr)
+				assert(false);
+
+			(*stkIter)->m_MemoryPool->Free<CGameObject>((CGameObject*)((*stkIter)->m_MemoryPoolInitPtr));
+
+			stkIter = m_StkMemoryPoolObjList.erase(stkIter);
+			stkIterEnd = m_StkMemoryPoolObjList.end();
+
+			continue;
+		}
+		if (!(*stkIter)->IsEnable())
+		{
+			++stkIter;
+			continue;
+		}
+
+		(*stkIter)->Update(DeltaTime);
+
+		++stkIter;
+	}
 }
 
 void CGameObjectFactory::PostUpdate(float DeltaTime)
 {
-	auto iter = m_MemoryPoolMadeObjList.begin();
-	auto iterEnd = m_MemoryPoolMadeObjList.end();
+	// Pool, Free List Allocator
+	auto iter = m_MemoryPoolObjList.begin();
+	auto iterEnd = m_MemoryPoolObjList.end();
 
 	for (; iter != iterEnd;)
 	{
@@ -110,13 +136,6 @@ void CGameObjectFactory::PostUpdate(float DeltaTime)
 
 			switch (AllocType)
 			{
-			case ObjectAllocateType::ObjectPool:
-			{
-				if (DeleteObject->m_ObjectPool == nullptr)
-					assert(false);
-				DeleteObject->m_ObjectPool->ReturnToPool(DeleteObject);
-			}
-			break;
 			case ObjectAllocateType::MemoryPool:
 			{
 				if (DeleteObject->m_MemoryPool == nullptr)
@@ -129,8 +148,8 @@ void CGameObjectFactory::PostUpdate(float DeltaTime)
 
 			// SAFE_DELETE((*iter));
 
-			iter = m_MemoryPoolMadeObjList.erase(iter);
-			iterEnd = m_MemoryPoolMadeObjList.end();
+			iter = m_MemoryPoolObjList.erase(iter);
+			iterEnd = m_MemoryPoolObjList.end();
 
 			continue;
 		}
@@ -143,6 +162,34 @@ void CGameObjectFactory::PostUpdate(float DeltaTime)
 		++iter;
 	}
 
+	// Stack Allocator
+	auto stkIter = m_StkMemoryPoolObjList.begin();
+	auto stkIterEnd = m_StkMemoryPoolObjList.end();
+
+	for (; stkIter != stkIterEnd;)
+	{
+		if (!(*stkIter)->IsActive())
+		{
+			if ((*stkIter)->m_MemoryPool == nullptr)
+				assert(false);
+
+			(*stkIter)->m_MemoryPool->Free<CGameObject>((CGameObject*)((*stkIter)->m_MemoryPoolInitPtr));
+
+			stkIter = m_StkMemoryPoolObjList.erase(stkIter);
+			stkIterEnd = m_StkMemoryPoolObjList.end();
+
+			continue;
+		}
+		if (!(*stkIter)->IsEnable())
+		{
+			++stkIter;
+			continue;
+		}
+
+		(*stkIter)->PostUpdate(DeltaTime);
+
+		++stkIter;
+	}
 }
 
 

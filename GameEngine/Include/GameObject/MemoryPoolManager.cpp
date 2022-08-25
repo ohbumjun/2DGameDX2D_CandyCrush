@@ -5,7 +5,7 @@ CMemoryPoolManager::CMemoryPoolManager()
 	// Stack Allocator 를 활용하는 Memory Pool;
 	m_StackMemoryPool = new CMemoryPool;
 	m_StackMemoryPool->SetName("StackMemoryPool");
-	m_StackMemoryPool->InitAlloc(4096, MemoryPoolType::Stack);
+	m_StackMemoryPool->InitAlloc(4096, MemoryPoolType::Stack, MemoryPoolInfo::ALIGNMENT * 2);
 
 	// FreeList
 	// m_FreeListMemoryPool = new CMemoryPool;
@@ -29,9 +29,10 @@ CMemoryPoolManager::~CMemoryPoolManager()
 	SAFE_DELETE(m_StackMemoryPool);
 }
 
-CMemoryPool* CMemoryPoolManager::FindPoolAllocMemoryPool(const size_t ObjectTypeID)
+// CMemoryPool* CMemoryPoolManager::FindPoolAllocMemoryPool(const size_t ObjectTypeID)
+CMemoryPool* CMemoryPoolManager::FindPoolAllocMemoryPool(const std::string& TypeName)
 {
-	auto iter = m_mapPoolAllocPool.find(ObjectTypeID);
+	auto iter = m_mapPoolAllocPool.find(TypeName);
 
 	if (iter == m_mapPoolAllocPool.end())
 		return nullptr;
