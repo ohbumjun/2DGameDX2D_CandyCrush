@@ -8,9 +8,9 @@ CMemoryPoolManager::CMemoryPoolManager()
 	m_StackMemoryPool->InitAlloc(4096, MemoryPoolType::Stack, MemoryPoolInfo::ALIGNMENT * 2);
 
 	// FreeList
-	// m_FreeListMemoryPool = new CMemoryPool;
-	// m_FreeListMemoryPool->SetName("FreeListMemoryPool");
-	// m_FreeListMemoryPool->InitAlloc(4096, MemoryPoolType::FreeList);
+	m_FreeListMemoryPool = new CMemoryPool;
+	m_FreeListMemoryPool->SetName("FreeListMemoryPool");
+	m_FreeListMemoryPool->InitAlloc(4096 * 2, MemoryPoolType::FreeList);
 }
 
 CMemoryPoolManager::~CMemoryPoolManager()

@@ -14,8 +14,8 @@ public :
 public :
 	CSinglyLinkedList();
 
-	void insert(Node* prevNode, Node* newNode);
-	void remove(Node* prevNode, Node* deleteNode);
+	void insert(Node* prevNode, Node *& newNode);
+	void remove(Node* prevNode, Node*& deleteNode);
 };
 
 template<typename T>
@@ -25,7 +25,7 @@ inline CSinglyLinkedList<T>::CSinglyLinkedList()
 
 template<typename T>
 inline void CSinglyLinkedList<T>::insert(Node* prevNode, 
-	Node* newNode)
+	Node*& newNode)
 {
 	if (prevNode == nullptr)
 	{
@@ -52,12 +52,12 @@ inline void CSinglyLinkedList<T>::insert(Node* prevNode,
 // deleteNode 를 List 상에서 지워주는 효과이다.
 template<typename T>
 inline void CSinglyLinkedList<T>::remove(Node* prevNode,
-	Node* deleteNode)
+	Node*& deleteNode)
 {
 	if (prevNode == nullptr)
 	{
 		// List 가 오직 하나의 원소만을 지니고 있다는 의미
-		if (deleteNode->next = nullptr)
+		if (deleteNode->next == nullptr)
 		{ 
 			m_Head = nullptr;
 		}

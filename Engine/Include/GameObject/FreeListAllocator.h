@@ -5,6 +5,8 @@
 class CFreeListAllocator :
     public CMemoryPoolAllocator
 {
+    typedef unsigned char byte;
+
     friend class CMemoryPool;
 private :
     struct FreeHeader
@@ -19,9 +21,9 @@ private :
 
     typedef CSinglyLinkedList<FreeHeader>::Node Node;
 
-    void* m_StartPtr = nullptr;
+    byte* m_StartPtr = nullptr;
     FreeListAllocatorPlacementPolicy m_Policy;
-    CSinglyLinkedList<FreeHeader>* m_FreeList;
+    CSinglyLinkedList<FreeHeader> m_FreeList;
 public :
     CFreeListAllocator(const size_t totalSize, FreeListAllocatorPlacementPolicy Policy);
     ~CFreeListAllocator();

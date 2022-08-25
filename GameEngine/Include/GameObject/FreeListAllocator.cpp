@@ -12,7 +12,8 @@ CFreeListAllocator::CFreeListAllocator(const size_t totalSize, FreeListAllocator
 
 CFreeListAllocator::~CFreeListAllocator()
 {
-	free(m_StartPtr);
+	delete m_StartPtr;
+
 	m_StartPtr = nullptr;
 }
 
@@ -27,7 +28,7 @@ void* CFreeListAllocator::Allocate(const size_t allocSize, const size_t alignmen
 	// Free Memory Block 을 돌면서
 	// 최적의 Free Memory Block 을 찾는다.
 	std::size_t padding;
-	Node* affectedNode, *prevNode;
+	Node* affectedNode = nullptr, *prevNode = nullptr;
 
 	Find(allocSize, alignment, padding, prevNode, affectedNode);
 
@@ -39,24 +40,29 @@ void* CFreeListAllocator::Allocate(const size_t allocSize, const size_t alignmen
 
 	const size_t rest = affectedNode->data.blockSize - requiredSize;
 
+	// split block into data block, and a free block of size 'rest'
+	Node* newFreeNode = (Node*)((std::size_t)affectedNode + requiredSize);
+
 	if (rest > 0)
 	{
-		// split block into data block, and a free block of size 'rest'
-		Node* newFreeNode = (Node*)((std::size_t)affectedNode + requiredSize);
 		newFreeNode->data.blockSize = rest;
-		m_FreeList->insert(affectedNode, newFreeNode);
+		newFreeNode->next = nullptr;
+
+		m_FreeList.insert(affectedNode, newFreeNode);
 	}
 
-	m_FreeList->remove(prevNode, affectedNode);
+	m_FreeList.remove(prevNode, affectedNode);
 
 	// set up date block
 	const std::size_t headerAddress = (size_t)affectedNode + alignmentPadding;
 	const std::size_t dataAdderess = headerAddress + allocHeaderSize;
 
-	((CFreeListAllocator::AllocationHeader*)headerAddress)->blockSize = requiredSize;
+	CFreeListAllocator::AllocationHeader* HeaderPtr = (CFreeListAllocator::AllocationHeader*)headerAddress;
+
+	HeaderPtr->blockSize = requiredSize;
 	// headerAddress 로부터, padding 만큼 이전에 가면
 	// 가장 마지막에 할당된 datablock 의 끝 위치가 나온다는 의미
-	((CFreeListAllocator::AllocationHeader*)headerAddress)->padding = alignmentPadding; 
+	HeaderPtr->padding = alignmentPadding;
 
 	m_Used += requiredSize;
 	m_Peak = m_Used;
@@ -77,14 +83,14 @@ void CFreeListAllocator::Free(void* ptr)
 	freeNode->data.blockSize = allocHeader->blockSize + allocHeader->padding;
 	freeNode->next = nullptr;
 
-	Node* iter = m_FreeList->m_Head;
+	Node* iter = m_FreeList.m_Head;
 	Node* iterPrev = nullptr;
 
 	while (iter != nullptr)
 	{
 		if (ptr < iter)
 		{
-			m_FreeList->insert(iterPrev, freeNode);
+			m_FreeList.insert(iterPrev, freeNode);
 			break;
 		}
 		iterPrev = iter;
@@ -100,9 +106,9 @@ void CFreeListAllocator::Free(void* ptr)
 void CFreeListAllocator::Init()
 {
 	if (m_StartPtr == nullptr)
-		free(m_StartPtr);
+		delete m_StartPtr;
 
-	m_StartPtr = malloc(m_TotalSize);
+	m_StartPtr = new byte[m_TotalSize];
 
 	Reset();
 }
@@ -116,8 +122,8 @@ void CFreeListAllocator::Reset()
 	firstNode->data.blockSize = m_TotalSize;
 	firstNode->next = nullptr;
 
-	m_FreeList->m_Head = nullptr;
-	m_FreeList->insert(nullptr, firstNode);
+	m_FreeList.m_Head = nullptr;
+	m_FreeList.insert(nullptr, firstNode);
 }
 
 void CFreeListAllocator::Coalescene(Node* prevBlock, Node* freeBlock)
@@ -126,14 +132,14 @@ void CFreeListAllocator::Coalescene(Node* prevBlock, Node* freeBlock)
 		(std::size_t)freeBlock + freeBlock->data.blockSize == (size_t)freeBlock->next)
 	{
 		freeBlock->data.blockSize += freeBlock->next->data.blockSize;
-		m_FreeList->remove(freeBlock, freeBlock->next);
+		m_FreeList.remove(freeBlock, freeBlock->next);
 	}
 
 	if (prevBlock != nullptr &&
 		(size_t)prevBlock + prevBlock->data.blockSize == (std::size_t)freeBlock)
 	{
 		prevBlock->data.blockSize += freeBlock->data.blockSize;
-		m_FreeList->remove(prevBlock, freeBlock);
+		m_FreeList.remove(prevBlock, freeBlock);
 	}
 }
 
@@ -160,7 +166,7 @@ void CFreeListAllocator::FindBest(const size_t allocSize, const size_t alignment
 
 	Node* bestBlock = nullptr;
 	Node* prevBestBlock = nullptr;
-	Node* iter = m_FreeList->m_Head;
+	Node* iter = m_FreeList.m_Head;
 	Node* iterPrev = nullptr;
 
 	while (iter != nullptr)
@@ -186,7 +192,7 @@ void CFreeListAllocator::FindBest(const size_t allocSize, const size_t alignment
 
 void CFreeListAllocator::FindFirst(const size_t allocSize, const size_t alignment, size_t& padding, Node*& prevNode, Node*& foundNode)
 {
-Node* iter = m_FreeList->m_Head;
+	Node* iter = m_FreeList.m_Head;
 	Node* iterPrev = nullptr;
 
 	while (iter != nullptr)
