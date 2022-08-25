@@ -181,8 +181,11 @@
     <ClInclude Include="Component\SpriteComponent.h" />
     <ClInclude Include="Component\StaticMeshComponent.h" />
     <ClInclude Include="Component\Transform.h" />
+    <ClInclude Include="GameObject\BuilderDirector.h" />
     <ClInclude Include="GameObject\MemoryPool.h" />
     <ClInclude Include="GameObject\MemoryPoolManager.h" />
+    <ClInclude Include="GameObject\ParticleBuilder.h" />
+    <ClInclude Include="GameObject\ParticleConcreteBuilder.h" />
     <ClInclude Include="SinglyLinkedList.h" />
     <ClInclude Include="Device.h" />
     <ClInclude Include="Engine.h" />
@@ -286,6 +289,7 @@
     <ClCompile Include="Component\StaticMeshComponent.cpp" />
     <ClCompile Include="Component\Transform.cpp" />
     <ClCompile Include="EngineUtil.cpp" />
+    <ClCompile Include="GameObject\BuilderDirector.cpp" />
     <ClCompile Include="GameObject\FreeListAllocator.cpp" />
     <ClCompile Include="GameObject\GameObjectFactory.cpp" />
     <ClCompile Include="GameObject\GameObjectPool.cpp" />
@@ -294,6 +298,7 @@
     <ClCompile Include="GameObject\MemoryPoolManager.cpp" />
     <ClCompile Include="GameObject\ObjectPoolManager.cpp" />
     <ClCompile Include="GameObject\PoolAllocator.cpp" />
+    <ClCompile Include="GameObject\ParticleConcreterBuilder.cpp" />
     <ClCompile Include="GameObject\StackAllocator.cpp" />
     <ClCompile Include="Resource\Particle\Particle.cpp" />
     <ClCompile Include="Resource\Particle\ParticleManager.cpp" />

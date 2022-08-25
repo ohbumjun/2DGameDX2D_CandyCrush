@@ -66,36 +66,104 @@ void CStartScene::CreateAnimationSequence()
 
 void CStartScene::CreateMaterial()
 {
-	m_Scene->GetSceneResource()->CreateMaterial<CMaterial>("Bubble");
-	CMaterial* Material = m_Scene->GetSceneResource()->FindMaterial("Bubble");
+	// White Bubble
+	m_Scene->GetSceneResource()->CreateMaterial<CMaterial>("WhiteBubble");
+	CMaterial* Material = m_Scene->GetSceneResource()->FindMaterial("WhiteBubble");
 
 	// Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Bubble", TEXT("Particle/Bubbles50px.png"));
-	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Bubble", TEXT("Particle/particle_00.png"));
+	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "WhiteBubble", TEXT("Particle/particle_00.png"));
 	Material->SetShader("ParticleRenderShader");
-	// Material->SetRenderState("AlphaBlend");
+	Material->SetRenderState("AlphaBlend");
+
+	// Red Bubble
+	m_Scene->GetSceneResource()->CreateMaterial<CMaterial>("RedBubble");
+	Material = m_Scene->GetSceneResource()->FindMaterial("RedBubble");
+
+	// Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Bubble", TEXT("Particle/Bubbles50px.png"));
+	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "RedBubble", TEXT("Particle/particle_00.png"));
+	Material->SetShader("ParticleRenderShader");
+	Material->SetRenderState("AlphaBlend");
+
+	// Green Bubble
+	m_Scene->GetSceneResource()->CreateMaterial<CMaterial>("GreenBubble");
+	Material = m_Scene->GetSceneResource()->FindMaterial("GreenBubble");
+
+	// Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "Bubble", TEXT("Particle/Bubbles50px.png"));
+	Material->AddTexture(0, (int)Buffer_Shader_Type::Pixel, "GreenBubble", TEXT("Particle/particle_00.png"));
+	Material->SetShader("ParticleRenderShader");
+	Material->SetRenderState("AlphaBlend");
 }
 
 void CStartScene::CreateParticle()
 {
-	m_Scene->GetSceneResource()->CreateParticle("Bubble");
-	CParticle* Particle = m_Scene->GetSceneResource()->FindParticle("Bubble");
-	CMaterial* Material = m_Scene->GetSceneResource()->FindMaterial("Bubble");
+	// White Bubble ---
+	m_Scene->GetSceneResource()->CreateParticle("WhiteBubble");
+	CParticle* Particle = m_Scene->GetSceneResource()->FindParticle("WhiteBubble");
+	CMaterial* Material = m_Scene->GetSceneResource()->FindMaterial("WhiteBubble");
 
 	Particle->SetMaterial(Material);
 	Particle->SetSpawnCountMax(1000);
 	// Particle->SetSpawnTime(1.f);
 	Particle->SetSpawnTime(0.1f);
-	Particle->SetLifeTimeMin(0.5f);
+	Particle->SetLifeTimeMin(0.2f);
 	Particle->SetLifeTimeMax(1.f);
-	Particle->SetScaleMin(Vector3(3.f, 3.f, 1.f));
-	Particle->SetScaleMax(Vector3(10.f, 10.f, 1.f));
+	Particle->SetScaleMin(Vector3(5.f, 5.f, 1.f));
+	Particle->SetScaleMax(Vector3(15.f, 15.f, 1.f));
 	Particle->SetSpeedMin(50.f);
 	Particle->SetSpeedMax(100.f);
 	Particle->SetMoveDir(Vector3(0.f, 1.f, 0.f));
 	Particle->SetStartMin(Vector3(-20.f, -20.f, 0.f));
 	Particle->SetStartMax(Vector3(20.f, 20.f, 0.f));
-	Particle->SetColorMin(Vector4(0.1f, 0.1f, 0.8f, 1.f));
-	Particle->SetColorMax(Vector4(0.1f, 0.5f, 0.5f, 1.f));
+	Particle->SetColorMin(Vector4(0.2f, 0.2f, 0.2f, 0.5f));
+	Particle->SetColorMax(Vector4(0.0f, 0.0f, 0.0f, 1.f));
+	Particle->SetMoveAngle(Vector3(0.f, 0.f, -30.f));
+	Particle->SetGravity(false);
+	Particle->SetMove(true);
+
+	// Red Bubble ---
+	m_Scene->GetSceneResource()->CreateParticle("RedBubble");
+	Particle = m_Scene->GetSceneResource()->FindParticle("RedBubble");
+	Material = m_Scene->GetSceneResource()->FindMaterial("RedBubble");
+
+	Particle->SetMaterial(Material);
+	Particle->SetSpawnCountMax(1000);
+	// Particle->SetSpawnTime(1.f);
+	Particle->SetSpawnTime(0.1f);
+	Particle->SetLifeTimeMin(0.2f);
+	Particle->SetLifeTimeMax(1.f);
+	Particle->SetScaleMin(Vector3(5.f, 5.f, 1.f));
+	Particle->SetScaleMax(Vector3(15.f, 15.f, 1.f));
+	Particle->SetSpeedMin(50.f);
+	Particle->SetSpeedMax(100.f);
+	Particle->SetMoveDir(Vector3(0.f, 1.f, 0.f));
+	Particle->SetStartMin(Vector3(-20.f, -20.f, 0.f));
+	Particle->SetStartMax(Vector3(20.f, 20.f, 0.f));
+	Particle->SetColorMin(Vector4(0.5f, 0.2f, 0.2f, 0.5f));
+	Particle->SetColorMax(Vector4(0.9f, 0.1f, 0.1f, 1.f));
+	Particle->SetMoveAngle(Vector3(0.f, 0.f, -30.f));
+	Particle->SetGravity(false);
+	Particle->SetMove(true);
+
+	// Green Bubble ---
+	m_Scene->GetSceneResource()->CreateParticle("GreenBubble");
+	Particle = m_Scene->GetSceneResource()->FindParticle("GreenBubble");
+	Material = m_Scene->GetSceneResource()->FindMaterial("GreenBubble");
+
+	Particle->SetMaterial(Material);
+	Particle->SetSpawnCountMax(1000);
+	// Particle->SetSpawnTime(1.f);
+	Particle->SetSpawnTime(0.1f);
+	Particle->SetLifeTimeMin(0.2f);
+	Particle->SetLifeTimeMax(1.f);
+	Particle->SetScaleMin(Vector3(5.f, 5.f, 1.f));
+	Particle->SetScaleMax(Vector3(15.f, 15.f, 1.f));
+	Particle->SetSpeedMin(50.f);
+	Particle->SetSpeedMax(100.f);
+	Particle->SetMoveDir(Vector3(0.f, 1.f, 0.f));
+	Particle->SetStartMin(Vector3(-20.f, -20.f, 0.f));
+	Particle->SetStartMax(Vector3(20.f, 20.f, 0.f));
+	Particle->SetColorMin(Vector4(0.2f, 0.2f, 0.5f, 0.5f));
+	Particle->SetColorMax(Vector4(0.0f, 0.0f, 0.9f, 1.f));
 	Particle->SetMoveAngle(Vector3(0.f, 0.f, -30.f));
 	Particle->SetGravity(false);
 	Particle->SetMove(true);

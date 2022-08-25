@@ -27,7 +27,8 @@ bool CBubbleParticle::Init()
 
 	m_ParticleComponent->SetWorldPos(50.f, 50.f, 1.f);
 
-	m_ParticleComponent->SetParticle("Bubble");
+	// m_ParticleComponent->SetParticle("Bubble");
+	m_ParticleComponent->SetParticle("WhiteBubble");
 
 	SetLifeSpan(1.f);
 	//m_Particle->SetSpawnTime(0.1f);

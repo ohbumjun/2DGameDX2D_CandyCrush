@@ -8,6 +8,7 @@
 #include "GameObject/MemoryPool.h"
 #include "GameObject/GameObjectFactory.h"
 #include "Component/ParticleComponent.h"
+#include "GameObject/BuilderDirector.h"
 
 CBoardDestroyLogicComponent::CBoardDestroyLogicComponent()
 {
@@ -274,7 +275,8 @@ void CBoardDestroyLogicComponent::DestroySingleCell(int RowIndex, int ColIndex)
 
 		DestroySingleBagCell(RowIndex, ColIndex);
 
-		CBubbleParticle* BubbleParticle = CGameObjectFactory::GetInst()->CreateGameObjectFromMemoryPool<CBubbleParticle>("Bubble", MemoryPoolType::FreeList);
+		CBubbleParticle* BubbleParticle = CGameObjectFactory::GetInst()->CreateGameObjectFromMemoryPool<CBubbleParticle>(
+			"Bubble", MemoryPoolType::FreeList);
 		BubbleParticle->SetWorldPos(CellWorldPos.x, CellWorldPos.y - CellWorldScale.y * 0.5f, CellWorldPos.z);
 		dynamic_cast<CParticleComponent*>(BubbleParticle->GetRootComponent())->SetInitSpawnMax();
 	}
@@ -282,7 +284,8 @@ void CBoardDestroyLogicComponent::DestroySingleCell(int RowIndex, int ColIndex)
 	{
 		DestroyMirrorBallEffect(RowIndex, ColIndex);
 
-		CBubbleParticle* BubbleParticle = CGameObjectFactory::GetInst()->CreateGameObjectFromMemoryPool<CBubbleParticle>("Bubble", MemoryPoolType::Stack);
+		CBubbleParticle* BubbleParticle = CGameObjectFactory::GetInst()->CreateGameObjectFromMemoryPool<CBubbleParticle>(
+			"Bubble", MemoryPoolType::Stack);
 		//  CBubbleParticle* BubbleParticle = CSceneManager::GetInst()->GetScene()->CreateGameObject<CBubbleParticle>("BubbleParticle");
 		BubbleParticle->SetWorldPos(CellWorldPos.x, CellWorldPos.y - CellWorldScale.y * 0.5f, CellWorldPos.z);
 		dynamic_cast<CParticleComponent*>(BubbleParticle->GetRootComponent())->SetInitSpawnMax();
@@ -291,9 +294,16 @@ void CBoardDestroyLogicComponent::DestroySingleCell(int RowIndex, int ColIndex)
 	{
 		DestroySingleNormalCell(RowIndex, ColIndex);
 
-		CBubbleParticle* BubbleParticle = CGameObjectFactory::GetInst()->CreateGameObjectFromMemoryPool<CBubbleParticle>("Bubble", MemoryPoolType::Pool);
-		BubbleParticle->SetWorldPos(CellWorldPos.x, CellWorldPos.y - CellWorldScale.y * 0.5f, CellWorldPos.z);
-		dynamic_cast<CParticleComponent*>(BubbleParticle->GetRootComponent())->SetInitSpawnMax();
+		CGameObject* RedParticle = CGameObjectFactory::GetInst()->CreateGameObjectFromMemoryPool<CGameObject>(
+			"RedParticle", MemoryPoolType::Stack);
+
+		CBuilderDirector::GetInst()->SetCurBuilder(CBuilderDirector::GetInst()->GetRedBubbleBuilder());
+
+		RedParticle = CBuilderDirector::GetInst()->SetParticleObject(RedParticle);
+
+		RedParticle->SetWorldPos(CellWorldPos.x, CellWorldPos.y - CellWorldScale.y * 0.5f, CellWorldPos.z);
+
+		dynamic_cast<CParticleComponent*>(RedParticle->GetRootComponent())->SetInitSpawnMax();
 	}
 	/*
 	*/

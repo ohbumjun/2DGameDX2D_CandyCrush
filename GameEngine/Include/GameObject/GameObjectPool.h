@@ -17,10 +17,7 @@ public :
 protected:
     // 해당 Object Pool 이 Factory 에 등록된 함수 중에서, 어떤 Object 를 생성해서 가져오는가 
     int m_FactoryRegisterNum;
-    // std::queue<T*> queueObjects;
-    // std::queue<CSharedPtr<CGameObject>> queueObjects;
     std::stack<CSharedPtr<CGameObject>> stackObjects;
-    // std::queue<CGameObject*> queueObjects;
 protected :
     void Initialize(int numElement = 5);
     virtual void ResetInfo(CGameObject* Object);

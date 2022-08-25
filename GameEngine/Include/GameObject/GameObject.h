@@ -8,6 +8,7 @@ class CGameObject : public CRef
 	friend class CScene;
 	friend class CMemoryPool; // Test ¿ë
 	friend class CGameObjectFactory;
+	friend class CBuilderDirector;
 protected:
 	CGameObject();
 	CGameObject(const CGameObject& Object);

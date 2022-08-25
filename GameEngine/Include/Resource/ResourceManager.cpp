@@ -1,6 +1,7 @@
 #include "ResourceManager.h"
 #include "Animation/AnimationManager.h"
 #include "../GameObject/GameObjectFactory.h"
+#include "../GameObject/BuilderDirector.h"
 
 CResourceManager* CResourceManager::m_Inst = nullptr;
 
@@ -19,6 +20,9 @@ CResourceManager::~CResourceManager()
 
 	// GameObjectFactory 지워주기 (Resource Manager 가 들고 있지는 않지만)
 	CGameObjectFactory::DestroyInst();
+
+	// Builder Destroy
+	CBuilderDirector::DestroyInst();
 }
 
 CMesh* CResourceManager::FindMesh(const std::string& Name)
